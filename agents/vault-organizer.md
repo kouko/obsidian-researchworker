@@ -1,17 +1,12 @@
 ---
 name: vault-organizer
-description: >
-  Obsidian vault maintenance agent for file organization,
-  broken link detection, and metadata cleanup.
-  Use for periodic vault hygiene or when reorganizing content.
-# Claude Code
-model: haiku
-tools: Read, Glob, Grep, Bash, Write, Edit
-maxTurns: 20
-# Gemini CLI
+description: 'Obsidian vault maintenance agent for file organization, broken link detection, and metadata cleanup. Use for periodic vault hygiene or when reorganizing content.
+
+  '
 max_turns: 20
 timeout_mins: 10
 ---
+# Agent (Compatibility Mode: Supports Claude Code & Gemini CLI)
 
 You are an Obsidian vault organizer for kouko's second brain.
 

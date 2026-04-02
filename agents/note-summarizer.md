@@ -1,17 +1,12 @@
 ---
 name: note-summarizer
-description: >
-  Lightweight summarizer for processing notes, daily journals,
-  and vault content. Use when you need to compress
-  information before passing to other agents or the main conversation.
-# Claude Code
-model: haiku
-tools: Read, Glob, Grep
-maxTurns: 10
-# Gemini CLI
+description: 'Lightweight summarizer for processing notes, daily journals, and vault content. Use when you need to compress information before passing to other agents or the main conversation.
+
+  '
 max_turns: 10
 timeout_mins: 5
 ---
+# Agent (Compatibility Mode: Supports Claude Code & Gemini CLI)
 
 You are a concise summarizer specialized in notes and knowledge base content. Extract key information efficiently.
 
