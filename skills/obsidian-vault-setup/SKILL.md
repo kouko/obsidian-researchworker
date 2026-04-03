@@ -1,5 +1,5 @@
 ---
-name: vault-setup
+name: obsidian-vault-setup
 description: Interactive Obsidian vault configurator. Asks the user to describe themselves in free text, then builds a personalized vault structure, CLAUDE.md, and slash commands directly in the current directory.
 ---
 
@@ -49,9 +49,9 @@ Here's your vault — ready to build when you are.
 └── archive/        Completed work — never deleted, just moved
 
 Slash commands:
-  /daily    — start your day with vault context
-  /tldr     — save any session to the right folder
-  /[role]   — [role-specific one-liner]
+  /obsidian-daily    — start your day with vault context
+  /obsidian-tldr     — save any session to the right folder
+  /obsidian-[role]   — [role-specific one-liner]
 
 Type "build it" to create this, or tell me what to change.
 ```
@@ -64,8 +64,8 @@ Once they say "build it", "yes", "go", "looks good", or similar:
 
 ### Create folders
 ```bash
-mkdir -p inbox daily [role folders] projects archive scripts \
-  .claude/skills/daily .claude/skills/tldr .claude/skills/[role-command]
+mkdir -p inbox daily [role folders] projects archive \
+  .claude/skills/obsidian-daily .claude/skills/obsidian-tldr .claude/skills/obsidian-[role-command]
 ```
 
 Role folder sets:
@@ -106,10 +106,10 @@ When something lands in inbox/ → ask if I want it sorted now
 
 ### Write skill files
 
-**`.claude/skills/daily/SKILL.md`:**
+**.claude/skills/obsidian-daily/SKILL.md:**
 Read today's daily note or create one. Check inbox/ for unprocessed files. Surface top 3 priorities. Ask: "What are we working on today?"
 
-**`.claude/skills/tldr/SKILL.md`:**
+**.claude/skills/obsidian-tldr/SKILL.md:**
 Summarize this conversation: decisions, things to remember, next actions. Save to the most relevant folder. Update memory.md.
 
 **Role-specific skill:**
@@ -158,9 +158,9 @@ One manual step left:
   Obsidian → Settings → General → Enable Command Line Interface
 
 Your slash commands:
-  /daily    — run this tomorrow morning
-  /tldr     — run this at the end of any session
-  /[role]   — [one liner]
+  /obsidian-daily    — run this tomorrow morning
+  /obsidian-tldr     — run this at the end of any session
+  /obsidian-[role]   — [one liner]
 
 Have files to import?
   python scripts/process_docs_to_obsidian.py ~/your-files inbox/

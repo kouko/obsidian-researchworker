@@ -1,5 +1,5 @@
 ---
-name: daily
+name: obsidian-daily
 description: Start the day with vault context. Read today's daily note or create one. Surface top priorities. Ask what we're working on.
 ---
 

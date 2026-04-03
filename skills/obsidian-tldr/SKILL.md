@@ -1,5 +1,5 @@
 ---
-name: tldr
+name: obsidian-tldr
 description: Save a summary of this conversation to the vault. Key decisions, things to remember, next actions. Store in the right folder automatically.
 ---
 
