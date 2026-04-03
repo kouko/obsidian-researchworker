@@ -1,5 +1,5 @@
 ---
-name: vault-organizer
+name: obsidian-vault-organizer
 description: 'Obsidian vault maintenance agent for file organization, broken link detection, and metadata cleanup. Use for periodic vault hygiene or when reorganizing content.
 
   '

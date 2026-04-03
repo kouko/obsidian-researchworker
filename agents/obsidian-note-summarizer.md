@@ -1,5 +1,5 @@
 ---
-name: note-summarizer
+name: obsidian-note-summarizer
 description: 'Lightweight summarizer for processing notes, daily journals, and vault content. Use when you need to compress information before passing to other agents or the main conversation.
 
   '
