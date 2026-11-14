@@ -1,0 +1,59 @@
+name: obsidian tests
+
+# Runs the obsidian pytest suite on every PR that touches the plugin
+# (or the workflow itself), and on every push to main that changes
+# the plugin.
+
+on:
+  pull_request:
+    paths:
+      - 'obsidian/**'
+      - 'tests/**'
+      - 'LICENSE'
+      - 'ATTRIBUTION.md'
+      - '.github/workflows/test-obsidian.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'obsidian/**'
+      - 'tests/**'
+      - 'LICENSE'
+      - 'ATTRIBUTION.md'
+      - '.github/workflows/test-obsidian.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pytest
+        run: python3 -m pip install --quiet 'pytest>=7'
+
+      - name: Verify SSOT drift (language-policy.md sync)
+        run: python3 obsidian/scripts/verify-drift.py
+
+      - name: Run obsidian skills scripts/ pytest suite
+        # Explicit command-surface declaration for per-skill test scripts
+        # (runnable-capability rule): each skill's scripts/test_*.py must be
+        # named here, not merely swept up incidentally by the whole-suite run
+        # below, so a future skill's tests are provably wired in rather than
+        # accidentally collected.
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python3 -m pytest obsidian/skills/*/scripts/ -q
+
+      - name: Run obsidian pytest suite
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: cd obsidian && python3 -m pytest -v

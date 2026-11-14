@@ -1,0 +1,26 @@
+{
+  "name": "obsidian",
+  "version": "3.27.0",
+  "description": "Obsidian vault workflows (notes/markdown/diagrams/canvas) + LLM wiki layer (defuddle needs CLI).",
+  "author": {
+    "name": "kouko",
+    "url": "https://github.com/kouko"
+  },
+  "homepage": "https://github.com/kouko/obsidian-researchworker",
+  "repository": "https://github.com/kouko/obsidian-researchworker",
+  "license": "MIT",
+  "keywords": [
+    "obsidian",
+    "vault",
+    "daily-notes",
+    "markdown",
+    "bases",
+    "canvas",
+    "mermaid",
+    "excalidraw",
+    "dashboard",
+    "file-intel",
+    "wiki",
+    "knowledge-distillation"
+  ]
+}

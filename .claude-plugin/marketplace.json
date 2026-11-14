@@ -1,0 +1,10 @@
+{
+  "name": "obsidian-researchworker",
+  "owner": {"name": "kouko"},
+  "plugins": [{
+    "name": "obsidian",
+    "source": "./obsidian",
+    "version": "3.27.0",
+    "description": "Obsidian vault and research workflows, extracted from Monkey Skills."
+  }]
+}

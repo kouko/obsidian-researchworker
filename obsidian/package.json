@@ -1,0 +1,14 @@
+{
+  "name": "obsidian-researchworker",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./.opencode-plugin/index.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kouko/obsidian-researchworker.git",
+    "directory": "obsidian"
+  }
+}
