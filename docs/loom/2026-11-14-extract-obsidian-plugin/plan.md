@@ -68,6 +68,13 @@ Discover relevant source paths through moves and renames and pin an expected sou
 
 - none found
 
+## Documentation repair — Round 2
+
+**W4-01 Correct independent-package documentation claims** after: W2-01,W2-02  acceptance: 1,4
+- Files: README.md, obsidian/README.md, obsidian/README.ja.md, obsidian/README.zh-TW.md, obsidian/skills/obsidian-file-intel/SKILL.md, obsidian/skills/obsidian-mermaid-visualizer/obsidian-compatibility.md, ATTRIBUTION.md, docs/provenance.md
+- Test: Re-read all changed paragraphs and local links; run retained Canvas documentation tests, policy drift check and complete package suite. Resume the original code/docs reviewers over the correction delta. Add no permanent migration tests or verification programs.
+- Risk: agent-decided repair the whole class of inherited documentation claims inconsistent with the independent package. Searched every cumulative changed file and all README, install, dependency and attribution surfaces. Preserve actual upstream provenance, cross-plugin exclusions, runtime behavior and copyright notices; disclose unavailable dependencies instead of implementing them.
+
 ## Questions asked
 
 1 — what — 這樣的拆分範圍和驗收目標，符合你的意思嗎？
@@ -75,6 +82,10 @@ Discover relevant source paths through moves and renames and pin an expected sou
 1 — consequence — 保留歷史有兩種方式：只帶 Obsidian 相關提交會保留內容與作者，但提交編號會改變；完整帶入 Monkey Skills 歷史則保留原編號，也會帶入其他 plugins 的歷史。你偏好哪一種？
 
 ## Risks
+
+- user-decided — 2026-11-14: “幫我修正文件 通過測試沒問題後合併” authorizes conditional merge of PR #1 after document corrections and passing tests/review. This supersedes the original no-merge boundary, not Acceptance #2. Actual model execution and note creation remain unmet and must remain visible in the report/PR; merging the initial baseline is not a claim of complete runtime acceptance.
+- agent-decided — Use the existing Ship/Land route with explicit absent full verification if real-use acceptance remains unmet; the route permits disclosure rather than refusing solely for absent attestation. Do not fabricate an attestation or bypass any exact-head, live CI, review, authorization or repository-safety condition. Preserve the original untracked roadmap draft by checking a clean clone, not by changing exclusions or deleting the draft.
+- agent-decided — Preserve the 131 mapped imported commits on `archive/obsidian-3.27.0-history` before the installed squash-only Land route merges and removes the feature branch. The [bounded merge-path investigation](research/001-preserve-imported-history.md) documents the source observation, existing graph and created remote reference. Do not claim the imported commits become main ancestors after squash.
 
 User clarification, 2026-11-14: this one-time transfer adds no permanent migration
 tests or verification infrastructure. Remove only the untracked

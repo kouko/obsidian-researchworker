@@ -10,7 +10,8 @@
 它透過 subprocess 呼叫 [Defuddle CLI](https://github.com/kepano/defuddle)
 抓取與清理外部 URL，會被 Cowork 的 sandbox URL allowlist 阻擋。
 請在 Claude Code CLI 使用 `defuddle`。這些是上游的相容性說明；
-獨立版本的 host 安裝與使用仍待 W3 驗證。
+獨立版本的 Claude/Cowork 相容性尚未驗證。[驗證紀錄](../docs/verification.md)
+僅記載過去 Codex 本機來源安裝成功，實際使用仍未達成。
 
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
@@ -26,7 +27,8 @@
 從 [Monkey Skills](https://github.com/kouko/monkey-skills) 移轉至
 [Obsidian ResearchWorker](../README.md) 獨立維護，保留 plugin 名稱 `obsidian`
 及既有 wiki 功能。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
-獨立版本尚未完成 host 驗證。
+[驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
+但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
 
 ## 背景
 
@@ -108,11 +110,9 @@ Upstream：[`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu
 
 ## Install
 
-```bash
-# 在 Claude Code（CLI）內
-/plugin marketplace add kouko/monkey-skills
-/plugin install obsidian
-```
+獨立版本的安裝實績僅有[驗證紀錄](../docs/verification.md)所載的過去隔離 Codex
+本機來源安裝。遠端安裝、Claude/Cowork 相容性與實際使用尚未驗證。
+變更既有安裝前請先閱讀[過渡說明](../docs/migration.md)。
 
 `defuddle` skill 需要 Defuddle CLI：
 
@@ -123,15 +123,16 @@ npm install -g defuddle
 `obsidian-cli` skill 需要官方 Obsidian CLI 與運行中的 Obsidian instance ——
 參見 [help.obsidian.md/cli](https://help.obsidian.md/cli)。
 
-`obsidian-file-intel` skill 需要內附的 `scripts/process_files_with_gemini.py`
-與在 vault 中設定好的 Gemini API key。
+`obsidian-file-intel` skill 需要 vault 內外部提供的相容腳本
+`scripts/process_files_with_gemini.py` 與設定好的 Gemini API key。
+本發行版未附帶該腳本，也未提供取得或設定程序。沒有既有相容腳本時無法使用
+檔案處理；獨立版本的設定與執行仍未驗證。
 
 ## Usage
 
 開始一天：
 
 ```
-/obsidian
 > Start my day
 ```
 
@@ -162,11 +163,9 @@ sequence diagram type、套用 Obsidian 11.4.1 的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 3.25.0
+│   └── plugin.json              # plugin metadata，version 3.27.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
-├── commands/
-│   └── obsidian.md              # /obsidian → using-obsidian
 ├── skills/
 │   ├── README.md                # 各 skill attribution 表
 │   ├── using-obsidian/          # router（original）
@@ -200,7 +199,7 @@ obsidian/
 ## 貢獻
 
 - Bug 回報與功能建議：請至
-  [github.com/kouko/monkey-skills/issues](https://github.com/kouko/monkey-skills/issues)
+  [github.com/kouko/obsidian-researchworker/issues](https://github.com/kouko/obsidian-researchworker/issues)
   開 issue。
 - 歡迎 PR。請維持既有 skill 結構（frontmatter + workflow + reference 檔），
   並使用 Conventional Commits。

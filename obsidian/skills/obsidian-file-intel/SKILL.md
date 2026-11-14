@@ -22,6 +22,11 @@ If the user selects option 2, they'll type the path in the "Other" input.
 
 ## Step 2: Run the script
 
+This workflow requires an existing compatible external vault script; this
+distribution does not bundle it or provide acquisition/setup instructions.
+See the [dependency limitation](../../README.md#install). Without that script,
+file processing is unavailable; independent setup and execution remain unverified.
+
 Run via Bash from the vault root:
 
 ```bash

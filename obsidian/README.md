@@ -10,7 +10,9 @@ Most skills in this plugin are Cowork-compatible. The `defuddle` skill is the
 exception — it shells out to the [Defuddle CLI](https://github.com/kepano/defuddle)
 to fetch and clean external URLs, which Cowork's sandbox URL allowlist blocks.
 Use Claude Code CLI for `defuddle`. These are inherited upstream compatibility
-notes; this independent distribution has not yet been validated in any host.
+notes; independent Claude/Cowork compatibility remains unverified. The
+[verification record](../docs/verification.md) covers historical Codex local-source
+installation only, with real usage still unmet.
 
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
@@ -27,8 +29,10 @@ Maintained in [Obsidian ResearchWorker](../README.md), extracted from
 [Monkey Skills](https://github.com/kouko/monkey-skills). The plugin name remains
 `obsidian`; existing wiki functionality is retained. Read the
 [transition guide](../docs/migration.md) before changing installations.
-Host installation and usage remain pending W3; inherited host notes below are
-reference material, not independent compatibility evidence.
+The [verification record](../docs/verification.md) documents isolated Codex
+local-source installation at its recorded revision; skill execution and note
+creation remain unmet. Inherited host notes below are reference material,
+not independent compatibility evidence.
 
 ## Background
 
@@ -114,11 +118,10 @@ Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/
 
 ## Install
 
-```bash
-# Inside Claude Code (CLI)
-/plugin marketplace add kouko/monkey-skills
-/plugin install obsidian
-```
+Independent installation has only the historical isolated Codex local-source
+result in the [verification record](../docs/verification.md). Remote installation,
+Claude/Cowork compatibility and real usage remain unverified. Read the
+[transition guide](../docs/migration.md) before changing an existing installation.
 
 The `defuddle` skill needs the Defuddle CLI:
 
@@ -129,16 +132,17 @@ npm install -g defuddle
 The `obsidian-cli` skill needs the official Obsidian CLI and a running
 Obsidian instance — see [help.obsidian.md/cli](https://help.obsidian.md/cli).
 
-The `obsidian-file-intel` skill needs the bundled
+The `obsidian-file-intel` skill needs an external, compatible vault script at
 `scripts/process_files_with_gemini.py` and a Gemini API key configured in your
-vault.
+vault. That script is not bundled, and this distribution provides no acquisition
+or setup procedure. File processing is unavailable without an existing compatible
+script; independent setup and execution remain unverified.
 
 ## Usage
 
 Start the day:
 
 ```
-/obsidian
 > Start my day
 ```
 
@@ -170,11 +174,9 @@ sequence diagram type, applies Obsidian 11.4.1 quirks, and emits a
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata, version 3.25.0
+│   └── plugin.json              # plugin metadata, version 3.27.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault hygiene agent
-├── commands/
-│   └── obsidian.md              # /obsidian → using-obsidian
 ├── skills/
 │   ├── README.md                # per-skill attribution table
 │   ├── using-obsidian/          # router (original)
@@ -215,7 +217,7 @@ Repo-wide attribution lives in [`../ATTRIBUTION.md`](../ATTRIBUTION.md).
 ## Contributing
 
 - Bug reports and feature requests: open an issue at
-  [github.com/kouko/monkey-skills/issues](https://github.com/kouko/monkey-skills/issues).
+  [github.com/kouko/obsidian-researchworker/issues](https://github.com/kouko/obsidian-researchworker/issues).
 - Pull requests welcome. Match the existing skill structure (frontmatter +
   workflow + reference files) and use Conventional Commits.
 - For imported skills, upstream changes flow from kepano and axtonliu; please

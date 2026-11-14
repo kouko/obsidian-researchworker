@@ -10,7 +10,9 @@ The local marketplace is `.claude-plugin/marketplace.json`; its `obsidian` entry
 resolves to `./obsidian`. Claude and Codex manifests live in that directory.
 The OpenCode package and loader ID are `obsidian-researchworker`.
 These are distribution metadata, not evidence of successful installation.
-Independent host installation and usage remain pending W3. See the
+The [verification record](docs/verification.md) documents successful isolated
+Codex local-source installation at its recorded revision; real skill execution
+and note creation remain unmet. Other hosts and remote installation are unverified. See the
 [transition guide](docs/migration.md) before changing an existing installation.
 
 See the [plugin guide](obsidian/README.md) for retained skills and dependencies,

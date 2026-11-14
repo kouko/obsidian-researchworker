@@ -31,3 +31,32 @@ The full one-time audit is external at `/private/tmp/w0-01-safe.EWVk7g` and may
 disappear. It is not a runtime or CI dependency. This document and the retained
 mapping are the durable record; raw captures and discarded-commit aliases are
 not bundled. See [LICENSE](../LICENSE) and [ATTRIBUTION.md](../ATTRIBUTION.md).
+
+Subsequent documentation-only adaptations correct inherited installation and
+issue-reporting destinations, distinguish recorded Codex local-source installation
+from unmet real usage, disclose the unbundled external Gemini vault script,
+remove the nonexistent command-tree entry and its usage example, update the
+tree's version annotation, and label unrelated attribution inventory as upstream
+historical context. These corrections change no executable behavior or retained
+license notices. The audit counts above describe the prior audit, not a new
+comparison of the corrected documentation tree.
+
+## History after squash merge
+
+The imported history is retained on the dedicated
+[`archive/obsidian-3.27.0-history`](https://github.com/kouko/obsidian-researchworker/tree/archive/obsidian-3.27.0-history)
+branch at `3c95872cb266a54af38f5a43485da4b9aa0c06fd`. All 131 mapped imported
+commits are reachable from that tip. A squash merge preserves the project tree
+on `main`, but does not put these imported commits in `main`'s ancestry.
+Keep the archive branch until a verified replacement preserves that history.
+
+To inspect the retained history from a clone:
+
+```sh
+git fetch origin archive/obsidian-3.27.0-history
+git log origin/archive/obsidian-3.27.0-history
+```
+
+The [merge-path investigation](loom/2026-11-14-extract-obsidian-plugin/research/001-preserve-imported-history.md)
+records the installed merge behavior and bounded reachability check. The
+archive is source history, not a host-validated release.

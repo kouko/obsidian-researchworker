@@ -199,5 +199,5 @@ The following tests **require actual rendering in your Obsidian vault** and are 
 - Update the relevant row in the compatibility matrix above (✅ → 🟡, or 🟡 → 🔻 etc.)
 - Add an entry in the `Version gap impact summary` if the issue is a Mermaid version bug
 - If a fallback policy needs adjustment, update SKILL.md § Line Chart Fallback Policy or add a new §<Type> Fallback Policy section
-- Open an issue in the monkey-skills repo so other users benefit from the observed behavior
+- Open an issue in the [obsidian-researchworker repo](https://github.com/kouko/obsidian-researchworker/issues) so other users benefit from the observed behavior
 

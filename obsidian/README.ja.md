@@ -10,7 +10,8 @@
 [Defuddle CLI](https://github.com/kepano/defuddle) を subprocess で呼び出して
 外部 URL を取得・整形するため、Cowork の sandbox URL allowlist に block される。
 `defuddle` は Claude Code CLI で利用すること。これらは upstream の互換性情報であり、
-独立版での host 検証は W3 で実施予定。
+独立版の Claude/Cowork 互換性は未検証。[検証記録](../docs/verification.md)には
+過去の Codex ローカルソース導入成功のみを記録し、実利用は未達。
 
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
@@ -26,7 +27,9 @@
 [Monkey Skills](https://github.com/kouko/monkey-skills) から抽出し、
 [Obsidian ResearchWorker](../README.md) で独立管理する。
 plugin 名 `obsidian` と既存 wiki 機能は保持する。切り替え前に
-[移行ガイド](../docs/migration.md)を確認すること。host 検証は未完了。
+[移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
+記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
+ノート作成は未達。他 host とリモート導入は未検証。
 
 ## 背景
 
@@ -110,11 +113,9 @@ Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/
 
 ## Install
 
-```bash
-# Claude Code（CLI）内で
-/plugin marketplace add kouko/monkey-skills
-/plugin install obsidian
-```
+独立版の導入実績は[検証記録](../docs/verification.md)にある過去の隔離 Codex
+ローカルソース導入のみ。リモート導入、Claude/Cowork 互換性、実利用は未検証。
+既存の導入を変更する前に[移行ガイド](../docs/migration.md)を確認すること。
 
 `defuddle` skill は Defuddle CLI が必要：
 
@@ -125,15 +126,16 @@ npm install -g defuddle
 `obsidian-cli` skill は公式 Obsidian CLI と起動中の Obsidian instance が必要 —
 [help.obsidian.md/cli](https://help.obsidian.md/cli) 参照。
 
-`obsidian-file-intel` skill は同梱の `scripts/process_files_with_gemini.py` と、
-vault に設定済の Gemini API key が必要。
+`obsidian-file-intel` skill は vault 内の外部互換スクリプト
+`scripts/process_files_with_gemini.py` と、設定済の Gemini API key が必要。
+スクリプトは同梱されず、取得・セットアップ手順も本配布にはない。
+既存の互換スクリプトがなければ処理は利用できず、独立版での設定と実行は未検証。
 
 ## Usage
 
 一日を始める：
 
 ```
-/obsidian
 > Start my day
 ```
 
@@ -163,11 +165,9 @@ note 内に図を描く：
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata、version 3.25.0
+│   └── plugin.json              # plugin metadata、version 3.27.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 保守 agent
-├── commands/
-│   └── obsidian.md              # /obsidian → using-obsidian
 ├── skills/
 │   ├── README.md                # skill 別 attribution 表
 │   ├── using-obsidian/          # router（original）
@@ -201,7 +201,7 @@ repo 全体の attribution は [`../ATTRIBUTION.md`](../ATTRIBUTION.md) を参�
 ## 貢献
 
 - bug 報告・機能要望：
-  [github.com/kouko/monkey-skills/issues](https://github.com/kouko/monkey-skills/issues)
+  [github.com/kouko/obsidian-researchworker/issues](https://github.com/kouko/obsidian-researchworker/issues)
   に issue を開いてください。
 - PR 歓迎。既存の skill 構造（frontmatter + workflow + reference ファイル）に
   合わせ、Conventional Commits を使うこと。
