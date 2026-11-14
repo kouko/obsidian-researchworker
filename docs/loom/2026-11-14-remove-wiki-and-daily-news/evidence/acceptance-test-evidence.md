@@ -1,8 +1,8 @@
 # Remove wiki and daily-news mechanisms — acceptance test evidence
 
-Tried on 2026-11-14, in a clean copy of the project at 36ba53c.
+Tried on 2026-11-14, in a clean copy of the project at 473f449.
 
-Full tested HEAD: `36ba53c1baa3cc3447b339ec35c9c41010a8c2a5`.
+Initial tested HEAD: `36ba53c1baa3cc3447b339ec35c9c41010a8c2a5`. Current tested HEAD: `473f449fad5674b24a7a2c181f1960bcac603f75`.
 Base: `5c34004d6b2b4524e97ea7d4d77add7919ddb9f3`.
 Clean copy: `/private/tmp/removal-acceptance-36ba53c`.
 Active report destination: `/private/tmp/obsidian-remove-wiki-news-20261114`.
@@ -145,3 +145,35 @@ base remains ancestor of tested HEAD
 - Source version decisions: plugin 4.0.0, separate OpenCode package 0.1.0. Installed refresh, merge and live host validation are outside this run.
 - Git-memory classification: routine witness-report commit; no new non-obvious product decision, surprising constraint or durable gotcha. No memory trailers earned.
 - Privacy gate: exact final commit message is scanned before commit; it contains no private-party identifiers, so the conditional semantic judge is not required.
+
+## Re-run on 2026-11-14, at 473f449
+
+Fix diff inspected with `git diff cbf6651f581709fe65dfc48ae52871a22123155b 473f449fad5674b24a7a2c181f1960bcac603f75 -- docs/loom/KICKOFF-DEFAULTS.md docs/loom/2026-11-14-remove-wiki-and-daily-news/plan.md`. Only the complete-suite command declaration and plan Risks 4–5 changed: invocation now directly selects `obsidian/tests` from the root so finalization can attribute collected tests. Product sources, retained workflows, removed inventory, documentation, licenses and provenance are unchanged. No new adversarial program was requested or run.
+
+Fresh setup (all exited 0):
+```sh
+git archive 473f449fad5674b24a7a2c181f1960bcac603f75 -o /private/tmp/removal-acceptance-round2.tar
+mkdir /private/tmp/removal-acceptance-473f449
+tar -xf /private/tmp/removal-acceptance-round2.tar -C /private/tmp/removal-acceptance-473f449
+```
+Read README again in the fresh copy; its prerequisite remains an existing Python and pytest. No installation was needed. All subsequent operations ran in that fresh copy, with no network or live host.
+
+- 3: re-tested — all fourteen retained skills loaded through the actual loader with the same synthetic context and exact loader command recorded above, yielding the same fourteen IDs and nonempty descriptions/content, exit 0. This includes general daily notes, topic research, extraction, Markdown and all diagram skills.
+```sh
+PYTHONDONTWRITEBYTECODE=1 /Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest -q -p no:cacheprovider obsidian/tests/test_skill_inventory.py obsidian/tests/test_validate_canvas.py obsidian/tests/test_obsidian_markdown_viz_guide.py
+```
+Captured output: `14 passed in 0.39s`, exit 0. Re-ran the exact Canvas template validation command above, exit 0 with empty output. Recreated the same existing-target and journal Markdown fixtures using the edit tool in the fresh copy, then ran the exact readback command above: exit 0, with the same note contents and `Basic Markdown fixture: existing target, frontmatter, wikilink and callout preserved.`
+- 8: re-tested — repeated the complete source-level retained-operation check across all named surfaces via loader; repeated Markdown write/read and Canvas validation. Real-host web/research execution remains untested exactly as in the first run.
+- 1: carried over — only test command and plan rationale changed; removed wiki inventory and source registration unchanged.
+- 2: carried over — no news inventory or dedicated helper changes in fix diff.
+- 4: carried over — no manifest, router, multilingual offering or usage guide changes.
+- 5: carried over — no new file/data operations, migration, vault or external repository changes.
+- 6: carried over — licensing, provenance map, archive history and changelog untouched by fix.
+- 7: carried over — current offering and skill list unchanged.
+- 9: carried over — source loader and removed-skill absence unchanged.
+- 10: carried over — no new migration/deletion behavior or existing-output changes.
+- 11: carried over — historical documentation and provenance unchanged.
+
+Current complete-suite gate command (not run by this tester): `python3 -m pytest obsidian/tests -q -p no:cacheprovider`, from repository root. The station reported the earlier finalization stopped before test execution because collection attribution failed. This rerun records focused tester results only; the declared full suite must still run during finalize-review and block acceptance on failure. Package-tests and finalization are not skipped. No important-or-worse dismissal or user-instructed skip was supplied.
+
+Re-run metadata commit remains a routine witness report: no new durable lesson or memory trailer. Exact final commit message passed the deterministic privacy scan; no ambiguous private-party identifiers require a semantic judge.
