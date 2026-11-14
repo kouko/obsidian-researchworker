@@ -1,0 +1,106 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-14-remove-wiki-and-daily-news",
+  "content_digest": "e9024041b57bb11c4dded291469cd806310d898a",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider",
+      "artifact": "obsidian/tests/test_skill_inventory.py",
+      "result": "pass",
+      "command_digest": "b550f73368422892b8dac18a0c212371b8e9eaa4c4a5d3fa79f68a00fc55e1f5"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "/root/removal_code_review",
+      "vendor": "codex",
+      "model": "inherited",
+      "verdict": "PASS",
+      "lens": "code",
+      "reviewed_sha": "5c34004d6b2b4524e97ea7d4d77add7919ddb9f3",
+      "review_target_sha": "fe8a2c76675c84986995bc686b37c08f6150306a",
+      "dimension_scores": {
+        "security": "PASS",
+        "architecture": "PASS",
+        "correctness": "PASS",
+        "naming": "PASS",
+        "tests": "PASS",
+        "refactoring": "PASS",
+        "cross-task-coherence": "PASS",
+        "external-surface-grounding": "N/A — No new external surface is introduced.",
+        "principles-conformance": "PASS",
+        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md exists.",
+        "deliberate-simplification": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [],
+      "notes": [
+        "Terminal Round 3 reviewed only the supplied delta; no previous findings remain.",
+        "The delta consistently relabels five UI cases in the report, evidence headings and rerun references. Six acceptance rows and all eleven results remain unchanged.",
+        "No product source, configuration or tests changed. No tests, complete suite or adversarial programs were run in this round."
+      ]
+    },
+    {
+      "reviewer": "/root/removal_docs_review",
+      "vendor": "codex",
+      "model": "inherited",
+      "verdict": "PASS",
+      "lens": "docs",
+      "reviewed_sha": "5c34004d6b2b4524e97ea7d4d77add7919ddb9f3",
+      "review_target_sha": "fe8a2c76675c84986995bc686b37c08f6150306a",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS",
+        "missing-population": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [],
+      "notes": [
+        "Terminal Round 3 reviewed only a8b506f..fe8a2c7; previous findings were empty.",
+        "All five UI identifiers match between report rows, evidence headings and rerun references. Acceptance identifiers remain exactly 1–6.",
+        "The delta changes identifiers only; recorded results, tested revisions, verification limits and product behavior remain unchanged."
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "214529f6369894ec87bb8177f6d11cbe010d3fa1",
+  "tested_commit": "473f449",
+  "reviewed_commit": "fe8a2c76675c84986995bc686b37c08f6150306a",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
