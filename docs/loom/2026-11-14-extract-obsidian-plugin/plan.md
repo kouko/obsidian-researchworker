@@ -1,11 +1,16 @@
 # Extract Obsidian plugin — plan
-intent: 2026-11-14-extract-obsidian-plugin@5f9d4e7
-spec: docs/loom/2026-11-14-extract-obsidian-plugin/spec.md@655b205
+intent: 2026-11-14-extract-obsidian-plugin@37fe7d3
+spec: docs/loom/2026-11-14-extract-obsidian-plugin/spec.md@43957f9
 charter: 1.1
 
 ## Task DAG
 
-**W1-01 Transfer independently usable plugin baseline** after: none  acceptance: 1,4
+**W0-01 Preserve plugin history and predecessor paths** after: none  acceptance: 1,4
+- Files: obsidian/, docs/provenance.md, tests/
+- Test: A1 positive: history_inventory_verified; negative: missing_predecessor_rejected. A4 positive: original_ancestry_preserved; boundary: uncommitted_snapshot_restored_and_compared.
+- Risk: REQ-1/REQ-4; agent-decided retain only Obsidian-related history; publish source-to-import ID mapping and any coverage limitations. Do not claim completeness if predecessor discovery or verification is inconclusive.
+
+**W1-01 Transfer independently usable plugin baseline** after: W0-01  acceptance: 1,4
 - Files: obsidian/, LICENSE, ATTRIBUTION.md, .github/workflows/test-obsidian.yml, tests/
 - Test: A1 positive: source_tree_and_licenses; negative: missing_attribution_detected. A4 positive: upstream_unchanged; boundary: historic_tests_retained.
 - Risk: REQ-1/REQ-4; agent-decided retain source tree and existing tests while replacing repository-coupled fixtures with equivalent evidence.
@@ -25,6 +30,10 @@ charter: 1.1
 - Test: A1 positive: suite_passes; negative: broken_source_detected. A2 positive: codex_fixture_note; negative: missing_host_is_unmet. A4 positive: isolated_vault_only; boundary: no_existing_plugin_mutation.
 - Risk: REQ-1/REQ-2/REQ-4; agent-decided use temporary Codex home and fixture vault, recording each host or network limitation.
 
+## History verification
+
+Discover relevant source paths through moves and renames and pin an expected source commit inventory. Compare each mapped commit's authors, dates, messages, relevant trees and ancestry. A missing pre-split commit or mapping must fail coverage. Before an isolated import, inventory and snapshot tracked changes and all untracked files including ROADMAP-DRAFT.md; restore and compare every preserved file before W1 resumes.
+
 ## Simplicity check
 
 - none found
@@ -32,9 +41,12 @@ charter: 1.1
 ## Questions asked
 
 1 — what — 這樣的拆分範圍和驗收目標，符合你的意思嗎？
+1 — what — 新 repo 目前只複製檔案；你希望也保留 Obsidian plugin 在 Monkey Skills 裡的 Git 提交歷史嗎？
+1 — consequence — 保留歷史有兩種方式：只帶 Obsidian 相關提交會保留內容與作者，但提交編號會改變；完整帶入 Monkey Skills 歷史則保留原編號，也會帶入其他 plugins 的歷史。你偏好哪一種？
 
 ## Risks
 
 1. Public installation identifiers and caches may behave differently across hosts; only claim a host when real installation and use are observed.
 2. Upstream tests depend on historical files and root attribution; preserve their intent and isolate any adaptation from upstream state.
-3. Independent review, remote repository creation, and the package suite can be blocked by host or network state; report evidence and preserve remaining work.
+3. The user added history preservation after W1 began; uncommitted W1 work is snapshotted and verified while W0 verifies original and predecessor history.
+4. Independent review, remote repository creation, and the package suite can be blocked by host or network state; report evidence and preserve remaining work.
