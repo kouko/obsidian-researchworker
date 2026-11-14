@@ -1,7 +1,7 @@
 # Roadmap
 
-Proposed stages, 2026-11-14. Existing wiki functionality is retained. No future
-implementation or vault migration is authorized by this document.
+Stages as of 2026-11-14. Version 4.0.0 removes the wiki and daily-news mechanisms.
+No future implementation or vault migration is authorized by this document.
 
 ## 0. Independent baseline and transition
 
@@ -12,15 +12,16 @@ Exit: traceable source differences, passing existing tests, observed fixture use
 and a reviewed host-specific switch/rollback path. File parity is insufficient.
 Open: supported hosts, release freshness and publication visibility.
 
-## 1. Retire and reconsider the current wiki form
+## 1. Wiki and daily-news retirement
 
-Inventory wiki skills and references, define lost capabilities and agree retained
-behavior before removing anything. Compare direct search, curated collections
-and other organization against real retrieval needs; select no replacement yet.
-Exit: explicit scope, retained-feature checks and compatibility notes.
-Open: replacement shape and compatibility period. Existing vault data changes
-require separate design and authorization; plugin removal does not authorize
-deleting user notes.
+Version 4.0.0 removes eight wiki skills and daily-news-digest, leaving 14 skills.
+General daily notes, topic research, web/video extraction, note writing and
+ordinary wikilinks remain. Existing vault output and settings are preserved;
+source changes do not refresh installed caches or active sessions.
+No replacement is selected. Compare direct search, curated collections and
+other organization against real retrieval needs before proposing one.
+Existing vault data changes require separate design and authorization;
+plugin removal does not authorize deleting user notes.
 
 ## 2. YTSS and RLSS integration
 

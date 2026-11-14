@@ -4,6 +4,28 @@ All notable changes to the `obsidian` plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] — 2026-11-14 Remove wiki and daily-news mechanisms
+
+### Removed
+
+- Eight wiki skills: `wiki-setup`, `wiki-ingest`, `wiki-query`,
+  `wiki-cross-linker`, `wiki-merge`, `wiki-lint`, `wiki-auto-research` and
+  `wiki-update`, including exclusively owned helpers and maintenance support.
+- `daily-news-digest`, including daily aggregation, cross-date news review,
+  story tracking and dedicated validation support.
+
+### Changed
+
+- Current guidance and distribution metadata describe the 14 retained skills.
+  Removing callable skill names is a breaking change, so Claude/Codex and
+  marketplace versions advance to 4.0.0; the separately versioned OpenCode
+  package advances from 0.0.1 to 0.1.0.
+- General daily notes, topic research, web/video extraction, note writing,
+  ordinary wikilinks and diagrams remain. Existing vault output and settings,
+  installed caches, historical records, licensing and attribution are untouched.
+  This source release does not refresh installations or active sessions and
+  carries no new host installation or runtime verification claim.
+
 ## [3.27.0] — 2026-11-14 Sentence clarity rules
 
 ### Added

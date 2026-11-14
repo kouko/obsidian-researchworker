@@ -20,13 +20,15 @@
 
 ## Version
 
-3.27.0（upstream baseline）— [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+4.0.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
 
 ## 独立配布
 
 [Monkey Skills](https://github.com/kouko/monkey-skills) から抽出し、
 [Obsidian ResearchWorker](../README.md) で独立管理する。
-plugin 名 `obsidian` と既存 wiki 機能は保持する。切り替え前に
+plugin 名 `obsidian` は保持する。4.0.0 は 14 skill を提供し、8 つの wiki skill と
+daily-news-digest を削除する。通常の daily note、単一テーマの研究、Defuddle 抽出、
+wikilink は保持し、既存 vault の出力や設定は変更しない。切り替え前に
 [移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
 記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
 ノート作成は未達。他 host とリモート導入は未検証。
@@ -73,20 +75,6 @@ move か edit のみ。振り分け先が曖昧な場合は確認を取る。
 | `obsidian-research` | トピックを web 調査（英語＋日本語、テーマ固有の言語があればそれを主に追加）し、目次付きの研究ノートを `research/` に保存 |
 | `obsidian-file-intel` | PDF / PPTX / XLSX / DOCX / CSV / JSON を Gemini で抽出し、Obsidian-ready な要約を生成 |
 | `dashboard-design` | デジタル庁ダッシュボード設計ガイドラインに基づき、要件整理から layout までを引導 |
-
-### Wiki layer（LLM 知識蒸留、original）
-
-[Karpathy の LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) と [`Ar9av/obsidian-wiki`](https://github.com/Ar9av/obsidian-wiki) からの着想を、6 カテゴリの「型態軸」（entities / concepts / synthesis / skills / journal / references）、tiered retrieval、SHA-256 delta tracking、bounded auto-research に再設計。各 skill は完全に self-contained — cross-skill / plugin-level 共有 reference は使用しない。
-
-| Skill | 用途 |
-|---|---|
-| `wiki-setup` | `wiki/` 構造、`.env`、manifest、hot cache の初回 scaffold |
-| `wiki-ingest` | source notes（references/、research/ 等）を SHA-256 delta tracking で wiki/ に蒸留。page format spec の所有者。新規ページ作成前に HIGH 信頼度の near-duplicate を検出 |
-| `wiki-query` | tiered retrieval（hot.md → frontmatter summary → full page）で wiki/ を検索 |
-| `wiki-cross-linker` | 平文の言及を `[[wikilinks]]` に変換し、知識グラフを補強 |
-| `wiki-merge` | 確認済みの near-duplicate ページ対を 1 つの canonical ページに統合 — どの対を統合するかは人が gate、skill が可逆な統合を自動実行（archive で削除せず、User Notes は union 保持、slug → aliases、self-verify、audit log） |
-| `wiki-lint` | 15 項目の health audit — structural / semantic / provenance。Read-only |
-| `wiki-auto-research` | 手動 one-shot — Open Questions と ambiguous claim を scan、web search、`research/` にレビュー可能なノート出力 |
 
 ### kepano（Steph Ango）からの import
 
@@ -165,7 +153,7 @@ note 内に図を描く：
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata、version 3.27.0
+│   └── plugin.json              # plugin metadata、version 4.0.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 保守 agent
 ├── skills/
@@ -174,6 +162,7 @@ obsidian/
 │   ├── obsidian-daily/          # daily workflow（original）
 │   ├── obsidian-vault-setup/    # vault 初期設定（original）
 │   ├── obsidian-tldr/           # 会話要約（original）
+│   ├── obsidian-research/       # web research → vault note（original）
 │   ├── obsidian-file-intel/     # ファイル → Obsidian 要約（original）
 │   ├── dashboard-design/        # ダッシュボード設計（original）
 │   ├── obsidian-markdown/       # kepano から import
@@ -182,14 +171,7 @@ obsidian/
 │   ├── defuddle/                # kepano から import
 │   ├── obsidian-canvas/ # axtonliu から import
 │   ├── obsidian-excalidraw-diagram/ # axtonliu から import
-│   ├── obsidian-mermaid-visualizer/ # axtonliu から import
-│   ├── wiki-setup/                # wiki layer 初期化（original）
-│   ├── wiki-ingest/               # source → wiki 蒸留（original）
-│   ├── wiki-query/                # tiered retrieval（original）
-│   ├── wiki-cross-linker/         # 知識グラフ補強（original）
-│   ├── wiki-merge/                # near-duplicate ページ統合（original）
-│   ├── wiki-lint/                 # health audit（original）
-│   └── wiki-auto-research/        # web search で gap 補完（original）
+│   └── obsidian-mermaid-visualizer/ # axtonliu から import
 ├── README.md
 ├── README.ja.md
 └── README.zh-TW.md

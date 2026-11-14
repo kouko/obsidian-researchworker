@@ -21,14 +21,16 @@ installation only, with real usage still unmet.
 
 ## Version
 
-3.27.0 (upstream baseline) — see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json).
+4.0.0 — see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json).
 
 ## Independent distribution
 
 Maintained in [Obsidian ResearchWorker](../README.md), extracted from
 [Monkey Skills](https://github.com/kouko/monkey-skills). The plugin name remains
-`obsidian`; existing wiki functionality is retained. Read the
-[transition guide](../docs/migration.md) before changing installations.
+`obsidian`. Version 4.0.0 retains 14 skills and removes the eight wiki skills
+and daily-news-digest. General daily notes, topic research, Defuddle extraction
+and ordinary wikilinks remain. Existing vault output and settings are untouched.
+Read the [transition guide](../docs/migration.md) before changing installations.
 The [verification record](../docs/verification.md) documents isolated Codex
 local-source installation at its recorded revision; skill execution and note
 creation remain unmet. Inherited host notes below are reference material,
@@ -78,20 +80,6 @@ edits — and asks before reorganizing when the destination is ambiguous.
 | `obsidian-research` | Research a topic on the web (English + Japanese, plus the topic's own language) and write a readable research note with a TOC to `research/`. |
 | `obsidian-file-intel` | Extract content from PDF / PPTX / XLSX / DOCX / CSV / JSON via Gemini and produce Obsidian-ready summaries. |
 | `dashboard-design` | Guide dashboard design from requirements to layout, grounded in Japan Digital Agency dashboard guidelines. |
-
-### Wiki layer (LLM knowledge distillation, original)
-
-Inspired by [Karpathy's LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) and [`Ar9av/obsidian-wiki`](https://github.com/Ar9av/obsidian-wiki), reimagined with a 6-category type axis (entities / concepts / synthesis / skills / journal / references), tiered retrieval, content-hash delta tracking, and bounded auto-research. Each skill is fully self-contained — no cross-skill or plugin-level shared references.
-
-| Skill | Purpose |
-|---|---|
-| `wiki-setup` | One-time scaffold of `wiki/` structure, `.env`, manifest, hot cache. |
-| `wiki-ingest` | Ingest source notes (references/, research/, etc.) into wiki/ with SHA-256 delta tracking. Owns the page format spec. Flags HIGH-confidence near-duplicates before minting a new page. |
-| `wiki-query` | Query wiki/ via tiered retrieval (hot.md → frontmatter summary → full page). |
-| `wiki-cross-linker` | Strengthen the knowledge graph by converting plain-text mentions into `[[wikilinks]]`. |
-| `wiki-merge` | Consolidate a confirmed near-duplicate page pair into one canonical page — human gates the pair, the skill auto-executes a reversible merge (archive-not-delete, User Notes union-preserved, slug → aliases, self-verify, audit log). |
-| `wiki-lint` | 15-check health audit — structural, semantic, provenance. Read-only. |
-| `wiki-auto-research` | Manual one-shot — scan Open Questions and ambiguous claims, web-search, write reviewable notes to `research/`. |
 
 ### Imported from kepano (Steph Ango)
 
@@ -174,7 +162,7 @@ sequence diagram type, applies Obsidian 11.4.1 quirks, and emits a
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata, version 3.27.0
+│   └── plugin.json              # plugin metadata, version 4.0.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault hygiene agent
 ├── skills/
@@ -185,7 +173,6 @@ obsidian/
 │   ├── obsidian-tldr/           # conversation summary (original)
 │   ├── obsidian-research/       # web research → vault note (original)
 │   ├── obsidian-file-intel/     # file → Obsidian summaries (original)
-│   ├── daily-news-digest/       # daily news digest (original)
 │   ├── dashboard-design/        # dashboard design (original)
 │   ├── obsidian-markdown/       # imported from kepano
 │   ├── obsidian-bases/          # imported from kepano
@@ -193,17 +180,8 @@ obsidian/
 │   ├── defuddle/                # imported from kepano
 │   ├── obsidian-canvas/ # imported from axtonliu (this repo adds layout patterns, validator, zero-plugin advanced patterns)
 │   ├── obsidian-excalidraw-diagram/ # imported from axtonliu
-│   ├── obsidian-mermaid-visualizer/ # imported from axtonliu
-│   ├── wiki-setup/                # wiki layer init (original)
-│   ├── wiki-ingest/               # source → wiki distillation (original)
-│   ├── wiki-query/                # tiered retrieval (original)
-│   ├── wiki-cross-linker/         # knowledge graph strengthening (original)
-│   ├── wiki-merge/                # near-duplicate page consolidation (original)
-│   ├── wiki-lint/                 # health audit (original)
-│   ├── wiki-update/               # wiki layer maintenance (original)
-│   └── wiki-auto-research/        # gap-filling via web search (original)
+│   └── obsidian-mermaid-visualizer/ # imported from axtonliu
 ├── tests/
-│   ├── wiki_ingest/             # wiki-ingest select-batch tests
 │   ├── test_validate_canvas.py  # canvas validator tests
 │   └── test_obsidian_markdown_viz_guide.py
 ├── README.md

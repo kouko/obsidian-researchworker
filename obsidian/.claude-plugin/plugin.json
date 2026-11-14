@@ -1,7 +1,7 @@
 {
   "name": "obsidian",
-  "version": "3.27.0",
-  "description": "Obsidian vault workflows (notes/markdown/diagrams/canvas) + LLM wiki layer (defuddle needs CLI).",
+  "version": "4.0.0",
+  "description": "14 Obsidian skills for daily notes, research, markdown, diagrams and Canvas (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
     "url": "https://github.com/kouko"
@@ -19,8 +19,6 @@
     "mermaid",
     "excalidraw",
     "dashboard",
-    "file-intel",
-    "wiki",
-    "knowledge-distillation"
+    "file-intel"
   ]
 }
