@@ -20,13 +20,15 @@
 
 ## Version
 
-3.27.0（上游基準）— 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+4.0.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
 
 ## 獨立發行
 
 從 [Monkey Skills](https://github.com/kouko/monkey-skills) 移轉至
-[Obsidian ResearchWorker](../README.md) 獨立維護，保留 plugin 名稱 `obsidian`
-及既有 wiki 功能。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
+[Obsidian ResearchWorker](../README.md) 獨立維護，保留 plugin 名稱 `obsidian`。
+4.0.0 保留 14 個 skill，移除八個 wiki skill 與 daily-news-digest。
+一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
+產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 [驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
 但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
 
@@ -70,20 +72,6 @@ file processing、圖表、清理 vault）將請求 routing 至正確的 skill�
 | `obsidian-research` | 上網研究指定主題（英文＋日文，主題有特定語言時再加該語言並以它為主），在 `research/` 產出附目錄的研究筆記 |
 | `obsidian-file-intel` | 透過 Gemini 從 PDF / PPTX / XLSX / DOCX / CSV / JSON 萃取內容並產出 Obsidian-ready 摘要 |
 | `dashboard-design` | 依日本數位廳 dashboard 設計指引，從需求釐清引導到 layout |
-
-### Wiki 知識層（LLM 知識萃取，original）
-
-靈感來自 [Karpathy 的 LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 與 [`Ar9av/obsidian-wiki`](https://github.com/Ar9av/obsidian-wiki)，以 6 類「型態軸」（entities / concepts / synthesis / skills / journal / references）、tiered retrieval、SHA-256 delta tracking、bounded auto-research 重新設計。每個 skill 完全 self-contained —— 不使用跨 skill 引用、亦不使用 plugin-level 共用 reference。
-
-| Skill | 用途 |
-|---|---|
-| `wiki-setup` | 一次性建立 `wiki/` 結構、`.env`、manifest、hot cache |
-| `wiki-ingest` | 把 source notes（references/、research/ 等）以 SHA-256 delta tracking 萃取至 wiki/。為頁面格式 spec 的擁有者。建立新頁前會標示 HIGH 信心的近重複頁 |
-| `wiki-query` | 用 tiered retrieval（hot.md → frontmatter summary → 全頁）查詢 wiki/ |
-| `wiki-cross-linker` | 把純文字提及轉為 `[[wikilinks]]`，補強知識圖譜 |
-| `wiki-merge` | 把確認的近重複頁配對合併為單一 canonical 頁 —— 由人決定要合併哪一對，skill 自動執行可還原的合併（archive 不刪除、User Notes 聯集保留、slug → aliases、self-verify、audit log） |
-| `wiki-lint` | 15 項健康檢查 —— structural / semantic / provenance。Read-only |
-| `wiki-auto-research` | 手動 one-shot —— 掃描 Open Questions 與低信心聲明，web search 後輸出可審閱的研究筆記到 `research/` |
 
 ### 引入自 kepano（Steph Ango）
 
@@ -163,7 +151,7 @@ sequence diagram type、套用 Obsidian 11.4.1 的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 3.27.0
+│   └── plugin.json              # plugin metadata，version 4.0.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
 ├── skills/
@@ -172,6 +160,7 @@ obsidian/
 │   ├── obsidian-daily/          # daily workflow（original）
 │   ├── obsidian-vault-setup/    # vault 設定（original）
 │   ├── obsidian-tldr/           # 對話摘要（original）
+│   ├── obsidian-research/       # 單題研究 → vault 筆記（original）
 │   ├── obsidian-file-intel/     # 檔案 → Obsidian 摘要（original）
 │   ├── dashboard-design/        # dashboard 設計（original）
 │   ├── obsidian-markdown/       # 引入自 kepano
@@ -180,14 +169,7 @@ obsidian/
 │   ├── defuddle/                # 引入自 kepano
 │   ├── obsidian-canvas/ # 引入自 axtonliu
 │   ├── obsidian-excalidraw-diagram/ # 引入自 axtonliu
-│   ├── obsidian-mermaid-visualizer/ # 引入自 axtonliu
-│   ├── wiki-setup/                # wiki layer 初始化（original）
-│   ├── wiki-ingest/               # source → wiki 萃取（original）
-│   ├── wiki-query/                # tiered retrieval（original）
-│   ├── wiki-cross-linker/         # 知識圖譜補強（original）
-│   ├── wiki-merge/                # 近重複頁合併（original）
-│   ├── wiki-lint/                 # health audit（original）
-│   └── wiki-auto-research/        # 用 web search 補完知識缺口（original）
+│   └── obsidian-mermaid-visualizer/ # 引入自 axtonliu
 ├── README.md
 ├── README.ja.md
 └── README.zh-TW.md

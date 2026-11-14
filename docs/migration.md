@@ -2,13 +2,21 @@
 
 This extraction does not change Monkey Skills, installed plugins or existing
 vaults. Keep the existing installation until an isolated replacement is verified.
-No automatic data migration or wiki removal is included.
+Version 4.0.0 removes the eight wiki skills and daily-news-digest from the plugin,
+including wiki maintenance, daily aggregation, cross-date news review and story
+tracking. It retains 14 skills, including general daily notes, topic research,
+Defuddle extraction and ordinary wikilinks. No vault data migration or deletion
+is included: existing wiki pages, news digests, story notes and settings remain.
+Source changes do not refresh installed caches or the active session's catalog.
 
 The new marketplace is `obsidian-researchworker`, with relative source
 `./obsidian` and retained plugin name `obsidian`. Claude and Codex manifests
 point to this repository. OpenCode uses independent package and loader ID
 `obsidian-researchworker`; saved `monkey-skills-obsidian:*` references need review
 in a later OpenCode transition.
+Claude/Codex and marketplace metadata declare 4.0.0; the independently versioned
+OpenCode package declares 0.1.0. The historical 3.27.0 installation evidence
+does not verify installation or execution of these versions.
 
 W3 must record host/version, isolated home and fixture vault, revision, successful
 registration and representative note creation. Codex is the required first host;

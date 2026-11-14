@@ -15,7 +15,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - Processing files into Obsidian-ready notes
 - Creating diagrams (Mermaid, Excalidraw, Canvas)
 - Vault cleanup and organization
-- **Building an LLM wiki layer** on top of source notes (entities/concepts/synthesis distillation, tiered retrieval, gap-filling)
 
 ## Available Skills
 
@@ -42,17 +41,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 | `dashboard-design` | Design dashboards from requirements to prototyping |
 | `defuddle` | Extract web pages and YouTube transcripts using Defuddle CLI |
 
-### Wiki layer (LLM knowledge distillation)
-
-| Skill | Purpose |
-|-------|---------|
-| `wiki-setup` | One-time scaffold of `wiki/` structure, `.env`, manifest, hot cache |
-| `wiki-ingest` | Ingest source notes (references/, research/) into wiki/ with delta tracking |
-| `wiki-query` | Query wiki/ via tiered retrieval (hot → summary → full page) |
-| `wiki-cross-linker` | Strengthen the knowledge graph by linking unlinked mentions |
-| `wiki-lint` | 11-check health audit (structural, semantic, provenance) |
-| `wiki-auto-research` | Scan Open Questions → web search → write reviewable notes to research/ |
-
 ## Available Agents
 
 | Agent | Role | Model |
@@ -64,4 +52,3 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - Morning routine: invoke `obsidian-daily`
 - End of session: invoke `obsidian-tldr`
 - New vault: invoke `obsidian-vault-setup`
-- New wiki layer: `wiki-setup` → `wiki-ingest` → `wiki-query`

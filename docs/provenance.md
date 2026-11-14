@@ -41,6 +41,15 @@ historical context. These corrections change no executable behavior or retained
 license notices. The audit counts above describe the prior audit, not a new
 comparison of the corrected documentation tree.
 
+## Current offering after removal
+
+Version 4.0.0 removes the eight wiki skills and daily-news-digest with their
+exclusively owned support; 14 skills remain. This is a subsequent source change,
+not a revision of the imported 3.27.0 baseline or its audit counts. Existing
+vault output and settings are untouched. Historical changelog entries, prior
+Loom records, the source-to-import mapping, archive branch, licensing and
+attribution remain evidence of the earlier offering, not current skill guidance.
+
 ## History after squash merge
 
 The imported history is retained on the dedicated

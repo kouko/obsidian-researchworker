@@ -1,7 +1,7 @@
 {
   "name": "obsidian",
-  "version": "3.27.0",
-  "description": "Obsidian vault workflows (notes/markdown/diagrams/canvas) + LLM wiki layer (defuddle needs CLI).",
+  "version": "4.0.0",
+  "description": "14 Obsidian skills for daily notes, research, markdown, diagrams and Canvas (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
     "url": "https://github.com/kouko"
@@ -19,14 +19,12 @@
     "mermaid",
     "excalidraw",
     "dashboard",
-    "file-intel",
-    "wiki",
-    "knowledge-distillation"
+    "file-intel"
   ],
   "interface": {
     "displayName": "obsidian",
-    "shortDescription": "Obsidian vault workflows — notes, diagrams, canvas, plus an LLM wiki layer",
-    "longDescription": "Manage Obsidian vaults end-to-end: author Flavored Markdown / Bases / Canvas, generate Mermaid and Excalidraw diagrams, run daily notes and file-intel summaries via the Obsidian CLI, and maintain an incremental LLM wiki layer (wiki-setup/ingest/cross-linker/query/lint/merge) with SHA-256 delta tracking. using-obsidian routes the skills.",
+    "shortDescription": "14 Obsidian skills — notes, research, diagrams and Canvas",
+    "longDescription": "Manage Obsidian vaults with 14 skills: daily notes, topic research, Flavored Markdown and wikilinks, Bases, Canvas, Mermaid and Excalidraw diagrams, web extraction, file-intel summaries, vault setup and dashboard design. using-obsidian routes the skills. Defuddle requires its CLI; file intel requires an external compatible vault script and Gemini credentials.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": [
@@ -37,7 +35,7 @@
     "defaultPrompt": [
       "Create a note in my Obsidian vault.",
       "Make a Mermaid diagram for this workflow.",
-      "Ingest my new notes into the wiki layer."
+      "Research a topic and save a cited note to my vault."
     ],
     "websiteURL": "https://github.com/kouko/obsidian-researchworker",
     "brandColor": "#7C3AED"

@@ -1,8 +1,9 @@
 # Obsidian ResearchWorker
 
-Independent agent skills for Obsidian notes, research, diagrams, Canvas, daily
-work and the existing wiki layer. Extracted from Monkey Skills Obsidian 3.27.0;
-this is a transferred baseline, not a host-validated release.
+Fourteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
+work. Version 4.0.0 removes the eight wiki skills and daily-news-digest;
+ordinary daily notes, topic research, Defuddle extraction and wikilinks remain.
+Extracted from Monkey Skills Obsidian 3.27.0; this version is not host-validated.
 
 ## Installation status
 
@@ -17,17 +18,17 @@ and note creation remain unmet. Other hosts and remote installation are unverifi
 
 See the [plugin guide](obsidian/README.md) for retained skills and dependencies,
 [provenance](docs/provenance.md) for history and limitations, and
-[roadmap](ROADMAP.md) for future work. Wiki retirement, YTSS/RLSS integration and
-resumable multi-note research are proposed; they are not implemented here.
+[roadmap](ROADMAP.md) for future work. Existing vault notes, news digests,
+story-tracking notes and settings are untouched. YTSS/RLSS integration and
+resumable multi-note research remain proposed.
 
 ## Existing checks
 
 With Python and pytest already available, run from the repository root:
 
 ```sh
-python3 obsidian/scripts/verify-drift.py
 cd obsidian
-python3 -m pytest -q
+python3 -m pytest -q -p no:cacheprovider
 ```
 
 Passing existing tests does not prove host installation or live vault usage.
