@@ -1,3 +1,4 @@
+# concern: removed skill rediscovery and dangling dependencies in retained skills
 """The shipped skills remain usable without the retired wiki/news mechanisms."""
 from pathlib import Path
 
