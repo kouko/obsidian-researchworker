@@ -1,8 +1,7 @@
 # Roadmap
 
 Proposed stages, 2026-11-14. Existing wiki functionality is retained. No future
-implementation or vault migration is authorized by this document. The original
-[discussion draft](ROADMAP-DRAFT.md) is preserved.
+implementation or vault migration is authorized by this document.
 
 ## 0. Independent baseline and transition
 

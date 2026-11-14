@@ -23,8 +23,8 @@ not exhaustive semantic history.
 
 Transfer deviations are independent repository metadata and documentation,
 root attribution/workflow adaptation, OpenCode identifiers, and the existing
-Canvas documentation test's adaptation from Monkey-only historical files to a
-retained changelog excerpt. Existing `tests/fixtures/` support that upstream test.
+Canvas documentation test's removal of checks tied to Monkey-only historical
+files. The remaining upstream documentation checks are retained.
 No migration-only tests or permanent comparison machinery are added.
 
 The full one-time audit is external at `/private/tmp/w0-01-safe.EWVk7g` and may
