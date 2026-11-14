@@ -12,11 +12,11 @@ Tried on 2026-11-14, in a clean copy of the project at 473f449. How I tried each
 | 4 | 插件入口、功能說明與現行操作文件不再引導使用者執行已移除的 wiki 或每日新聞功能。 | works | 檢視三種語言的現行指南與入口，舊功能只出現在移除說明。 | carried over — 修正未改入口、技能說明或操作指南。 |
 | 5 | 使用者既有 vault 筆記、新聞摘要、故事追蹤筆記與設定、原 Monkey 專案及其他未授權工作不因本次移除被刪除或改寫。 | works | 變更範圍限定於專案來源與說明，沒有新增資料遷移或刪除操作，原有草稿的內容雜湊相符。 | carried over — 修正僅改測試宣告與計畫，未新增資料操作。 |
 | 6 | 專案 Git 歷史、必要授權與既有歷史紀錄仍可追溯，並能區分歷史功能與目前提供的功能。 | works | 基底歷史仍在，授權與來源對照未變，全部一百三十一筆來源紀錄仍可由歷史分支追溯。 | carried over — 修正未改授權、來源對照或歷史紀錄。 |
-| 7 | Current offering：讀取新版技能清單或現行使用說明。 | works | 十四項保留技能可見，九項已移除技能不再列為可用操作。 | carried over — 修正未改技能清單或使用說明。 |
-| 8 | Retained operation：要求一般每日筆記、單題研究、網頁擷取、筆記編寫或圖表。 | works | 對應技能皆可由來源載入，原有流程仍在；再次試寫一般筆記並驗證 Canvas 範本。 | re-tested |
-| 9 | Removed operation：嘗試選取九項已移除技能之一。 | works | 來源實際註冊的清單中沒有這九項，無從選取；宿主顯示方式未測。 | carried over — 修正未改載入器或已移除技能。 |
-| 10 | Existing output：開啟既有 wiki 頁面、新聞摘要或故事追蹤筆記。 | works | 來源變更不處理既有輸出；沒有資料轉換或刪除步驟，實際 vault 未觸碰。 | carried over — 修正未新增資料轉換或刪除步驟。 |
-| 11 | Historical documentation：閱讀舊版變更紀錄或來源紀錄。 | works | 舊版紀錄仍可閱讀，新版移除說明與歷史功能有明確區別。 | carried over — 修正未改變更紀錄或來源紀錄。 |
+| UI-1 | Current offering：讀取新版技能清單或現行使用說明。 | works | 十四項保留技能可見，九項已移除技能不再列為可用操作。 | carried over — 修正未改技能清單或使用說明。 |
+| UI-2 | Retained operation：要求一般每日筆記、單題研究、網頁擷取、筆記編寫或圖表。 | works | 對應技能皆可由來源載入，原有流程仍在；再次試寫一般筆記並驗證 Canvas 範本。 | re-tested |
+| UI-3 | Removed operation：嘗試選取九項已移除技能之一。 | works | 來源實際註冊的清單中沒有這九項，無從選取；宿主顯示方式未測。 | carried over — 修正未改載入器或已移除技能。 |
+| UI-4 | Existing output：開啟既有 wiki 頁面、新聞摘要或故事追蹤筆記。 | works | 來源變更不處理既有輸出；沒有資料轉換或刪除步驟，實際 vault 未觸碰。 | carried over — 修正未新增資料轉換或刪除步驟。 |
+| UI-5 | Historical documentation：閱讀舊版變更紀錄或來源紀錄。 | works | 舊版紀錄仍可閱讀，新版移除說明與歷史功能有明確區別。 | carried over — 修正未改變更紀錄或來源紀錄。 |
 
 這次驗證的是乾淨來源副本及以模擬介面執行的載入器，沒有安裝到真實宿主，也沒有執行外部研究、網頁擷取或實際 vault 操作；上述結果不代表宿主安裝或完整工作流程已通過。
 

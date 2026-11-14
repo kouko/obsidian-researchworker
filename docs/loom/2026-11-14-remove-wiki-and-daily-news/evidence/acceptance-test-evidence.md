@@ -118,23 +118,23 @@ base remains ancestor of tested HEAD
 - Initial lookup incorrectly guessed `refs/remotes/archive/main` and returned unknown revision; corrected using actual `git show-ref` inventory above. This was a tester lookup error, not a product failure.
 - Historical changelog entries remain below the new 4.0.0 retirement entry; provenance explicitly distinguishes current offering from imported 3.27.0 history.
 
-## 7. UI flow — Current offering
+## UI-1. UI flow — Current offering
 - How I tried it: read the current multilingual listing, then executed the source loader (shared commands).
 - What came back: fourteen named retained skills; no offered removed skill. Source-level result only.
 
-## 8. UI flow — Retained operation
+## UI-2. UI flow — Retained operation
 - How I tried it: selected the daily, research, defuddle, Markdown and diagram entries from actual registered output; inspected router routes and retained workflows; performed Markdown fixture write/read and direct Canvas validation in row 3.
 - What came back: each corresponding entry loaded with nonempty description and instructions; basic note and Canvas operations passed. External web/research services and live host dispatch were not executed.
 
-## 9. UI flow — Removed operation
+## UI-3. UI flow — Removed operation
 - How I tried it: attempted lookup through actual source registration list and verified all nine names absent with inventory tests.
 - What came back: none of the nine entries can be selected from that list. Host-owned missing-skill wording was not tested or promised.
 
-## 10. UI flow — Existing output
+## UI-4. UI flow — Existing output
 - How I tried it: opened existing-style Markdown in the disposable copy; inspected complete source-change scope and preservation policy, as row 5.
 - What came back: existing Markdown remains directly readable; no migration/deletion step is introduced. Real pre-existing wiki/news/story files were deliberately not touched. This verdict is about the removal's source effect, not a live vault rendering claim.
 
-## 11. UI flow — Historical documentation
+## UI-5. UI flow — Historical documentation
 - How I tried it: read new and old changelog sections, provenance and archive mapping; executed row 6 reachability checks.
 - What came back: prior functionality remains readable as historical text; current offering explicitly says removed; all 131 mapped imported commits remain reachable.
 
@@ -163,16 +163,16 @@ Read README again in the fresh copy; its prerequisite remains an existing Python
 PYTHONDONTWRITEBYTECODE=1 /Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest -q -p no:cacheprovider obsidian/tests/test_skill_inventory.py obsidian/tests/test_validate_canvas.py obsidian/tests/test_obsidian_markdown_viz_guide.py
 ```
 Captured output: `14 passed in 0.39s`, exit 0. Re-ran the exact Canvas template validation command above, exit 0 with empty output. Recreated the same existing-target and journal Markdown fixtures using the edit tool in the fresh copy, then ran the exact readback command above: exit 0, with the same note contents and `Basic Markdown fixture: existing target, frontmatter, wikilink and callout preserved.`
-- 8: re-tested — repeated the complete source-level retained-operation check across all named surfaces via loader; repeated Markdown write/read and Canvas validation. Real-host web/research execution remains untested exactly as in the first run.
+- UI-2: re-tested — repeated the complete source-level retained-operation check across all named surfaces via loader; repeated Markdown write/read and Canvas validation. Real-host web/research execution remains untested exactly as in the first run.
 - 1: carried over — only test command and plan rationale changed; removed wiki inventory and source registration unchanged.
 - 2: carried over — no news inventory or dedicated helper changes in fix diff.
 - 4: carried over — no manifest, router, multilingual offering or usage guide changes.
 - 5: carried over — no new file/data operations, migration, vault or external repository changes.
 - 6: carried over — licensing, provenance map, archive history and changelog untouched by fix.
-- 7: carried over — current offering and skill list unchanged.
-- 9: carried over — source loader and removed-skill absence unchanged.
-- 10: carried over — no new migration/deletion behavior or existing-output changes.
-- 11: carried over — historical documentation and provenance unchanged.
+- UI-1: carried over — current offering and skill list unchanged.
+- UI-3: carried over — source loader and removed-skill absence unchanged.
+- UI-4: carried over — no new migration/deletion behavior or existing-output changes.
+- UI-5: carried over — historical documentation and provenance unchanged.
 
 Current complete-suite gate command (not run by this tester): `python3 -m pytest obsidian/tests -q -p no:cacheprovider`, from repository root. The station reported the earlier finalization stopped before test execution because collection attribution failed. This rerun records focused tester results only; the declared full suite must still run during finalize-review and block acceptance on failure. Package-tests and finalization are not skipped. No important-or-worse dismissal or user-instructed skip was supplied.
 
