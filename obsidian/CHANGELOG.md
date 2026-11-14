@@ -1,0 +1,310 @@
+# Changelog
+
+All notable changes to the `obsidian` plugin are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.27.0] — 2026-11-14 Sentence clarity rules
+
+### Added
+
+- Four sentence-level writing rules in `obsidian-markdown` (`references/sentence-clarity.md`), linked from its "Write content" step so they apply to any note written through that skill. Based on arXiv:2610.29162. Blind tests: fewer flagged sentences on short essays, no measurable difference when rewriting real notes.
+- `obsidian-research` Step 5 points to those rules when writing the note.
+- The rules also cover first-use explanation of terms, wording by the conventions of the user's language, proper nouns kept in their original language with a translation or explanation at first use, and long bracketed asides.
+
+### Changed
+
+- `obsidian-research` Step 5: a quote kept in its original language is always followed by its translation; the method section is written without this skill's process names; the "most likely reason it would turn out wrong" line no longer carries a label. In blind tests on two research topics, notes written with these changes had about a third of the flagged sentences.
+- `obsidian-research` Step 5 asks for the written register of an analytical report: plain means clear and precise, not conversational. Added after the vault's owner found the best-scoring test notes too conversational.
+
+## [3.26.0] — 2026-11-06 Research video sources
+
+### Added
+
+- Guide optional YouTube source discovery, captions, and source evaluation in `obsidian-research`.
+
+## [3.25.0] — 2026-11-05 Defuddle skill refresh
+
+### Added
+
+- Document YouTube transcript extraction, language preferences, and transcript verification in the Defuddle skill.
+
+### Changed
+
+- Update Defuddle CLI usage and require version 0.19.0 or later.
+
+## [3.24.0] — 2026-10-06 rename obsidian-canvas-creator skill to obsidian-canvas
+
+### Changed — `obsidian-canvas-creator` → `obsidian-canvas`
+
+- Skill directory and skill identity renamed to `obsidian-canvas`; the name
+  now matches the skill's actual scope (canvas creation, editing, output
+  validation, eight multi-canvas workflows, when-not-to-use-canvas
+  guidance). Skill content (templates, references, validator) unchanged.
+- Plugin READMEs (`README.md` / `README.ja.md` / `README.zh-TW.md`): skill
+  table row, repository-structure tree, and license list now name
+  `obsidian-canvas`; version references updated to 3.24.0.
+- Per-skill attribution table (`skills/README.md` and its ja / zh-TW
+  translations): component row now names `obsidian-canvas`; MIT attribution
+  (Axton Liu + kepano json-canvas) unchanged.
+- `ATTRIBUTION.md`: component path now `obsidian/skills/obsidian-canvas/`;
+  MIT license cell and axtonliu / kepano attribution unchanged.
+- Plugin manifests bumped 3.23.0 → 3.24.0 (Claude + Codex, synced); skill
+  description notes the former name (`formerly obsidian-canvas-creator`).
+- The old name survives only as a rename record: this entry, the former-name
+  note, and historical entries below. `docs/loom/` history and `.worktrees/`
+  old copies are untouched by design.
+
+## [3.23.0] — 2026-10-06 zero-plugin advanced canvas patterns
+
+### Added — `obsidian-canvas-creator` zero-plugin advanced patterns + nested-workspace template
+
+- `skills/obsidian-canvas-creator/references/no-plugin-patterns.md` — eight
+  advanced applications using Obsidian core features only: nested canvas
+  workspaces (Canvas-in-Canvas), research dual-canvas, data-pipeline
+  documentation, audit / incident post-mortem / onboarding canvases, teacher
+  class canvas, worldbuilding basics, Bases-in-canvas (requires Obsidian
+  1.9+, Bases core plugin), and canvas-only vault / 2D MOC — plus the
+  canvas-drift anti-pattern: never keep a canvas as a continuously maintained
+  live dashboard; use notes, queries, or Bases for live data.
+- `skills/obsidian-canvas-creator/assets/template-nested-workspace.canvas` — a
+  parent canvas demonstrating Canvas-in-Canvas nesting (embedded child `.canvas`
+  file node, linked note, in-file path-replacement guidance), passing the
+  bundled validator.
+- `skills/obsidian-canvas-creator/SKILL.md` routes the eight applications to
+  the new reference and template, with a when-NOT-to-use-canvas pointer; plugin
+  README and the skill attribution table list the new capability (derivative of
+  axtonliu + kepano json-canvas).
+
+## [3.22.0] — 2026-10-05 canvas layout patterns + output validator
+
+### Added — `obsidian-canvas-creator` layout patterns and output validator
+
+- Four community layout patterns — kanban, dashboard / home page, research
+  map, moodboard — documented in
+  `skills/obsidian-canvas-creator/references/layout-patterns.md` (node
+  composition, grouping, connections, color semantics), each with a matching
+  importable template under `skills/obsidian-canvas-creator/assets/`.
+- `skills/obsidian-canvas-creator/scripts/validate_canvas.py` — a stdlib-only
+  validator that checks JSON validity, unique 16-char lowercase-hex IDs, edge
+  `fromNode`/`toNode` existence, per-type required fields, and node overlap
+  (AABB, groups excluded). Exits 0 on a clean file, non-zero naming each
+  violation. SKILL.md instructs the model to run it on every `.canvas` it
+  writes and act on the exit code / violation list.
+- `skills/obsidian-canvas-creator/SKILL.md` routes the four patterns to the
+  reference doc and templates; plugin README, skill READMEs, and the skill
+  attribution table list the new capability (derivative of axtonliu +
+  kepano json-canvas).
+
+## [3.21.0] — 2026-09-24 obsidian-research
+
+### Added — `obsidian-research` skill
+
+- Researches a topic the user names and writes one human-readable note to
+  `research/YYYY-MM-DD <title>.md`.
+- Web search runs by default (skipped only when the user says to use only
+  their own material). Sources: English + Japanese; a topic that leans to
+  one language (culture, history, a specific country's market) adds that
+  language as the primary one. User-named languages override.
+- The question is split into 3-6 angles, a framework gap check (on by
+  default) adds missing ones, and each angle is researched by its own
+  subagent. Claims the conclusion depends on are each checked by a fresh
+  subagent that tries to refute them; confidence High / Medium / Low
+  follows from source independence and that check, capped at Medium for
+  interested publishers or non-random samples; several works by one
+  author or organization count as one source.
+- A required citation check (Step 6): a separate subagent lists every
+  figure, date, attribution, causal claim and quote, matches each against
+  the saved subagent reports (text only), opens the cited page only for
+  items that fail, and returns a table; the note's method section copies
+  its counts. On a real note it checked 137 items for US$1.52 (Sonnet)
+  and found 15 failures, including 3 of 4 an auditor had found.
+- Frameworks are used at four layers (`references/frameworks.md`): the
+  question type picks a chapter skeleton, which is a suggestion rather
+  than a template; in-chapter tools break down single issues; principles
+  and checks cover the whole note. Includes history, culture and society
+  frameworks.
+- The note must pass nine checkpoints: vault frontmatter (`type:
+  research`, `status`, `source_count`, `source_languages`), conclusion first, a
+  `[[#heading]]` table of contents, chapters by skeleton or topic
+  dimensions, numbered citations with confidence, disagreements / refuted
+  claims, method and limitations, next actions, and a source list.
+- Self-contained: uses only host tools (`WebSearch`, `WebFetch`,
+  subagents) and this plugin's skills; does not invoke skills from other
+  plugins. Without `WebSearch` it works from user-supplied material only,
+  or stops.
+- Inside an Obsidian vault, any request to research a topic triggers it
+  even without the word "note"; chat-only requests, debugging and code
+  work do not. Outside a vault it still needs a note or vault to be meant.
+- Paraphrase checks: the citation check also keeps the source's
+  qualifiers and how each figure was obtained (measured / reported /
+  vendor claim / estimate / not stated, recorded by the research
+  subagents); estimates cannot raise a claim above Low on their own;
+  "only / does not exist" claims need a source; comparison tables state
+  differing conditions.
+- Registered in `using-obsidian` and the plugin READMEs.
+
+## [3.20.4] — 2026-09-22 visualization guide ownership
+
+### Changed — `obsidian-markdown` visualization decision guide
+
+- `references/viz-decision-guide.md` rewritten to decide only the
+  presentation form (diagram / table / callout / list / prose) via
+  ordered yes/no questions. Mermaid type choice and inline-vs-delegate
+  now stay with SKILL.md §Diagrams and `obsidian-mermaid-visualizer`;
+  callout type stays with §Callouts. The previous version restated those
+  rules and contradicted them (state machines routed to flowchart,
+  timeline/quadrant not delegated, "list > 10 items → TOC", unbacked
+  numeric thresholds, a reversed scenario × lever layout).
+- SKILL.md: single advisory entry point in workflow step 3; duplicate
+  "Visual Choice Guide" section removed; `quadrant-chart` corrected to
+  the Mermaid keyword `quadrantChart`.
+
+### Added
+
+- `tests/test_obsidian_markdown_viz_guide.py` — fails if the guide names
+  a Mermaid diagram keyword, if SKILL.md points to the guide more than
+  once, or if a local guide link points to a missing file or heading
+  (headings inside code fences do not count; external URLs are skipped).
+  Prose restatements such as "sequence diagram" are not caught.
+
+## [3.20.2] — 2026-07-30 description diet
+
+### Changed — `wiki-update` / `daily-news-digest` descriptions
+
+- Both frontmatter `description` blocks reworded and hard-wrapped at
+  ≤76 chars/line (no trigger hook dropped) — part of a cross-plugin
+  pass trimming four outlier skill descriptions.
+
+## [3.20.1] — 2026-07-24 wikilink-target-insensitive word counter
+
+### Changed — `wiki-lint` conservation-counter semantics (words)
+
+- `wiki_lint_check.py` words counter now normalizes every `[[...]]`
+  wikilink (including `[[target|display]]` / `[[target#anchor]]`
+  variants) to a single token before whitespace-splitting. A benign
+  retarget — `[[Two Word Target]]` → `[[Oneword]]`, the bread and
+  butter of L07 broken-link repair — no longer shifts the word count,
+  while deleting a link or surrounding prose still lowers it.
+  Motivation: wiki-update smoke run Finding #1
+  (`docs/loom/dogfood/2026-07-23-wiki-update-loop-smoke/loop-report.md`)
+  — the `[[Acme Corp]]` → `[[Acme-Corp]]` retarget shrank the count
+  308→307 and tripped the ratchet fail-closed (exit 8) with zero
+  content loss; on the real vault's ~873-broken-link backlog the L07
+  class would have stalled on its first round. `links` / `headings`
+  counters and the JSONL contract shape are unchanged.
+
+### Fixed — `wiki-update` fix-loop stops gracefully on dispatched-agent death
+
+- `wiki_fix_loop.js` now routes a dead dispatched agent (`agent()` returns
+  null when a subagent hits a terminal error after retries, or the user
+  skips it mid-run) through a new pure `assertAgentAlive` guard to a
+  distinct `INFRA_ABORT` terminal + blockers report, instead of crashing.
+  The brake couriers consume their return by direct deref
+  (`result.exitCode` / `budgetResult.exitCode`), so a null there took down
+  the whole loop with "null is not an object". Motivation: the smoke re-run
+  round-3 compare scoring agent died on a session limit and crashed the
+  engine rather than stopping honestly. Every `agent()` dispatch site now
+  documents its null handling (`// agent-null guard:`); the blockers report
+  tells the operator to re-run with a fresh `runLabel` — and, on the
+  brake-loop path that leaves the interrupted round's edits in the working
+  tree, to stash/discard them first so the dirty-tree preflight does not
+  refuse the re-run. A mid-loop freeze-check agent death is attributed as an
+  infrastructure interruption rather than mislabelled `CONFIG DRIFT`. No
+  change to the JSONL/exit contract, brake semantics, ratchet repair, or
+  `loop_verdict.py`. Next-touch: the loop is tested by static
+  marker/`node -e` extraction (Workflow runtime globals cannot be executed
+  in CI), so the end-to-end INFRA_ABORT stop is covered by markers, not a
+  live run.
+
+## [3.20.0] — 2026-07-24 `wiki-update` loop + mechanical validator
+
+Adds a self-driving update loop for the wiki layer, backed by a new
+mechanical lint validator so the loop's "clean" state is machine-checked
+rather than self-reported.
+
+### Added — `wiki-lint` mechanical validator (`wiki_lint_check.py`)
+
+- New deterministic-lane script (`scripts/wiki_lint_check.py`) covers six
+  error-level checks — L01 frontmatter completeness, L02 summary length,
+  L03 required body sections, L04 wikilink format, L07 broken intra-wiki
+  wikilinks, L14 reference-page `## Source` wikilink — plus a `PARSE`
+  error lane for unreadable/malformed pages and per-file conservation
+  counters (word/link/heading) so downstream fixers can prove they didn't
+  silently drop content.
+
+### Added — `wiki-update` skill
+
+- New thin-dispatcher skill orchestrates the existing wiki maintenance
+  chain end-to-end: `wiki-ingest` → `wiki-cross-linker` → a repair loop →
+  ticket triage → a final report card. It does not duplicate any member
+  skill's logic — it sequences them and carries the loop state between
+  stages.
+
+### Added — repair-loop engine
+
+- The repair loop adds: criteria freeze + safe-tier classification
+  (only safe-tier fixes auto-apply; unsafe-only classes become
+  work-order entries for the human lane), a fixed brake-CONSULTATION
+  order (ratchet → compare → stuck → plateau → budget — safety checks
+  consulted first each round; repair order itself is largest-class-
+  first), a proposal-branch exit (accepted safe-tier rounds land as
+  LOCAL commits on `wiki-fix/<runLabel>`, never merged or pushed), and
+  a cumulative-size circuit-breaker that stops the loop once committed
+  diff exceeds the cap and asks for the remaining work to be split.
+- Real-execution smoke test (not a dry run) confirmed two check classes
+  converge to clean within the loop, and surfaced one ratchet false-positive
+  that the loop correctly re-targets as a known next-touch item rather than
+  looping on it — see
+  `docs/loom/dogfood/2026-07-23-wiki-update-loop-smoke/`.
+
+## [3.19.1] — 2026-07-05 `daily-news-digest` Codex dispatch-portability fix
+
+Following the same class of gap found and fixed in loom-code (#496) and
+loom-interface-design/loom-spec (#497), `daily-news-digest`'s heavy-day
+dispatch instructions named literal Claude-Code "`Agent`/`Task` calls"
+and `run_in_background: true` directly in `references/heavy-day-dispatch.md`
+and `SKILL.md` — a Codex reader hit terms it cannot resolve. Rewrote both
+to host-neutral prose ("dispatch... in one round", "wait for every
+subagent to return before proceeding") and added new
+`references/{claude-code-tools.md,codex-tools.md}`
+carrying the concrete per-host call shape, including the Claude-Code-only
+`name:`-triggers-mailbox-semantics pitfall and the 2026-07-02 real
+`run_in_background` incident (eight consecutive blocked turns), both of
+which structurally cannot recur on Codex's explicit spawn/wait/close
+verb model.
+
+## [3.15.0] — 2026-06-01 near-duplicate detection + `wiki-merge`
+
+Adds near-duplicate awareness to the wiki layer across three surfaces:
+prevent-new at ingest time, sweep-existing at lint time, and a new
+human-gated skill that performs the consolidation.
+
+### Added — `wiki-merge` skill
+
+- New `wiki-merge` skill consolidates a confirmed near-duplicate PAIR of
+  `wiki/` pages into one canonical page. The human gates **which** pair to
+  merge; the skill then auto-executes a **reversible** merge.
+- Merge is non-destructive: the absorbed page is **archived, not deleted**;
+  the absorbed page's `User Notes` are **union-preserved** into the survivor;
+  the absorbed slug is added to the survivor's `aliases` so inbound links and
+  `[[wikilinks]]` keep resolving.
+- Self-verifies the merge result and writes an **audit log** entry so the
+  operation can be reviewed or rolled back.
+
+### Added — `wiki-ingest` STEP 4c near-duplicate prompt (prevent-new)
+
+- `wiki-ingest` now runs a near-duplicate check before minting a new page.
+  On a **HIGH-confidence** match it prompts the user instead of silently
+  creating a near-duplicate, and routes to `wiki-merge` when the user confirms.
+
+### Added — `wiki-lint` L15 near-duplicate sweep (sweep-existing)
+
+- `wiki-lint` gains check **L15**, a read-only sweep that flags existing
+  near-duplicate page pairs across `wiki/`. Like every other lint check it
+  does not auto-fix — it surfaces candidates for `wiki-merge`.
+
+### Changed
+
+- `wiki-lint` is now a **15-check** health audit (was 14-check) — the three
+  READMEs (stale at "11") are updated accordingly.

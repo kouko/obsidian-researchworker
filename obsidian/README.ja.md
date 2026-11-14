@@ -1,0 +1,225 @@
+# obsidian
+
+[English](README.md) | **日本語** | [繁體中文](README.zh-TW.md)
+
+> Obsidian vault workflow — daily note、markdown、Bases、図、Canvas、file intel、vault 管理、ダッシュボード設計を Claude Code plugin としてパッケージ化。
+
+## ⚠️ Cowork 互換性
+
+本 plugin の skill のほとんどは Cowork 互換だが、`defuddle` skill のみ例外。
+[Defuddle CLI](https://github.com/kepano/defuddle) を subprocess で呼び出して
+外部 URL を取得・整形するため、Cowork の sandbox URL allowlist に block される。
+`defuddle` は Claude Code CLI で利用すること。これらは upstream の互換性情報であり、
+独立版の Claude/Cowork 互換性は未検証。[検証記録](../docs/verification.md)には
+過去の Codex ローカルソース導入成功のみを記録し、実利用は未達。
+
+| Skill | Cowork | Claude Code CLI |
+|---|---|---|
+| `defuddle` | block（URL fetch） | 動作 |
+| その他すべての obsidian skill | 動作 | 動作 |
+
+## Version
+
+3.27.0（upstream baseline）— [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+
+## 独立配布
+
+[Monkey Skills](https://github.com/kouko/monkey-skills) から抽出し、
+[Obsidian ResearchWorker](../README.md) で独立管理する。
+plugin 名 `obsidian` と既存 wiki 機能は保持する。切り替え前に
+[移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
+記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
+ノート作成は未達。他 host とリモート導入は未検証。
+
+## 背景
+
+Obsidian は local-first な markdown knowledge base。日常の vault 作業は小さい
+反復タスクの集合になる：今日の daily note を開く、inbox を整理する、
+有効な Bases YAML を書く、note 内に Mermaid 図を描く、PDF フォルダを
+要約 note としてインポートする、session 終了時に会話の要約を保存する。
+
+本 plugin はそれらのタスクを skill としてパッケージ化し、Claude Code が
+intent に応じて dispatch する。Original skill は daily workflow / file intel /
+ダッシュボード設計 / vault setup / 会話要約をカバー。Import 済 skill は
+Obsidian 固有の markdown / Bases / Obsidian CLI / Defuddle web 抽出 /
+Canvas 作成 / Excalidraw 図 / Mermaid 図をカバー。
+
+## Router と agent
+
+### Router
+
+`using-obsidian` が entry skill。ユーザーの依頼内容（daily note、vault setup、
+file processing、図、cleanup など）に応じて適切な skill に routing する。
+
+slash command は `/using-obsidian` で呼び出す。
+
+### Agent
+
+`obsidian-vault-organizer` は vault 保守用 agent。定期的な hygiene 作業
+（`inbox/` の振り分け、broken wikilink の修復、frontmatter 正規化、
+重複候補の検出、tag 名の統一）を担当する。**ファイルは削除しない** —
+move か edit のみ。振り分け先が曖昧な場合は確認を取る。
+
+## Skills
+
+### Original skill（this project）
+
+| Skill | 用途 |
+|---|---|
+| `using-obsidian` | Router — vault workflow の intent を適切な skill に routing |
+| `obsidian-daily` | 今日の daily note を読み込み or 作成、`inbox/` を sweep、上位 3 priority を提示 |
+| `obsidian-vault-setup` | 対話型 vault 初期設定 — 自由記述の回答から role と scope を推定 |
+| `obsidian-tldr` | 会話の要約を vault に保存し、`memory.md` を更新 |
+| `obsidian-research` | トピックを web 調査（英語＋日本語、テーマ固有の言語があればそれを主に追加）し、目次付きの研究ノートを `research/` に保存 |
+| `obsidian-file-intel` | PDF / PPTX / XLSX / DOCX / CSV / JSON を Gemini で抽出し、Obsidian-ready な要約を生成 |
+| `dashboard-design` | デジタル庁ダッシュボード設計ガイドラインに基づき、要件整理から layout までを引導 |
+
+### Wiki layer（LLM 知識蒸留、original）
+
+[Karpathy の LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) と [`Ar9av/obsidian-wiki`](https://github.com/Ar9av/obsidian-wiki) からの着想を、6 カテゴリの「型態軸」（entities / concepts / synthesis / skills / journal / references）、tiered retrieval、SHA-256 delta tracking、bounded auto-research に再設計。各 skill は完全に self-contained — cross-skill / plugin-level 共有 reference は使用しない。
+
+| Skill | 用途 |
+|---|---|
+| `wiki-setup` | `wiki/` 構造、`.env`、manifest、hot cache の初回 scaffold |
+| `wiki-ingest` | source notes（references/、research/ 等）を SHA-256 delta tracking で wiki/ に蒸留。page format spec の所有者。新規ページ作成前に HIGH 信頼度の near-duplicate を検出 |
+| `wiki-query` | tiered retrieval（hot.md → frontmatter summary → full page）で wiki/ を検索 |
+| `wiki-cross-linker` | 平文の言及を `[[wikilinks]]` に変換し、知識グラフを補強 |
+| `wiki-merge` | 確認済みの near-duplicate ページ対を 1 つの canonical ページに統合 — どの対を統合するかは人が gate、skill が可逆な統合を自動実行（archive で削除せず、User Notes は union 保持、slug → aliases、self-verify、audit log） |
+| `wiki-lint` | 15 項目の health audit — structural / semantic / provenance。Read-only |
+| `wiki-auto-research` | 手動 one-shot — Open Questions と ambiguous claim を scan、web search、`research/` にレビュー可能なノート出力 |
+
+### kepano（Steph Ango）からの import
+
+Upstream: [`kepano/obsidian-skills`](https://github.com/kepano/obsidian-skills)
+— MIT, Copyright (c) 2026 Steph Ango。
+
+| Skill | 用途 |
+|---|---|
+| `obsidian-markdown` | Obsidian Flavored Markdown の作成 — wikilink、embed、callout、properties、コメント |
+| `obsidian-bases` | `.base` ファイルの作成・編集 — view、filter、formula、summary |
+| `obsidian-cli` | 起動中の Obsidian instance を公式 CLI で操作 — read、create、search、plugin / theme 開発 |
+| `defuddle` | Defuddle CLI で web ページと YouTube の文字起こしを抽出 |
+
+### axtonliu（Axton Liu）からの import
+
+Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/axton-obsidian-visual-skills)
+— MIT, Copyright (c) 2025 Axton Liu。
+
+| Skill | 用途 |
+|---|---|
+| `obsidian-canvas` | Obsidian Canvas ファイルを MindMap / freeform layout で作成。さらにカンバン／ダッシュボード（ホームページ）／研究マップ／ムードボードの 4 つのコミュニティパターンとテンプレート、`.canvas` 出力検証スクリプト、そしてプラグインなしで使える応用パターン（ネストキャンバス／研究デュアルキャンバス／データパイプラインの文書化／監査・ポストモーテム・オンボーディング／教師用クラスキャンバス／ワールドビルディング／Bases-in-canvas 1.9+／canvas-only／2D MOC）に対応（kepano の json-canvas integration を統合） |
+| `obsidian-excalidraw-diagram` | Excalidraw 図を Obsidian / Standard / Animated 形式で生成 |
+| `obsidian-mermaid-visualizer` | Mermaid 17 図種（flow / data-viz / structural / time）— Obsidian 11.4.1 最適化、GitHub / Notion / HackMD にも portable |
+
+## Install
+
+独立版の導入実績は[検証記録](../docs/verification.md)にある過去の隔離 Codex
+ローカルソース導入のみ。リモート導入、Claude/Cowork 互換性、実利用は未検証。
+既存の導入を変更する前に[移行ガイド](../docs/migration.md)を確認すること。
+
+`defuddle` skill は Defuddle CLI が必要：
+
+```bash
+npm install -g defuddle
+```
+
+`obsidian-cli` skill は公式 Obsidian CLI と起動中の Obsidian instance が必要 —
+[help.obsidian.md/cli](https://help.obsidian.md/cli) 参照。
+
+`obsidian-file-intel` skill は vault 内の外部互換スクリプト
+`scripts/process_files_with_gemini.py` と、設定済の Gemini API key が必要。
+スクリプトは同梱されず、取得・セットアップ手順も本配布にはない。
+既存の互換スクリプトがなければ処理は利用できず、独立版での設定と実行は未検証。
+
+## Usage
+
+一日を始める：
+
+```
+> Start my day
+```
+
+`using-obsidian` が `obsidian-daily` に route。`daily/YYYY-MM-DD.md` を
+読み込み or 作成し、`inbox/` の項目を列挙、上位 3 priority を提示する。
+
+session 終了時に会話の要約を保存：
+
+```
+> Save a TLDR of this conversation
+```
+
+`using-obsidian` が `obsidian-tldr` に route。関連フォルダに markdown 要約を
+書き込み、`memory.md` を更新する。
+
+note 内に図を描く：
+
+```
+> OAuth device flow の Mermaid sequence 図を作って
+```
+
+`using-obsidian` が `obsidian-mermaid-visualizer` に route。sequence diagram type
+を選択し、Obsidian 11.4.1 quirk を適用、` ```mermaid ` ブロックを出力する。
+
+## Repository 構造
+
+```
+obsidian/
+├── .claude-plugin/
+│   └── plugin.json              # plugin metadata、version 3.27.0
+├── agents/
+│   └── obsidian-vault-organizer.md  # vault 保守 agent
+├── skills/
+│   ├── README.md                # skill 別 attribution 表
+│   ├── using-obsidian/          # router（original）
+│   ├── obsidian-daily/          # daily workflow（original）
+│   ├── obsidian-vault-setup/    # vault 初期設定（original）
+│   ├── obsidian-tldr/           # 会話要約（original）
+│   ├── obsidian-file-intel/     # ファイル → Obsidian 要約（original）
+│   ├── dashboard-design/        # ダッシュボード設計（original）
+│   ├── obsidian-markdown/       # kepano から import
+│   ├── obsidian-bases/          # kepano から import
+│   ├── obsidian-cli/            # kepano から import
+│   ├── defuddle/                # kepano から import
+│   ├── obsidian-canvas/ # axtonliu から import
+│   ├── obsidian-excalidraw-diagram/ # axtonliu から import
+│   ├── obsidian-mermaid-visualizer/ # axtonliu から import
+│   ├── wiki-setup/                # wiki layer 初期化（original）
+│   ├── wiki-ingest/               # source → wiki 蒸留（original）
+│   ├── wiki-query/                # tiered retrieval（original）
+│   ├── wiki-cross-linker/         # 知識グラフ補強（original）
+│   ├── wiki-merge/                # near-duplicate ページ統合（original）
+│   ├── wiki-lint/                 # health audit（original）
+│   └── wiki-auto-research/        # web search で gap 補完（original）
+├── README.md
+├── README.ja.md
+└── README.zh-TW.md
+```
+
+skill 別の attribution は [`skills/README.md`](skills/README.md)、
+repo 全体の attribution は [`../ATTRIBUTION.md`](../ATTRIBUTION.md) を参照。
+
+## 貢献
+
+- bug 報告・機能要望：
+  [github.com/kouko/obsidian-researchworker/issues](https://github.com/kouko/obsidian-researchworker/issues)
+  に issue を開いてください。
+- PR 歓迎。既存の skill 構造（frontmatter + workflow + reference ファイル）に
+  合わせ、Conventional Commits を使うこと。
+- import 済 skill については、kepano / axtonliu 上流からの変更が流れてくる。
+  上流に該当する修正は upstream PR の検討も推奨。
+
+## License
+
+MIT — 詳細は repository root の [LICENSE](../LICENSE) を参照。
+
+import 済 skill は各 skill の `LICENSE` ファイルに原著作権表示を保持：
+
+- `defuddle`、`obsidian-bases`、`obsidian-cli`、`obsidian-markdown` — MIT,
+  Copyright (c) 2026 Steph Ango。各 skill 配下の `LICENSE` 参照。
+- `obsidian-canvas`、`obsidian-excalidraw-diagram`、
+  `obsidian-mermaid-visualizer` — MIT, Copyright (c) 2025 Axton Liu。
+  各 skill 配下の `LICENSE` 参照。（`obsidian-canvas` は kepano 由来の
+  json-canvas integration も同梱。）
+
+プロジェクト全体の license は [LICENSE](../LICENSE)、third-party コンポーネント
+全体は [ATTRIBUTION.md](../ATTRIBUTION.md) を参照。

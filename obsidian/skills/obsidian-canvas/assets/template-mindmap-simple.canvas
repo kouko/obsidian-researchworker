@@ -1,0 +1,106 @@
+{
+  "nodes": [
+    {
+      "id": "a0b1c2d3e4f50611",
+      "type": "text",
+      "x": -150,
+      "y": -60,
+      "width": 300,
+      "height": 120,
+      "text": "# Central Topic\n\nMain concept goes here",
+      "color": "4"
+    },
+    {
+      "id": "b1c2d3e4f5a60721",
+      "type": "text",
+      "x": 250,
+      "y": -200,
+      "width": 220,
+      "height": 100,
+      "text": "Branch 1\n\nFirst main idea",
+      "color": "5"
+    },
+    {
+      "id": "c2d3e4f5a6b70822",
+      "type": "text",
+      "x": 250,
+      "y": -50,
+      "width": 220,
+      "height": 100,
+      "text": "Branch 2\n\nSecond main idea",
+      "color": "5"
+    },
+    {
+      "id": "d3e4f5a6b7c80923",
+      "type": "text",
+      "x": 250,
+      "y": 100,
+      "width": 220,
+      "height": 100,
+      "text": "Branch 3\n\nThird main idea",
+      "color": "5"
+    },
+    {
+      "id": "e4f5a6b7c8d90a24",
+      "type": "text",
+      "x": 550,
+      "y": -200,
+      "width": 200,
+      "height": 80,
+      "text": "Detail A",
+      "color": "6"
+    },
+    {
+      "id": "f5a6b7c8d9e00b25",
+      "type": "text",
+      "x": 550,
+      "y": -100,
+      "width": 200,
+      "height": 80,
+      "text": "Detail B",
+      "color": "6"
+    }
+  ],
+  "edges": [
+    {
+      "id": "a1e2f3a4b5c60711",
+      "fromNode": "a0b1c2d3e4f50611",
+      "fromSide": "right",
+      "toNode": "b1c2d3e4f5a60721",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "b2f3a4b5c6d71822",
+      "fromNode": "a0b1c2d3e4f50611",
+      "fromSide": "right",
+      "toNode": "c2d3e4f5a6b70822",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "c3a4b5c6d7e82933",
+      "fromNode": "a0b1c2d3e4f50611",
+      "fromSide": "right",
+      "toNode": "d3e4f5a6b7c80923",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "d4b5c6d7e8f93a44",
+      "fromNode": "b1c2d3e4f5a60721",
+      "fromSide": "right",
+      "toNode": "e4f5a6b7c8d90a24",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "e5c6d7e8f9a04b55",
+      "fromNode": "b1c2d3e4f5a60721",
+      "fromSide": "right",
+      "toNode": "f5a6b7c8d9e00b25",
+      "toSide": "left",
+      "toEnd": "arrow"
+    }
+  ]
+}

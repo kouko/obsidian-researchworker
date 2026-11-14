@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": "aa0b1c2d3e4f5061",
+      "type": "group",
+      "x": -50,
+      "y": -50,
+      "width": 600,
+      "height": 400,
+      "label": "Group 1 - Core Concepts",
+      "color": "4"
+    },
+    {
+      "id": "ab1c2d3e4f5a6072",
+      "type": "group",
+      "x": 650,
+      "y": -50,
+      "width": 600,
+      "height": 400,
+      "label": "Group 2 - Applications",
+      "color": "5"
+    },
+    {
+      "id": "ba1c2d3e4f5a6071",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 240,
+      "height": 100,
+      "text": "Concept A",
+      "color": "4"
+    },
+    {
+      "id": "bb2d3e4f5a6b7082",
+      "type": "text",
+      "x": 290,
+      "y": 0,
+      "width": 240,
+      "height": 100,
+      "text": "Concept B",
+      "color": "4"
+    },
+    {
+      "id": "bc3e4f5a6b7c8093",
+      "type": "text",
+      "x": 0,
+      "y": 150,
+      "width": 240,
+      "height": 100,
+      "text": "Concept C",
+      "color": "4"
+    },
+    {
+      "id": "bd4f5a6b7c8d90a4",
+      "type": "text",
+      "x": 290,
+      "y": 150,
+      "width": 240,
+      "height": 100,
+      "text": "Concept D",
+      "color": "4"
+    },
+    {
+      "id": "be5a6b7c8d9e00b5",
+      "type": "text",
+      "x": 700,
+      "y": 0,
+      "width": 240,
+      "height": 100,
+      "text": "Application 1",
+      "color": "5"
+    },
+    {
+      "id": "bf6b7c8d9e0f10c6",
+      "type": "text",
+      "x": 990,
+      "y": 0,
+      "width": 240,
+      "height": 100,
+      "text": "Application 2",
+      "color": "5"
+    },
+    {
+      "id": "ca7c8d9e0f1a11d7",
+      "type": "text",
+      "x": 700,
+      "y": 150,
+      "width": 240,
+      "height": 100,
+      "text": "Application 3",
+      "color": "5"
+    }
+  ],
+  "edges": [
+    {
+      "id": "da8d9e0f1a2b12e1",
+      "fromNode": "ba1c2d3e4f5a6071",
+      "fromSide": "bottom",
+      "toNode": "bc3e4f5a6b7c8093",
+      "toSide": "top",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "db9e0f1a2b3c13e2",
+      "fromNode": "bb2d3e4f5a6b7082",
+      "fromSide": "bottom",
+      "toNode": "bd4f5a6b7c8d90a4",
+      "toSide": "top",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "dca0f1a2b3c414e3",
+      "fromNode": "ba1c2d3e4f5a6071",
+      "fromSide": "right",
+      "toNode": "be5a6b7c8d9e00b5",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "leads to",
+      "color": "3"
+    },
+    {
+      "id": "ddb1a2b3c4d515e4",
+      "fromNode": "bb2d3e4f5a6b7082",
+      "fromSide": "right",
+      "toNode": "bf6b7c8d9e0f10c6",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "enables",
+      "color": "3"
+    }
+  ]
+}
