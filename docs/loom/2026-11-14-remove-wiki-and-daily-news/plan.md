@@ -33,4 +33,5 @@ charter: 1.1
 1. Removing installed skill names is a public contract change; required spec review passed independently before planning. Installed cache refresh and host-specific missing-skill presentation remain outside this source change.
 2. Existing vault output, original Monkey checkout, installed caches, archive history and the pre-existing ROADMAP-DRAFT.md must remain untouched; source deletion does not authorize migration.
 3. agent-decided — Use one implementer per sequential task because retained instructions consume the removed inventory; no replacement system or unrelated skill redesign.
-4. agent-decided — Use the existing pytest-capable interpreter without installing packages; complete package suite is run from obsidian, including retained tests and the new bounded inventory regression.
+4. agent-decided — Use the existing pytest-capable interpreter without installing packages; complete package suite explicitly selects obsidian/tests from the repository root, including retained tests and the new bounded inventory regression.
+5. agent-decided — Finalization cannot attribute tests when the declared command starts with cd; invoke pytest directly with obsidian/tests so collection is verifiable. The same complete suite remains selected; no product behavior changes.
