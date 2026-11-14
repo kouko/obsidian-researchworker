@@ -1,6 +1,6 @@
 ---
 name: obsidian-research
-description: Research a topic on the web (English + Japanese, plus the topic's own language when it has one) from several angles, verify key claims, check every citation, and save a human-readable research note with a TOC into the Obsidian vault's research/ folder. Use for "research X into a note" / 「研究一下 X 寫成筆記」/「X を調べてノートにまとめて」. Inside an Obsidian vault, use it for any request to research a topic on the web (「研究一下 X」「X を調べて」"research X") even without the word note. Do NOT use when the user wants a chat-only answer or no note, for debugging or code work, to fill wiki/ gaps (wiki-auto-research), for a quick factual question, or outside a vault for a report not meant as a note. 研究ノート・調査。研究筆記・調查。
+description: Research a topic on the web (English + Japanese, plus the topic's own language when it has one) from several angles, verify key claims, check every citation, and save a human-readable research note with a TOC into the Obsidian vault's research/ folder. Use for "research X into a note" / 「研究一下 X 寫成筆記」/「X を調べてノートにまとめて」. Inside an Obsidian vault, use it for any request to research a topic on the web (「研究一下 X」「X を調べて」"research X") even without the word note. Do NOT use when the user wants a chat-only answer or no note, for debugging or code work, for a quick factual question, or outside a vault for a report not meant as a note. 研究ノート・調査。研究筆記・調查。
 ---
 
 # Obsidian Research
@@ -128,5 +128,4 @@ Apply every fix to the saved note (correct, re-cite, or remove), keep the source
 
 ## Related skills
 
-- `wiki-auto-research` scans `wiki/` for open questions and writes gap-filling notes; this skill researches a topic the user names. Notes written here carry no wiki fields. `wiki-ingest` may still ingest `research/` later — that is the user's choice.
 - After saving, the user may ask for a diagram (`obsidian-mermaid-visualizer`) or a canvas (`obsidian-canvas`); do not add those unasked.
