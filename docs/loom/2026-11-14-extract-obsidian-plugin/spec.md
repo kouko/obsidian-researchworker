@@ -8,7 +8,7 @@ REQ-1 — Independent source and provenance
   The new project shall provide the transferred Obsidian plugin, its required licenses, third-party attribution, documentation and verification entry points, with the exact source revision and deviations recorded → Acceptance #1
 
 REQ-2 — Installation and usage evidence
-  WHEN the new project is installed in an applicable host, the independent acceptance record shall show its installation and representative use, and shall identify each host or behavior not verified → Acceptance #2
+  The independent acceptance record shall demonstrate successful installation in Codex and a representative Obsidian Markdown note creation in an isolated fixture vault, and shall identify each other host or behavior not verified → Acceptance #2
 
 REQ-3 — Roadmap
   The project shall provide a roadmap covering retirement and reconsideration of the current wiki form, YTSS and RLSS integration, resumable multi-note research, stage acceptance criteria and unresolved decisions → Acceptance #3
@@ -43,4 +43,4 @@ REQ-4 — Existing data and transition
 - A user selects the new marketplace and plugin → installation resolves the new project and exposes the retained skills; the exact command is documented only after host validation.
 - A user already has the Monkey plugin → transition documentation identifies duplicate-registration uncertainty and leaves the existing installation untouched until a separately verified switch.
 - A user reads the roadmap → future work is labeled as proposed, with checks and unresolved choices.
-- A host is unavailable or a check fails → the verification report names the skipped or failed check instead of claiming compatibility.
+- Codex installation, fixture note creation, or either check's evidence is unavailable or fails → Acceptance #2 is unmet; other unavailable or failing hosts are identified explicitly without a compatibility claim.
