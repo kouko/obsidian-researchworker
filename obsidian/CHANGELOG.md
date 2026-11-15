@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Linux registry discovery still falls back to `python3` (unverified);
   Windows unsupported. On Linux, search uses the same `grep` loop.
-- Note text the skill reads is sent to the model provider; a one-time `Read(...)` permission rule is proposed only with user consent.
+- Note text the skill reads is sent to the model provider; a one-time setup proposes three lines — `Read(<vault>/**)`, `Skill(obsidian:obsidian-knowledge)`, and the bundled-search Bash rule (`Bash(${CLAUDE_SKILL_DIR}/scripts/vault.sh *)`) — added to global settings only with user consent.
 
 ## [4.1.0] — 2026-11-15 Shared vault instructions
 

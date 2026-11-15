@@ -4,9 +4,9 @@ Date: 2026-11-15
 
 ## Method
 
-- Vault located with `obsidian/skills/obsidian-vault-search/scripts/find_vaults.py`; searched read-only.
+- Vault located with `obsidian/skills/obsidian-knowledge/scripts/vault.sh locate`; searched read-only via `vault.sh search`.
 - Questions derived from recent note titles in `research/` and `projects/`, and from `ROADMAP.md` (YTSS/RLSS integration). Three questions are phrased in a different language or wording than the target note title; two target topics believed absent from the vault.
-- Search as the skill prescribes: case-insensitive regex content search over `*.md`, excluding `.obsidian/` and `.trash/`, keywords in zh/ja/en. "Hits" = number of matching files. "Found" = a clearly relevant note is identifiable in the hits (yes / partial / no). Paths are vault-relative; no note bodies copied.
+- Search as the skill prescribes: Obsidian CLI `search` when the app is running (primary, relevance-ranked), falling back to BSD `grep -rliF` (fixed strings, not regex) over `*.md` excluding `.obsidian/` and `.trash/`, keywords in zh/ja/en. "Hits" = number of matching files. "Found" = a clearly relevant note is identifiable in the hits (yes / partial / no). Paths are absolute; no note bodies copied.
 
 ## Results
 

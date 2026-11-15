@@ -50,12 +50,14 @@ Search every listed vault that exists.
 
 ## Permission prompts
 
-If Read on the vault triggers a permission prompt, offer the user a one-time rule for `~/.claude/settings.json` → `permissions.allow`, showing the exact line:
+When using the skill, reading the vault or running the bundled search may prompt for permission. When that happens, offer the user a one-time rule for `~/.claude/settings.json` → `permissions.allow`, showing the exact lines:
 
 - vault under `$HOME` → `Read(~/<path under home>/**)`, e.g. `Read(~/Documents/MyVault/**)`
 - otherwise → `Read(//<absolute path>/**)`, e.g. `Read(//Volumes/Data/MyVault/**)`
+- `Skill(obsidian:obsidian-knowledge)`
+- `Bash(${CLAUDE_SKILL_DIR}/scripts/vault.sh *)`
 
-Add it only after the user explicitly says yes. If they say no, keep working and accept the prompts.
+Add them only after the user explicitly says yes. If they say no, keep working and accept the prompts.
 
 ## Research subagents
 
