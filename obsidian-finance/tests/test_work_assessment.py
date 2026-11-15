@@ -57,6 +57,30 @@ def test_independent_gaps():
     data = snapshot()
     data["records"][0]["work"] = []
     assert "no_analysis_update" not in actions(run(data))
+    for missing in ("absent_version", None, "", "absent_projection"):
+        data = snapshot()
+        candidate = dict(id="q3-candidate", issuer="issuer", kind="financial_original",
+            version="q3-original", projection=None, available_at="2024-08-02",
+            fiscal=dict(year=2024, period="Q3", period_end="2024-06-29", original_accession="q3-original"))
+        if missing == "absent_version":
+            candidate.pop("version")
+        elif missing == "absent_projection":
+            candidate.pop("projection")
+        else:
+            candidate["version"] = missing
+        data["sources"].append(candidate)
+        result = run(data)
+        assert result["status"] == "partial"
+        assert any(g["evidence"] == "q3-candidate" for g in result["gaps"])
+        assert "no_analysis_update" not in actions(result)
+        # Known independent work remains assessable while the candidate is recovered.
+        data["sources"][0]["projection"]["value"] = 11
+        assert "append_revision_same_quarter" in actions(run(data))
+        candidate["issuer"] = "unrelated-issuer"
+        assert not any(g["evidence"] == "q3-candidate" for g in run(data)["gaps"])
+        candidate["issuer"] = "issuer"
+    candidate["projection"] = None
+    assert "create_next_quarter_analysis" in actions(run(data))
 
 
 def test_relevant_change():

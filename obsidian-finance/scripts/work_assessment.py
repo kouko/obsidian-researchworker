@@ -83,6 +83,7 @@ def assess(snapshot, mode, cutoff):
             evidence=sorted(evidence), reason=reason, affected=sorted(affected)))
 
     eligible = {}
+    incomplete_candidates = {}
     for sid, source in sorted(sources.items()):
         try:
             value = source.get("available_at")
@@ -95,6 +96,9 @@ def assess(snapshot, mode, cutoff):
             result["excluded"].append(dict(evidence=sid, reason=reason))
         elif source.get("version") and "projection" in source:
             eligible[sid] = source
+        else:
+            missing = ([] if source.get("version") else ["version"]) + ([] if "projection" in source else ["projection"])
+            incomplete_candidates[sid] = "Time-eligible source lacks " + ", ".join(missing)
 
     if not records:
         gap(None, "records", "No research records supplied")
@@ -116,6 +120,9 @@ def assess(snapshot, mode, cutoff):
             raise ValueError("historical cutoff must match saved record cutoff")
         start = len(result["decisions"])
         gaps_start = len(result["gaps"])
+        for sid, reason in incomplete_candidates.items():
+            if sources[sid].get("issuer") == record["issuer"]:
+                gap(rid, sid, reason)
         for excluded in result["excluded"]:
             if (excluded["reason"] == "unverified_availability" and
                     sources[excluded["evidence"]].get("issuer") == record["issuer"]):
