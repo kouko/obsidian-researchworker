@@ -1,9 +1,10 @@
 # Obsidian Finance — research and implementation planning draft
 
-Status: proposal; planning only. Created 2026-11-15.
-This document does not authorize implementation, installation, vault changes,
-paid services, background execution, publication, or merge. It is not a confirmed
-Loom intent, ratified specification, or executable station plan.
+Status: program proposal; first acquisition slice in implementation. Created 2026-11-15.
+This program document alone does not authorize implementation, installation,
+vault changes, paid services, background execution, publication, or merge.
+The separately confirmed acquisition intent/spec govern that slice; the wider
+program remains a proposal, not an executable station plan.
 
 ## 1. Outcome and confirmed requirements
 
@@ -339,8 +340,8 @@ not user-ratified architecture.
 
 ## 13. Next authorized boundary
 
-The current deliverable is this planning draft. Do not transplant or implement
-from it automatically. On implementation authorization, start capture-intent,
+The original deliverable was this planning draft. Do not transplant or implement
+the wider program from it automatically. On implementation authorization, start capture-intent,
 confirm outcome/scope, write the behavioral specification, then the concrete
 file/task/test plan, build, review and acceptance. Research continues whenever
 a consequential unresolved question could change those artifacts. Publication
@@ -352,14 +353,16 @@ This document is the durable program plan. Research records contain evidence;
 session handoffs contain operational restart state. Do not duplicate the entire
 plan into each handoff or mark planned work as completed research.
 
-Snapshot: 2026-11-15, Stage A research has started on user direction. The first
-acquisition-slice intent was confirmed; its behavioral specification is next.
-No runtime has been transplanted or implemented.
+Snapshot: 2026-11-15, first acquisition-slice intent and behavior confirmed.
+Independent spec and plan reviews completed; SEC acquisition transplant is
+committed at 5a7c2bd, cutoff/output at 624c30d, and packaging at 0b7030f.
+The combined suite passed 55 tests before independent adversarial/acceptance
+review. No live new-tool acquisition, host installation or full research is verified.
 
 | Stage | Current status | Existing evidence / immediate next action |
 |---|---|---|
 | A: definition and evidence | In progress | Initial primary-source revalidation and minimum acquisition scope recorded; full cross-industry coverage, report examples and horizons remain pending |
-| B: minimal transplant | Not started | Select dependency-complete subset after package and scope decisions |
+| B: minimal transplant | Implemented; independent validation pending | Three task commits and 55 passing package tests; live access remains unverified |
 | C: small equity case | Not started | Depends on transplanted tools and researched report methods |
 | D: industry contrasts | Not started | Candidate companies proposed; selected periods not yet chosen |
 | E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
@@ -376,8 +379,9 @@ are already recorded here.
 
 Continuation update: the initial revalidation and acquisition-scope study now
 exists. The intent in `docs/loom/intent/2026-11-15-finance-sec-baseline.md` was
-confirmed after the automatic-update clarification; continue its specification,
-not the intent interview or the completed initial study.
+confirmed after the automatic-update clarification; its behavior and task plan
+were subsequently confirmed/reviewed. Continue the active Build, not the intent
+interview or the completed initial study.
 This first intake may prepare the data-only slice while unresolved method studies
 continue; it does not waive the full Stage A exit conditions for advisory-report
 implementation. The earlier handoff is a historical snapshot predating this work.
