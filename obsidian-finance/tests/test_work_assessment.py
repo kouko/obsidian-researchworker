@@ -68,6 +68,12 @@ def test_relevant_change():
     assert "append_revision_same_quarter" in actions(result)
     assert result["reusable"] == []
     assert result["decisions"][0]["affected"] == ["valuation"]
+    data = snapshot()
+    data["sources"][0]["projection"] = {"nested": [{"value": True}]}
+    data["records"][0]["work"][0]["consumed"]["price"]["projection"] = {"nested": [{"value": 1}]}
+    assert run(data)["reusable"] == []
+    data["sources"][0]["projection"] = {"nested": [{"value": 1.0}]}
+    assert actions(run(data)) == {"no_analysis_update"}
 
 
 def test_timestamp_only():
@@ -107,6 +113,10 @@ def test_new_quarter():
     assert "create_next_quarter_analysis" not in actions(run(data))
     data["sources"][-1]["fiscal"]["period_end"] = "2024-06-29"
     data["sources"][-1]["fiscal"].pop("original_accession")
+    assert "create_next_quarter_analysis" not in actions(run(data))
+    assert run(data)["gaps"]
+
+    data["sources"][-1]["fiscal"]["original_accession"] = "  \t"
     assert "create_next_quarter_analysis" not in actions(run(data))
     assert run(data)["gaps"]
 

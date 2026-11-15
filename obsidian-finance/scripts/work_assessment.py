@@ -38,7 +38,8 @@ def _fiscal(value):
     try:
         date.fromisoformat(value["period_end"])
         return (type(value["year"]) is int and value["period"] in ("Q1", "Q2", "Q3", "Q4")
-                and bool(value["original_accession"]))
+                and isinstance(value["original_accession"], str)
+                and bool(value["original_accession"].strip()))
     except (KeyError, TypeError, ValueError):
         return False
 
@@ -48,6 +49,17 @@ def _indexed(items):
     if len(result) != len(items):
         raise ValueError("duplicate identity")
     return result
+
+
+def _same_json(left, right):
+    """Compare JSON recursively, preserving booleans but allowing 1 == 1.0."""
+    if isinstance(left, bool) or isinstance(right, bool):
+        return type(left) is type(right) and left == right
+    if isinstance(left, dict) and isinstance(right, dict):
+        return left.keys() == right.keys() and all(_same_json(left[key], right[key]) for key in left)
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(_same_json(a, b) for a, b in zip(left, right))
+    return left == right
 
 
 def assess(snapshot, mode, cutoff):
@@ -151,7 +163,7 @@ def assess(snapshot, mode, cutoff):
                 current = eligible.get(sid)
                 if not current or current.get("issuer") != record["issuer"] or sid not in consumed:
                     reasons[wid].append("Missing eligible dependency or consumed identity: " + sid)
-                elif consumed[sid] != {k: current[k] for k in ("version", "projection")}:
+                elif not _same_json(consumed[sid], {k: current[k] for k in ("version", "projection")}):
                     changed[wid].append(sid)
             output = item.get("output", {})
             content = output.get("content")
