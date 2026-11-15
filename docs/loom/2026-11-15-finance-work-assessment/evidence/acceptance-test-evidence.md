@@ -57,87 +57,87 @@ The automated test suite runs before acceptance and blocks acceptance on failure
 - How I tried it: test_shipped_skill_inventory, test_retained_skills_have_no_retired_dependencies, test_clean_valid_canvas_exits_zero, test_traceable_package, parametrized test_quarter_package. README documents prototype boundary; only representative offline regressions, not full note behavior or live acquisition.
 - What came back: focused checks passed; actual CLI evidence below supports the bounded verdict.
 
-## 8. UI flow: Ordinary assessment
+## UI-1. UI flow: Ordinary assessment
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned work, reason, evidence and affected dimensions; exit 0.
 
-## 9. UI flow: No required work
+## UI-2. UI flow: No required work
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned no_analysis_update within supplied evidence; external freshness unverified.
 
-## 10. UI flow: Only timestamps changed
+## UI-3. UI flow: Only timestamps changed
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Touching the output did not alter the result.
 
-## 11. UI flow: Frozen history
+## UI-4. UI flow: Frozen history
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Excluded after_cutoff evidence and reported gaps; exit 2.
 
-## 12. UI flow: Latest price
+## UI-5. UI flow: Latest price
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned append_revision_same_quarter with no invented fiscal quarter.
 
-## 13. UI flow: New fiscal quarter
+## UI-6. UI flow: New fiscal quarter
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned create_next_quarter_analysis justified by source q3.
 
-## 14. UI flow: Incomplete cycle
+## UI-7. UI flow: Incomplete cycle
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned remaining synthesis work and reusable valuation; no execution claim.
 
-## 15. UI flow: Changed prerequisite
+## UI-8. UI flow: Changed prerequisite
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned same-quarter recomputation and no reusable output.
 
-## 16. UI flow: Missing required evidence
+## UI-9. UI flow: Missing required evidence
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Returned gap/recovery and partial status; exit 2.
 
-## 17. UI flow: Freshness unknown
+## UI-10. UI flow: Freshness unknown
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: external_freshness unverified; no last-success timestamp invented.
 
-## 18. UI flow: No research records
+## UI-11. UI flow: No research records
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Reported No research records supplied; exit 2.
 
-## 19. UI flow: Invalid request
+## UI-12. UI flow: Invalid request
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Reported missing arguments and correction; exit 64.
 
-## 20. UI flow: Unreadable local data
+## UI-13. UI flow: Unreadable local data
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Reported Cannot read assessment input and correction; exit 1.
 
-## 21. UI flow: Unsupported input
+## UI-14. UI flow: Unsupported input
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Reported Unsupported assessment input version; exit 1.
 
-## 22. UI flow: Escaping reference
+## UI-15. UI flow: Escaping reference
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Reported Reference outside assessment root; exit 1.
 
-## 23. UI flow: In progress
+## UI-16. UI flow: In progress
 
 - How I tried it: Actual CLI scenario captured below; equivalent scenarios share one invocation where their observable behavior is the same.
 - What came back: Synchronous single result returned; exact directory/file-byte inventory unchanged.
 
-## 24. UI flow: Stop and retry
+## UI-17. UI flow: Stop and retry
 
 - How I tried it: Focused test_interrupted_retry injects KeyboardInterrupt during assessment, checks original snapshot bytes, then retries; a separate real CLI invocation reproduced baseline.
 - What came back: Controlled interruption and fresh CLI retry passed; research execution was not resumed.
@@ -197,23 +197,23 @@ Captured: `2 passed in 0.00s`. These complete the affected saved-work/reuse surf
 - 5: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
 - 6: carried over — no writes, period creation, execution or ordering behavior changed.
 - 7: carried over — general-note, acquisition and documented scope surfaces are untouched.
-- 8: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 9: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 10: carried over — timestamp and complete-source comparison paths are untouched.
-- 11: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 12: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 13: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 14: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 15: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 16: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 17: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 18: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 19: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 20: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 21: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 22: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 23: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
-- 24: carried over — interruption, retry and read-adapter paths are unchanged.
+- UI-1: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-2: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-3: carried over — timestamp and complete-source comparison paths are untouched.
+- UI-4: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-5: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-6: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-7: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-8: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-9: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-10: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-11: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-12: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-13: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-14: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-15: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-16: re-tested — the full row's described surfaces were exercised by the focused tests and actual CLI walk below; passed.
+- UI-17: carried over — interruption, retry and read-adapter paths are unchanged.
 
 Actual subprocess rerun command: `/private/tmp/finance-validation-env/bin/python /private/tmp/acceptance_rerun.py`. Required targeted assertions passed for supplemental source `q3-candidate` missing `version` and missing `projection`: exit 2, partial status, candidate-specific missing-field gap, no `no_analysis_update`. Repeating each with an independent changed price retained `append_revision_same_quarter`. Input byte inventories remained identical before/after every invocation. Prior evidence above is preserved; carried verdicts were checked against the exact fix diff.
 
