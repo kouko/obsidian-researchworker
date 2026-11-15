@@ -105,6 +105,37 @@ successful survivors alone do not test failure handling.
 
 ## 6. Historical data and time semantics
 
+User clarification, 2026-11-15: use company fiscal quarter YYYYQq as the primary
+research key, independently of issuer release schedules. The normal review is
+a retrospective snapshot of the selected quarter; a historical decision
+reconstruction has a separately declared information cutoff. Keep the actual
+fiscal period, calendar-period mapping, release dates and revisions as metadata.
+No calendar-month or current-year-end guessing for historical fiscal periods.
+Quarter keys do not imply complete single-quarter statements or Q4 arithmetic.
+
+Further user clarification, 2026-11-15: fiscal quarter selects the financial
+reporting period, not a universal update frequency or a universal information
+cutoff. A research assessment has its own as-of timestamp. Financials, prices,
+market conditions, macro releases and material company events each retain
+observation periods, public-release timestamps and source versions. All inputs
+to one recommendation must have been available by that assessment's cutoff;
+they need not share an observation period or release date. Financial analysis
+may need prior quarters/years as comparisons, not only the selected quarter.
+
+Preserve a release-time historical assessment separately from later current
+assessments using the same financial quarter plus newer eligible market/event
+evidence. Never overwrite the original judgment or use later market data in
+its historical reconstruction. A later financial filing can be a new baseline;
+do not describe the old selected quarter as the latest financial information
+when newer eligible financial disclosures exist. Cadences below are design
+candidates, not a shipped scheduler: financial filings per quarter/revision,
+market/prices per assessment or trading day, macro per release, material
+business/competitive events when relevant evidence changes. Only affected
+research dimensions need updating; refresh synthesis when their conclusions
+or recommendation inputs change. SEC acquisition alone does not implement
+market/macro ingestion, valuations or investment recommendations.
+
+
 Track independently: fiscal period start/end, source publication date/time,
 retrieval time, research cutoff and analysis completion time. Keep fiscal years
 distinct from calendar years, and handle 52/53-week accounting calendars.
@@ -174,13 +205,13 @@ no bulk migration is needed to validate it.
 | investing/shared/industries/ | Dated industry/comparable-company analyses |
 | investing/shared/themes/ | Dated cross-industry themes |
 | investing/assets/equities/{stable-id}/ | One company's overview and history |
-| investing/assets/equities/{stable-id}/cycles/{cutoff}-{review}/ | One review's progress, dimension notes and integrated assessment |
+| investing/assets/equities/{stable-id}/cycles/{fiscal-quarter}/{cutoff}-{review}/ | One review's progress, dimension notes and integrated assessment |
 | investing/assets/equities/{stable-id}/events/ | Material changes between formal reviews |
 | investing/assets/equities/{stable-id}/data/ | Durable source manifests, needed snapshots and calculations |
 | investing/portfolio/ | Optional portfolio-level research, outside the first equity slice |
 
 Other asset subfolders appear only when implemented; do not create empty trees
-or nonexistent-note links. New dated notes follow `YYYY-MM-DD {asset-id} {topic}.md`.
+or nonexistent-note links. Quarter research notes use `{fiscal-quarter} {asset-id} {topic}.md` within their review directory; event notes retain `YYYY-MM-DD {asset-id} {topic}.md`. Multiple dated reviews of one quarter remain separate.
 The durable identifier must disambiguate listing/entity and survive renames;
 ticker and issuer filing identifier are separate metadata, not interchangeable.
 
@@ -395,6 +426,7 @@ implementation. The earlier handoff is a historical snapshot predating this work
 | Transplant before reuse/modification | User-confirmed | Source repository stays read-only; no original-path runtime dependencies |
 | Methods in skills, private conditions in vault | Planning agreement | No duplicated generic policy manual in vault |
 | Sibling plugin / obsidian-finance name | Agent recommendation, provisional | Confirm product boundary and name before implementation |
+| Company fiscal quarter as primary research key | User-confirmed 2026-11-15 | Release dates remain source/version/cutoff metadata; quarter interface not implemented |
 | Short/medium/long durations | Unresolved | Method research must justify proposed definitions |
 | Hosts, providers, paid budgets | Unresolved | Determine before related execution or spending |
 | Vault layout and individual note templates | Proposed | Validate against real examples before standardizing |
