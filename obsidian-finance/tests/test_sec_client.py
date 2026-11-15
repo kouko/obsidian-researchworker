@@ -49,12 +49,18 @@ def test_issuer_acquisition():
 
 
 @pytest.mark.parametrize('section', [1, 2])
-def test_mismatched_issuer(section):
+@pytest.mark.parametrize('value,code', [
+    (1, 'ISSUER_MISMATCH'), (320193.5, 'INVALID_SOURCE_DATA'),
+    (320193.0, 'INVALID_SOURCE_DATA'), (True, 'INVALID_SOURCE_DATA'),
+    ('320193.5', 'INVALID_SOURCE_DATA'), (' 320193', 'INVALID_SOURCE_DATA'),
+])
+def test_mismatched_issuer(section, value, code):
     data = responses()
-    data[section]['cik'] = 1
+    data[section]['cik'] = value
     result, _ = run(data)
-    assert any(e['code'] == 'ISSUER_MISMATCH' for e in result['errors'])
-    assert result['identity_valid'] is False
+    assert any(e['code'] == code for e in result['errors'])
+    if code == 'ISSUER_MISMATCH':
+        assert result['identity_valid'] is False
 
 
 def test_archived_filings():

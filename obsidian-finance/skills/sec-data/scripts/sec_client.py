@@ -116,10 +116,12 @@ def acquire(ticker, as_of, identity, fetch=None):
     def issuer(payload):
         if not isinstance(payload, dict):
             raise ValueError()
-        try:
-            matches = int(payload.get('cik')) == cik
-        except (TypeError, ValueError):
-            raise ValueError() from None
+        value = payload.get('cik')
+        if type(value) is not int and not (
+            isinstance(value, str) and re.fullmatch(r'[0-9]{1,10}', value)
+        ):
+            raise ValueError()
+        matches = int(value) == cik
         if not matches:
             result['identity_valid'] = False
             raise ValueError()
