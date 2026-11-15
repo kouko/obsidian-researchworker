@@ -166,6 +166,30 @@ def test_search_cli_closed_vault_falls_back_to_grep(tmp_path):
     assert out == [str(vault / "sub" / "beta.md")]
 
 
+def test_search_empty_word_alone_returns_empty(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    assert _run_search(tmp_path, vault, "") == []
+
+
+def test_search_whitespace_only_word_returns_empty(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    assert _run_search(tmp_path, vault, "   ") == []
+
+
+def test_search_mixed_empty_and_real_words_uses_real_only(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    out = _run_search(tmp_path, vault, "", "DuckDB")
+    assert out == [str(vault / "alpha.md")]
+
+
+def test_search_cli_error_line_never_printed_as_path(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'alpha.md\\nError: Missing required parameter: query\\n'\n")
+    out = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)
+    assert out == [str(vault / "alpha.md")]
+    assert not any("Error" in line for line in out)
+
+
 def test_search_grep_skips_hidden_directories(tmp_path):
     """Hidden dirs other than .obsidian/.trash never leak into search results."""
     vault = tmp_path / "vault"

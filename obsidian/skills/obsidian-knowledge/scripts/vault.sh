@@ -108,6 +108,18 @@ do_search() {
     vault=$1
     shift
 
+    # Keep only query words with at least one non-blank character.
+    n=0
+    for w in "$@"; do
+        case $w in
+            *[![:space:]]*)
+                if [ "$n" -eq 0 ]; then set -- "$w"; else set -- "$@" "$w"; fi
+                n=$((n + 1))
+                ;;
+        esac
+    done
+    [ "$n" -gt 0 ] || exit 0
+
     cli=${OBSIDIAN_CLI_BIN:-}
     if [ -z "$cli" ]; then
         for c in /Applications/Obsidian.app/Contents/MacOS/obsidian-cli obsidian; do
@@ -136,6 +148,11 @@ do_search() {
         if [ -n "$out" ] && ! printf '%s\n' "$out" | grep -q "Vault not found" \
            && ! printf '%s\n' "$out" | grep -q "No matches found"; then
             printf '%s\n' "$out" | while read -r rel; do
+                case $rel in
+                    Error:*|*": "*) continue ;;
+                    [!/]*) ;;
+                    *) continue ;;
+                esac
                 [ -n "$rel" ] || continue
                 printf '%s/%s\n' "$vault" "$rel"
             done
