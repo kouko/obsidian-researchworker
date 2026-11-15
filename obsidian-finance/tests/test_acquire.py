@@ -143,7 +143,23 @@ def test_cutoff_filter(tmp_path, monkeypatch):
     assert len(read(path, 'raw/companyfacts.json')['facts']['us-gaap']['Revenues']['units']['USD']) == 5
 
 
-@pytest.mark.parametrize('mode', ['date', 'acceptance', 'duplicate'])
+def test_after_hours_apple_replay(tmp_path, monkeypatch):
+    data = payloads()
+    block = data[1]['filings']['recent']
+    block.update(accessionNumber=['0000320193-24-000081'], form=['10-Q'],
+        filingDate=['2024-08-02'], reportDate=['2024-06-29'],
+        acceptanceDateTime=['2024-08-01T22:03:34Z'])
+    data[2]['facts']['us-gaap']['Revenues']['units']['USD'][0].update(
+        accn='0000320193-24-000081', filed='2024-08-02', end='2024-06-29')
+    summary, path, _ = execute(tmp_path, monkeypatch, data)
+    assert summary['status'] == 'complete'
+    assert read(path, 'eligible-facts.json')[0]['accession_in_inventory']
+    filing = read(path, 'filings.json')[0]
+    assert (filing['acceptanceDateTime'], filing['filingDate']) == (
+        '2024-08-01T22:03:34Z', '2024-08-02')
+
+
+@pytest.mark.parametrize('mode', ['date', 'acceptance', 'malformed_acceptance', 'duplicate'])
 def test_amendment_conflict(tmp_path, monkeypatch, mode):
     data = payloads()
     block = data[1]['filings']['recent']
@@ -151,6 +167,8 @@ def test_amendment_conflict(tmp_path, monkeypatch, mode):
         data[2]['facts']['us-gaap']['Revenues']['units']['USD'][0]['filed'] = '2024-11-02'
     elif mode == 'acceptance':
         block['acceptanceDateTime'] = ['2025-01-01T10:00:00Z']
+    elif mode == 'malformed_acceptance':
+        block['acceptanceDateTime'] = ['not-a-timestamp']
     else:
         for key, values in block.items():
             values.append('2024-11-02' if key == 'filingDate' else values[0])

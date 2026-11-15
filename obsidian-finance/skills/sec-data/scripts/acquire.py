@@ -81,8 +81,10 @@ def _select(data, start, end, cutoff):
             accepted = filing.get('acceptanceDateTime')
             if _date(filing.get('filingDate')) != filed:
                 return True
-            if accepted and _acceptance_date(accepted) != filed:
-                return True
+            if accepted:
+                accepted_date = _acceptance_date(accepted)
+                if accepted_date is None or accepted_date > filed:
+                    return True
         return False
 
     for row in valid_filings:
