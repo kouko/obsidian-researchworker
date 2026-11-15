@@ -39,9 +39,12 @@ def _candidates():
 def find_vaults():
     seen, out = set(), []
     for raw in _candidates():
-        if not raw:
-            continue
-        path = os.path.abspath(os.path.expanduser(raw))
+        if not raw or any(ord(c) < 32 or ord(c) == 127 for c in raw):
+            continue  # control chars would inject extra output lines
+        expanded = os.path.expanduser(raw)
+        if not os.path.isabs(expanded):
+            continue  # relative paths would resolve against cwd
+        path = os.path.normpath(expanded)
         if path not in seen and os.path.isdir(path):
             seen.add(path)
             out.append(path)

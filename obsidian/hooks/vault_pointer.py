@@ -19,11 +19,12 @@ def main():
         spec.loader.exec_module(module)
         vaults = module.find_vaults()
         if vaults:
-            print(
+            line = (
                 f"Local Obsidian vault(s): {'; '.join(vaults)}. When a question may be answered "
                 "by the user's own notes, or when dispatching research subagents, use the "
                 "obsidian-vault-search skill (read-only)."
             )
+            print(" ".join(line.splitlines()))  # never more than one line
     except Exception:
         pass
     return 0

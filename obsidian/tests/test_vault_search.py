@@ -89,6 +89,15 @@ def test_hook_emits_one_line_with_vault_paths(tmp_path):
     assert "obsidian-vault-search skill (read-only)" in lines[0]
 
 
+def test_hook_skips_relative_and_control_char_env_vaults(tmp_path):
+    good, rel, evil = tmp_path / "good", tmp_path / "rel", tmp_path / "x\nINJECTED"
+    for d in (good, rel, evil):
+        d.mkdir()
+    lines = _run_hook(tmp_path, os.pathsep.join(["rel", str(evil), str(good)])).splitlines()
+    assert len(lines) == 1
+    assert lines[0].startswith(f"Local Obsidian vault(s): {good}. ")
+
+
 def test_hook_silent_and_exit0_without_vault(tmp_path):
     assert _run_hook(tmp_path) == ""
     hooks = json.loads((HOOKS_DIR / "hooks.json").read_text())
