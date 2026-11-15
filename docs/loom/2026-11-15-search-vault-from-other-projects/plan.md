@@ -34,6 +34,11 @@ Wave 2 — evidence.
 - Test: docs only — exempt from Test pairs.
 - Risk: run read-only against the user's vault from a non-vault cwd; record found/not-found per question, no note bodies copied. agent-decided.
 
+**W2-02 Graduate hostile-registry probe**  after: W1-01  acceptance: 3
+- Files: `obsidian/tests/test_find_vaults_hostile_registry.py`, docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_find_vaults_hostile_registry.py
+- Test: A3 positive: test_find_vaults_newline_in_path_never_splits_line; boundary: test_find_vaults_relative_registry_path_not_reported.
+- Risk: probe caught two defects (fixed f0de4a6); move unchanged into package suite per review.probe-graduation. agent-decided.
+
 ## Simplicity check
 - Skill only, no hook — declined: skill descriptions are dropped from the listing on the user's machine (spec Alternatives).
 - Locator logic inline in skill text instead of script — declined: hook needs the same logic; one script avoids two copies.
