@@ -3,9 +3,9 @@
 ## Scope and status
 
 2026-11-15 amendment within 2026-11-15-finance-sec-baseline. User requested
-company fiscal quarter YYYYQq as the research unit. Revised spec is awaiting
-visible-behavior confirmation. No runtime repair or quarter interface has been
-implemented. Previous 74 passing tests and closing review do not certify this
+company fiscal quarter YYYYQq as the research unit and confirmed the amended
+behavior. Runtime repair `f1408de` and quarter entry `61b79c9` are implemented;
+amended review/acceptance remain pending. Previous 74 passing tests and closing review do not certify this
 amendment; live acquisition exposed a defect after those checks.
 
 ## Observed live failure
@@ -19,9 +19,9 @@ local evidence, not a durable repository fixture or private vault write.
 
 Accession 0000320193-24-000081 has reportDate 2024-06-29, filingDate 2024-08-02,
 and acceptanceDateTime 2024-08-01T22:03:34.000Z. Its Assets and NetIncomeLoss
-observations exist in raw companyfacts but are excluded. The runtime converts
-the acceptance timestamp to America/New_York and requires date equality with
-filingDate. That equality is not a valid general requirement. The acceptance
+observations existed in raw companyfacts but were excluded. The defective runtime converted
+the acceptance timestamp to America/New_York and required date equality with
+filingDate. That equality was not a valid general requirement. The acceptance
 instant is 18:03:34 EDT, consistent with an after-17:30 next-business-day
 filing-date assignment; consistency is not independent proof of dissemination
 time. Keep official filing-date cutoff semantics, not inferred intraday access.
@@ -79,5 +79,43 @@ old quarter as latest when newer financial disclosures are available.
 A fresh-context pre-build spec review returned NEEDS_REVISION: declaration
 sources and fiscal-period output fields need positive contracts; unresolved
 quarter resolution needs explicit status/exit precedence; default-mode wording
-needs reconciliation with these user clarifications. No implementation started,
-and no prior review counters were reset. Fix these before quarter Build.
+needed reconciliation with these user clarifications. At that checkpoint no
+implementation had started and no prior review counters were reset. Spec
+`39c8225` resolved these findings and subsequent pre-build re-review passed.
+
+## Implemented correction and observed quarter acquisition
+
+W6-01 removed acceptance-date equality while retaining malformed acceptance,
+impossible chronology, official-filing-date contradictions and strict cutoffs.
+Replaying the four original raw responses without network access changed the
+date-range result from empty/0 observations/93 filings to complete/126/124.
+
+W6-02 nominates documents only from companyfacts accession/end pairs matching
+submissions reportDate, then binds the requested quarter through same-context
+primary-filing fiscal-year, fiscal-period, endpoint and issuer DEI declarations.
+It retains source URL/hash, raw HTML and the literal endpoint; current
+fiscalYearEnd and calendar-month guessing are absent. Supported date evidence is
+ISO or `date-monthname-day-year-en`; unsupported transformations fail unresolved.
+The original Apple primary document declares 2024/Q3/2024-06-29/0000320193 in
+context `c-1`; the displayed endpoint uses `June 29, 2024` with that transformation.
+Context agreement is not a full XBRL context-semantics validator.
+
+At `61b79c9`, preserved-payload quarter replay and one genuine network CLI
+request both returned complete/exit 0, 125 eligible observations, 124 inventory
+filings, five valid sources and no source errors at cutoff 2024-08-15.
+Quarter mode selects exactly endpoint 2024-06-29; the broader original date
+range also selected one other endpoint. Inventory spans acquired eligible
+history, not only the selected quarter. Annual/YTD starts and versions survive;
+Q4 uses an FY filing endpoint without deriving a standalone Q4 value.
+
+Offline boundary replays confirm an omitted cutoff produces a retrospective
+snapshot using UTC acquisition date, while cutoff 2024-08-01 fails unresolved
+without an eligible dataset or completion marker. These are acquisition semantics,
+not recommendation timing or a restriction on all later market research.
+
+See [exact inputs, hashes, results and verification limits](../2026-11-15-finance-sec-baseline/evidence/quarter-replay.md).
+The live call used an explicitly user-authorized non-real test identity; no
+genuine-contact validation or installed-host invocation is claimed. The 71
+scoped runtime tests are new evidence, not a replacement full-suite or closing
+review. Preserve the failed baseline and earlier review accounting; no publication,
+global installation, actual-vault write or original-project change occurred.

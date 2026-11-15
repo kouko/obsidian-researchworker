@@ -1,6 +1,7 @@
 # Obsidian Finance — research and implementation planning draft
 
-Status: program proposal; first acquisition slice in implementation. Created 2026-11-15.
+Status: wider program proposal; fiscal-quarter acquisition implemented and live-tested,
+with amended independent review/acceptance pending. Created 2026-11-15.
 This program document alone does not authorize implementation, installation,
 vault changes, paid services, background execution, publication, or merge.
 The separately confirmed acquisition intent/spec govern that slice; the wider
@@ -25,17 +26,18 @@ Confirmed by the user:
 - Transplant any reused Monkey Skills tooling here before using or modifying it.
 - Treat Monkey Skills as read-only and eliminate runtime dependencies on its paths.
 
-Candidate direction, not a confirmed requirement: a sibling optional plugin named
-`obsidian-finance` in this repository, separate from the existing `obsidian` plugin.
+Selected for the confirmed acquisition slice: a sibling optional plugin named
+`obsidian-finance`, separate from the existing `obsidian` plugin. This selection
+does not ratify the wider research architecture or authorize host installation.
 
 ## 2. Scope and alternatives
 
 | Choice | Benefit | Cost / limitation | Proposed handling |
 |---|---|---|---|
 | Add finance to obsidian | One distribution surface | Couples ordinary notes to finance dependencies | Not preferred for this scope |
-| Sibling optional plugin | Independent installation, dependencies and release | More manifests and host verification | Preferred, validate before implementation |
+| Sibling optional plugin | Independent installation, dependencies and release | More manifests and host verification | Selected and implemented for the acquisition slice |
 | Separate repository | Independent ownership | More coordination, no demonstrated need | Exclude for now |
-| Research documents only | Small, reversible learning step | No runnable capability | Current authorized work |
+| Research documents only | Small, reversible learning step | No runnable capability | Earlier boundary; confirmed acquisition implementation now exists |
 
 Use a small equity implementation to learn, while retaining the full historical
 and cross-asset objective. Do not silently redefine success as two quarters or
@@ -51,9 +53,9 @@ equity evidence, not a universal template assumed in advance.
 | Vault | Personal investment settings, sources, datasets and actual research | A copied, separately maintained generic research manual |
 | Repository docs | Design decisions, research evidence, provenance and validation | Private portfolio contents or credentials |
 
-Proposed source root: `obsidian-finance/`, with skill instructions, bundled method
-references, executable scripts, tests, licenses/provenance and host metadata.
-Exact internal layout and public skill names are design outputs, not fixed here.
+Implemented acquisition root: `obsidian-finance/`, with one `sec-data` skill,
+executable scripts, tests, licenses/provenance and Claude/Codex host metadata.
+Additional research methods and layout remain future design outputs.
 Do not mirror the toolkit's complete skill count or three-layer directory tree
 merely to preserve its appearance.
 
@@ -361,13 +363,13 @@ benchmarks, costs, outcome windows and selection-bias treatment; none are claime
 | Oversized per-quarter file count | Split only meaningful dimensions; reference unchanged eligible work |
 | Automation cost growth | Measure bounded batches; explicit budgets and stops |
 | Generic plugin versus personal finance settings | Methods bundled; private choices/data remain local |
-| Plugin name and installation scope | obsidian-finance is provisional; host choice must be explicit before host testing |
+| Plugin name and installation scope | obsidian-finance selected for acquisition; host choice remains explicit before installation/testing |
 | Short/medium/long boundaries and benchmark | Decide from method research before report acceptance; not universal constants |
 
-Agent-decided proposals: sibling package, no external runtime dependency, no new
-shared framework, standalone basic Markdown output, Apple depth plus contrast
-cases, and manual initiation before scheduling. These are reasoned proposals,
-not user-ratified architecture.
+The confirmed acquisition slice implements the sibling package with standard-library
+runtime and structured JSON data output. Wider proposals include no new shared
+framework, standalone research Markdown, Apple depth plus contrast cases, and
+manual initiation before scheduling; they are not user-ratified wider architecture.
 
 ## 13. Next authorized boundary
 
@@ -384,7 +386,8 @@ This document is the durable program plan. Research records contain evidence;
 session handoffs contain operational restart state. Do not duplicate the entire
 plan into each handoff or mark planned work as completed research.
 
-Snapshot: 2026-11-15, first acquisition-slice intent and behavior confirmed.
+Historical snapshot, superseded by the continuation below: 2026-11-15, first
+acquisition-slice intent and behavior confirmed.
 Independent spec and plan reviews completed; SEC acquisition transplant is
 committed at 5a7c2bd, cutoff/output at 624c30d, and packaging at 0b7030f.
 The combined suite passed 55 tests before independent adversarial/acceptance
@@ -393,14 +396,15 @@ review. No live new-tool acquisition, host installation or full research is veri
 | Stage | Current status | Existing evidence / immediate next action |
 |---|---|---|
 | A: definition and evidence | In progress | Initial primary-source revalidation and minimum acquisition scope recorded; full cross-industry coverage, report examples and horizons remain pending |
-| B: minimal transplant | Implemented; independent validation pending | Three task commits and 55 passing package tests; live access remains unverified |
+| B: minimal transplant | Acquisition and quarter entry implemented; amended review/acceptance pending | W6 runtime at 61b79c9: 71 scoped tests, real-payload replay and live AAPL 2024Q3 CLI acquisition; see quarter evidence below |
 | C: small equity case | Not started | Depends on transplanted tools and researched report methods |
 | D: industry contrasts | Not started | Candidate companies proposed; selected periods not yet chosen |
 | E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
 | F: ongoing research | Not started | No host chosen or finance plugin installed |
 | G: assets / automation | Not started | Long-term scope only; no scheduling or trading authorization |
 
-Next session's first substantive work should be Stage A: examine the original
+Earlier next-session guidance, superseded by the active-Build continuation:
+Stage A should examine the original
 sources behind the existing long-horizon study, produce an equity-method and
 report-format comparison, and identify data coverage gaps for Apple plus industry
 contrasts. This is research, not permission to transplant or execute source tools.
@@ -417,6 +421,20 @@ This first intake may prepare the data-only slice while unresolved method studie
 continue; it does not waive the full Stage A exit conditions for advisory-report
 implementation. The earlier handoff is a historical snapshot predating this work.
 
+Current continuation, 2026-11-15: the earlier 74-test closing review preceded a
+live after-hours filing failure and does not certify the fiscal-quarter amendment.
+W6-01 (`f1408de`) repairs that false exclusion; W6-02 (`61b79c9`) adds
+source-declared quarter selection. Scoped runtime tests passed 71 cases. A real
+payload replay and one live CLI run both resolved AAPL 2024Q3 to 2024-06-29
+and returned 125 eligible observations and 124 historical inventory filings at
+cutoff 2024-08-15. The 124 filings are not 124 reports for this quarter.
+The [recorded evidence](../loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md)
+separates synthetic tests, offline replays, live transport and unverified host
+invocation. The live call used an explicitly authorized non-real test identity;
+normal operation still requires the operator's genuine contact. New full-suite,
+adversarial, closing-review and acceptance results remain pending. Continue that
+existing Build/review episode without resetting earlier counts or publishing.
+
 ### Decision register
 
 | Topic | Status | Basis / remaining action |
@@ -425,8 +443,8 @@ implementation. The earlier handoff is a historical snapshot predating this work
 | Cross-industry validation | User-confirmed | Exact case set and periods remain proposed |
 | Transplant before reuse/modification | User-confirmed | Source repository stays read-only; no original-path runtime dependencies |
 | Methods in skills, private conditions in vault | Planning agreement | No duplicated generic policy manual in vault |
-| Sibling plugin / obsidian-finance name | Agent recommendation, provisional | Confirm product boundary and name before implementation |
-| Company fiscal quarter as primary research key | User-confirmed 2026-11-15 | Release dates remain source/version/cutoff metadata; quarter interface not implemented |
+| Sibling plugin / obsidian-finance name | Selected for confirmed acquisition slice | Package implemented; global installation and fresh-host invocation remain unverified |
+| Company fiscal quarter as primary research key | User-confirmed 2026-11-15; acquisition implemented | DEI-bound quarter entry at 61b79c9; release dates remain source/version/cutoff metadata, not a universal analysis cutoff |
 | Short/medium/long durations | Unresolved | Method research must justify proposed definitions |
 | Hosts, providers, paid budgets | Unresolved | Determine before related execution or spending |
 | Vault layout and individual note templates | Proposed | Validate against real examples before standardizing |
@@ -446,6 +464,7 @@ Research index:
 - [Existing tool assessment and bounded Apple probe](../loom/research/2026-11-15-investment-tooling-reuse.md).
 - [Primary-source revalidation and first-slice scope](../loom/research/2026-11-15-finance-first-slice-scope.md).
 - [Confirmed acquisition-slice intent](../loom/intent/2026-11-15-finance-sec-baseline.md).
+- [Fiscal-quarter replay and live CLI evidence](../loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md).
 
 Session-specific restart instructions are saved separately under
 `.claude/handoffs/`; consult the explicitly provided latest handoff path rather
