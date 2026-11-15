@@ -160,3 +160,37 @@ def test_skill_caps_subagent_at_10():
     text = _skill()[0]
     assert "reads at most 10 notes" in text
     assert "dispatches no further subagents" in text
+
+
+def test_hook_leaves_no_pycache_in_skill(tmp_path):
+    import shutil
+    cache = SKILL.parent / "scripts/__pycache__"
+    shutil.rmtree(cache, ignore_errors=True)
+    _run_hook(tmp_path)
+    assert not cache.exists()
+
+
+ROUTER = REPO_ROOT / "obsidian/skills/using-obsidian/SKILL.md"
+SHIPPED = [p for d in (SKILL.parent, HOOKS_DIR) for p in d.rglob("*") if p.is_file() and "__pycache__" not in p.parts]
+
+
+def test_inventory_includes_vault_search():
+    plugin = json.loads((REPO_ROOT / "obsidian/.claude-plugin/plugin.json").read_text())
+    assert plugin["version"] == "4.1.0" and "15" in plugin["description"]
+
+
+def test_routing_table_lists_vault_search():
+    assert "`obsidian-vault-search`" in ROUTER.read_text()
+
+
+def test_shipped_files_have_no_personal_vault_path():
+    for p in SHIPPED:
+        text = p.read_text()
+        assert "kouko-obsidian-vault" not in text and "/Users/" not in text, p
+
+
+def test_shipped_files_have_no_user_folder_names():
+    for p in SHIPPED:
+        text = p.read_text()
+        for name in ("research/", "references/", "reading_list"):
+            assert name not in text, (p, name)

@@ -21,7 +21,7 @@ installation only, with real usage still unmet.
 
 ## Version
 
-4.0.0 — see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json).
+4.1.0 — see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json).
 
 ## Independent distribution
 
@@ -30,6 +30,7 @@ Maintained in [Obsidian ResearchWorker](../README.md), extracted from
 `obsidian`. Version 4.0.0 retains 14 skills and removes the eight wiki skills
 and daily-news-digest. General daily notes, topic research, Defuddle extraction
 and ordinary wikilinks remain. Existing vault output and settings are untouched.
+Version 4.1.0 adds `obsidian-vault-search` (15 skills).
 Read the [transition guide](../docs/migration.md) before changing installations.
 The [verification record](../docs/verification.md) documents isolated Codex
 local-source installation at its recorded revision; skill execution and note
@@ -78,6 +79,7 @@ edits — and asks before reorganizing when the destination is ambiguous.
 | `obsidian-vault-setup` | Interactive first-time vault configurator — infers role and scope from free-text answers. |
 | `obsidian-tldr` | Save a conversation summary to the vault and update `memory.md`. |
 | `obsidian-research` | Research a topic on the web (English + Japanese, plus the topic's own language) and write a readable research note with a TOC to `research/`. |
+| `obsidian-vault-search` | Search the local vault from any project, read-only. A SessionStart hook tells each session where the vault is. |
 | `obsidian-file-intel` | Extract content from PDF / PPTX / XLSX / DOCX / CSV / JSON via Gemini and produce Obsidian-ready summaries. |
 | `dashboard-design` | Guide dashboard design from requirements to layout, grounded in Japan Digital Agency dashboard guidelines. |
 
@@ -126,6 +128,15 @@ vault. That script is not bundled, and this distribution provides no acquisition
 or setup procedure. File processing is unavailable without an existing compatible
 script; independent setup and execution remain unverified.
 
+The `obsidian-vault-search` skill reads the vault from other projects. A
+SessionStart hook (`hooks/hooks.json`) prints the vault path at session start.
+If reading the vault triggers permission prompts, add one read rule to
+`~/.claude/settings.json` → `permissions.allow`, e.g.
+`Read(~/Documents/MyVault/**)`; the skill shows the exact line and adds it
+only after you say yes. Privacy: note text the skill reads is sent to your
+model provider. Support: Claude Code on macOS verified; Linux unverified;
+Windows unsupported.
+
 ## Usage
 
 Start the day:
@@ -162,9 +173,10 @@ sequence diagram type, applies Obsidian 11.4.1 quirks, and emits a
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata, version 4.0.0
+│   └── plugin.json              # plugin metadata, version 4.1.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault hygiene agent
+├── hooks/                       # SessionStart vault pointer
 ├── skills/
 │   ├── README.md                # per-skill attribution table
 │   ├── using-obsidian/          # router (original)
@@ -172,6 +184,7 @@ obsidian/
 │   ├── obsidian-vault-setup/    # vault configurator (original)
 │   ├── obsidian-tldr/           # conversation summary (original)
 │   ├── obsidian-research/       # web research → vault note (original)
+│   ├── obsidian-vault-search/   # read-only vault search (original)
 │   ├── obsidian-file-intel/     # file → Obsidian summaries (original)
 │   ├── dashboard-design/        # dashboard design (original)
 │   ├── obsidian-markdown/       # imported from kepano

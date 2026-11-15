@@ -8,6 +8,7 @@ import sys
 
 
 def main():
+    sys.dont_write_bytecode = True  # keep __pycache__ out of the skill folder
     try:
         import importlib.util
         from pathlib import Path

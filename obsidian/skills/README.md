@@ -18,5 +18,6 @@
 | obsidian-file-intel | This project | — |
 | obsidian-research | This project | — |
 | obsidian-tldr | This project | — |
+| obsidian-vault-search | This project | — |
 | obsidian-vault-setup | This project | — |
 | using-obsidian | This project | — |

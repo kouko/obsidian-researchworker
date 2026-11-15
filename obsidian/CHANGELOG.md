@@ -4,6 +4,21 @@ All notable changes to the `obsidian` plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] — 2026-11-15 Search the local vault from any project
+
+### Added
+
+- `obsidian-vault-search`: read-only search of the local Obsidian vault from
+  any project, with a paste-ready paragraph for research subagents.
+- SessionStart hook (`hooks/hooks.json`, `hooks/vault_pointer.py`) that prints
+  the local vault path at session start, or nothing when no vault is found.
+
+### Notes
+
+- Note text the skill reads is sent to the model provider.
+- A one-time `Read(...)` permission rule is proposed only with user consent.
+- Claude Code on macOS verified; Linux unverified; Windows unsupported.
+
 ## [4.0.0] — 2026-11-14 Remove wiki and daily-news mechanisms
 
 ### Removed
