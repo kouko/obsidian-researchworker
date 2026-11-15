@@ -108,14 +108,16 @@ do_search() {
     vault=$1
     shift
 
-    cli=""
-    for c in /Applications/Obsidian.app/Contents/MacOS/obsidian-cli obsidian; do
-        if command -v "$c" >/dev/null 2>&1; then
-            cli=$c
-            break
-        fi
-    done
-    reg="$HOME/Library/Application Support/obsidian/obsidian.json"
+    cli=${OBSIDIAN_CLI_BIN:-}
+    if [ -z "$cli" ]; then
+        for c in /Applications/Obsidian.app/Contents/MacOS/obsidian-cli obsidian; do
+            if command -v "$c" >/dev/null 2>&1; then
+                cli=$c
+                break
+            fi
+        done
+    fi
+    reg=$(config_dir)/obsidian.json
     open_vault=""
     if [ -n "$cli" ] && [ -r "$reg" ] && command -v plutil >/dev/null 2>&1; then
         for id in $(plutil -extract vaults json -o - "$reg" 2>/dev/null \
@@ -132,18 +134,18 @@ do_search() {
         done
         out=$("$cli" search "query=$query" "vault=$vault" 2>/dev/null) || out=""
         if [ -n "$out" ] && ! printf '%s\n' "$out" | grep -q "Vault not found" \
-           && printf '%s\n' "$out" | grep -q '^/'; then
+           && ! printf '%s\n' "$out" | grep -q "No matches found"; then
             printf '%s\n' "$out" | while read -r rel; do
                 [ -n "$rel" ] || continue
                 printf '%s/%s\n' "$vault" "$rel"
-            done | grep -v "No matches found"
+            done
             return 0
         fi
     fi
 
     for w in "$@"; do
         grep -rliF -e "$w" --exclude-dir=.obsidian --exclude-dir=.trash "$vault" 2>/dev/null
-    done | sort -u
+    done | awk -v v="$vault/" '{ p=substr($0, length(v)+1); n=split(p, a, "/"); for (i=1;i<=n;i++) if (substr(a[i],1,1)==".") next; print }' | sort -u
     return 0
 }
 

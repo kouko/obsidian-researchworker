@@ -80,12 +80,19 @@ def test_vault_sh_has_no_write_verbs():
     assert not any(v in text for v in verbs), [v for v in verbs if v in text]
 
 
-def _run_search(tmp_path, vault, *query):
+def _run_search(tmp_path, vault, *query, cli_bin=None, on_path=False, open_vault=True):
     config = tmp_path / "config"
     config.mkdir()
-    (config / "obsidian.json").write_text(json.dumps({"vaults": {}}))
+    entry = {"path": str(vault)}
+    if open_vault:
+        entry["open"] = True
+    (config / "obsidian.json").write_text(json.dumps({"vaults": {"v": entry}}))
     env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
     env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(config))
+    if cli_bin is not None:
+        env["OBSIDIAN_CLI_BIN"] = str(cli_bin)
+    if on_path:
+        env["PATH"] = str(tmp_path) + os.pathsep + env["PATH"]
     result = subprocess.run(
         [str(VAULT_SH), "search", str(vault), *query],
         env=env, capture_output=True, text=True,
@@ -133,6 +140,43 @@ def test_search_output_paths_are_absolute(tmp_path):
     vault = _fixture_vault(tmp_path)
     for line in _run_search(tmp_path, vault, "vector"):
         assert line.startswith("/")
+
+
+def _fake_cli(tmp_path, body):
+    """A fake obsidian-cli binary printing `body` verbatim."""
+    fake = tmp_path / "obsidian-cli"
+    fake.write_text(body, encoding="utf-8")
+    fake.chmod(0o755)
+    return fake
+
+
+def test_search_cli_branch_accepts_relative_output(tmp_path):
+    """The CLI prints vault-relative paths; the accept gate must not require absolute ones."""
+    vault = _fixture_vault(tmp_path)
+    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'sub/beta.md\\nalpha.md\\n'\n")
+    out = _run_search(tmp_path, vault, "ベクトルDB", cli_bin=cli)
+    assert out == [str(vault / "sub" / "beta.md"), str(vault / "alpha.md")]
+
+
+def test_search_cli_closed_vault_falls_back_to_grep(tmp_path):
+    """A CLI that reports no open vault falls through to the grep engine."""
+    vault = _fixture_vault(tmp_path)
+    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    out = _run_search(tmp_path, vault, "ベクトルDB", cli_bin=cli, on_path=True)
+    assert out == [str(vault / "sub" / "beta.md")]
+
+
+def test_search_grep_skips_hidden_directories(tmp_path):
+    """Hidden dirs other than .obsidian/.trash never leak into search results."""
+    vault = tmp_path / "vault"
+    (vault / ".claudian" / "sessions").mkdir(parents=True)
+    (vault / "notes").mkdir()
+    (vault / ".claudian" / "sessions" / "s.meta.json").write_text(
+        "向量資料庫", encoding="utf-8")
+    (vault / "notes" / "a.md").write_text("向量資料庫", encoding="utf-8")
+    out = _run_search(tmp_path, vault, "向量資料庫")
+    assert out == [str(vault / "notes" / "a.md")]
+    assert not any(".claudian" in line for line in out)
 
 
 HOOKS_DIR = REPO_ROOT / "obsidian/hooks"
