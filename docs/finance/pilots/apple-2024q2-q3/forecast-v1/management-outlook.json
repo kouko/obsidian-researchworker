@@ -1,0 +1,41 @@
+[
+  {
+    "id": "june.revenue_direction",
+    "source_id": "call-live-notes",
+    "corroboration_id": "call-news-check",
+    "kind": "management_outlook_secondary",
+    "target_fiscal_quarter": "2024Q3",
+    "value": "low_single_digit_yoy_growth",
+    "numeric_lower": null,
+    "numeric_upper": null
+  },
+  {
+    "id": "june.ipad_direction",
+    "source_id": "call-live-notes",
+    "kind": "management_outlook_secondary",
+    "target_fiscal_quarter": "2024Q3",
+    "value": "double_digit_yoy_growth",
+    "numeric_lower": null,
+    "numeric_upper": null
+  },
+  {
+    "id": "june.services_direction",
+    "source_id": "call-live-notes",
+    "kind": "management_outlook_secondary",
+    "target_fiscal_quarter": "2024Q3",
+    "value": "double_digit_yoy_growth",
+    "numeric_lower": null,
+    "numeric_upper": null
+  },
+  {
+    "id": "june.gross_margin",
+    "source_id": "call-live-notes",
+    "kind": "management_outlook_secondary",
+    "target_fiscal_quarter": "2024Q3",
+    "value": [
+      0.455,
+      0.465
+    ],
+    "unit": "fraction"
+  }
+]

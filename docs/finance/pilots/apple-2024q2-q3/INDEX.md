@@ -69,3 +69,18 @@ value or full Stage C:
 
 Both ratings remain insufficient evidence. No source-code, accepted acquisition
 attestation, actual vault, installed plugin or publication state is changed.
+
+## Subsequent Q2 operating forecast supplement
+
+The authorized Q2 continuation adds a conditional next-quarter operating bridge
+and draft update-decision examples. It preserves all earlier research versions:
+
+- [Q2 operating forecast supplement](forecast-v1/2024Q2-營運預測補充.md)
+- [Update-decision examples](forecast-v1/更新判斷範例.md)
+- [Method, applicability and limits](forecast-v1/METHOD-AND-VALIDATION.md)
+- [Dependency/completeness state example](forecast-v1/research-state.json)
+- [Verification](forecast-v1/validation.json)
+
+The management outlook is attributed to secondary reporting; numeric scenario
+points and carry-forward assumptions are explicitly local. No calibrated
+five-year forecast, investment rating or automatic update runtime is complete.

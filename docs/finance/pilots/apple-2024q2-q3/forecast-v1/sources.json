@@ -1,0 +1,47 @@
+[
+  {
+    "id": "q2-original",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+    "publication_date": "2024-05-03",
+    "accession": "0000320193-24-000069",
+    "role": "reported_fact_primary",
+    "checked": "Original income statement, net sales by category/region, gross margin and cover; web and cached primary",
+    "retrieved_date": "2026-11-15",
+    "raw_sha256": "7a327c99c4a2c29341682d2ab5bb2465cb4e899341374ddaf565012e0d480991"
+  },
+  {
+    "id": "prior-june-original",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000077/aapl-20230701.htm",
+    "publication_date": "2023-08-04",
+    "accession": "0000320193-23-000077",
+    "role": "reported_fact_primary",
+    "checked": "Original 2023Q3 net sales by category and region; web original table, not 2024Q3 comparatives",
+    "retrieved_date": "2026-11-15"
+  },
+  {
+    "id": "issuer-release",
+    "url": "https://www.apple.com/newsroom/2024/05/apple-reports-second-quarter-results/",
+    "publication_date": "2024-05-02",
+    "role": "issuer_statement_primary",
+    "checked": "Buyback authorization, declared dividend, dated call and two-week replay availability; not a numeric June forecast",
+    "retrieved_date": "2026-11-15"
+  },
+  {
+    "id": "call-live-notes",
+    "url": "https://macdailynews.com/2024/05/02/macdailynews-presents-live-notes-from-apples-q224-conference-call/",
+    "publication_date": "2024-05-02",
+    "role": "management_outlook_secondary_report",
+    "checked": "Dated live notes: June revenue low-single-digit growth, iPad/services double-digit growth, gross margin 45.5%-46.5%",
+    "retrieved_date": "2026-11-15",
+    "limitation": "Not issuer transcript or audio; historical HTML update history not established"
+  },
+  {
+    "id": "call-news-check",
+    "url": "https://www.axios.com/2024/05/02/apple-earnings-may-2024",
+    "publication_date": "2024-05-02",
+    "role": "secondary_corroboration_only",
+    "checked": "Contemporaneous report corroborates qualitative revenue outlook",
+    "retrieved_date": "2026-11-15",
+    "limitation": "No original LSEG consensus snapshot obtained"
+  }
+]

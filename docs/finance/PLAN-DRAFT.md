@@ -500,3 +500,16 @@ evidence task; it does not close calibrated forecast/valuation evidence or Stage
 Next: connect operating forecasts and peer/expectations evidence before claiming
 actionable valuation or implementing the report/update skill. Acquisition code,
 accepted runtime review and the broader twenty-year/multi-industry goal remain.
+
+### Q2 operating evidence and update examples, 2026-11-15
+
+The user authorized the next bounded research batch. The [Q2 supplement and
+applicability record](pilots/apple-2024q2-q3/forecast-v1/METHOD-AND-VALIDATION.md)
+now separate reported financials, secondary management outlook and local numeric
+assumptions; reconcile next-quarter revenue/margins/earnings; and retain a draft
+dependency inventory with frozen-history/latest-mode update examples. Original
+2023Q3 values provide the seasonal base, not later 2024Q3 comparative columns.
+These are research fixtures, not a production forecast or implemented updater.
+Short/medium/long ratings remain insufficient_evidence. Stage C runtime,
+cross-session recovery, long-horizon calibration and cross-industry validation
+remain pending; no accepted acquisition attestation or existing note is replaced.
