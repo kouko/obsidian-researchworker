@@ -2,6 +2,7 @@
 """A rejected registration must not hide the remaining skill commands."""
 
 import subprocess
+from pathlib import Path
 
 
 def test_commands_rejected_entry_registers_remaining():
@@ -23,4 +24,8 @@ assert.equal(rejected, true);
 assert.equal(accepted.length, 13);
 assert.ok(accepted.every(name => name.startsWith("obsidian:")));
 '''
-    subprocess.run(["node", "--input-type=module", "-e", script], check=True)
+    subprocess.run(
+        ["node", "--input-type=module", "-e", script],
+        cwd=Path(__file__).resolve().parents[2],
+        check=True,
+    )
