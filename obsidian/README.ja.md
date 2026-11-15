@@ -40,7 +40,7 @@ daily-news-digest を削除する。通常の daily note、単一テーマの研
 wikilink は保持し、既存 vault の出力や設定は変更しない。切り替え前に
 [移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
 記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
-ノート作成は未達。他 host とリモート導入は未検証。別管理の OpenCode package は 0.2.0。
+ノート作成は未達。他 host とリモート導入は未検証。
 4.2.0 で `obsidian-knowledge` に改名し、同梱の読み取り専用シェルスクリプトで検索する（編集の Grep/Glob は不要。skill 数は 15 のまま）。
 
 ## 背景

@@ -38,7 +38,7 @@
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 [驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
-但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。獨立版號的 OpenCode package 為 0.2.0。
+但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
 4.2.0 改名為 `obsidian-knowledge`，改用隨附的唯讀 shell script 搜尋（不再需要編輯器的 Grep/Glob；skill 數仍為 15）。
 
 ## 背景

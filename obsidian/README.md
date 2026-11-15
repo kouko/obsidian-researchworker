@@ -44,7 +44,7 @@ Read the [transition guide](../docs/migration.md) before changing installations.
 The [verification record](../docs/verification.md) documents isolated Codex
 local-source installation at its recorded revision; skill execution and note
 creation remain unmet. Inherited host notes below are reference material,
-not independent compatibility evidence. The separately versioned OpenCode package is 0.2.0.
+not independent compatibility evidence.
 
 ## Background
 
