@@ -1,6 +1,6 @@
-"""Vault locator tests (loom change 2026-11-15-search-vault-from-other-projects).
+"""Vault locator/search tests (loom change 2026-11-15-search-vault-from-other-projects).
 
-Each test runs find_vaults.py in a subprocess with a temp HOME and
+Each test runs scripts/vault.sh in a subprocess with a temp HOME and
 OBSIDIAN_CONFIG_DIR, so the real vault registry is never read.
 """
 
@@ -11,10 +11,10 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-FIND_VAULTS = REPO_ROOT / "obsidian/skills/obsidian-vault-search/scripts/find_vaults.py"
+VAULT_SH = REPO_ROOT / "obsidian/skills/obsidian-knowledge/scripts/vault.sh"
 
 
-def _run(tmp_path, vaults=None, env_vault=None):
+def _run_locate(tmp_path, vaults=None, env_vault=None):
     config = tmp_path / "config"
     config.mkdir()
     if vaults is not None:
@@ -24,9 +24,10 @@ def _run(tmp_path, vaults=None, env_vault=None):
     if env_vault is not None:
         env["OBSIDIAN_VAULT"] = env_vault
     result = subprocess.run(
-        [sys.executable, str(FIND_VAULTS)], env=env, capture_output=True, text=True
+        [str(VAULT_SH), "locate"], env=env, capture_output=True, text=True
     )
     assert result.returncode == 0, result.stderr
+    assert result.stderr == ""
     return result.stdout.splitlines()
 
 
@@ -39,11 +40,11 @@ def test_registry_lists_existing_vault(tmp_path):
         "b": {"path": str(new), "ts": 2},
         "c": {"path": str(new), "ts": 0},
     }
-    assert _run(tmp_path, vaults) == [str(new), str(old)]
+    assert _run_locate(tmp_path, vaults) == [str(new), str(old)]
 
 
 def test_missing_registry_prints_nothing(tmp_path):
-    assert _run(tmp_path) == []
+    assert _run_locate(tmp_path) == []
 
 
 def test_env_override_replaces_registry(tmp_path):
@@ -51,7 +52,7 @@ def test_env_override_replaces_registry(tmp_path):
     for d in (reg, a, b):
         d.mkdir()
     env_vault = os.pathsep.join([str(a), str(tmp_path / "gone"), str(b)])
-    out = _run(tmp_path, {"r": {"path": str(reg), "ts": 9}}, env_vault)
+    out = _run_locate(tmp_path, {"r": {"path": str(reg), "ts": 9}}, env_vault)
     assert out == [str(a), str(b)]
 
 
@@ -59,7 +60,79 @@ def test_registry_entry_with_deleted_path_skipped(tmp_path):
     live = tmp_path / "live"
     live.mkdir()
     vaults = {"x": {"path": str(tmp_path / "deleted"), "ts": 5}, "y": {"path": str(live), "ts": 1}}
-    assert _run(tmp_path, vaults) == [str(live)]
+    assert _run_locate(tmp_path, vaults) == [str(live)]
+
+
+def test_vault_sh_locate_rejects_relative_and_control_char_paths(tmp_path):
+    """A relative or control-char registry path is never reported."""
+    good, rel, evil = tmp_path / "good", tmp_path / "rel", tmp_path / "x\nINJECTED"
+    for d in (good, rel, evil):
+        d.mkdir()
+    vaults = {"g": {"path": str(good), "ts": 3}, "r": {"path": "rel", "ts": 2}, "e": {"path": str(evil), "ts": 1}}
+    assert _run_locate(tmp_path, vaults) == [str(good)]
+
+
+def test_vault_sh_has_no_write_verbs():
+    """A6: the bundled script never writes, moves, copies or deletes."""
+    text = VAULT_SH.read_text()
+    verbs = ("rm ", "rmdir", "mv ", "cp ", "mkdir", "touch", "tee", "dd ",
+             "ln ", "chmod", "chown", "sed -i", "find -delete")
+    assert not any(v in text for v in verbs), [v for v in verbs if v in text]
+
+
+def _run_search(tmp_path, vault, *query):
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "obsidian.json").write_text(json.dumps({"vaults": {}}))
+    env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
+    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(config))
+    result = subprocess.run(
+        [str(VAULT_SH), "search", str(vault), *query],
+        env=env, capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    return result.stdout.splitlines()
+
+
+def _fixture_vault(tmp_path):
+    vault = tmp_path / "vault"
+    (vault / "sub").mkdir(parents=True)
+    (vault / ".obsidian").mkdir()
+    (vault / ".trash").mkdir()
+    (vault / "alpha.md").write_text("DuckDB is a vector database", encoding="utf-8")
+    (vault / "sub" / "beta.md").write_text("向量資料庫 ベクトルDB", encoding="utf-8")
+    (vault / ".obsidian" / "app.json").write_text("DuckDB settings", encoding="utf-8")
+    (vault / ".trash" / "delta.md").write_text("DuckDB deleted note", encoding="utf-8")
+    return vault
+
+
+def test_search_returns_matching_note_paths(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    out = _run_search(tmp_path, vault, "DuckDB")
+    assert out == [str(vault / "alpha.md")]
+
+
+def test_search_excludes_obsidian_and_trash_dirs(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    out = _run_search(tmp_path, vault, "settings")
+    assert out == []
+
+
+def test_search_no_match_returns_empty_and_exit0(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    assert _run_search(tmp_path, vault, "zz-no-such-word") == []
+
+
+def test_search_multi_word_or_matches_either(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    out = _run_search(tmp_path, vault, "ベクトルDB", "DuckDB")
+    assert out == [str(vault / "alpha.md"), str(vault / "sub" / "beta.md")]
+
+
+def test_search_output_paths_are_absolute(tmp_path):
+    vault = _fixture_vault(tmp_path)
+    for line in _run_search(tmp_path, vault, "vector"):
+        assert line.startswith("/")
 
 
 HOOKS_DIR = REPO_ROOT / "obsidian/hooks"

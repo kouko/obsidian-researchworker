@@ -1,4 +1,4 @@
-"""Adversarial probes for find_vaults.py against hostile registry entries.
+"""Adversarial probes for vault.sh locate against hostile registry entries.
 
 Runs the locator in a subprocess with a temp HOME and OBSIDIAN_CONFIG_DIR;
 the real vault registry is never read.
@@ -7,11 +7,10 @@ the real vault registry is never read.
 import json
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-FIND_VAULTS = REPO_ROOT / "obsidian/skills/obsidian-vault-search/scripts/find_vaults.py"
+VAULT_SH = REPO_ROOT / "obsidian/skills/obsidian-knowledge/scripts/vault.sh"
 
 
 def _run(tmp_path, vaults, cwd):
@@ -21,7 +20,7 @@ def _run(tmp_path, vaults, cwd):
     env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
     env.update(HOME=str(tmp_path / "home"), OBSIDIAN_CONFIG_DIR=str(config))
     result = subprocess.run(
-        [sys.executable, str(FIND_VAULTS)], env=env, cwd=cwd, capture_output=True, text=True
+        [str(VAULT_SH), "locate"], env=env, cwd=cwd, capture_output=True, text=True
     )
     assert result.returncode == 0, result.stderr
     return result.stdout.splitlines()
