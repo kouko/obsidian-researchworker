@@ -253,7 +253,7 @@ def test_hook_silent_and_exit0_without_vault(tmp_path):
     assert "vault_pointer.sh" in command and "|| true" in command
 
 
-SKILL = REPO_ROOT / "obsidian/skills/obsidian-vault-search/SKILL.md"
+SKILL = REPO_ROOT / "obsidian/skills/obsidian-knowledge/SKILL.md"
 
 
 def _skill():
@@ -269,13 +269,13 @@ def _paragraph():
 
 def test_skill_declares_read_only():
     text, front = _skill()
-    assert "name: obsidian-vault-search" in front
+    assert "name: obsidian-knowledge" in front
     assert "Never create, modify, or delete any file in the vault" in text
 
 
 def test_skill_has_no_write_tools():
     allowed = [l for l in _skill()[1].splitlines() if l.startswith("allowed-tools:")][0]
-    assert "Read" in allowed and "find_vaults.py" in allowed
+    assert "Read" in allowed and "vault.sh" in allowed
     assert not any(t in allowed for t in ("Write", "Edit", "NotebookEdit"))
 
 
@@ -301,7 +301,8 @@ def test_skill_forbids_additional_directories():
 
 def test_skill_has_subagent_paragraph():
     para = _paragraph()
-    assert "Grep" in para and "Glob" in para and "read-only" in para
+    assert "vault.sh search" in para and "read-only" in para
+    assert "Grep" not in para and "Glob" not in para
 
 
 def test_paragraph_labels_note_vs_web():
