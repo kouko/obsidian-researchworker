@@ -6,5 +6,10 @@
     "source": "./obsidian",
     "version": "4.1.0",
     "description": "14 Obsidian skills for notes, research and diagrams, extracted from Monkey Skills."
+  }, {
+    "name": "obsidian-finance",
+    "source": "./obsidian-finance",
+    "version": "0.1.0",
+    "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs."
   }]
 }

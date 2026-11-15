@@ -29,13 +29,23 @@ See the [plugin guide](obsidian/README.md) for retained skills and dependencies,
 story-tracking notes and settings are untouched. YTSS/RLSS integration and
 resumable multi-note research remain proposed.
 
+## Optional finance data package
+
+The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 adds
+one SEC data acquisition skill with source evidence, publication cutoffs and
+separate output runs. Select its marketplace entry independently of `obsidian`;
+the existing general-note package remains 4.1.0. Runtime requires Python 3.11+
+and a genuine operator-supplied `SEC_USER_AGENT`, with no runtime packages.
+This is data acquisition, not investment advice or automatic vault research.
+Claude/Codex registration is provided; installation, fresh host invocation and
+live SEC access are unverified. No finance OpenCode loader is shipped.
+
 ## Existing checks
 
 With Python and pytest already available, run from the repository root:
 
 ```sh
-cd obsidian
-python3 -m pytest -q -p no:cacheprovider
+python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider
 ```
 
 Passing existing tests does not prove host installation or live vault usage.

@@ -1,0 +1,10 @@
+{
+  "name": "obsidian-finance",
+  "version": "0.1.0",
+  "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs.",
+  "author": {"name": "kouko", "url": "https://github.com/kouko"},
+  "homepage": "https://github.com/kouko/obsidian-researchworker",
+  "repository": "https://github.com/kouko/obsidian-researchworker",
+  "license": "MIT",
+  "keywords": ["sec", "edgar", "financial-data", "provenance"]
+}
