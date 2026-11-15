@@ -7,11 +7,12 @@ OBSIDIAN_CONFIG_DIR, so the real vault registry is never read.
 import json
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 VAULT_SH = REPO_ROOT / "obsidian/skills/obsidian-knowledge/scripts/vault.sh"
+HOOKS_DIR = REPO_ROOT / "obsidian/hooks"
+HOOK_SH = HOOKS_DIR / "vault_pointer.sh"
 
 
 def _run_locate(tmp_path, vaults=None, env_vault=None):
@@ -72,12 +73,13 @@ def test_vault_sh_locate_rejects_relative_and_control_char_paths(tmp_path):
     assert _run_locate(tmp_path, vaults) == [str(good)]
 
 
-def test_vault_sh_has_no_write_verbs():
-    """A6: the bundled script never writes, moves, copies or deletes."""
-    text = VAULT_SH.read_text()
+def test_shipped_scripts_have_no_write_verbs():
+    """A6: the bundled scripts never write, move, copy or delete."""
     verbs = ("rm ", "rmdir", "mv ", "cp ", "mkdir", "touch", "tee", "dd ",
              "ln ", "chmod", "chown", "sed -i", "find -delete")
-    assert not any(v in text for v in verbs), [v for v in verbs if v in text]
+    for script in (VAULT_SH, HOOKS_DIR / "vault_pointer.sh"):
+        text = script.read_text()
+        assert not any(v in text for v in verbs), (script, [v for v in verbs if v in text])
 
 
 def _run_search(tmp_path, vault, *query, cli_bin=None, on_path=False, open_vault=True):
@@ -203,16 +205,20 @@ def test_search_grep_skips_hidden_directories(tmp_path):
     assert not any(".claudian" in line for line in out)
 
 
-HOOKS_DIR = REPO_ROOT / "obsidian/hooks"
-
-
-def _run_hook(tmp_path, env_vault=None):
+def _run_hook(tmp_path, env_vault=None, vaults=None):
+    if vaults is not None:
+        config = tmp_path / "config"
+        config.mkdir()
+        (config / "obsidian.json").write_text(json.dumps({"vaults": vaults}))
+        config_dir = config
+    else:
+        config_dir = tmp_path / "noconfig"
     env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
-    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(tmp_path / "noconfig"))
+    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(config_dir))
     if env_vault is not None:
         env["OBSIDIAN_VAULT"] = env_vault
     result = subprocess.run(
-        [sys.executable, str(HOOKS_DIR / "vault_pointer.py")],
+        ["sh", str(HOOK_SH)],
         env=env, capture_output=True, text=True, cwd=str(tmp_path),
     )
     assert result.returncode == 0
@@ -224,10 +230,11 @@ def test_hook_emits_one_line_with_vault_paths(tmp_path):
     a, b = tmp_path / "a", tmp_path / "b"
     a.mkdir()
     b.mkdir()
-    lines = _run_hook(tmp_path, os.pathsep.join([str(a), str(b)])).splitlines()
+    vaults = {"a": {"path": str(a), "ts": 2}, "b": {"path": str(b), "ts": 1}}
+    lines = _run_hook(tmp_path, vaults=vaults).splitlines()
     assert len(lines) == 1
     assert lines[0].startswith(f"Local Obsidian vault(s): {a}; {b}. ")
-    assert "obsidian-vault-search skill (read-only)" in lines[0]
+    assert "obsidian-knowledge skill (read-only)" in lines[0]
 
 
 def test_hook_skips_relative_and_control_char_env_vaults(tmp_path):
@@ -243,7 +250,7 @@ def test_hook_silent_and_exit0_without_vault(tmp_path):
     assert _run_hook(tmp_path) == ""
     hooks = json.loads((HOOKS_DIR / "hooks.json").read_text())
     command = hooks["hooks"]["SessionStart"][0]["hooks"][0]["command"]
-    assert "vault_pointer.py" in command and "|| true" in command
+    assert "vault_pointer.sh" in command and "|| true" in command
 
 
 SKILL = REPO_ROOT / "obsidian/skills/obsidian-vault-search/SKILL.md"
@@ -310,14 +317,6 @@ def test_skill_caps_subagent_at_10():
     text = _skill()[0]
     assert "reads at most 10 notes" in text
     assert "dispatches no further subagents" in text
-
-
-def test_hook_leaves_no_pycache_in_skill(tmp_path):
-    import shutil
-    cache = SKILL.parent / "scripts/__pycache__"
-    shutil.rmtree(cache, ignore_errors=True)
-    _run_hook(tmp_path)
-    assert not cache.exists()
 
 
 ROUTER = REPO_ROOT / "obsidian/skills/using-obsidian/SKILL.md"
