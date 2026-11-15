@@ -55,7 +55,7 @@ When using the skill, reading the vault or running the bundled search may prompt
 - vault under `$HOME` → `Read(~/<path under home>/**)`, e.g. `Read(~/Documents/MyVault/**)`
 - otherwise → `Read(//<absolute path>/**)`, e.g. `Read(//Volumes/Data/MyVault/**)`
 - `Skill(obsidian:obsidian-knowledge)`
-- `Bash(${CLAUDE_SKILL_DIR}/scripts/vault.sh *)`
+- `sh /Users/kouko/.claude/plugins/cache/loom/loom-code/3.81.1/skills/obsidian-knowledge/scripts/vault.sh *`
 
 Add them only after the user explicitly says yes. If they say no, keep working and accept the prompts.
 
