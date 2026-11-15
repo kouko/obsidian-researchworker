@@ -39,9 +39,32 @@ Wave 2 — evidence.
 - Test: A3 positive: test_find_vaults_newline_in_path_never_splits_line; boundary: test_find_vaults_relative_registry_path_not_reported.
 - Risk: probe caught two defects (fixed f0de4a6); move unchanged into package suite per review.probe-graduation. agent-decided.
 
+Wave 3 — Python-free search fix-round (2026-11-15, after A6 FAIL: host CC 2.1.325 has no Grep/Glob tools; user-decided CLI-primary + macOS built-ins over Python).
+
+**W3-01 Bundled sh script `scripts/vault.sh`**  after: none  acceptance: 1, 3, 6
+- Files: obsidian/skills/obsidian-knowledge/scripts/vault.sh (locate + search), `obsidian/tests/test_vault_search.py` locator/search sections rewritten against vault.sh, `obsidian/tests/test_find_vaults_hostile_registry.py` ported from find_vaults.py to vault.sh locate (find_vaults.py is deleted later, in the skill-dir rename).
+- Test: A1 locate via OBSIDIAN_VAULT override; negative: no vault → empty. A3 boundary: relative/control-char paths rejected (hostile probes ported). A6: script has no write verbs.
+- Risk: macOS registry read via plutil is untested on other registries; keep output contract one path per line, exit 0. agent-decided.
+
+**W3-02 Hook rewrite to `vault_pointer.sh`**  after: W3-01  acceptance: 2
+- Files: obsidian/hooks/hooks.json, obsidian/hooks/vault_pointer.sh (python removed), tests.
+- Test: A2 positive: hook_emits_one_line_with_vault_paths; negative: hook_silent_and_exit0_without_vault.
+- Risk: hook runs every session; silent failure, exit 0, no python dependency. agent-decided.
+
+**W3-03 Skill rewrite to `obsidian-knowledge`**  after: W3-01  acceptance: 4, 5, 9, 10
+- Files: obsidian/skills/obsidian-knowledge/SKILL.md (renamed; Step 2 calls `vault.sh search`; no Grep/Glob mentions; subagent paragraph updated), tests.
+- Test: A4/A5/A9/A10 wording assertions updated for the new name and search step.
+- Risk: instruction-text contract; static wording tests + live acceptance testing. agent-decided.
+
+**W3-04 Wiring: rename + docs + version**  after: W3-02, W3-03  acceptance: 8
+- Files: obsidian/tests/test_skill_inventory.py, obsidian/skills/using-obsidian/SKILL.md, obsidian/.claude-plugin/plugin.json, obsidian/README*.md, obsidian/CHANGELOG.md, .claude-plugin/marketplace.json.
+- Test: A8 inventory + routing name `obsidian-knowledge`; version 4.2.0; no personal vault path in shipped files.
+- Risk: rename misses a doc → stale routing; sweep all shipped text for the old name. agent-decided.
+
 ## Simplicity check
 - Skill only, no hook — declined: skill descriptions are dropped from the listing on the user's machine (spec Alternatives).
 - Locator logic inline in skill text instead of script — declined: hook needs the same logic; one script avoids two copies.
+- Two locators (sh for macOS, Python for Linux) — declined: one POSIX `sh` file with a platform branch (`plutil` on macOS, `python3` best-effort on Linux) keeps a single source.
 - Paste-ready subagent prompt in the skill instead of a new agents file — taken
 - Merge W1-02 into W1-01 — declined: mixes hook boundary risk into locator commit (plan reviewer note).
 
