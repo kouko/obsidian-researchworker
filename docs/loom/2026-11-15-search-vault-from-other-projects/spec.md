@@ -1,6 +1,6 @@
 # Search the local Obsidian vault from other projects — spec
 intent: 2026-11-15-search-vault-from-other-projects@2d77d90
-confirmed-behavior: 2026-11-15 @2b7f4d0
+confirmed-behavior: 2026-11-15 @8032b14
 pre-build-review: required — note contents leave the machine in model context and the change may write the user's global permission settings (privacy + user state)
 
 ## Requirements
@@ -26,7 +26,7 @@ REQ-10 — Large result sets stay out of the main conversation
   IF more than 3 notes match or any matched note exceeds 30 KB, THEN the agent shall delegate reading to a subagent that returns claims with supporting quotes and absolute note paths, so the main conversation receives no full note text ("改Ｃ") → Acceptance #10
 
 ## Design decision
-- New skill `obsidian-vault-search` (self-contained, standard library + `rg` with `grep` fallback): locate → search → read → cite. agent-decided — one skill is the smallest unit that carries the method to any project.
+- New skill `obsidian-vault-search` (self-contained; search/read via the host's built-in Grep/Glob/Read tools; Python standard library only for find_vaults.py): locate → search → read → cite. agent-decided — one skill is the smallest unit that carries the method to any project.
 - Vault discovery order: `OBSIDIAN_VAULT` env var (override, any user) → Obsidian registry `obsidian.json` at the per-OS location (macOS `~/Library/Application Support/obsidian`, Linux `~/.config/obsidian`, Windows `%APPDATA%/obsidian`) → nearest ancestor with `.obsidian/`. Multiple registered vaults: list all, search all that exist. agent-decided — registry is written by Obsidian itself for every user, satisfying REQ-3 without config.
 - Bundled script `find_vaults.py` prints vault paths; shared by skill and hook. agent-decided — one locator, no duplicate logic.
 - Plugin SessionStart hook prints one short line ("Local Obsidian vault(s): <paths>. When a question may be answered by the user's notes, or when dispatching research subagents, use the obsidian-vault-search skill.") and prints nothing when no vault is found. agent-decided — skill descriptions are being dropped from the listing on the user's machine (observed this session), so description-only triggering is unreliable.
@@ -34,7 +34,7 @@ REQ-10 — Large result sets stay out of the main conversation
 - Permission: skill instructs the agent to propose `Read(<vault>/**)` in `~/.claude/settings.json` (home-relative `~/` form, or `//` absolute) and write it only on explicit yes; never `additionalDirectories`. user-decided at ① (consent required before writing global settings).
 - No folder restriction. user-decided — "暫時不限制".
 - Review fixes (spec+adversarial, NEEDS_REVISION on 5fbf8ac^), agent-decided:
-  - Search/read use the host's built-in Grep/Glob/Read tools, which the `Read(...)` rule covers; no Bash for search, so REQ-6 holds. `find_vaults.py` runs only from the hook, or from the skill pre-approved via `allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/find_vaults.py*)`; the hook line already carries the paths, so the skill normally needs no Bash.
+  - Search/read use the host's built-in Grep/Glob/Read tools, which the `Read(...)` rule covers; no Bash for search, so REQ-6 holds. `find_vaults.py` runs only from the hook, or from the skill pre-approved via `allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/find_vaults.py*)` (docs example `Bash(${CLAUDE_SKILL_DIR}/scripts/render.sh *)`, code.claude.com/docs/en/skills.md); the hook line already carries the paths, so the skill normally needs no Bash.
   - Rule form: vault under `$HOME` → `Read(~/<rel>/**)`; otherwise `Read(//<absolute path>/**)`. Windows drive paths are not claimed.
   - Verified host/OS: Claude Code on macOS. Linux registry path is implemented best-effort and labelled unverified; Windows is labelled unsupported (PRINCIPLES #3).
   - Hook runs `python3`; if missing or the script fails, it prints nothing and exits 0.
@@ -76,5 +76,5 @@ REQ-10 — Large result sets stay out of the main conversation
 | Few short matches | 1–3 matching notes, each short | answer citing those notes, read directly (fast) |
 | Many or long matches | more than 3 notes match, or a match is very long | list of matching note paths, then an answer built from quoted lines and note paths returned by a helper agent; takes longer; full note text is not pulled into the conversation |
 | Unsupported system | uses it on Windows | not supported in this version; Linux works best-effort and is marked unverified |
-In progress: searches are instant (well under a second on ~14k notes); no progress display.
+In progress: direct searches are instant (well under a second on ~14k notes); a subagent read may take tens of seconds. When more than 10 notes match, the 10 with the most keyword hits are read.
 Irreversible: none in the vault (read-only). The global settings write is reversible (one line, removable) and only on yes.
