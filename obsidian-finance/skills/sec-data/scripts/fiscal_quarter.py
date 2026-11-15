@@ -1,8 +1,9 @@
 """Bind a fiscal quarter to primary-filing declarations, never calendar guesses."""
 
-from datetime import date
+from datetime import date, datetime
 from html.parser import HTMLParser
 import re
+from zoneinfo import ZoneInfo
 
 
 def _unresolved(detail):
@@ -16,6 +17,24 @@ def _date(value):
         return date.fromisoformat(value)
     except ValueError:
         return None
+
+
+def conflicting_publication(filings, filed):
+    """Check every same-accession row, including evidence beyond the cutoff."""
+    for filing in filings:
+        if _date(filing.get('filingDate')) != filed:
+            return True
+        accepted = filing.get('acceptanceDateTime')
+        if accepted:
+            try:
+                timestamp = datetime.fromisoformat(accepted.replace('Z', '+00:00'))
+                # Official filing dates use Eastern time; earlier acceptance is
+                # valid and does not establish intraday publication eligibility.
+                if timestamp.tzinfo is None or timestamp.astimezone(ZoneInfo('America/New_York')).date() > filed:
+                    return True
+            except (ValueError, AttributeError, TypeError):
+                return True
+    return False
 
 
 def candidates(data, quarter, cutoff):
@@ -50,8 +69,11 @@ def candidates(data, quarter, cutoff):
                 or not isinstance(document, str)
                 or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*\.(?:htm|html)', document)):
             raise _unresolved('invalid primary-document accession or basename')
-        if accession in selected and any(selected[accession].get(k) != row.get(k)
-                for k in ('filingDate', 'reportDate', 'primaryDocument', 'form')):
+        versions = [other for other in data['filings'] if other.get('accessionNumber') == accession]
+        if conflicting_publication(versions, filed):
+            raise _unresolved('conflicting original filing publication evidence')
+        if any(other.get(k) != row.get(k) for other in versions
+                for k in ('reportDate', 'primaryDocument', 'form')):
             raise _unresolved('conflicting original filing metadata')
         selected[accession] = row
     return list(selected.values())

@@ -9,8 +9,8 @@ from pathlib import Path
 import re
 import sys
 import tempfile
-from zoneinfo import ZoneInfo
 
+from fiscal_quarter import conflicting_publication
 from sec_client import acquire
 
 LIMITATIONS = [
@@ -32,20 +32,6 @@ def _date(value):
         return None
     try:
         return date.fromisoformat(value)
-    except ValueError:
-        return None
-
-
-def _acceptance_date(value):
-    if not isinstance(value, str):
-        return None
-    try:
-        timestamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
-        # EDGAR filing dates use Eastern time. An explicit zone permits a
-        # date comparison without making any claim of intraday eligibility.
-        if timestamp.tzinfo is None:
-            return None
-        return timestamp.astimezone(ZoneInfo('America/New_York')).date()
     except ValueError:
         return None
 
@@ -77,15 +63,7 @@ def _select(data, start, end, cutoff):
         indexed[accession].append(row)
 
     def conflicting(accession, filed):
-        for filing in indexed.get(accession, []):
-            accepted = filing.get('acceptanceDateTime')
-            if _date(filing.get('filingDate')) != filed:
-                return True
-            if accepted:
-                accepted_date = _acceptance_date(accepted)
-                if accepted_date is None or accepted_date > filed:
-                    return True
-        return False
+        return conflicting_publication(indexed.get(accession, []), filed)
 
     for row in valid_filings:
         accession = row.get('accessionNumber')
