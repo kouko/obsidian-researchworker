@@ -6,8 +6,8 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I am a developer tracking technical decisions and client work, work only. No files to import. The displayed folders and missing ancillary creations are approved; build it.",
-      "expected_output": "Personalized complete AGENTS.md; CLAUDE.md exactly @AGENTS.md plus newline; scoped date naming, useful properties, existing-target links without quota, proportional visuals and all 14 current skill routes. Only preview-approved ancillary creations. File checks distinguished from unmeasured host loading."
+      "prompt": "I am a developer tracking technical decisions and client work, work only. No files to import. The displayed folders and missing ancillary creations are approved; build it. Then write an unrelated evergreen binary-search note, draft an update in my usual voice using recent work context, and explicitly organize my inbox.",
+      "expected_output": "Complete AGENTS.md in four sections with the owner's first-person background, structure/work preferences, scoped naming/quality and required skill use; CLAUDE.md exactly @AGENTS.md plus newline. Retain appropriate valid metadata, existing-target links without quota and verified sources. Read and follow matching installed skills, using-obsidian when unclear and obsidian-markdown for authoring including visuals; report unavailable skills/prerequisites. No duplicated catalogue/manuals. Unrelated evergreen writing causes no daily read or inbox question; relevant voice/recent-work tasks permit daily reading, and daily or explicit organization permits an inbox question. Only preview-approved ancillary creations. File checks distinguished from unmeasured host loading."
     },
     {
       "id": 2,

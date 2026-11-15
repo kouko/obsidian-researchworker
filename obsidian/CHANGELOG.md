@@ -10,8 +10,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Vault setup now previews personalized common rules in `AGENTS.md`, with
   `CLAUDE.md` containing exactly `@AGENTS.md` and a trailing newline. The policy
-  covers scoped date naming, useful properties, existing-note links without a
-  quota, proportional callouts/embeds and routing to the current 14 skills.
+  covers scoped date naming, appropriate valid properties, existing-note links
+  without a quota and verified sources. It requires reading and following matching
+  installed skills, with `using-obsidian` for unclear routing and
+  `obsidian-markdown` for authoring details and visuals; unavailable skills or
+  prerequisites are reported rather than silently substituted. Personal context
+  uses the owner's first person. Recent daily notes are read only for relevant
+  voice/work context; inbox questions are limited to daily or explicit organizing.
+  The generated body avoids duplicating the skill catalogue and manuals.
 - Existing instructions are reconciled from their current contents with private,
   byte-identical backups and restore mapping. Setup stops on read/backup failure,
   concurrent edits or unresolved conflicts, reports partial writes accurately,

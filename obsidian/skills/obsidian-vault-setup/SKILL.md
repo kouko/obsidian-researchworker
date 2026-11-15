@@ -136,59 +136,32 @@ correct files, adds no duplicate policy and backs up only files needing changes.
 # Vault instructions — [inferred role]'s Second Brain
 
 ## Who I Am
-[2-3 sentences based on what they told you — specific, personal, written in first person as Claude describing its owner]
+[Confirmed personal background in the owner's first person, based on their answers]
 
-## My Vault Structure
+## My Vault Structure and Work Preferences
 [folder tree with one-line purpose per folder]
-
-## How I Work
 [3-4 bullet points inferred from their answers — capture style, main pain point, scope, what they want from AI]
-
-## Context Rules
 When I mention a decision → check [decisions or relevant folder] first
 When I mention a person/client/project → look in [relevant folder]
-When I ask you to write → read recent daily/ notes to match my voice
-When something lands in inbox/ → ask if I want it sorted now
+Read recent daily/ notes only when my personal voice or recent work context is relevant to the task.
+Ask about sorting inbox/ only during daily organization or when I explicitly request organization.
 
 ## Naming and note quality
 - Prefix time-sensitive notes and historical comparisons with YYYY-MM-DD;
   use descriptive topic names for evergreen notes. Preserve existing naming conventions.
-- Use valid YAML properties appropriate to the note type, such as title, date,
-  tags, sources or status when useful; do not invent facts or mandatory empty fields.
+- Use valid properties appropriate to the note type; do not invent facts.
 - Search the vault before linking. Keep ordinary wikilinks and add relevant
   existing-note links when useful. Every related_notes target must exist;
   use no numeric link quota, fabricated targets or placeholder links.
-- Use callouts to highlight meaningful cautions or takeaways and embeds when
-  the referenced material helps understanding. Neither is required in every note.
-- Follow obsidian-markdown for current Markdown syntax and writing policy,
-  including its diagram guidance. Use a diagram only when it clarifies the content.
 - Verify sources and distinguish evidence, inference and unverified behavior.
 
-## Available skill routing
-Use the current installed skills for their matching task; check prerequisites
-before promising execution. These portable skill names are distinct from any
-Claude-specific local shortcuts listed separately for this vault.
-- using-obsidian: route vault-workflow requests when the right skill is unclear.
-- obsidian-vault-setup: initialize or reconcile vault instructions with preview approval.
-- obsidian-daily: start the day with daily notes, inbox context and priorities.
-- obsidian-tldr: save a conversation summary.
-- obsidian-research: research a topic and save a source-traceable vault note.
-- obsidian-file-intel: summarize supported files; requires an external compatible
-  vault processing script and Gemini credentials, neither supplied by setup.
-- dashboard-design: define dashboard requirements and layout.
-- obsidian-markdown: write and edit Obsidian Markdown, properties and wikilinks.
-- obsidian-bases: author Bases views, filters and formulas.
-- obsidian-cli: operate Obsidian through its CLI; requires the CLI and running app.
-- defuddle: extract web pages or video transcripts; requires Defuddle CLI.
-- obsidian-canvas: create spatial Canvas layouts and mind maps.
-- obsidian-excalidraw-diagram: create Excalidraw diagrams.
-- obsidian-mermaid-visualizer: create Mermaid diagrams.
-
-## Shared instructions and host limits
-AGENTS.md is the complete common body. CLAUDE.md imports it with @AGENTS.md.
-Codex project instruction discovery and Claude's relative import are the intended
-entry points; host versions, settings and overriding instruction files can affect
-loading. File verification alone does not prove either active session loaded it.
+## Required Skill Use
+- Read and follow the matching installed skills before carrying out a task.
+- Read and follow using-obsidian when the appropriate skill is unclear.
+- For note authoring, read and follow obsidian-markdown, including its metadata,
+  writing and visual guidance; leave detailed syntax and diagram routing to it.
+- If a required skill or prerequisite is unavailable, report the limitation
+  rather than silently substituting another workflow or claiming execution.
 ```
 
 Write `CLAUDE.md` as exactly these bytes: `@AGENTS.md\n` (a real trailing
