@@ -488,3 +488,15 @@ pending Stage A/B status snapshots above; their historical measurements remain.
 The accepted acquisition branch/attestation was not modified. Sample notes stay
 draft/partial with insufficient valuation evidence; Stage A completion is not
 Stage C completion or a reduction of the twenty-year/cross-industry objective.
+
+### Valuation research continuation, 2026-11-15
+
+The user authorized Q2 first and then Q3 comparison. A separate
+[earnings/exit-multiple diagnostic](pilots/apple-2024q2-q3/valuation-v1/METHOD.md)
+now supplies dated price fields, accession-bound TTM inputs, explicit five-year
+stress assumptions, reverse-growth thresholds and a same-method comparison.
+Original Stage A notes are preserved. This closes a bounded price/earnings
+evidence task; it does not close calibrated forecast/valuation evidence or Stage C.
+Next: connect operating forecasts and peer/expectations evidence before claiming
+actionable valuation or implementing the report/update skill. Acquisition code,
+accepted runtime review and the broader twenty-year/multi-industry goal remain.

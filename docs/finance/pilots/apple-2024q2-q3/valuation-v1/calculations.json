@@ -1,0 +1,268 @@
+[
+  {
+    "fiscal_quarter": "2024Q2",
+    "analysis_as_of": "2024-05-03T23:59:59-04:00",
+    "financial_end": "2024-03-30",
+    "share_count_date": "2024-04-19",
+    "reported_shares": 15334082000,
+    "close_usd": 183.38,
+    "inputs": {
+      "net_income_ytd": 57552000000,
+      "net_income_prior_ytd": 54158000000,
+      "revenue_ytd": 210328000000,
+      "revenue_prior_ytd": 211990000000
+    },
+    "ttm_net_income_usd": 100389000000,
+    "ttm_revenue_usd": 381623000000,
+    "ttm_net_margin": 0.2630580441954494,
+    "earnings_per_dated_share_proxy": 6.546789041561144,
+    "market_cap_proxy_usd": 2811963957160.0,
+    "market_cap_to_ttm_income": 28.010678034047555,
+    "earnings_yield": 0.035700670964996975,
+    "scenario_grid": [
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 90743704869.9552,
+        "year5_price_usd": 118.35557533858916,
+        "annualized_price_return": -0.08384838713286213,
+        "cumulative_price_return": -0.35458842110050626
+      },
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 90743704869.9552,
+        "year5_price_usd": 147.94446917323646,
+        "annualized_price_return": -0.042035637415832605,
+        "cumulative_price_return": -0.1932355263756328
+      },
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 90743704869.9552,
+        "year5_price_usd": 177.53336300788374,
+        "annualized_price_return": -0.0064594377083467824,
+        "cumulative_price_return": -0.03188263165075944
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 110837567752.44481,
+        "year5_price_usd": 144.56368206775574,
+        "annualized_price_return": -0.04645444375052998,
+        "cumulative_price_return": -0.21167149052374445
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 110837567752.44481,
+        "year5_price_usd": 180.70460258469467,
+        "annualized_price_return": -0.002935051187907378,
+        "cumulative_price_return": -0.014589363154680624
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 110837567752.44481,
+        "year5_price_usd": 216.8455231016336,
+        "annualized_price_return": 0.03409323830355748,
+        "cumulative_price_return": 0.1824927642143832
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 134343127509.68643,
+        "year5_price_usd": 175.2216109313703,
+        "annualized_price_return": -0.009060500368197832,
+        "cumulative_price_return": -0.044488979543187424
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 134343127509.68643,
+        "year5_price_usd": 219.02701366421286,
+        "annualized_price_return": 0.03616553504001785,
+        "cumulative_price_return": 0.19438877557101564
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 134343127509.68643,
+        "year5_price_usd": 262.83241639705545,
+        "annualized_price_return": 0.07464591431546186,
+        "cumulative_price_return": 0.43326653068521903
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 161677488390.00006,
+        "year5_price_usd": 210.87338438649286,
+        "annualized_price_return": 0.02833344301413443,
+        "cumulative_price_return": 0.14992575191674584
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 161677488390.00006,
+        "year5_price_usd": 263.59173048311607,
+        "annualized_price_return": 0.07526612126794308,
+        "cumulative_price_return": 0.4374071898959324
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 161677488390.00006,
+        "year5_price_usd": 316.3100765797393,
+        "annualized_price_return": 0.11519859032736601,
+        "cumulative_price_return": 0.724888627875119
+      }
+    ],
+    "required_earnings_growth_for_8pct_price_return": [
+      {
+        "exit_multiple": 20,
+        "growth": 0.15526729979516118
+      },
+      {
+        "exit_multiple": 25,
+        "growth": 0.10484277008478848
+      },
+      {
+        "exit_multiple": 30,
+        "growth": 0.06528111701725092
+      }
+    ]
+  },
+  {
+    "fiscal_quarter": "2024Q3",
+    "analysis_as_of": "2024-08-02T23:59:59-04:00",
+    "financial_end": "2024-06-29",
+    "share_count_date": "2024-07-19",
+    "reported_shares": 15204137000,
+    "close_usd": 219.86,
+    "inputs": {
+      "net_income_ytd": 79000000000,
+      "net_income_prior_ytd": 74039000000,
+      "revenue_ytd": 296105000000,
+      "revenue_prior_ytd": 293787000000
+    },
+    "ttm_net_income_usd": 101956000000,
+    "ttm_revenue_usd": 385603000000,
+    "ttm_net_margin": 0.26440665658721535,
+    "earnings_per_dated_share_proxy": 6.705806452546435,
+    "market_cap_proxy_usd": 3342781560820.0,
+    "market_cap_to_ttm_income": 32.78651144434854,
+    "earnings_yield": 0.030500347732859253,
+    "scenario_grid": [
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 92160148758.54079,
+        "year5_price_usd": 121.23035823544708,
+        "annualized_price_return": -0.11224519221622997,
+        "cumulative_price_return": -0.4486020274927359
+      },
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 92160148758.54079,
+        "year5_price_usd": 151.53794779430885,
+        "annualized_price_return": -0.07172845997822697,
+        "cumulative_price_return": -0.31075253436592
+      },
+      {
+        "earnings_growth": -0.02,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 92160148758.54079,
+        "year5_price_usd": 181.8455373531706,
+        "annualized_price_return": -0.03725497121346244,
+        "cumulative_price_return": -0.17290304123910394
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 112567662371.0592,
+        "year5_price_usd": 148.07504348462425,
+        "annualized_price_return": -0.07601030210260673,
+        "cumulative_price_return": -0.3265030315445091
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 112567662371.0592,
+        "year5_price_usd": 185.0938043557803,
+        "annualized_price_return": -0.033839825691623915,
+        "cumulative_price_return": -0.15812878943063635
+      },
+      {
+        "earnings_growth": 0.02,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 112567662371.0592,
+        "year5_price_usd": 222.11256522693634,
+        "annualized_price_return": 0.002040744247212567,
+        "cumulative_price_return": 0.010245452683236289
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 136440126989.78563,
+        "year5_price_usd": 179.47763426465525,
+        "annualized_price_return": -0.03977541198898338,
+        "cumulative_price_return": -0.1836730907638714
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 136440126989.78563,
+        "year5_price_usd": 224.34704283081905,
+        "annualized_price_return": 0.004048808594979025,
+        "cumulative_price_return": 0.020408636545160785
+      },
+      {
+        "earnings_growth": 0.06,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 136440126989.78563,
+        "year5_price_usd": 269.21645139698285,
+        "annualized_price_return": 0.041336459707887574,
+        "cumulative_price_return": 0.22449036385419285
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 20,
+        "year5_net_income_usd": 164201157560.00006,
+        "year5_price_usd": 215.99536699781126,
+        "annualized_price_return": -0.0035405218753601364,
+        "cumulative_price_return": -0.017577699455056606
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 25,
+        "year5_net_income_usd": 164201157560.00006,
+        "year5_price_usd": 269.99420874726405,
+        "annualized_price_return": 0.041937442881581966,
+        "cumulative_price_return": 0.2280278756811791
+      },
+      {
+        "earnings_growth": 0.1,
+        "exit_multiple": 30,
+        "year5_net_income_usd": 164201157560.00006,
+        "year5_price_usd": 323.9930504967169,
+        "annualized_price_return": 0.08063217516856258,
+        "cumulative_price_return": 0.4736334508174149
+      }
+    ],
+    "required_earnings_growth_for_8pct_price_return": [
+      {
+        "exit_multiple": 20,
+        "growth": 0.1922210848311101
+      },
+      {
+        "exit_multiple": 25,
+        "growth": 0.1401836147806219
+      },
+      {
+        "exit_multiple": 30,
+        "growth": 0.09935649455809492
+      }
+    ]
+  }
+]

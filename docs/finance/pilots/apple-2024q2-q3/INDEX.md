@@ -54,3 +54,18 @@ Chinese; repository method/audit documentation follows the existing English
 convention. Relative Markdown links keep the fixture self-contained outside a
 vault. No real vault was inspected or modified and actual Obsidian reading-view
 rendering remains unverified.
+
+## Subsequent valuation diagnostic v1
+
+The original Stage A drafts above are preserved. The authorized continuation
+adds a bounded earnings/exit-multiple sensitivity case, not a calibrated fair
+value or full Stage C:
+
+- [Method, sources and remaining evidence](valuation-v1/METHOD.md)
+- [Q2 valuation supplement](valuation-v1/2024Q2-估值補充.md)
+- [Q3 valuation supplement](valuation-v1/2024Q3-估值補充.md)
+- [Cross-quarter valuation comparison](valuation-v1/跨季估值比較.md)
+- [Machine-readable verification](valuation-v1/validation.json)
+
+Both ratings remain insufficient evidence. No source-code, accepted acquisition
+attestation, actual vault, installed plugin or publication state is changed.

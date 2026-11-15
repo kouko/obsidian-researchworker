@@ -1,0 +1,20 @@
+[
+  {
+    "filename": "companyfacts.json",
+    "sha256": "f085735b4d08fb116ade18d24247ffabe11df8eb52eae6556b165831f15ef1ad",
+    "scope": "temporary raw; not bundled",
+    "retrieved_in": "Stage A source acquisition"
+  },
+  {
+    "filename": "primary-0000320193-24-000069.html",
+    "sha256": "7a327c99c4a2c29341682d2ab5bb2465cb4e899341374ddaf565012e0d480991",
+    "scope": "temporary raw; not bundled",
+    "retrieved_in": "Stage A source acquisition"
+  },
+  {
+    "filename": "primary-0000320193-24-000081.html",
+    "sha256": "953b1e0d484cabbcb8308b0f362bb0304c14f06b3604b7770f7f0f9ea1f0e931",
+    "scope": "temporary raw; not bundled",
+    "retrieved_in": "Stage A source acquisition"
+  }
+]
