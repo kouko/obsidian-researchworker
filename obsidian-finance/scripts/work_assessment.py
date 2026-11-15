@@ -86,6 +86,19 @@ def assess(snapshot, mode, cutoff):
 
     if not records:
         gap(None, "records", "No research records supplied")
+
+    def quarter_identity(item):
+        fiscal = item["fiscal"]
+        return item["issuer"], fiscal["year"], fiscal["period"], fiscal["period_end"]
+
+    represented = {quarter_identity(record) for record in records.values()
+                   if _fiscal(record.get("fiscal"))}
+    proposed = set()
+    quarter_evidence = {}
+    for sid, source in sorted(eligible.items()):
+        if (source.get("kind") == "financial_original" and _fiscal(source.get("fiscal"))
+                and source["fiscal"]["period_end"] <= source["available_at"][:10]):
+            quarter_evidence.setdefault(quarter_identity(source), []).append(sid)
     for rid, record in sorted(records.items()):
         if mode == "historical" and _instant(record["cutoff"]) != boundary:
             raise ValueError("historical cutoff must match saved record cutoff")
@@ -118,8 +131,11 @@ def assess(snapshot, mode, cutoff):
                   fiscal["period_end"] != record["fiscal"]["period_end"]):
                 gap(rid, sid, "Contradictory fiscal period end for saved quarter")
             elif _fiscal(record.get("fiscal")) and (fiscal["year"], fiscal["period"]) > (record["fiscal"]["year"], record["fiscal"]["period"]):
-                decision(rid, "create_next_quarter_analysis", None, [sid],
-                         "Eligible source declares a later fiscal quarter", ["financial-analysis", "business-analysis", "forecast", "valuation", "synthesis"])
+                target = quarter_identity(source)
+                if target not in represented and target not in proposed:
+                    proposed.add(target)
+                    decision(rid, "create_next_quarter_analysis", None, quarter_evidence[target],
+                             "Eligible source declares an unrepresented later fiscal quarter", ["financial-analysis", "business-analysis", "forecast", "valuation", "synthesis"])
 
         work = _indexed(record["work"])
         if not work:

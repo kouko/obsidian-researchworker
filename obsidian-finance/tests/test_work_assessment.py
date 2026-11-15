@@ -84,6 +84,25 @@ def test_new_quarter():
         fiscal=dict(year=2024, period="Q3", period_end="2024-06-29", original_accession="q3-original")))
     result = run(data)
     assert "create_next_quarter_analysis" in actions(result)
+    represented = copy.deepcopy(data["records"][0])
+    represented.update(id="q3-record", fiscal=copy.deepcopy(data["sources"][-1]["fiscal"]))
+    data["records"].append(represented)
+    assert "create_next_quarter_analysis" not in actions(run(data))
+    represented["work"][0]["status"] = "missing"
+    assert "create_next_quarter_analysis" not in actions(run(data))
+    assert "resume_incomplete_work" in actions(run(data))
+    data["records"].pop()
+    older = copy.deepcopy(data["records"][0])
+    older.update(id="q1", fiscal=dict(year=2024, period="Q1", period_end="2023-12-30", original_accession="q1-original"))
+    data["records"].append(older)
+    duplicate = copy.deepcopy(data["sources"][-1])
+    duplicate["id"] = "q3-copy"
+    data["sources"].append(duplicate)
+    proposals = [d for d in run(data)["decisions"] if d["action"] == "create_next_quarter_analysis"]
+    assert len(proposals) == 1
+    assert proposals[0]["evidence"] == ["q3", "q3-copy"]
+    data["records"].pop()
+    data["sources"].pop()
     data["sources"][-1]["fiscal"]["period_end"] = "2024-12-31"
     assert "create_next_quarter_analysis" not in actions(run(data))
     data["sources"][-1]["fiscal"]["period_end"] = "2024-06-29"
