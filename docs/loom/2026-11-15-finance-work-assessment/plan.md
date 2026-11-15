@@ -30,6 +30,13 @@ visible behavior on 2026-11-15. Neither confirmation is repeated here.
 - Test: A2 positive: relevant_change; boundary: projection_typechange_invalidates. A3 positive: new_quarter; boundary: fiscal_objectaccession_quarantines. Both committed probes were RED at e905584; move unchanged into the permanent suite and rerun focused tests.
 - Risk: agent-decided — REQ-2–5 require type-faithful evidence; reject nonstring fiscal identity and distinguish nested JSON booleans from numbers. This fixes existing obligations, preserves prior evidence/retry continuity, and changes no API or user behavior. Probe logic remains unchanged.
 
+### Wave 4 — Retain incomplete candidate evidence
+
+**W4-01 Report time-eligible source gaps** after: W3-01 acceptance: 1,5
+- Files: `obsidian-finance/scripts/work_assessment.py`, `obsidian-finance/tests/test_work_assessment.py`
+- Test: A1 positive: independent_gaps; boundary: incomplete_candidate. A5 positive: explicit_source_gap; negative: incomplete_candidate_no_work. Extend existing source-gap cases; RED must expose missing version/projection on a same-issuer supplemental candidate, then rerun focused and graduated tests.
+- Risk: agent-decided — Round 1 found eligible candidates silently omitted before completeness checks. Preserve existing REQ-1/5 behavior and prior evidence; missing version or projection must yield a matching-issuer gap, not no-work. Scope, API and behavior confirmation remain unchanged.
+
 ## Simplicity check
 
 - none found
