@@ -60,3 +60,37 @@ def test_registry_entry_with_deleted_path_skipped(tmp_path):
     live.mkdir()
     vaults = {"x": {"path": str(tmp_path / "deleted"), "ts": 5}, "y": {"path": str(live), "ts": 1}}
     assert _run(tmp_path, vaults) == [str(live)]
+
+
+HOOKS_DIR = REPO_ROOT / "obsidian/hooks"
+
+
+def _run_hook(tmp_path, env_vault=None):
+    env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
+    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(tmp_path / "noconfig"))
+    if env_vault is not None:
+        env["OBSIDIAN_VAULT"] = env_vault
+    result = subprocess.run(
+        [sys.executable, str(HOOKS_DIR / "vault_pointer.py")],
+        env=env, capture_output=True, text=True, cwd=str(tmp_path),
+    )
+    assert result.returncode == 0
+    assert result.stderr == ""
+    return result.stdout
+
+
+def test_hook_emits_one_line_with_vault_paths(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir()
+    b.mkdir()
+    lines = _run_hook(tmp_path, os.pathsep.join([str(a), str(b)])).splitlines()
+    assert len(lines) == 1
+    assert lines[0].startswith(f"Local Obsidian vault(s): {a}; {b}. ")
+    assert "obsidian-vault-search skill (read-only)" in lines[0]
+
+
+def test_hook_silent_and_exit0_without_vault(tmp_path):
+    assert _run_hook(tmp_path) == ""
+    hooks = json.loads((HOOKS_DIR / "hooks.json").read_text())
+    command = hooks["hooks"]["SessionStart"][0]["hooks"][0]["command"]
+    assert "vault_pointer.py" in command and "|| true" in command
