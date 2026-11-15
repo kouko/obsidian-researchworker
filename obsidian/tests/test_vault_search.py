@@ -324,13 +324,13 @@ ROUTER = REPO_ROOT / "obsidian/skills/using-obsidian/SKILL.md"
 SHIPPED = [p for d in (SKILL.parent, HOOKS_DIR) for p in d.rglob("*") if p.is_file() and "__pycache__" not in p.parts]
 
 
-def test_inventory_includes_vault_search():
+def test_inventory_includes_obsidian_knowledge():
     plugin = json.loads((REPO_ROOT / "obsidian/.claude-plugin/plugin.json").read_text())
-    assert plugin["version"] == "4.1.0" and "15" in plugin["description"]
+    assert plugin["version"] == "4.2.0" and "15" in plugin["description"]
 
 
-def test_routing_table_lists_vault_search():
-    assert "`obsidian-vault-search`" in ROUTER.read_text()
+def test_routing_table_lists_obsidian_knowledge():
+    assert "`obsidian-knowledge`" in ROUTER.read_text()
 
 
 def test_shipped_files_have_no_personal_vault_path():

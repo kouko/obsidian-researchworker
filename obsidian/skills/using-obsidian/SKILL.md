@@ -27,7 +27,7 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 | `obsidian-tldr` | Save conversation summary to vault |
 | `obsidian-file-intel` | Extract content from files into Obsidian notes |
 | `obsidian-research` | Research a topic on the web (EN + JA + the topic's own language) and write a research note to `research/` |
-| `obsidian-vault-search` | Search the local vault from any project (read-only) |
+| `obsidian-knowledge` | Search the local vault from any project (read-only); works without Grep/Glob |
 
 ### Authoring & visualization
 
