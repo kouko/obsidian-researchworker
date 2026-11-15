@@ -154,7 +154,14 @@ do_search() {
                     *) continue ;;
                 esac
                 [ -n "$rel" ] || continue
-                printf '%s/%s\n' "$vault" "$rel"
+                # Same dot-component filter as the grep fallback: drop any
+                # relative path with a dot-prefixed component (.., .obsidian,
+                # .claudian, .trash) so both engines return the same hit set
+                # and no traversal line can become a printed note path.
+                printf '%s\n' "$rel" | awk '{ n=split($0, a, "/"); for (i=1;i<=n;i++) if (substr(a[i],1,1)==".") next; print }' \
+                    | while read -r safe; do
+                        printf '%s/%s\n' "$vault" "$safe"
+                    done
             done
             return 0
         fi
