@@ -1,0 +1,121 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-finance-sec-baseline",
+  "content_digest": "80ea797bf055741373c1875897851b72d3bdbb94",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_sec_source_identity.py",
+      "artifact": "obsidian-finance/tests/test_sec_source_identity.py",
+      "result": "pass",
+      "command_digest": "fcaddb8a77c62225e6d81501a425a72d4e008a04d3846b083b3a14ff49d41b3d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_sec_filing_identifier.py",
+      "artifact": "obsidian-finance/tests/test_sec_filing_identifier.py",
+      "result": "pass",
+      "command_digest": "748d5da5cefe6124404173fa68db5d51b056e97eb7626a8d558246986cf640e0"
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "code",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "e287ac3ff63cadbb9f09df8aaae19997d3ff3f3d",
+      "dimension_scores": {
+        "security": "PASS",
+        "architecture": "PASS",
+        "correctness": "PASS_WITH_NOTES — Offline entry-path behavior and identifier fixes verified; real SEC acquisition and fresh-host loading remain unverified, consistently disclosed rather than claimed successful.",
+        "naming": "PASS",
+        "tests": "PASS — Independently ran all four changed finance test files: 51 passed, no skipped cases; reviewed retained RED-to-GREEN identifier evidence and acceptance evidence.",
+        "refactoring": "PASS",
+        "cross-task-coherence": "PASS",
+        "external-surface-grounding": "PASS — SEC endpoint shapes are grounded in the cited official API documentation, independently opened during review; package metadata follows the existing sibling package contract.",
+        "principles-conformance": "PASS",
+        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md exists in the reviewed tree.",
+        "deliberate-simplification": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [],
+      "notes": [
+        "Reviewed the cumulative committed acquisition implementation, optional package registration, changed tests, provenance, public documentation, intent, specification, plan and acceptance evidence; repository remained unchanged.",
+        "Validation command: PATH=/private/tmp/finance-validation-env/bin:$PATH PYTHONDONTWRITEBYTECODE=1 python3 -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_sec_client.py obsidian-finance/tests/test_sec_source_identity.py obsidian-finance/tests/test_sec_filing_identifier.py -q -p no:cacheprovider; result: 51 passed in 20.20s. No full repository suite or evidence/probes programs were run.",
+        "Acceptance 1 and 2 remain partly verified: supplied genuine operator identity and actual host execution are prerequisites for further claims. Official grounding checked: https://www.sec.gov/search-filings/edgar-application-programming-interfaces . No live SEC data acquisition was attempted."
+      ],
+      "reviewer": "closing_code",
+      "vendor": "codex",
+      "model": "inherited"
+    },
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "docs",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "e287ac3ff63cadbb9f09df8aaae19997d3ff3f3d",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS_WITH_NOTES — Local distribution, runtime/output contracts and acceptance limitations were reconciled against the committed implementation; external research citations and historical upstream source claims were not independently reopened under the no-network review boundary.",
+        "missing-population": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "inconsistency",
+          "anchor": "docs/finance/PLAN-DRAFT.md:397",
+          "text": "note (non-blocking): The decision register still calls the sibling plugin/name provisional and says to confirm before implementation, although the confirmed slice specification selects obsidian-finance and the same document records its implementation. The explicit continuation instruction prevents this from blocking the active change, but the register no longer reflects the slice decision.",
+          "fix": "Update this row to record obsidian-finance as selected for the confirmed acquisition slice, while keeping wider-program architecture provisional."
+        }
+      ],
+      "notes": [
+        "README, finance README, skill prose, manifests, acquisition scripts, intent/spec/plan, research records and acceptance artifacts were read. The checkout was clean at the target SHA; no repository files were edited.",
+        "Acceptance rows 1 and 2 explicitly remain partly verified; offline synthetic evidence is not presented as live SEC acquisition or fresh-host execution. The wider twenty-year/advisory program is explicitly outside this slice.",
+        "No complete package suite, adversarial probe, live network request, host installation or invented operator identity was used. Model identity is unobservable; dispatch was inherited with no overrides."
+      ],
+      "reviewer": "closing_docs",
+      "vendor": "codex",
+      "model": "inherited"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "183ac24edcb2513042f1b40832fbacc47d2caad2",
+  "tested_commit": "adf7438da6b944b6beda421d78fc495a1b6c73a7",
+  "reviewed_commit": "e287ac3ff63cadbb9f09df8aaae19997d3ff3f3d",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "partly"
+    },
+    {
+      "acceptance": 2,
+      "status": "partly"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
