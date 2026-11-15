@@ -62,6 +62,18 @@ charter: 1.1
 - Test: A1 positive: finance_only_quarter_entry; boundary: unsupported_hosts. A6 positive: combined_suite; boundary: original_unchanged. Documentation must distinguish real payload replay, offline fixtures, live access and actual host invocation.
 - Risk: REQ-1/6; agent-decided preserve previous failed and passing evidence with supersession labels; original 74 tests/reviews do not certify new content. No vault/global installation, outbound publication, recommendation engine or market/macro ingestion.
 
+### Wave 7 — quarter publication-conflict repair and durable coverage
+
+**W7-01 Validate original-filing evidence before quarter resolution** after: W6-03 acceptance: 2,3,4
+- Files: obsidian-finance/skills/sec-data/scripts/fiscal_quarter.py (entry: candidates/resolve), obsidian-finance/skills/sec-data/scripts/acquire.py (entry: run), obsidian-finance/tests/test_acquire.py, obsidian-finance/tests/test_fiscal_quarter.py
+- Test: A2 positive: declared_fiscal_quarter; negative: future_acceptance_probe. A3 positive: quarter_complete; boundary: unresolved_no_marker. A4 positive: cutoff_filter; negative: conflicting_future_duplicate_probe. Existing earned publication probe exposes both cases; preserve existing declaration/date tests.
+- Risk: REQ-2/3/4; agent-decided unify publication checks before candidate cutoff filtering. Class search: 29 changed files plus Acceptance 2/4 surfaces; acquire.py conflicting() versus fiscal_quarter.py candidates/resolve(). Preserve and widen test_acquire.py/test_fiscal_quarter.py; retain valid after-hours behavior. Same failed W6-02 obligation, first substantive repair, no budget reset.
+
+**W7-02 Graduate earned quarter-publication probe unchanged** after: W7-01 acceptance: 3,6
+- Files: docs/loom/2026-11-15-finance-sec-baseline/evidence/probes/test_quarter_publication.py, obsidian-finance/tests/test_quarter_publication.py
+- Test: A3 positive: graduated_publication_probe; negative: retained_red_evidence. A6 positive: combined_suite; boundary: relocation_independent_discovery. The earned two-case probe must run in the permanent package suite.
+- Risk: REQ-3/6; agent-decided move the adversary-authored program unchanged after its product repair. Original RED commit 0a7ad32 remains evidence; no author-owned assertions may be edited by the implementer.
+
 ## Simplicity check
 
 - none found
