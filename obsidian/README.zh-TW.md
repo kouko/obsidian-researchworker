@@ -20,7 +20,15 @@
 
 ## Version
 
-4.0.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+4.1.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+
+初始化會預覽個人化的命名、筆記品質與現行 skill 規範，完整內容放在
+`AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
+既有規範會從兩份目前檔案合併，替換前先建立可還原的私人備份。
+既有 memory 與本機 skill 保持原始位元組；缺少的附屬檔案須列入預覽並確認後
+才建立。個人規範與備份只留本機。Codex 探索與 Claude 匯入是相容策略，
+新工作階段的實際載入仍未驗證；不自動變更全域設定或安裝快取。
+獨立版號的 OpenCode package 為 0.2.0。
 
 ## 獨立發行
 
@@ -151,7 +159,7 @@ sequence diagram type、套用 Obsidian 11.4.1 的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 4.0.0
+│   └── plugin.json              # plugin metadata，version 4.1.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
 ├── skills/

@@ -1,9 +1,16 @@
 # Obsidian ResearchWorker
 
 Fourteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
-work. Version 4.0.0 removes the eight wiki skills and daily-news-digest;
+work. Version 4.1.0 adds personalized shared vault instructions and safe setup
+re-entry. Version 4.0.0 removed the eight wiki skills and daily-news-digest;
 ordinary daily notes, topic research, Defuddle extraction and wikilinks remain.
 Extracted from Monkey Skills Obsidian 3.27.0; this version is not host-validated.
+
+Setup now previews a complete `AGENTS.md` and a `CLAUDE.md` containing only
+`@AGENTS.md` plus a newline. Existing rules are merged after private restorable
+backups; existing memory and local skills remain unchanged. Backups and personal
+vault content stay local. This source release does not refresh installations,
+global settings or active sessions, and does not establish fresh host loading.
 
 ## Installation status
 

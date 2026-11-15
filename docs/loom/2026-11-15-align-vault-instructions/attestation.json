@@ -1,0 +1,107 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-align-vault-instructions",
+  "content_digest": "68e4e15f622c03617f8575597a021f034116b01d",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider",
+      "artifact": "obsidian/tests/test_skill_inventory.py",
+      "result": "pass",
+      "command_digest": "b550f73368422892b8dac18a0c212371b8e9eaa4c4a5d3fa79f68a00fc55e1f5"
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "PASS",
+      "lens": "skill",
+      "reviewed_sha": "bcdee20d31780cfe31b6713cfaf402a5bd47f2de",
+      "review_target_sha": "22252113f1163667d357619349c1ae51a8fad583",
+      "dimension_scores": {
+        "omission": "PASS — The refinement preserves direct naming, valid properties, existing-target links and source-quality rules. Required reading and following of matching installed skills, the unclear-task router and authoring skill supplies the deliberately delegated metadata and visual detail. Missing skills/prerequisites must be reported. Unchanged merge, backup, ancillary-preservation and exact-import instructions remain present.",
+        "ambiguity": "PASS — Daily reads now have an explicit task-relevance condition; inbox questions are limited to daily organization or an explicit organization request. Required skill use is mandatory rather than merely an advertised catalog. Delegation names the responsible skills and unavailable-prerequisite behavior.",
+        "inconsistency": "PASS — Compared changed polarity clauses against the Round 1 target. The narrowing of daily/inbox triggers and removal of the duplicated catalog/manuals match the newly confirmed spec. The removed no-mandatory-empty-fields and proportional-visual explanations are delegated to authoring guidance under the approved simplification, while preservation of existing valid unique requirements remains mandatory. Host verification limits remain in setup/report instructions despite removal from the generated body.",
+        "incorrect-fact": "PASS — Current report and appended evidence distinguish manual reader-operated file behavior from autonomous host execution. The new protected-manifest equality is explicitly scoped to the refinement window and does not erase the earlier unresolved workspace difference. Synthetic results support the described contextual selections, exact import and preservation scenarios. No changed external API or loading-contract claim requires fresh grounding.",
+        "missing-population": "PASS — Updated evidence identifies the synthetic cases and selected contextual operations, the focused four-test scope, and the 17560-path refinement-window population separately from the older 17554-file window. Host loading and automatic triggering remain explicitly unmeasured.",
+        "user-judgment-leak": "PASS — The approved combined simplification is implemented without reopening the user's choice. Matching skills, routing and prerequisite reporting are executor responsibilities, while legitimate personal-context and preview authorization questions remain unchanged.",
+        "deletion-first": "PASS — The delta removes duplicated catalog/manual/host prose and broad context triggers without a replacement framework or synchronization mechanism. The concise skill-use obligations point to existing owners of the removed detail and implement the explicitly approved smaller shape."
+      },
+      "findings": [],
+      "notes": [
+        "Same bounded review episode; previous findings were empty. Reviewed only 85d1a5e90249bd2937486036b8155f68d96820ea..22252113f1163667d357619349c1ae51a8fad583 and its touched behavior against the updated ground truth. No ordinary test changed since Round 1; its independent inventory result remains 2 passed. No full suite or adversarial program run.",
+        "Read the full current setup/evals, updated spec/plan/report, appended evidence and synthetic results.json. Private bodies were intentionally outside this public-artifact review; the private acceptance aggregates are not a new independent certification by this reviewer. Runtime host loading and partial-write injection remain disclosed limitations.",
+        "A read-only inline Python attempt to recompute body-size metrics was denied by the command guard; no override, installation or allowlist change was attempted. The size figures were inspected as acceptance evidence rather than independently recomputed; no verdict depends on a reduction quota."
+      ],
+      "reviewer": "vault_skill_review",
+      "vendor": "openai",
+      "model": "inherited"
+    },
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "code",
+      "reviewed_sha": "bcdee20d31780cfe31b6713cfaf402a5bd47f2de",
+      "review_target_sha": "22252113f1163667d357619349c1ae51a8fad583",
+      "dimension_scores": {
+        "security": "PASS — The approved refinement narrows unrelated daily-note reads and inbox interruptions while retaining original backup, approval, concurrent-change and private-publication safeguards. Inspected only the exact supplied private aggregate results; no private instruction or note bodies were needed.",
+        "architecture": "PASS — Detailed syntax and diagrams remain owned by obsidian-markdown, and task routing by installed matching skills and using-obsidian. Removing the generated catalog/manual duplication leaves one common instruction body without a new component or synchronization mechanism.",
+        "correctness": "PASS_WITH_NOTES — The refined generated body matches the approved spec: owner-first-person context, scoped daily/inbox triggers, naming and source obligations, mandatory skill reading/following and unavailable-prerequisite reporting. Fresh independent acceptance revisits all six criteria and ten flows. Fresh host loading and injected partial-write recovery remain unexecuted; the earlier unexplained workspace difference remains explicitly historical rather than being overwritten by this window's equality.",
+        "naming": "PASS — The four generated section names reflect retained responsibilities. Required Skill Use clearly states the stronger execution obligation; the unchanged routing identifiers resolve to the inspected authoring and router skills.",
+        "tests": "PASS — No ordinary test file changed since Round 1, so retain my independent inventory run of 2 passed with no skips. Read the replacement fresh-context acceptance evidence for the changed prose, including unrelated evergreen authoring, relevant personal voice, explicit organization and unavailable processing. Acceptance reports 4 focused checks passed in a clean archive. No full suite or stored adversarial program was rerun by this reviewer, as required by the contract; no new harness was added.",
+        "refactoring": "PASS — The change deletes the duplicated 14-skill catalog and detailed manual/host prose from generated instructions while retaining mandatory delegation and source/link constraints. Confirmed actual authoring and router skills own the delegated material; setup safety and personalization remain intact.",
+        "cross-task-coherence": "PASS — Revised spec, appended plan tasks, skill, eval case, changelog and renewed acceptance agree on the approved simplification. Existing README claims still hold. Private aggregate evidence confirms restored personal extension-link and ASCII obligations and unchanged protected content in the refinement window without displacing earlier limitations.",
+        "external-surface-grounding": "PASS — No new external API, SDK, CLI flag or host-loading mechanism is introduced by this delta. The two named local skill contracts were opened and support the delegated metadata, writing, visual and routing responsibilities. Round 1 primary host-document grounding remains applicable to unchanged import behavior.",
+        "principles-conformance": "PASS — Relative to the previously inspected ratified principles, the refinement retains user data and unique personal requirements, advertises current available routing, and reports observed evidence with temporal scope. The independent aggregate verification records 17,560 protected paths with zero path-set, content/symlink or timestamp differences for this window only.",
+        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md was present in Round 1 and this bounded delta adds none.",
+        "deliberate-simplification": "PASS — Deletion is intentional and user-approved: keep short obligations, delegate detailed manuals and avoid unrelated context reads. The evidence states its manual reader-operated ceiling, host-runtime limits and uninjected recovery case rather than presenting this simplification as universal autonomous-host proof.",
+        "deletion-first": "PASS — The delta removes generated sections and duplicated catalog content, merges structure/work preferences and adds no abstraction, flag, framework or executable test. The surviving mandatory skill-use rule is the smaller shape that retains the requested quality and prerequisite protections."
+      },
+      "findings": [],
+      "notes": [
+        "Round 2 of the same bounded episode; prior findings were empty. Reviewed only 85d1a5e90249bd2937486036b8155f68d96820ea..22252113f1163667d357619349c1ae51a8fad583 and affected skill contracts, retaining unaffected Round 1 judgments and test evidence.",
+        "Read renewed acceptance report/evidence and the two exact supplied private aggregate JSON files. No host/vendor execution, installations, repository edits or private-body inspection.",
+        "An optional combined read/measurement command was blocked by the shell guard before execution; did not bypass or repeat it. Completed necessary source reads using plain read-only commands; did not independently recompute the reported character totals."
+      ],
+      "reviewer": "vault_code_review",
+      "vendor": "openai",
+      "model": "inherited"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "9dec1b2c5068dea622fdadd6453cc17fa4f16ba8",
+  "tested_commit": "3f8bb499ae6086d6b4b8353d253bef24c2eac27c",
+  "reviewed_commit": "22252113f1163667d357619349c1ae51a8fad583",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "partly"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "partly"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
