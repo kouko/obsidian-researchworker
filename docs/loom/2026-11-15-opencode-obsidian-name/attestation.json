@@ -1,0 +1,49 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-opencode-obsidian-name",
+  "content_digest": "3489ca639b7fc306434dac114efb27bf925f226e",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian/tests/test_command_registration_failure.py -q -p no:cacheprovider",
+      "artifact": "obsidian/tests/test_command_registration_failure.py",
+      "result": "pass",
+      "command_digest": "e508ce6d83dac17afca0dce6edfe5c087eb60a84a981502918d733b07e6cfee0"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "closing_review_a",
+      "vendor": "codex",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "bc3f2349e9e26e87f89e82888c79a682c51b368f",
+      "findings": []
+    },
+    {
+      "reviewer": "closing_review_b",
+      "vendor": "codex",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "bc3f2349e9e26e87f89e82888c79a682c51b368f",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "f50b757",
+  "tested_commit": "bc3f2349e9e26e87f89e82888c79a682c51b368f",
+  "reviewed_commit": "bc3f2349e9e26e87f89e82888c79a682c51b368f",
+  "acceptance_status": []
+}
