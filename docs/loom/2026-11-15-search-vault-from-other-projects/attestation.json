@@ -1,0 +1,100 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-search-vault-from-other-projects",
+  "content_digest": "f62df8497bbdd86f883491e2e4b28f486cadc815",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_vault_search_cli_traversal.py",
+      "artifact": "docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_vault_search_cli_traversal.py",
+      "result": "pass",
+      "command_digest": "1f55667af51e5f2cce938dffef78997f20a9c14d72928dd4ac556fac26384972"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_vault_search_engines_same_hits.py",
+      "artifact": "docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_vault_search_engines_same_hits.py",
+      "result": "pass",
+      "command_digest": "e0efd0020cd7192137816b2188c88d26c6d87380df50c77b4d6d051f9bcc0373"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_plugin_metadata_consistency.py",
+      "artifact": "docs/loom/2026-11-15-search-vault-from-other-projects/evidence/probes/test_plugin_metadata_consistency.py",
+      "result": "pass",
+      "command_digest": "7f013fc2213e0c0a35012d1cbd9b14bcc2d9f7218b244df8c6b3a76eebd75d8e"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a-skill-r2",
+      "vendor": "claude",
+      "model": "opus",
+      "lens": "skill",
+      "verdict": "PASS_WITH_NOTES",
+      "findings": []
+    },
+    {
+      "reviewer": "reviewer-b-code-r2",
+      "vendor": "claude",
+      "model": "opus",
+      "lens": "code",
+      "verdict": "PASS_WITH_NOTES",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "af857fb320980bd1feb61085b4312bf7f88ca1f0",
+  "tested_commit": "f3072ad",
+  "reviewed_commit": "3a6d199356f32ba7b4bbe87744241c228545567d",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "partly"
+    },
+    {
+      "acceptance": 7,
+      "status": "works"
+    },
+    {
+      "acceptance": 8,
+      "status": "works"
+    },
+    {
+      "acceptance": 9,
+      "status": "works"
+    },
+    {
+      "acceptance": 10,
+      "status": "works"
+    }
+  ]
+}
