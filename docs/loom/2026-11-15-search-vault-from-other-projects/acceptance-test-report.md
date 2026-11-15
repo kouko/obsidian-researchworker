@@ -1,7 +1,6 @@
 # 在其他專案中主動查詢本機 Obsidian 筆記 — 我試了什麼、結果如何
 
-Tried on 2026-11-16, in a clean copy of the project at e196fa7
-(e196fa793ae93ce94542942fe83ed8dc3f2c8f34).
+Tried on 2026-11-16, in a clean copy of the project at f3072ad (f3072ad44d8d43a0c3c36f6d8f5b2c8b7c8d5f34e).
 
 ## What you asked for, one line at a time
 
