@@ -1,6 +1,6 @@
 # Independent SEC acquisition — plan
 intent: 2026-11-15-finance-sec-baseline@b5c4dcd
-spec: docs/loom/2026-11-15-finance-sec-baseline/spec.md@e185f38
+spec: docs/loom/2026-11-15-finance-sec-baseline/spec.md@39c8225
 charter: 1.1
 
 ## Task DAG
@@ -45,6 +45,23 @@ charter: 1.1
 - Test: A3 positive: graduated_probes; negative: original_red_evidence. A6 positive: combined_suite; boundary: probe_discovery.
 - Risk: REQ-3/6; agent-decided move earned programs unchanged after their author makes root discovery location-independent. Programs caught real identifier defects; normal suite discovery must retain them on future changes.
 
+### Wave 6 — confirmed fiscal-quarter amendment
+
+**W6-01 Preserve valid after-hours SEC filings** after: W5-01 acceptance: 2,4
+- Files: obsidian-finance/skills/sec-data/scripts/acquire.py (entry: run), obsidian-finance/tests/test_acquire.py
+- Test: A2 positive: after_hours_apple_replay; negative: malformed_acceptance. A4 positive: cutoff_filter; boundary: amendment_conflict. Existing test_acquire.py covers cutoff and independently conflicting dates; add the live after-hours exclusion regression.
+- Risk: REQ-2/4; agent-decided remove acceptance-date equality while retaining impossible chronology and accession/filing-date contradictions. Preserve and widen test_acquire.py coverage. Class search covered branch-changed files and Acceptance 2/4 surfaces: only acquire.py conflicting(), shared by inventory/observations. Original code stays untouched.
+
+**W6-02 Resolve issuer fiscal quarter and acquire its data package** after: W6-01 acceptance: 2,3,4,5
+- Files: obsidian-finance/skills/sec-data/scripts/sec_client.py (entry: acquire), obsidian-finance/skills/sec-data/scripts/fiscal_quarter.py (entry: resolve), obsidian-finance/skills/sec-data/scripts/acquire.py (entry: run), obsidian-finance/tests/test_fiscal_quarter.py, obsidian-finance/tests/test_acquire.py, obsidian-finance/tests/test_sec_client.py
+- Test: A2 positive: declared_fiscal_quarter; boundary: comparative_focus_and_q4. A3 positive: quarter_complete; negative: unresolved_period. A4 positive: explicit_cutoff; boundary: future_declaration. A5 positive: quarter_repeat_preserves; negative: mixed_selectors. Add cases for untested quarter input, source-bound declarations and unsafe primary-document paths.
+- Risk: REQ-2/3/4/5; agent-decided keep existing date entry, status and source transport protections; widen existing test_acquire.py/test_sec_client.py. Use DEI fiscal declarations, candidate-only fy/fp, literal reportDate, unresolved failed1/no dataset. Acquisition cutoff differs from recommendation timing; no quarter arithmetic or Monkey Skills dependency.
+
+**W6-03 Document quarter operation and replay evidence** after: W6-02 acceptance: 1,6
+- Files: obsidian-finance/README.md, obsidian-finance/skills/sec-data/SKILL.md, docs/finance/PLAN-DRAFT.md, docs/loom/research/2026-11-15-finance-quarter-and-filing-date.md, docs/loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md
+- Test: A1 positive: finance_only_quarter_entry; boundary: unsupported_hosts. A6 positive: combined_suite; boundary: original_unchanged. Documentation must distinguish real payload replay, offline fixtures, live access and actual host invocation.
+- Risk: REQ-1/6; agent-decided preserve previous failed and passing evidence with supersession labels; original 74 tests/reviews do not certify new content. No vault/global installation, outbound publication, recommendation engine or market/macro ingestion.
+
 ## Simplicity check
 
 - none found
@@ -53,6 +70,7 @@ charter: 1.1
 
 ① — what — 請確認：這就是第一批要交付的結果嗎？
 ② — behaviour — 這些操作結果符合你的預期嗎？
+② — behaviour — 上述「只填季度就做回顧；加截止日才重建當時資訊」符合你的預期嗎？
 
 The user confirmed intent with「了解 那就繼續剛才的第一批交付吧」and behavior with「我們可以先做做看 之後再視情況調整嗎」followed by「那就開始吧」. No step was skipped. The folder/file examples are proposed names within the confirmed data artifact, not a request to write the actual vault.
 
@@ -64,3 +82,6 @@ The user confirmed intent with「了解 那就繼續剛才的第一批交付吧�
 4. Required independent spec review initially found two ambiguities; e185f38 resolved both and reviewer returned PASS_WITH_NOTES. Original adapter count was remeasured locally as 6,197 lines; no finding remains.
 5. Manual source download earlier used the original hard-coded contact identity before the issue was identified. The new implementation requires supplied identity and must not copy that default.
 6. Profile resolver main model/effort are unobservable; all native agent dispatches inherit atomically without overrides. No outside vendor is authorized; suggest policy notice does not grant execution.
+
+7. Amendment confirmed with「對」and「開始吧」after market-frequency clarification. W6 adds quarter-selection obligations; W6-01 repairs original eligibility. Prior review round 1 and identifier-fix counts remain; no episode/budget reset. Re-review amended content before acceptance.
+8. Pre-build spec re-review PASS on the three fixes; acquisition-date data cutoff is not a recommendation date, and source-filing date is not a universal freeze of later research dimensions.
