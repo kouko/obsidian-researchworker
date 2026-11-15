@@ -255,6 +255,7 @@ export default {
         }
       }
 
+      // https://opencode.ai/docs/build/plugins/server#skills
       await ctx.skill.transform((draft) => {
         for (const skill of skills) {
           try {
@@ -264,6 +265,7 @@ export default {
           }
         }
       });
+      // https://opencode.ai/docs/build/plugins/server#commands
       await ctx.command.transform((draft) => {
         for (const skill of skills) {
           try {

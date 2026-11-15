@@ -32,7 +32,7 @@ resumable multi-note research remain proposed.
 
 ## Existing checks
 
-With Python and pytest already available, run from the repository root:
+With Python, pytest and Node.js already available, run from the repository root:
 
 ```sh
 cd obsidian

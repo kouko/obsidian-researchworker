@@ -15,8 +15,9 @@ point to this repository. OpenCode now uses package and loader ID `obsidian`;
 its skills and slash commands use `obsidian:<skill>`. Saved references using
 `obsidian-researchworker:<skill>` or the earlier `monkey-skills-obsidian:*`
 prefix need to be updated.
-Claude/Codex and marketplace metadata declare 4.0.0; the independently versioned
-OpenCode package declares 0.1.0. The historical 3.27.0 installation evidence
+At extraction, Claude/Codex and marketplace metadata declared 4.0.0 and the
+independently versioned OpenCode package declared 0.1.0. They now declare
+4.1.0 and 0.2.0 respectively. The historical 3.27.0 installation evidence
 does not verify installation or execution of these versions.
 
 W3 must record host/version, isolated home and fixture vault, revision, successful
