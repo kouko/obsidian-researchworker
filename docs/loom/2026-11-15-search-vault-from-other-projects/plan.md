@@ -51,14 +51,14 @@ Wave 3 — Python-free search fix-round (2026-11-15, after A6 FAIL: host CC 2.1.
 - Test: A2 positive: hook_emits_one_line_with_vault_paths; negative: hook_silent_and_exit0_without_vault.
 - Risk: hook runs every session; silent failure, exit 0, no python dependency. agent-decided.
 
-**W3-03 Skill rewrite to `obsidian-knowledge`**  after: W3-01  acceptance: 4, 5, 9, 10
-- Files: obsidian/skills/obsidian-knowledge/SKILL.md (renamed; Step 2 calls `vault.sh search`; no Grep/Glob mentions; subagent paragraph updated), tests.
-- Test: A4/A5/A9/A10 wording assertions updated for the new name and search step.
+**W3-03 Skill rewrite to `obsidian-knowledge`**  after: W3-01  acceptance: 4, 5, 9, 10, 8
+- Files: obsidian/skills/obsidian-knowledge/SKILL.md (renamed; Step 2 calls `vault.sh search`; no Grep/Glob mentions; subagent paragraph updated), obsidian/tests/test_skill_inventory.py (RETAINED entry renamed — the rename itself breaks that set, so it must land in this commit, not a later one), tests.
+- Test: A4/A5/A9/A10 wording assertions updated for the new name and search step. A8 positive: inventory RETAINED lists `obsidian-knowledge`.
 - Risk: instruction-text contract; static wording tests + live acceptance testing. agent-decided.
 
-**W3-04 Wiring: rename + docs + version**  after: W3-02, W3-03  acceptance: 8
-- Files: obsidian/tests/test_skill_inventory.py, obsidian/skills/using-obsidian/SKILL.md, obsidian/.claude-plugin/plugin.json, obsidian/README*.md, obsidian/CHANGELOG.md, .claude-plugin/marketplace.json.
-- Test: A8 inventory + routing name `obsidian-knowledge`; version 4.2.0; no personal vault path in shipped files.
+**W3-04 Wiring: docs + version**  after: W3-02, W3-03  acceptance: 8
+- Files: obsidian/skills/using-obsidian/SKILL.md, obsidian/.claude-plugin/plugin.json, obsidian/README*.md, obsidian/CHANGELOG.md, .claude-plugin/marketplace.json.
+- Test: A8 routing name `obsidian-knowledge`; version 4.2.0; no personal vault path in shipped files.
 - Risk: rename misses a doc → stale routing; sweep all shipped text for the old name. agent-decided.
 
 ## Simplicity check
