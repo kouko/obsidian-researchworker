@@ -6,7 +6,8 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[5]
+ROOT = next(parent for parent in Path(__file__).resolve().parents
+            if (parent / 'obsidian-finance/tests/test_acquire.py').is_file())
 SPEC = importlib.util.spec_from_file_location(
     'finance_test_helpers', ROOT / 'obsidian-finance/tests/test_acquire.py')
 HELPERS = importlib.util.module_from_spec(SPEC)
