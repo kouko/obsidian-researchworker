@@ -104,13 +104,25 @@ def test_status_precedence(tmp_path, monkeypatch, mode, status, code):
     assert (path / 'eligible-facts.json').exists() == (status != 'failed')
 
 
-@pytest.mark.parametrize('section', [1, 2])
-def test_unavailable_sections(tmp_path, monkeypatch, section):
+@pytest.mark.parametrize('section,bad', [
+    (1, b'bad'), (2, b'bad'),
+    ('accession', '../untrusted'), ('accession', None),
+    ('accession', []), ('accession', {}), ('accession', True),
+    ('accession', '００００３２０１９３-２４-０００００１'),
+])
+def test_unavailable_sections(tmp_path, monkeypatch, section, bad):
     data = payloads()
-    data[section] = b'bad'
+    if section == 'accession':
+        data[1]['filings']['recent']['accessionNumber'][0] = bad
+    else:
+        data[section] = bad
     summary, path, _ = execute(tmp_path, monkeypatch, data)
     assert summary['status'] == 'partial'
     assert read(path, 'manifest.json')['errors'][0]['code'] == 'INVALID_SOURCE_DATA'
+    if section == 'accession':
+        assert read(path, 'filings.json') == []
+        assert read(path, 'coverage.json')['filing_excluded']['invalid_accession'] == 1
+        assert read(path, 'eligible-facts.json')[0]['accession_in_inventory'] is False
 
 
 def test_cutoff_filter(tmp_path, monkeypatch):

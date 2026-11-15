@@ -51,7 +51,7 @@ def _acceptance_date(value):
 
 
 def _source_url(cik, accession):
-    if not isinstance(accession, str) or not re.fullmatch(r'\d{10}-\d{2}-\d{6}', accession):
+    if not isinstance(accession, str) or not re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}', accession):
         return None
     return f'https://www.sec.gov/Archives/edgar/data/{cik}/{accession.replace("-", "")}/{accession}-index.html'
 
@@ -61,12 +61,20 @@ def _select(data, start, end, cutoff):
     excluded = Counter()
     filing_excluded = Counter()
     inventory = []
+    valid_filings = []
+    filing_errors = {}
     indexed = defaultdict(list)
     cik = data['company']['cik']
     for row in data['filings']:
         accession = row.get('accessionNumber')
-        if isinstance(accession, str):
-            indexed[accession].append(row)
+        if _source_url(cik, accession) is None:
+            filing_excluded['invalid_accession'] += 1
+            source = row['source_id']
+            filing_errors[source] = dict(source=source, code='INVALID_SOURCE_DATA',
+                detail='Malformed filing accession excluded from inventory')
+            continue
+        valid_filings.append(row)
+        indexed[accession].append(row)
 
     def conflicting(accession, filed):
         for filing in indexed.get(accession, []):
@@ -77,7 +85,7 @@ def _select(data, start, end, cutoff):
                 return True
         return False
 
-    for row in data['filings']:
+    for row in valid_filings:
         accession = row.get('accessionNumber')
         if row.get('form') not in ('10-K', '10-Q', '10-K/A', '10-Q/A'):
             filing_excluded['other_form'] += 1
@@ -154,6 +162,7 @@ def _select(data, start, end, cutoff):
         span['observation_count'] += 1
     coverage = dict(eligible_fact_count=len(eligible), filing_count=len(inventory),
         excluded=dict(excluded), filing_excluded=dict(filing_excluded),
+        filing_errors=list(filing_errors.values()),
         observed_spans=list(spans.values()),
         absent_inventory_accession_count=sum(not row['accession_in_inventory'] for row in eligible),
         inventory_limitation='No matching filings acquired' if not inventory else None,
@@ -224,6 +233,7 @@ def run(argv=None, fetch=None):
         failed = not data['company'] or not data['identity_valid'] or not valid_section
         eligible, inventory, coverage, malformed = ([], [], {}, False) if failed else _select(data, start, end, cutoff)
         errors = list(data['errors'])
+        errors.extend(coverage.get('filing_errors', []))
         if malformed:
             errors.append(dict(source='companyfacts', code='INVALID_SOURCE_DATA', detail='Malformed observation structure; invalid sections excluded'))
             if not eligible and not any(s['id'] == 'submissions' and s['status'] == 'valid' for s in sources):
