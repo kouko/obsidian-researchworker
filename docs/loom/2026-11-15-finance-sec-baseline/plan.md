@@ -26,6 +26,25 @@ charter: 1.1
 - Test: A1 positive: separate_plugin; boundary: original_unavailable. A6 positive: combined_suite; boundary: existing_obsidian_retained.
 - Risk: REQ-1/6; agent-decided one acquisition skill and Claude/Codex metadata only; OpenCode remains unverified. Expand package-suite collection to both packages; no global install or existing-vault writes. Use isolated sample output for live verification.
 
+### Wave 4 — adversarial identifier fixes
+
+**W4-01 Reject lossy issuer identifiers** after: W3-01 acceptance: 2,3
+- Files: obsidian-finance/skills/sec-data/scripts/sec_client.py (entry: acquire), obsidian-finance/tests/test_sec_client.py
+- Test: A2 positive: issuer_acquisition; negative: fractional_issuer_probe. A3 positive: archived_filings; boundary: malformed_issuer.
+- Risk: REQ-2/3; agent-decided strict integer/digit-string comparison prevents truncation. Existing issuer test coverage widens to fractional identifiers; preserve original successful integer/string formats. Root searched every changed file for identifier coercion; only endpoint int conversion was found.
+
+**W4-02 Quarantine malformed filing identifiers** after: W4-01 acceptance: 2,3
+- Files: obsidian-finance/skills/sec-data/scripts/acquire.py (entry: run), obsidian-finance/tests/test_acquire.py
+- Test: A2 positive: traceable_package; negative: invalid_accession_probe. A3 positive: status_precedence; boundary: malformed_inventory.
+- Risk: REQ-2/3; agent-decided quarantine malformed inventory accessions before eligibility, recording exclusions and source errors. Existing inventory tests widen. Root searched every changed file; source-url validation covered facts but not inventory.
+
+### Wave 5 — durable defect coverage
+
+**W5-01 Graduate earned identifier probes into package suite** after: W4-02 acceptance: 3,6
+- Files: docs/loom/2026-11-15-finance-sec-baseline/evidence/probes/test_sec_source_identity.py, docs/loom/2026-11-15-finance-sec-baseline/evidence/probes/test_sec_filing_identifier.py, obsidian-finance/tests/test_sec_source_identity.py, obsidian-finance/tests/test_sec_filing_identifier.py
+- Test: A3 positive: graduated_probes; negative: original_red_evidence. A6 positive: combined_suite; boundary: probe_discovery.
+- Risk: REQ-3/6; agent-decided move earned programs unchanged after their author makes root discovery location-independent. Programs caught real identifier defects; normal suite discovery must retain them on future changes.
+
 ## Simplicity check
 
 - none found
