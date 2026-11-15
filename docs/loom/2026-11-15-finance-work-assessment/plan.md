@@ -23,6 +23,13 @@ visible behavior on 2026-11-15. Neither confirmation is repeated here.
 - Test: A5 positive: explicit_gaps; boundary: invalid_input_and_escape. A6 positive: deterministic_readonly; boundary: interrupted_retry. A7 positive: independent_cli; negative: no_external_access. Detect unguarded paths and false freshness; run focused pytest plus existing acquisition regressions.
 - Risk: agent-decided — REQ-5–7 use stdlib, stdout JSON and in-root references; no skill-trigger or installation changes. Document the prototype format and adapt Apple examples in isolated samples; preserve source records and compatibility.
 
+### Wave 3 — Preserve JSON evidence types
+
+**W3-01 Repair JSON type confusion and graduate earned probes** after: W1-01,W2-01 acceptance: 2,3
+- Files: `obsidian-finance/scripts/work_assessment.py`, `obsidian-finance/tests/test_work_assessment.py`, `docs/loom/2026-11-15-finance-work-assessment/evidence/probes/test_projection_type.py`, `docs/loom/2026-11-15-finance-work-assessment/evidence/probes/test_fiscal_provenance.py`, `obsidian-finance/tests/test_projection_type.py`, `obsidian-finance/tests/test_fiscal_provenance.py`
+- Test: A2 positive: relevant_change; boundary: projection_typechange_invalidates. A3 positive: new_quarter; boundary: fiscal_objectaccession_quarantines. Both committed probes were RED at e905584; move unchanged into the permanent suite and rerun focused tests.
+- Risk: agent-decided — REQ-2–5 require type-faithful evidence; reject nonstring fiscal identity and distinguish nested JSON booleans from numbers. This fixes existing obligations, preserves prior evidence/retry continuity, and changes no API or user behavior. Probe logic remains unchanged.
+
 ## Simplicity check
 
 - none found
