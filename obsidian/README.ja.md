@@ -20,7 +20,16 @@
 
 ## Version
 
-4.0.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+4.1.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+
+Vault 初期設定は、個人に合わせた命名・ノート品質・現行 skill の規則を
+`AGENTS.md` にまとめ、`CLAUDE.md` は `@AGENTS.md` と末尾の改行だけにする。
+既存の両ファイルを読み、復元可能な非公開バックアップを取ってから統合する。
+既存の memory とローカル skill は変更せず、不足ファイルの作成は preview の
+明示的な承認が必要。個人の規則とバックアップはローカルに保持する。
+Codex の探索と Claude の import は互換性の方針であり、新規 session での
+読み込みは未検証。global 設定や cache は自動変更しない。
+別管理の OpenCode package は 0.2.0。
 
 ## 独立配布
 
@@ -153,7 +162,7 @@ note 内に図を描く：
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata、version 4.0.0
+│   └── plugin.json              # plugin metadata、version 4.1.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 保守 agent
 ├── skills/

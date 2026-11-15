@@ -4,6 +4,28 @@ All notable changes to the `obsidian` plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] — 2026-11-15 Shared vault instructions
+
+### Changed
+
+- Vault setup now previews personalized common rules in `AGENTS.md`, with
+  `CLAUDE.md` containing exactly `@AGENTS.md` and a trailing newline. The policy
+  covers scoped date naming, useful properties, existing-note links without a
+  quota, proportional callouts/embeds and routing to the current 14 skills.
+- Existing instructions are reconciled from their current contents with private,
+  byte-identical backups and restore mapping. Setup stops on read/backup failure,
+  concurrent edits or unresolved conflicts, reports partial writes accurately,
+  and reuses correct files on re-entry. Existing memory and local skills remain
+  unchanged; missing ancillary creations require confirmed preview disclosure.
+- Role personalization and Claude-specific local skills/context options remain.
+  Global context requires separate explicit approval; no global settings, caches
+  or active sessions are refreshed by this source release. Personal instructions
+  and backups stay local and are excluded from plugin publication.
+- Claude/Codex and marketplace versions advance to 4.1.0; the separately
+  versioned OpenCode package advances to 0.2.0. Manual synthetic old/new cases
+  check generated files and preservation; fresh host loading and automatic
+  triggering remain unmeasured.
+
 ## [4.0.0] — 2026-11-14 Remove wiki and daily-news mechanisms
 
 ### Removed

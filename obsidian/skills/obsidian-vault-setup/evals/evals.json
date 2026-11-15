@@ -1,0 +1,23 @@
+{
+  "skill_name": "obsidian-vault-setup",
+  "eval_path": "quick",
+  "skip_reason": "Bounded template-policy refresh with confirmed spec criteria; same operator manually follows old then new instructions in three synthetic cases. No benchmark harness, independent host run, timing or trigger optimization.",
+  "smallest_end_state": "One existing SKILL.md with inline generic policy plus flat evaluation data; no generator, synchronization program or new framework. Description unchanged.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I am a developer tracking technical decisions and client work, work only. No files to import. The displayed folders and missing ancillary creations are approved; build it.",
+      "expected_output": "Personalized complete AGENTS.md; CLAUDE.md exactly @AGENTS.md plus newline; scoped date naming, useful properties, existing-target links without quota, proportional visuals and all 14 current skill routes. Only preview-approved ancillary creations. File checks distinguished from unmeasured host loading."
+    },
+    {
+      "id": 2,
+      "prompt": "Update this existing synthetic vault. AGENTS requires project codes; CLAUDE requires original transcript delivery when available. Both contain current custom edits. memory.md and a local skill have custom bytes. Approve the displayed reconciled changes and backup paths, then run setup again.",
+      "expected_output": "Merge valid requirements from actual files, byte-identical private backups with restore mapping, exact import, unchanged memory/local skills and historical notes. Re-entry reuses correct files without duplicate policies or redundant backups. No invented transcript capability."
+    },
+    {
+      "id": 3,
+      "prompt": "First decline the setup preview. Separately approve a preview but refuse the required backup; then exercise a changed instruction file and an unresolved rule conflict before replacement.",
+      "expected_output": "Decline makes no writes. Backup refusal, changed bytes and unresolved conflicts preserve originals and stop replacement; reread before retry. Partial-write handling reports affected paths and restore mapping without claiming completion or overwriting later edits."
+    }
+  ]
+}
