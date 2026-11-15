@@ -67,7 +67,7 @@ charter: 1.1
 **W7-01 Validate original-filing evidence before quarter resolution** after: W6-03 acceptance: 2,3,4
 - Files: obsidian-finance/skills/sec-data/scripts/fiscal_quarter.py (entry: candidates/resolve), obsidian-finance/skills/sec-data/scripts/acquire.py (entry: run), obsidian-finance/tests/test_acquire.py, obsidian-finance/tests/test_fiscal_quarter.py
 - Test: A2 positive: declared_fiscal_quarter; negative: future_acceptance_probe. A3 positive: quarter_complete; boundary: unresolved_no_marker. A4 positive: cutoff_filter; negative: conflicting_future_duplicate_probe. Existing earned publication probe exposes both cases; preserve existing declaration/date tests.
-- Risk: REQ-2/3/4; agent-decided unify publication checks before candidate cutoff filtering. Class search: 29 changed files plus Acceptance 2/4 surfaces; acquire.py conflicting() versus fiscal_quarter.py candidates/resolve(). Preserve and widen test_acquire.py/test_fiscal_quarter.py; retain valid after-hours behavior. Same failed W6-02 obligation, first substantive repair, no budget reset.
+- Risk: REQ-2/3/4; agent-decided unify publication checks before candidate cutoff filtering. Class search: 29 changed files plus Acceptance 2/4 surfaces; acquire.py conflicting() versus fiscal_quarter.py candidates/resolve(). Preserve and widen test_acquire.py/test_fiscal_quarter.py; retain valid after-hours behavior. Same failed W6-02 obligation, first repair, no reset.
 
 **W7-02 Graduate earned quarter-publication probe unchanged** after: W7-01 acceptance: 3,6
 - Files: docs/loom/2026-11-15-finance-sec-baseline/evidence/probes/test_quarter_publication.py, obsidian-finance/tests/test_quarter_publication.py
