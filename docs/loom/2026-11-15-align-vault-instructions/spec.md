@@ -1,12 +1,12 @@
 # Shared vault instructions and safe initialization — spec
 intent: 2026-11-15-align-vault-instructions@a87ecbd6c765539bd375eb6816a0e2532ab4b9fb
-confirmed-behavior: 2026-11-15 @1a58b76
+confirmed-behavior: 2026-11-15 @c7a1f8a
 pre-build-review: required — public generated-instruction contract, cross-host loading, private local edits and preservation of existing user rules
 
 ## Requirements
 
 REQ-1 — Reusable initialization rules
-  WHEN a user confirms the existing setup preview, the initializer shall produce role-personalized vault instructions containing date-prefixed names for time-sensitive notes, appropriate note properties, links only to existing notes, purposeful callouts and embeds, diagram guidance, and task-to-skill routing without hard-coding the owner's identity or private folder taxonomy → Acceptance #1
+  WHEN a user confirms the existing setup preview, the initializer shall produce role-personalized vault instructions containing scoped naming and source-quality rules, existing-target links without quotas, and mandatory relevant-skill use; detailed properties, visuals and task routing shall remain owned by the existing authoring and routing skills without hard-coding the owner's identity or private folder taxonomy → Acceptance #1
 
 REQ-2 — Current capability and quality guidance
   The shared instructions shall use the current plugin's skill identifiers, preserve ordinary wikilinks, omit retired wiki/news workflows and stale skill names, and require relevant existing-note links without a numeric link quota or placeholder links → Acceptance #2
@@ -27,7 +27,8 @@ REQ-6 — Reproducible checks with private local evidence
 
 - user-decided — Keep the complete common rules in AGENTS.md and use exactly `@AGENTS.md` plus a trailing newline as the CLAUDE.md compatibility entry; the user explicitly confirmed the native import syntax and proposed scope.
 - agent-decided — Keep one rule body rather than two generated full copies or a synchronization program; the inspected local documents already disagree on link requirements, routing and personal workflows.
-- agent-decided — Reuse current obsidian-markdown and diagram-skill policies for detailed syntax, with a short self-contained vault policy covering naming, metadata, existing-target links, proportional callouts/embeds, and current skill routing. Do not duplicate entire skill manuals or require diagrams and embeds in every note.
+- user-decided — After inspecting the generated body, kouko approved the combined simplification with "OK": keep personal context, folder/work preferences, naming/quality and skill-use obligations; remove the duplicated full skill directory and syntax/dependency/host-loading explanations from the generated body. Relevant skills retain ownership of metadata, callouts, embeds and diagrams. Require reading and following matching installed skills, use using-obsidian when routing is unclear, and report unavailable skills rather than silently substituting.
+- user-decided — Scope contextual reading to the task: read recent daily notes only when personal voice or recent work context is relevant, and ask about inbox organization only during daily organization or an explicit organizing request. Use the owner's first-person perspective for confirmed personal facts, without a Claude-specific narrator.
 - agent-decided — Date prefixes apply to time-sensitive and historical-comparison notes, preserving the owner's existing scope rather than imposing dated filenames on every note. Keep note-type fields appropriate to the content; related_notes and links must resolve to actual notes.
 - agent-decided — Preserve current role/scope inference and preview confirmation. Do not bundle a redesign of role-specific commands, ingestion, or global context loading; distinguish any host-specific shortcuts from portable plugin skills and do not present absent local shortcuts as installed.
 - agent-decided — Bound all ancillary setup writes as well as the two instruction files: an instruction update or re-entry never rewrites existing memory.md or existing local skill files. Create missing ancillary files only when the setup preview explicitly lists the creations and the user confirms that preview. The local instruction cleanup creates none of these ancillary files and does not invoke the setup's application-opening or global-context branches. Verify with an existing-vault fixture containing customized memory and local skill content, asserting their bytes remain unchanged.
@@ -40,6 +41,8 @@ REQ-6 — Reproducible checks with private local evidence
 - agent-decided — Documentation establishes compatibility strategy, not observed host execution: Codex discovers AGENTS.md; Claude supports @ imports, including configurations that do not directly load AGENTS.md. Never claim that every host version, policy or active session has loaded the new body.
 
 ## Alternatives considered
+
+- Keep the reviewed 56-line body unchanged: viable but retains a duplicated 14-skill directory and broad daily/inbox triggers. Removing only the directory is smaller work but leaves those triggers. The user approved combining both reductions while preserving substantive quality and skill-use obligations.
 
 - AGENTS.md alone: smaller, but Claude's direct discovery depends on version, built-in support, settings and ancestor/local instruction files; the confirmed one-line import avoids that narrower compatibility boundary without another rule body.
 - CLAUDE.md alone: does not provide Codex's default project instruction entry; adding a global fallback setting would exceed the confirmed scope.
@@ -76,3 +79,7 @@ Complete the existing setup preview and confirm creation → receive personalize
 | Delivery boundary | Receives the plugin PR and local change summary | The PR contains generic templates and checks; actual personal instructions and backups remain local. Tests describe what was executed rather than claiming all host sessions were refreshed. |
 
 In-progress behavior uses the host's existing tool/task feedback; no new progress interface, CLI command or exit-code contract is added. Native tool errors retain their actual wording. No automatic change to global Claude/Codex settings or installed plugin caches is performed by this change.
+
+## Confirmed refinement and evidence continuity
+
+On 2026-11-15, after the planning-only request and continuation, the user replied "OK" to the displayed combined simplification, including task-scoped context reads, removal of duplicated manuals/catalogs, mandatory skill use and separately preserved local requirements. The six intent Acceptance lines, shared-file strategy, privacy, backup and data-preservation guarantees remain unchanged. This is a continuation of the same change, not a new task or review-budget reset: the first completed review digest remains Round 1, and the refined functional content will be Round 2. Existing suite/inventory evidence remains relevant to unchanged distribution; old acceptance and attestation describe the earlier content and must be replaced for changed outputs and contextual behavior. No implementation-task failure or retry counter is reset. The prior workspace-state concurrency limitation remains retained evidence, not a failed task reclassified as success.
