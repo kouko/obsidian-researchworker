@@ -1,0 +1,221 @@
+[
+  {
+    "quarter": "2024Q1",
+    "supporting_only": true,
+    "resolution": {
+      "fiscal_quarter": "2024Q1",
+      "fiscal_year": 2024,
+      "quarter": 1,
+      "period_end": "2023-12-30",
+      "original_accession": "0000320193-24-000006",
+      "original_filing_date": "2024-02-02",
+      "evidence": {
+        "source_id": "primary-0000320193-24-000006",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000006/aapl-20231230.htm",
+        "sha256": "c47bc01786e4b9db3075b0c17d255972d8d8202ff6d1884393eae9935f432619",
+        "retrieved_at": "2026-11-15T13:03:01.860191+00:00",
+        "contexts": [
+          "c-1"
+        ],
+        "declarations": {
+          "DocumentFiscalYearFocus": "2024",
+          "DocumentFiscalPeriodFocus": "Q1",
+          "DocumentPeriodEndDate": "2023-12-30",
+          "EntityCentralIndexKey": "0000320193"
+        }
+      }
+    },
+    "cutoff": "2024-02-02",
+    "status": "complete",
+    "eligible_fact_count": 98,
+    "raw_run_local": "/private/tmp/apple-stage-a-q1-input/sec-run-m6q1ytzy",
+    "sources": [
+      {
+        "id": "tickers",
+        "url": "https://www.sec.gov/files/company_tickers.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:03:00.013693+00:00",
+        "sha256": "29e8eee5a85a68e837628b0e9623870af68db41e5427a154d17fe3b1af0a1b9a",
+        "path": "raw/tickers.json"
+      },
+      {
+        "id": "submissions",
+        "url": "https://data.sec.gov/submissions/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:03:00.402966+00:00",
+        "sha256": "d7c4a3c888fe60da97ceef8f9b80da4c205e82440c1bc3ba9dcc7316a482a6b1",
+        "path": "raw/submissions.json"
+      },
+      {
+        "id": "archive-0",
+        "url": "https://data.sec.gov/submissions/CIK0000320193-submissions-001.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:03:00.874745+00:00",
+        "sha256": "fc0aa394bd9202daa3a099c01d6f70ba412f22c2c61befb1169879b5690017b3",
+        "path": "raw/archives/archive-0.json"
+      },
+      {
+        "id": "companyfacts",
+        "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:03:01.354992+00:00",
+        "sha256": "f085735b4d08fb116ade18d24247ffabe11df8eb52eae6556b165831f15ef1ad",
+        "path": "raw/companyfacts.json"
+      },
+      {
+        "id": "primary-0000320193-24-000006",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000006/aapl-20231230.htm",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:03:01.860191+00:00",
+        "sha256": "c47bc01786e4b9db3075b0c17d255972d8d8202ff6d1884393eae9935f432619",
+        "path": "raw/primary-0000320193-24-000006.html"
+      }
+    ]
+  },
+  {
+    "quarter": "2024Q2",
+    "supporting_only": false,
+    "resolution": {
+      "fiscal_quarter": "2024Q2",
+      "fiscal_year": 2024,
+      "quarter": 2,
+      "period_end": "2024-03-30",
+      "original_accession": "0000320193-24-000069",
+      "original_filing_date": "2024-05-03",
+      "evidence": {
+        "source_id": "primary-0000320193-24-000069",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+        "sha256": "7a327c99c4a2c29341682d2ab5bb2465cb4e899341374ddaf565012e0d480991",
+        "retrieved_at": "2026-11-15T13:00:34.964263+00:00",
+        "contexts": [
+          "c-1"
+        ],
+        "declarations": {
+          "DocumentFiscalYearFocus": "2024",
+          "DocumentFiscalPeriodFocus": "Q2",
+          "DocumentPeriodEndDate": "2024-03-30",
+          "EntityCentralIndexKey": "0000320193"
+        }
+      }
+    },
+    "cutoff": "2024-05-03",
+    "status": "complete",
+    "eligible_fact_count": 124,
+    "raw_run_local": "/private/tmp/apple-stage-a-q2/sec-run-xm9kia6b",
+    "sources": [
+      {
+        "id": "tickers",
+        "url": "https://www.sec.gov/files/company_tickers.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:00:32.651591+00:00",
+        "sha256": "29e8eee5a85a68e837628b0e9623870af68db41e5427a154d17fe3b1af0a1b9a",
+        "path": "raw/tickers.json"
+      },
+      {
+        "id": "submissions",
+        "url": "https://data.sec.gov/submissions/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:00:33.069803+00:00",
+        "sha256": "d7c4a3c888fe60da97ceef8f9b80da4c205e82440c1bc3ba9dcc7316a482a6b1",
+        "path": "raw/submissions.json"
+      },
+      {
+        "id": "archive-0",
+        "url": "https://data.sec.gov/submissions/CIK0000320193-submissions-001.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:00:33.468595+00:00",
+        "sha256": "fc0aa394bd9202daa3a099c01d6f70ba412f22c2c61befb1169879b5690017b3",
+        "path": "raw/archives/archive-0.json"
+      },
+      {
+        "id": "companyfacts",
+        "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:00:33.715443+00:00",
+        "sha256": "f085735b4d08fb116ade18d24247ffabe11df8eb52eae6556b165831f15ef1ad",
+        "path": "raw/companyfacts.json"
+      },
+      {
+        "id": "primary-0000320193-24-000069",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:00:34.964263+00:00",
+        "sha256": "7a327c99c4a2c29341682d2ab5bb2465cb4e899341374ddaf565012e0d480991",
+        "path": "raw/primary-0000320193-24-000069.html"
+      }
+    ]
+  },
+  {
+    "quarter": "2024Q3",
+    "supporting_only": false,
+    "resolution": {
+      "fiscal_quarter": "2024Q3",
+      "fiscal_year": 2024,
+      "quarter": 3,
+      "period_end": "2024-06-29",
+      "original_accession": "0000320193-24-000081",
+      "original_filing_date": "2024-08-02",
+      "evidence": {
+        "source_id": "primary-0000320193-24-000081",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+        "sha256": "953b1e0d484cabbcb8308b0f362bb0304c14f06b3604b7770f7f0f9ea1f0e931",
+        "retrieved_at": "2026-11-15T13:01:23.488569+00:00",
+        "contexts": [
+          "c-1"
+        ],
+        "declarations": {
+          "DocumentFiscalYearFocus": "2024",
+          "DocumentFiscalPeriodFocus": "Q3",
+          "DocumentPeriodEndDate": "2024-06-29",
+          "EntityCentralIndexKey": "0000320193"
+        }
+      }
+    },
+    "cutoff": "2024-08-02",
+    "status": "complete",
+    "eligible_fact_count": 125,
+    "raw_run_local": "/private/tmp/apple-stage-a-q3/sec-run-05erqm5p",
+    "sources": [
+      {
+        "id": "tickers",
+        "url": "https://www.sec.gov/files/company_tickers.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:01:21.507487+00:00",
+        "sha256": "29e8eee5a85a68e837628b0e9623870af68db41e5427a154d17fe3b1af0a1b9a",
+        "path": "raw/tickers.json"
+      },
+      {
+        "id": "submissions",
+        "url": "https://data.sec.gov/submissions/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:01:21.921289+00:00",
+        "sha256": "d7c4a3c888fe60da97ceef8f9b80da4c205e82440c1bc3ba9dcc7316a482a6b1",
+        "path": "raw/submissions.json"
+      },
+      {
+        "id": "archive-0",
+        "url": "https://data.sec.gov/submissions/CIK0000320193-submissions-001.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:01:22.300018+00:00",
+        "sha256": "fc0aa394bd9202daa3a099c01d6f70ba412f22c2c61befb1169879b5690017b3",
+        "path": "raw/archives/archive-0.json"
+      },
+      {
+        "id": "companyfacts",
+        "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:01:22.997314+00:00",
+        "sha256": "f085735b4d08fb116ade18d24247ffabe11df8eb52eae6556b165831f15ef1ad",
+        "path": "raw/companyfacts.json"
+      },
+      {
+        "id": "primary-0000320193-24-000081",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+        "status": "valid",
+        "retrieved_at": "2026-11-15T13:01:23.488569+00:00",
+        "sha256": "953b1e0d484cabbcb8308b0f362bb0304c14f06b3604b7770f7f0f9ea1f0e931",
+        "path": "raw/primary-0000320193-24-000081.html"
+      }
+    ]
+  }
+]

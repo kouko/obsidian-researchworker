@@ -1,7 +1,8 @@
 # Obsidian Finance — research and implementation planning draft
 
-Status: wider program proposal; fiscal-quarter acquisition implemented and live-tested,
-with amended independent review/acceptance pending. Created 2026-11-15.
+Status: Stage A definition/evidence pilot completed locally; acquisition slice
+separately accepted locally. Wider research implementation remains proposed.
+Created 2026-11-15; Stage A completion recorded 2026-11-15.
 This program document alone does not authorize implementation, installation,
 vault changes, paid services, background execution, publication, or merge.
 The separately confirmed acquisition intent/spec govern that slice; the wider
@@ -395,9 +396,9 @@ review. No live new-tool acquisition, host installation or full research is veri
 
 | Stage | Current status | Existing evidence / immediate next action |
 |---|---|---|
-| A: definition and evidence | In progress | Initial primary-source revalidation and minimum acquisition scope recorded; full cross-industry coverage, report examples and horizons remain pending |
-| B: minimal transplant | Acquisition and quarter entry implemented; amended review/acceptance pending | W6 runtime at 61b79c9: 71 scoped tests, real-payload replay and live AAPL 2024Q3 CLI acquisition; see quarter evidence below |
-| C: small equity case | Not started | Depends on transplanted tools and researched report methods |
+| A: definition and evidence | Completed locally within the bounded research gate | Method/report research, Apple two-quarter examples, source/coverage and unknowns recorded in pilots/apple-2024q2-q3/STAGE-A-COMPLETION.md; horizons remain labeled pilot conventions |
+| B: minimal transplant | Accepted locally in the conversation | Accepted acquisition HEAD 08f65d9: 99 package tests and independent review; genuine-contact/fresh-host limits remain explicit |
+| C: small equity case | Report examples prepared; runtime behavior not implemented | Stage A drafts are not completed investment cases or automatic work selection/resumption; price, valuation and independent evidence gaps remain |
 | D: industry contrasts | Not started | Candidate companies proposed; selected periods not yet chosen |
 | E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
 | F: ongoing research | Not started | No host chosen or finance plugin installed |
@@ -469,3 +470,21 @@ Research index:
 Session-specific restart instructions are saved separately under
 `.claude/handoffs/`; consult the explicitly provided latest handoff path rather
 than assuming a prior handoff describes the current repository state.
+
+
+### Stage A completion, 2026-11-15
+
+The user authorized the Apple adjacent-quarter pilot and then requested automatic
+completion of the previously planned first stage. The active interpretation was
+stated as Stage A: scope/time semantics, method research, coverage and report
+examples. Public-source research and project-only fixtures proceeded without
+another interview. This authorization did not include new runtime features,
+actual-vault changes, paid providers, installation, publication or merge.
+
+See [the Stage A completion record](pilots/apple-2024q2-q3/STAGE-A-COMPLETION.md),
+[method research](research/2026-11-15-equity-method-and-report-pilot.md) and
+[pilot index](pilots/apple-2024q2-q3/INDEX.md). This continuation supersedes older
+pending Stage A/B status snapshots above; their historical measurements remain.
+The accepted acquisition branch/attestation was not modified. Sample notes stay
+draft/partial with insufficient valuation evidence; Stage A completion is not
+Stage C completion or a reduction of the twenty-year/cross-industry objective.
