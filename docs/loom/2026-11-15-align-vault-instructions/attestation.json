@@ -1,0 +1,107 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-align-vault-instructions",
+  "content_digest": "c6386c6164081264776fefc6a31515eeba2b40db",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider",
+      "artifact": "obsidian/tests/test_skill_inventory.py",
+      "result": "pass",
+      "command_digest": "b550f73368422892b8dac18a0c212371b8e9eaa4c4a5d3fa79f68a00fc55e1f5"
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "PASS",
+      "lens": "skill",
+      "reviewed_sha": "bcdee20d31780cfe31b6713cfaf402a5bd47f2de",
+      "review_target_sha": "85d1a5e90249bd2937486036b8155f68d96820ea",
+      "dimension_scores": {
+        "omission": "PASS — The initializer specifies preview inputs, personalized common-body content, exact import bytes, backup/restore mapping, concurrent-change checks, stop/partial-write handling, re-entry, ancillary preservation and final readback. All six requirements have corresponding public instructions or explicitly bounded private-application evidence. This consumer skill is not subject to Loom gate registration.",
+        "ambiguity": "PASS — Existing-vault merge, missing ancillary creation, preview confirmation and separate global-change authorization are distinguished. Actual paths replace role placeholders in the preview. Host-loading statements explicitly distinguish intended discovery from observed file checks.",
+        "inconsistency": "PASS — Compared the complete skill with the base, including changed absolute/polarity clauses. Profile inference and existing commands remain, while new preservation rules constrain existing-vault writes. The former unconditional host-loading and unbundled ingestion claims are deliberately replaced by bounded claims consistent with the spec, READMEs and evidence.",
+        "incorrect-fact": "PASS — All 14 routing identifiers match the shipped inventory; checked adjacent router, Markdown and file-intel sources. Four release manifests agree with the stated separate version families. The cited primary Codex discovery and Claude shared-import documentation supports the compatibility strategy. The acceptance report accurately labels unexecuted host loading, manual synthetic execution, uninjected partial-write recovery and the one unresolved protected-manifest difference.",
+        "missing-population": "PASS — Evidence identifies three evaluation scenarios, the synthetic persona and operations, the focused test scope, 14 protected ancillary files and the 17554-file protected manifest with its one disclosed difference. No benchmark, automatic-trigger or all-host success rate is claimed.",
+        "user-judgment-leak": "PASS — Questions collect personal outcomes, preview approval, genuine conflicting owner requirements or authorization for an optional global change. The pinned AGENTS.md body and exact CLAUDE.md import are implemented without re-opening that technical choice. No paid integration, credentials or data transfer is silently introduced.",
+        "deletion-first": "PASS — The inline policy replaces incomplete direct CLAUDE.md generation and observed divergent instructions; safety paragraphs address the existing overwrite/customization failure documented in the spec. No generator, synchronization mechanism, new framework or duplicate prose-pin executable test is added. Existing role customization remains bounded by preview approval."
+      },
+      "findings": [],
+      "notes": [
+        "Independently ran the changed ordinary test file with PYTHONDONTWRITEBYTECODE=1 /Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider: 2 passed in 0.14s. Did not run the full package suite or any adversarial program.",
+        "Read the complete changed public prose, base setup skill, ground-truth intent/spec/plan, acceptance report/evidence and synthetic results.json. Actual private vault bodies were intentionally outside this public-artifact review; reported private outcomes are not a new independent certification of those bodies.",
+        "Primary grounding checked: https://developers.openai.com/codex/guides/agents-md and https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools. Fresh host execution and partial-write fault injection remain disclosed limits, not evidence of product failure."
+      ],
+      "reviewer": "vault_skill_review",
+      "vendor": "openai",
+      "model": "inherited"
+    },
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "code",
+      "reviewed_sha": "bcdee20d31780cfe31b6713cfaf402a5bd47f2de",
+      "review_target_sha": "85d1a5e90249bd2937486036b8155f68d96820ea",
+      "dimension_scores": {
+        "security": "PASS — The complete setup contract requires preview approval, private byte-identical originals, conflict/concurrent-change checks and separate authorization for global writes. The cumulative committed delta contains generic instructions and aggregate acceptance evidence, not private instruction bodies or backups. No new executable data-transfer surface is introduced.",
+        "architecture": "PASS — One common AGENTS.md body and a native CLAUDE.md import remove duplicate ownership without introducing a generator, synchronization layer or migration framework. Ancillary setup writes remain bounded by preview approval.",
+        "correctness": "PASS_WITH_NOTES — The skill implements REQ-1 through REQ-4 and the generic portion of REQ-6; independent acceptance records cover personalized output, merge, restore, re-entry and failure boundaries. Aggregate private evidence supports the authorized REQ-5 cleanup. Actual fresh host loading remains unexecuted and one protected workspace-state difference has unconfirmed cause; both are explicitly disclosed rather than claimed successful.",
+        "naming": "PASS — Shared-body, backup, import and role-specific shortcut names identify their responsibilities. All 14 generated routing identifiers match the current shipped inventory; portable skills and local Claude shortcuts are distinguished.",
+        "tests": "PASS — Independently ran the only changed ordinary test file with the supplied existing Python environment: 2 passed in 0.09s, no skips. The test delta adds only a concern annotation to retained dependency protection. For the prose behavior, evaluated the independent fresh-reader acceptance evidence and synthetic output/preservation/failure cases; no executable initializer or prose-pin harness is required or added. Full-suite and adversarial execution were deliberately left to finalization under the reviewer contract.",
+        "refactoring": "PASS — The inline policy replaces the incomplete instruction-generation block and qualifies old shortcuts and prerequisite claims. Detailed Markdown/diagram syntax remains owned by existing skills. No unnecessary abstraction or duplicate implementation was added.",
+        "cross-task-coherence": "PASS — Public initializer, private-cleanup scope, release metadata and bounded acceptance claims agree. Claude, Codex and marketplace versions are 4.1.0, while the separately versioned OpenCode package is 0.2.0. No retired capability is reintroduced by the setup routing.",
+        "external-surface-grounding": "PASS — Opened the primary Codex discovery and Claude memory/import sources cited in the spec; they support AGENTS.md discovery and the adjacent @AGENTS.md import strategy, including settings/version limits. Prerequisite statements were checked against the shipped CLI, Defuddle and file-intel skills. No new API or SDK call was added.",
+        "principles-conformance": "PASS — The change conforms to the ratified PRINCIPLES.md preservation, current-capability and bounded-evidence clauses: no note migration is introduced, original instruction recovery is required, historical changelog entries remain historical, and host-runtime claims are expressly limited.",
+        "architecture-conformance": "N/A — No ARCHITECTURE.md or ratified architectural rules were found in the repository.",
+        "deliberate-simplification": "PASS — The visible ceiling is file-level and synthetic prose execution, with fresh-session loading and uninjected partial-write recovery explicitly unverified. The skill names fresh-session verification and read-back/recovery handling instead of presenting these limits as universal guarantees.",
+        "deletion-first": "PASS — Existing skill text is extended in place and stale unconditional claims are replaced. One common body removes the need for two full instruction copies; flat evaluation data avoids a new generator, synchronization program or committed acceptance harness. No smaller shape satisfying the confirmed preservation and preview requirements was identified."
+      },
+      "findings": [],
+      "notes": [
+        "Executed checks: focused inventory pytest (2 passed); JSON parsing of marketplace, Claude/Codex manifests, OpenCode package and eval data; inspected current 14-skill inventory and unchanged OpenCode distribution loader. No repository edits, installations, host launches or vendor execution.",
+        "Fresh-host loading, real app-open flows and injected partial-write recovery were not executed. Private local outcomes were assessed only through supplied aggregate evidence and the committed independent acceptance account; no user-note bodies were inspected.",
+        "An incidental overbroad temporary-directory search was stopped and excluded from the judgment; no incidental private details or other reviewer conclusions are included here."
+      ],
+      "reviewer": "vault_code_review",
+      "vendor": "openai",
+      "model": "inherited"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "9dec1b2c5068dea622fdadd6453cc17fa4f16ba8",
+  "tested_commit": "1a5cb697700f81d47485b1c6072d30e356724651",
+  "reviewed_commit": "85d1a5e90249bd2937486036b8155f68d96820ea",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "partly"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "partly"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
