@@ -34,6 +34,8 @@ def run(data):
         value = data.pop(0)
         if isinstance(value, Exception):
             raise value
+        if isinstance(value, bytes):
+            return value
         return json.dumps(value).encode()
     return client().acquire('AAPL', '2024-12-31', 'Test Operator test@example.org', fetch), calls
 
@@ -109,3 +111,31 @@ def test_no_original_runtime(monkeypatch):
     with pytest.raises(ValueError, match='SEC_IDENTITY_REQUIRED'):
         module.acquire('AAPL', '2024-12-31', '', forbidden)
     assert not any('monkey' in str(v).lower() for v in vars(module).values() if hasattr(v, '__file__'))
+
+
+@pytest.mark.parametrize('document', ['aapl.htm', '../aapl.htm', 'aapl.htm?x=1'])
+def test_primary_document_transport(document, monkeypatch):
+    from test_fiscal_quarter import declaration, evidence
+    module = client()
+    monkeypatch.setattr(module.time, 'sleep', lambda _: None)
+    sample = evidence()
+    data = responses()
+    data[1]['filings']['recent'] = {k: [v] for k, v in sample['filings'][0].items()}
+    data[1]['filings']['recent']['primaryDocument'] = [document]
+    data[2]['facts'] = sample['facts']['facts']
+    data.append(declaration().encode())
+    calls = []
+    def fetch(url, headers):
+        calls.append(url)
+        value = data.pop(0)
+        return value if isinstance(value, bytes) else json.dumps(value).encode()
+    result = module.acquire('AAPL', '2024-12-31', 'Test test@example.org', fetch,
+                            fiscal_quarter='2024Q3')
+    if document == 'aapl.htm':
+        source = result['sources'][-1]
+        assert source['status'] == 'valid' and source['raw_bytes'] == declaration().encode()
+        assert source['sha256'] == hashlib.sha256(source['raw_bytes']).hexdigest()
+        assert calls[-1] == 'https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl.htm'
+    else:
+        assert len(calls) == 3
+        assert result['errors'][-1]['code'] == 'FISCAL_PERIOD_UNRESOLVED'

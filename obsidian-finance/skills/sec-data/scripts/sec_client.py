@@ -37,7 +37,7 @@ def _rows(block):
             for i in range(count)]
 
 
-def acquire(ticker, as_of, identity, fetch=None):
+def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
     """Return company, identity_valid, sources, filings, facts and errors.
 
     Each source has id/url/status/retrieved_at/payload/raw_bytes/sha256; errors carry
@@ -49,6 +49,9 @@ def acquire(ticker, as_of, identity, fetch=None):
         raise ValueError('SEC_IDENTITY_REQUIRED: supply an identifying name and contact email')
     if not isinstance(ticker, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', ticker):
         raise ValueError('INVALID_INPUT: invalid ticker')
+    if fiscal_quarter is not None and (not isinstance(fiscal_quarter, str)
+            or not re.fullmatch(r'[0-9]{4}Q[1-4]', fiscal_quarter)):
+        raise ValueError('INVALID_INPUT: fiscal quarter must be YYYYQq')
     try:
         cutoff = date.fromisoformat(as_of)
         if cutoff > date.today():
@@ -63,7 +66,7 @@ def acquire(ticker, as_of, identity, fetch=None):
         source['status'] = 'error'
         result['errors'].append(dict(source=source['id'], code=code, detail=detail))
 
-    def get(source_id, url, validate):
+    def get(source_id, url, validate, *, html=False):
         source = dict(id=source_id, url=url, status='error', retrieved_at=None, payload=None, raw_bytes=None, sha256=None)
         result['sources'].append(source)
         # URLs are constructed here; remote archive names must pass the
@@ -71,13 +74,13 @@ def acquire(ticker, as_of, identity, fetch=None):
         for attempt in range(3):
             try:
                 time.sleep(0.11)
-                raw = transport(url, {'User-Agent': identity, 'Accept': 'application/json'})
+                raw = transport(url, {'User-Agent': identity, 'Accept': 'text/html' if html else 'application/json'})
                 if not isinstance(raw, bytes):
                     raise ValueError('transport must return JSON bytes')
                 source['retrieved_at'] = datetime.now(timezone.utc).isoformat()
                 source['raw_bytes'] = raw
                 source['sha256'] = hashlib.sha256(raw).hexdigest()
-                source['payload'] = json.loads(raw)
+                source['payload'] = raw.decode('utf-8') if html else json.loads(raw)
                 validate(source['payload'])
                 source['status'] = 'valid'
                 return source['payload']
@@ -172,4 +175,14 @@ def acquire(ticker, as_of, identity, fetch=None):
         for e in result['errors']:
             if e['source'] in ('submissions', 'companyfacts') and e['code'] == 'INVALID_SOURCE_DATA':
                 e['code'] = 'ISSUER_MISMATCH'
+    elif fiscal_quarter:
+        from fiscal_quarter import candidates
+        try:
+            for row in candidates(result, fiscal_quarter, as_of):
+                accession = row['accessionNumber']
+                url = (f'https://www.sec.gov/Archives/edgar/data/{cik}/'
+                       f'{accession.replace("-", "")}/{row["primaryDocument"]}')
+                get('primary-' + accession, url, lambda value: None, html=True)
+        except ValueError as exc:
+            result['errors'].append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=str(exc)))
     return result

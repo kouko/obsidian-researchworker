@@ -2,7 +2,7 @@
 
 import argparse
 from collections import Counter, defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -186,13 +186,26 @@ def run(argv=None, fetch=None):
     The destination root must exist, or have an existing direct parent.
     """
     parser = _Parser(description=__doc__)
-    for name in ('ticker', 'period-start', 'period-end', 'as-of', 'output-dir'):
+    for name in ('ticker', 'output-dir'):
         parser.add_argument('--' + name, required=True)
+    for name in ('period-start', 'period-end', 'as-of', 'fiscal-quarter'):
+        parser.add_argument('--' + name)
     run_path = None
     try:
         args = parser.parse_args(argv)
-        start, end, cutoff = map(_date, (args.period_start, args.period_end, args.as_of))
-        if None in (start, end, cutoff) or start > end or cutoff > date.today():
+        mode = 'historical' if args.as_of else 'retrospective'
+        if args.fiscal_quarter is not None:
+            if (not re.fullmatch(r'[0-9]{4}Q[1-4]', args.fiscal_quarter)
+                    or args.period_start is not None or args.period_end is not None):
+                raise ValueError('INVALID_INPUT: use YYYYQq without date-range selectors')
+            args.as_of = args.as_of or datetime.now(timezone.utc).date().isoformat()
+            start = end = None
+        else:
+            start, end = map(_date, (args.period_start, args.period_end))
+            if None in (start, end) or start > end or args.as_of is None:
+                raise ValueError('INVALID_INPUT: date ranges require start, end and as-of')
+        cutoff = _date(args.as_of)
+        if cutoff is None or cutoff > datetime.now(timezone.utc).date():
             raise ValueError('INVALID_INPUT: use ISO dates, start <= end and a non-future cutoff')
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', args.ticker):
             raise ValueError('INVALID_INPUT: invalid ticker')
@@ -214,7 +227,7 @@ def run(argv=None, fetch=None):
 
     try:
         print('Acquiring public SEC submissions and companyfacts', file=sys.stderr)
-        data = acquire(args.ticker, args.as_of, identity, fetch)
+        data = acquire(args.ticker, args.as_of, identity, fetch, fiscal_quarter=args.fiscal_quarter)
         sources = []
         (run_path / 'raw').mkdir()
         for source in data['sources']:
@@ -224,6 +237,8 @@ def run(argv=None, fetch=None):
             source['path'] = None
             if raw is not None:
                 filename = f'raw/{source["id"]}.json'
+                if source['id'].startswith('primary-'):
+                    filename = f'raw/{source["id"]}.html'
                 if source['id'].startswith('archive-'):
                     (run_path / 'raw/archives').mkdir(exist_ok=True)
                     filename = f'raw/archives/{source["id"]}.json'
@@ -233,8 +248,19 @@ def run(argv=None, fetch=None):
             sources.append(source)
         valid_section = any(s['status'] == 'valid' and s['id'] in ('submissions', 'companyfacts') for s in sources)
         failed = not data['company'] or not data['identity_valid'] or not valid_section
-        eligible, inventory, coverage, malformed = ([], [], {}, False) if failed else _select(data, start, end, cutoff)
         errors = list(data['errors'])
+        resolution = None
+        if args.fiscal_quarter:
+            from fiscal_quarter import resolve
+            try:
+                if failed:
+                    raise ValueError('FISCAL_PERIOD_UNRESOLVED: trustworthy issuer data unavailable')
+                resolution = resolve(data, args.fiscal_quarter, args.as_of)
+                start = end = _date(resolution['period_end'])
+            except ValueError as exc:
+                failed = True
+                errors.append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=str(exc)))
+        eligible, inventory, coverage, malformed = ([], [], {}, False) if failed else _select(data, start, end, cutoff)
         errors.extend(coverage.get('filing_errors', []))
         if malformed:
             errors.append(dict(source='companyfacts', code='INVALID_SOURCE_DATA', detail='Malformed observation structure; invalid sections excluded'))
@@ -245,7 +271,8 @@ def run(argv=None, fetch=None):
         manifest = dict(schema_version=1, status=status, finalized=True,
             company=data['company'], identity_valid=data['identity_valid'],
             request=dict(ticker=args.ticker.upper(), period_start=args.period_start,
-                         period_end=args.period_end, as_of=args.as_of),
+                         period_end=args.period_end, as_of=args.as_of, fiscal_quarter=args.fiscal_quarter),
+            mode=mode, effective_cutoff=args.as_of, resolution=resolution,
             sources=sources, errors=errors, raw_evidence='unfiltered', limitations=LIMITATIONS,
             files={} if failed else dict(facts='eligible-facts.json', filings='filings.json', coverage='coverage.json'),
             guidance='Verify source errors and retry into a new run; review requested dates and observed coverage.')
@@ -257,6 +284,7 @@ def run(argv=None, fetch=None):
         if not failed:
             _write_json(run_path / 'completion.json', dict(status=status, manifest='manifest.json'))
         return dict(status=status, exit_code=exit_code, run_path=str(run_path.resolve()),
+            mode=mode, effective_cutoff=args.as_of, resolution=resolution,
             manifest=str((run_path / 'manifest.json').resolve()),
             eligible_fact_count=len(eligible), filing_count=len(inventory), errors=errors,
             limitations=LIMITATIONS)
