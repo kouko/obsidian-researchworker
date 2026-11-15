@@ -23,6 +23,15 @@ installation only, with real usage still unmet.
 
 4.2.0 — see [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json).
 
+Vault setup previews personalized naming, note-quality and current-skill rules
+in `AGENTS.md`; `CLAUDE.md` contains exactly `@AGENTS.md` plus a newline.
+Existing rules are reconciled from both current files after private restorable
+backups. Existing memory and local skills remain byte-identical; missing ancillary
+files require explicit preview approval. Backups and personal rules stay local.
+Codex discovery and Claude imports are the compatibility strategy; fresh host
+loading is unverified. Setup makes no automatic global-setting or cache changes.
+The separately versioned OpenCode package is 0.2.0.
+
 ## Independent distribution
 
 Maintained in [Obsidian ResearchWorker](../README.md), extracted from
@@ -35,7 +44,7 @@ Read the [transition guide](../docs/migration.md) before changing installations.
 The [verification record](../docs/verification.md) documents isolated Codex
 local-source installation at its recorded revision; skill execution and note
 creation remain unmet. Inherited host notes below are reference material,
-not independent compatibility evidence.
+not independent compatibility evidence. The separately versioned OpenCode package is 0.2.0.
 
 ## Background
 

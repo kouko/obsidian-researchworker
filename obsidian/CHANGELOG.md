@@ -24,22 +24,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Linux registry discovery still falls back to `python3` (unverified);
   Windows unsupported. On Linux, search uses the same `grep` loop.
+- Note text the skill reads is sent to the model provider; a one-time `Read(...)` permission rule is proposed only with user consent.
 
-## [4.1.0] — 2026-11-15 Search the local vault from any project
+## [4.1.0] — 2026-11-15 Shared vault instructions
 
-### Added
+### Changed
 
-- `obsidian-vault-search`: read-only search of the local Obsidian vault from
-  any project, with a paste-ready paragraph for research subagents.
-- SessionStart hook (`hooks/hooks.json`, `hooks/vault_pointer.py`) that prints
-  the local vault path at session start, or nothing when no vault is found
-  (replaced by `hooks/vault_pointer.sh` in 4.2.0).
-
-### Notes
-
-- Note text the skill reads is sent to the model provider.
-- A one-time `Read(...)` permission rule is proposed only with user consent.
-- Claude Code on macOS verified; Linux unverified; Windows unsupported.
+- Vault setup now previews personalized common rules in `AGENTS.md`, with
+  `CLAUDE.md` containing exactly `@AGENTS.md` and a trailing newline. The policy
+  covers scoped date naming, appropriate valid properties, existing-note links
+  without a quota and verified sources. It requires reading and following matching
+  installed skills, with `using-obsidian` for unclear routing and
+  `obsidian-markdown` for authoring details and visuals; unavailable skills or
+  prerequisites are reported rather than silently substituted. Personal context
+  uses the owner's first person. Recent daily notes are read only for relevant
+  voice/work context; inbox questions are limited to daily or explicit organizing.
+  The generated body avoids duplicating the skill catalogue and manuals.
+- Existing instructions are reconciled from their current contents with private,
+  byte-identical backups and restore mapping. Setup stops on read/backup failure,
+  concurrent edits or unresolved conflicts, reports partial writes accurately,
+  and reuses correct files on re-entry. Existing memory and local skills remain
+  unchanged; missing ancillary creations require confirmed preview disclosure.
+- Role personalization and Claude-specific local skills/context options remain.
+  Global context requires separate explicit approval; no global settings, caches
+  or active sessions are refreshed by this source release. Personal instructions
+  and backups stay local and are excluded from plugin publication.
+- Claude/Codex and marketplace versions advance to 4.1.0; the separately
+  versioned OpenCode package advances to 0.2.0. Manual synthetic old/new cases
+  check generated files and preservation; fresh host loading and automatic
+  triggering remain unmeasured.
 
 ## [4.0.0] — 2026-11-14 Remove wiki and daily-news mechanisms
 

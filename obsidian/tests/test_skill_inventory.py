@@ -1,4 +1,5 @@
 # concern: removed skill rediscovery and dangling dependencies in retained skills
+# concern: shared vault setup routing reintroduces retired wiki/news dependencies
 """The shipped skills remain usable without the retired wiki/news mechanisms."""
 from pathlib import Path
 

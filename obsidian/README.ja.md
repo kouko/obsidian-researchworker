@@ -22,6 +22,15 @@
 
 4.2.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
 
+Vault 初期設定は、個人に合わせた命名・ノート品質・現行 skill の規則を
+`AGENTS.md` にまとめ、`CLAUDE.md` は `@AGENTS.md` と末尾の改行だけにする。
+既存の両ファイルを読み、復元可能な非公開バックアップを取ってから統合する。
+既存の memory とローカル skill は変更せず、不足ファイルの作成は preview の
+明示的な承認が必要。個人の規則とバックアップはローカルに保持する。
+Codex の探索と Claude の import は互換性の方針であり、新規 session での
+読み込みは未検証。global 設定や cache は自動変更しない。
+別管理の OpenCode package は 0.2.0。
+
 ## 独立配布
 
 [Monkey Skills](https://github.com/kouko/monkey-skills) から抽出し、
@@ -31,7 +40,7 @@ daily-news-digest を削除する。通常の daily note、単一テーマの研
 wikilink は保持し、既存 vault の出力や設定は変更しない。切り替え前に
 [移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
 記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
-ノート作成は未達。他 host とリモート導入は未検証。
+ノート作成は未達。他 host とリモート導入は未検証。別管理の OpenCode package は 0.2.0。
 4.2.0 で `obsidian-knowledge` に改名し、同梱の読み取り専用シェルスクリプトで検索する（編集の Grep/Glob は不要。skill 数は 15 のまま）。
 
 ## 背景

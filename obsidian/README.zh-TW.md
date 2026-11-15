@@ -22,6 +22,14 @@
 
 4.2.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
 
+初始化會預覽個人化的命名、筆記品質與現行 skill 規範，完整內容放在
+`AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
+既有規範會從兩份目前檔案合併，替換前先建立可還原的私人備份。
+既有 memory 與本機 skill 保持原始位元組；缺少的附屬檔案須列入預覽並確認後
+才建立。個人規範與備份只留本機。Codex 探索與 Claude 匯入是相容策略，
+新工作階段的實際載入仍未驗證；不自動變更全域設定或安裝快取。
+獨立版號的 OpenCode package 為 0.2.0。
+
 ## 獨立發行
 
 從 [Monkey Skills](https://github.com/kouko/monkey-skills) 移轉至
@@ -30,7 +38,7 @@
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 [驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
-但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
+但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。獨立版號的 OpenCode package 為 0.2.0。
 4.2.0 改名為 `obsidian-knowledge`，改用隨附的唯讀 shell script 搜尋（不再需要編輯器的 Grep/Glob；skill 數仍為 15）。
 
 ## 背景
