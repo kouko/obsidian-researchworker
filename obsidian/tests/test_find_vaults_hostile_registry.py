@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[5]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 FIND_VAULTS = REPO_ROOT / "obsidian/skills/obsidian-vault-search/scripts/find_vaults.py"
 
 
