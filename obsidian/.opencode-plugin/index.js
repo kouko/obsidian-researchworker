@@ -266,17 +266,21 @@ export default {
       });
       await ctx.command.transform((draft) => {
         for (const skill of skills) {
-          draft.add({
-            name: skill.id,
-            description: skill.description,
-            execute: (input) => ctx.session.prompt({
-              ...input.prompt,
-              sessionID: input.sessionID,
-              text: `/${skill.id} ${input.prompt?.text ?? ""}`.trim() +
-                `\n\nBase directory for this skill: ${dirname(skill.path)}\n\n${skill.content}`,
-              delivery: input.delivery,
-            }),
-          });
+          try {
+            draft.add({
+              name: skill.id,
+              description: skill.description,
+              execute: (input) => ctx.session.prompt({
+                ...input.prompt,
+                sessionID: input.sessionID,
+                text: `/${skill.id} ${input.prompt?.text ?? ""}`.trim() +
+                  `\n\nBase directory for this skill: ${dirname(skill.path)}\n\n${skill.content}`,
+                delivery: input.delivery,
+              }),
+            });
+          } catch (err) {
+            console.error(`[obsidian] Failed to register command ${skill.id}:`, err);
+          }
         }
       });
     } catch (err) {
