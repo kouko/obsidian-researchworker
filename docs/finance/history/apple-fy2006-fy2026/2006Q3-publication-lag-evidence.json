@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "fiscal_quarter": "2006Q3",
+  "period_end": "2006-07-01",
+  "status": "source-timing-audit-not-complete-period-research",
+  "issuer_release": {
+    "url": "https://www.apple.com/newsroom/2006/07/19Apple-Reports-Third-Quarter-Results/",
+    "publication_date": "2006-07-19",
+    "declared_fiscal_quarter": "2006 third quarter",
+    "declared_period_end": "2006-07-01",
+    "reading": "Release body and explicit to-be-filed SEC report reference inspected",
+    "claims": [
+      "Stock-option investigation was ongoing and management expectations were conditional",
+      "The quarter 10-Q was still to be filed"
+    ]
+  },
+  "sec_original": {
+    "accession": "0001104659-06-084286",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000110465906084286/a06-23473_110q.htm",
+    "filed_date_from_retained_sec_index": "2006-12-29",
+    "index_provenance": {
+      "cache_file": "archives/archive-0.json",
+      "url": "https://data.sec.gov/submissions/CIK0000320193-submissions-001.json",
+      "sha256": "fc0aa394bd9202daa3a099c01d6f70ba412f22c2c61befb1169879b5690017b3"
+    },
+    "reading": "Cover and explanatory-note passages inspected; not full filing",
+    "later_information": "Explanatory note discusses investigation results announced October4, after the July release",
+    "index_page_attempt": "Direct -index.html returned Cache miss; retained submissions index remains filing-date evidence"
+  },
+  "cutoff_checks": [
+    {
+      "cutoff": "2006-07-19",
+      "issuer_release_eligible": true,
+      "december_10q_eligible": false
+    },
+    {
+      "cutoff": "2006-12-29",
+      "issuer_release_eligible": true,
+      "december_10q_eligible": true
+    }
+  ],
+  "rule": "Quarter key does not determine source availability; a later original 10-Q is not an earlier release vintage",
+  "period_research_complete": false,
+  "full_original_reading": false,
+  "remaining": [
+    "Original July SEC earnings-release filing identity",
+    "Full required source review",
+    "Market/valuation and independent challenge"
+  ]
+}

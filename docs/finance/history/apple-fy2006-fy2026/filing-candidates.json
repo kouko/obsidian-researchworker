@@ -136,7 +136,8 @@
     "unique_report_dates": 84,
     "non_inline": 53,
     "non_xbrl": 14,
-    "accepted_complete_period_research": 0
+    "accepted_complete_period_research": 0,
+    "quarter_bindings_verified_from_selected_original_evidence": 3
   },
   "candidates": [
     {
@@ -149,8 +150,10 @@
       "isInlineXBRL": 0,
       "source_index": "archives/archive-0.json",
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000110465906005910/a06-3798_110q.htm",
-      "quarter_binding": "not_verified_from_primary_document",
-      "research_status": "not_accepted_complete"
+      "quarter_binding": "verified_from_selected_original_evidence",
+      "research_status": "not_accepted_complete",
+      "fiscal_quarter": "2006Q1",
+      "binding_evidence": "2006Q1-selected-evidence.json"
     },
     {
       "accessionNumber": "0001104659-06-031303",
@@ -175,8 +178,10 @@
       "isInlineXBRL": 0,
       "source_index": "archives/archive-0.json",
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000110465906084286/a06-23473_110q.htm",
-      "quarter_binding": "not_verified_from_primary_document",
-      "research_status": "not_accepted_complete"
+      "quarter_binding": "verified_from_issuer_release_and_original_header",
+      "research_status": "not_accepted_complete",
+      "fiscal_quarter": "2006Q3",
+      "binding_evidence": "2006Q3-publication-lag-evidence.json"
     },
     {
       "accessionNumber": "0001104659-06-084288",
@@ -201,8 +206,10 @@
       "isInlineXBRL": 0,
       "source_index": "archives/archive-0.json",
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000110465907006648/a07-2749_110q.htm",
-      "quarter_binding": "not_verified_from_primary_document",
-      "research_status": "not_accepted_complete"
+      "quarter_binding": "verified_from_selected_original_evidence",
+      "research_status": "not_accepted_complete",
+      "fiscal_quarter": "2007Q1",
+      "binding_evidence": "2007Q1-selected-evidence.json"
     },
     {
       "accessionNumber": "0001104659-07-037745",
