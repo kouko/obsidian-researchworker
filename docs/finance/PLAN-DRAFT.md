@@ -54,9 +54,16 @@ equity evidence, not a universal template assumed in advance.
 | Vault | Personal investment settings, sources, datasets and actual research | A copied, separately maintained generic research manual |
 | Repository docs | Design decisions, research evidence, provenance and validation | Private portfolio contents or credentials |
 
-Implemented acquisition root: `obsidian-finance/`, with one `sec-data` skill,
-executable scripts, tests, licenses/provenance and Claude/Codex host metadata.
-Additional research methods and layout remain future design outputs.
+Implemented package root: `obsidian-finance/`, with `sec-data` for source-linked
+SEC acquisition and `finance-research` for agent-led continuation in managed
+version-1 equities folders, plus scripts, tests, provenance and Claude/Codex
+registration. Python 3.11+ and the standard library suffice; genuine
+`SEC_USER_AGENT` is required for live SEC acquisition, not local research/reuse.
+Research preserves reports/edits and retains conditional or insufficient-evidence
+judgments. Actual source-invoked Codex sessions are recorded; installed-plugin
+loading remains unverified and full investment research remains incomplete.
+No daemon, trading or global installation is performed. Additional-asset workflows and
+wider research methods retain their bounded/preparatory status.
 Do not mirror the toolkit's complete skill count or three-layer directory tree
 merely to preserve its appearance.
 
