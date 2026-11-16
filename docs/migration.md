@@ -11,11 +11,13 @@ Source changes do not refresh installed caches or the active session's catalog.
 
 The new marketplace is `obsidian-researchworker`, with relative source
 `./obsidian` and retained plugin name `obsidian`. Claude and Codex manifests
-point to this repository. OpenCode uses independent package and loader ID
-`obsidian-researchworker`; saved `monkey-skills-obsidian:*` references need review
-in a later OpenCode transition.
-Claude/Codex and marketplace metadata declare 4.0.0; the independently versioned
-OpenCode package declares 0.1.0. The historical 3.27.0 installation evidence
+point to this repository. OpenCode now uses package and loader ID `obsidian`;
+its skills and slash commands use `obsidian:<skill>`. Saved references using
+`obsidian-researchworker:<skill>` or the earlier `monkey-skills-obsidian:*`
+prefix need to be updated.
+At extraction, Claude/Codex and marketplace metadata declared 4.0.0 and the
+independently versioned OpenCode package declared 0.1.0. They now declare
+4.1.0 and 0.2.0 respectively. The historical 3.27.0 installation evidence
 does not verify installation or execution of these versions.
 
 W3 must record host/version, isolated home and fixture vault, revision, successful
