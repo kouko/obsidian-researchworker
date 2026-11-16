@@ -1,0 +1,715 @@
+{
+  "all_preexisting_files_unchanged": true,
+  "preexisting_file_count": 117,
+  "files": {
+    "after-run-01.json": {
+      "before": "6a3d483bd150131a04122099623af5895ea23051316be38614017c7255f41ab2",
+      "after": "6a3d483bd150131a04122099623af5895ea23051316be38614017c7255f41ab2"
+    },
+    "run-02-prompt.txt": {
+      "before": "e2d604abfa086c4a7394f5990dcf6eb8cd485046eaa974763ce931d094c4d349",
+      "after": "e2d604abfa086c4a7394f5990dcf6eb8cd485046eaa974763ce931d094c4d349"
+    },
+    "run-01-save.py": {
+      "before": "9ee59e2a9eb45028837a2ecd0098bfbb030baa4dc9cdd5b65fcc2f278114c77d",
+      "after": "9ee59e2a9eb45028837a2ecd0098bfbb030baa4dc9cdd5b65fcc2f278114c77d"
+    },
+    "SCOPE.md": {
+      "before": "b4866e2b4c75e959b73c9db5fcf8361cde8a322aca961bcb98c0e83a95676620",
+      "after": "b4866e2b4c75e959b73c9db5fcf8361cde8a322aca961bcb98c0e83a95676620"
+    },
+    "run-02-old-method.json": {
+      "before": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72",
+      "after": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72"
+    },
+    "run-01-baseline.json": {
+      "before": "6ea03a33ee526d15a0fb2e58109a7754849e9f1585ac52a0c409de5d41f31106",
+      "after": "6ea03a33ee526d15a0fb2e58109a7754849e9f1585ac52a0c409de5d41f31106"
+    },
+    "before-run-02.json": {
+      "before": "c41fd7436fd6d738eb917b236cf3155dc8000435b8caaa6e066d2db8bcb98c36",
+      "after": "c41fd7436fd6d738eb917b236cf3155dc8000435b8caaa6e066d2db8bcb98c36"
+    },
+    "run-02-save.py": {
+      "before": "6d936f1ba4063d348111f1f04c8e3bd226ff588edd7d58a5372d13d267ff5deb",
+      "after": "6d936f1ba4063d348111f1f04c8e3bd226ff588edd7d58a5372d13d267ff5deb"
+    },
+    "run-01-last.txt": {
+      "before": "2caf6a2e6ddbe914293bc25d200f1f56e0c8860bc422c99963ec46f1a837ef47",
+      "after": "2caf6a2e6ddbe914293bc25d200f1f56e0c8860bc422c99963ec46f1a837ef47"
+    },
+    "run-02-baseline.json": {
+      "before": "aec4e3879372a678cdf8ea0c862d13d00fe6f065ecc29da5641f50bdd97c12cd",
+      "after": "aec4e3879372a678cdf8ea0c862d13d00fe6f065ecc29da5641f50bdd97c12cd"
+    },
+    "run-01-discovery-before.json": {
+      "before": "d7fbc9876effc925a24989fe65aa6c9174d7533aec1786f0d7193d90d3a91e03",
+      "after": "d7fbc9876effc925a24989fe65aa6c9174d7533aec1786f0d7193d90d3a91e03"
+    },
+    "probe-escalated-last.txt": {
+      "before": "5dcb146c191ae5ad71be2f72211a7766829d7843213c4614994c5d4d85daf4d5",
+      "after": "5dcb146c191ae5ad71be2f72211a7766829d7843213c4614994c5d4d85daf4d5"
+    },
+    "run-02-transcript.txt": {
+      "before": "61809fa9fba200b8fd3ff9553678cfda1364578924f30f675daca1408a2d66c8",
+      "after": "61809fa9fba200b8fd3ff9553678cfda1364578924f30f675daca1408a2d66c8"
+    },
+    "probe-prompt.txt": {
+      "before": "e7b4cd0cef3c25c81bdad305b0f5fbf4a71df5145d2353906ac8145471701ae6",
+      "after": "e7b4cd0cef3c25c81bdad305b0f5fbf4a71df5145d2353906ac8145471701ae6"
+    },
+    "before-run-01.json": {
+      "before": "620ff1006c584aa36e2b1f68530844ca4bdecef3410154c3ea2dfa3545be896a",
+      "after": "620ff1006c584aa36e2b1f68530844ca4bdecef3410154c3ea2dfa3545be896a"
+    },
+    "probe-escalated-transcript.txt": {
+      "before": "d50522dfe9679e07a19bdeebde53c8e899248c70b3c8999c09d7f0e3bbfb784b",
+      "after": "d50522dfe9679e07a19bdeebde53c8e899248c70b3c8999c09d7f0e3bbfb784b"
+    },
+    "run-01-publication.json": {
+      "before": "0f5771f230de4555c4a2e7a0e2582cf1f360ccfc1a84ba878576273f55dbf822",
+      "after": "0f5771f230de4555c4a2e7a0e2582cf1f360ccfc1a84ba878576273f55dbf822"
+    },
+    "probe-transcript.txt": {
+      "before": "2d8b902fb51c4fb0108c58a40b037f3ed52641f00cdae67901d7cbda9b4b8473",
+      "after": "2d8b902fb51c4fb0108c58a40b037f3ed52641f00cdae67901d7cbda9b4b8473"
+    },
+    "probe-last.txt": {
+      "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-02-discovery-before.json": {
+      "before": "d493df8fd38c29e346e7e0f63b5a7a9484ed096f3cb6a2cae79a4c39d8100514",
+      "after": "d493df8fd38c29e346e7e0f63b5a7a9484ed096f3cb6a2cae79a4c39d8100514"
+    },
+    "run-02-last.txt": {
+      "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-01-transcript.txt": {
+      "before": "6445756373aabdad4db807a9d4c6aea7e38dde53ac1ca39cde86a1e3fe4a208d",
+      "after": "6445756373aabdad4db807a9d4c6aea7e38dde53ac1ca39cde86a1e3fe4a208d"
+    },
+    "run-01-saved-paths.json": {
+      "before": "0bc50283e29409751a86389521f78fd4ab1577735abf6c343543a1cd6b8ce748",
+      "after": "0bc50283e29409751a86389521f78fd4ab1577735abf6c343543a1cd6b8ce748"
+    },
+    "run-01-discovery-after.json": {
+      "before": "7bd2084a75a03ea45f835621818121d31bea3e010ecba07026b781fa5d790075",
+      "after": "7bd2084a75a03ea45f835621818121d31bea3e010ecba07026b781fa5d790075"
+    },
+    "run-01-prompt.txt": {
+      "before": "85abdfcb1a9864134c065262e5fbcde99d918ba47d72626658358e60dd8a97f2",
+      "after": "85abdfcb1a9864134c065262e5fbcde99d918ba47d72626658358e60dd8a97f2"
+    },
+    "run-01-report.md": {
+      "before": "476bc61a395420c633da0310264a7d6728f0192cd260e25dd0228b6cab12cd58",
+      "after": "476bc61a395420c633da0310264a7d6728f0192cd260e25dd0228b6cab12cd58"
+    },
+    "investing/research.json": {
+      "before": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "after": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894"
+    },
+    "package/LICENSE": {
+      "before": "e17772825607fa517d61baf4c8dab4598a17e425fc1a5bd0d265bb48242b5679",
+      "after": "e17772825607fa517d61baf4c8dab4598a17e425fc1a5bd0d265bb48242b5679"
+    },
+    "package/PROVENANCE.md": {
+      "before": "05e599c4c69185789c47f8c39ca342407d413a72e2c46e45a70bf7c2476e1af6",
+      "after": "05e599c4c69185789c47f8c39ca342407d413a72e2c46e45a70bf7c2476e1af6"
+    },
+    "package/README.md": {
+      "before": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967",
+      "after": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967"
+    },
+    "investing/.research-runs/run-01-q3/request.json": {
+      "before": "7e994a2b34bbf07f74c9a8b21e74f4e10b79e0d792d9bb19b9ea5f2fd6996a3e",
+      "after": "7e994a2b34bbf07f74c9a8b21e74f4e10b79e0d792d9bb19b9ea5f2fd6996a3e"
+    },
+    "investing/.research-runs/run-01-q3/journal.json": {
+      "before": "86f7d639d74857a4b3475ba92a8cf4508981533728083a907a5ab3b172ca55e7",
+      "after": "86f7d639d74857a4b3475ba92a8cf4508981533728083a907a5ab3b172ca55e7"
+    },
+    "investing/.research-runs/run-01-q3/completion.json": {
+      "before": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "after": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719"
+    },
+    "investing/.research-runs/run-01-q3/draft/identity-check.json": {
+      "before": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "after": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0"
+    },
+    "investing/.research-runs/run-01-q3/draft/identity.md": {
+      "before": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "after": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa"
+    },
+    "investing/.research-runs/run-01-q3/draft/calculations.json": {
+      "before": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "after": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9"
+    },
+    "investing/.research-runs/run-01-q3/draft/source-check.json": {
+      "before": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "after": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f"
+    },
+    "investing/.research-runs/run-01-q3/draft/growth-check.json": {
+      "before": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "after": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d"
+    },
+    "investing/.research-runs/run-01-q3/draft/growth.md": {
+      "before": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "after": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c"
+    },
+    "investing/.research-runs/run-01-q3/draft/method-check.json": {
+      "before": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "after": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756"
+    },
+    "investing/assets/equities/aapl/asset.json": {
+      "before": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "after": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058"
+    },
+    "investing/assets/equities/aapl/data/2024Q3.json": {
+      "before": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "after": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27"
+    },
+    "investing/assets/equities/aapl/data/2024Q2.json": {
+      "before": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "after": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021"
+    },
+    "investing/assets/equities/aapl/data/growth-method.txt": {
+      "before": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "after": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283"
+    },
+    "investing/assets/equities/aapl/data/growth-method-v2.txt": {
+      "before": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618",
+      "after": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json": {
+      "before": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "after": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md": {
+      "before": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "after": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/calculations.json": {
+      "before": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "after": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json": {
+      "before": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "after": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth-check.json": {
+      "before": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "after": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth.md": {
+      "before": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "after": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/pending.json": {
+      "before": "2422375381531f52c41daa92b21534c41d6a18d9e9686cb73095aad603ae2719",
+      "after": "2422375381531f52c41daa92b21534c41d6a18d9e9686cb73095aad603ae2719"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/review.json": {
+      "before": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "after": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719"
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/method-check.json": {
+      "before": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "after": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756"
+    },
+    "investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "before": "496e3244c7efedb7f6af3906f6253d7fb47d31d3c9605be8f7bee518f3367d04",
+      "after": "496e3244c7efedb7f6af3906f6253d7fb47d31d3c9605be8f7bee518f3367d04"
+    },
+    "investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "before": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "after": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9"
+    },
+    "investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "before": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "after": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7"
+    },
+    "fixture-initial/investing/research.json": {
+      "before": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "after": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894"
+    },
+    "fixture-initial/investing/assets/equities/aapl/asset.json": {
+      "before": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "after": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/2024Q3.json": {
+      "before": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "after": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/2024Q2.json": {
+      "before": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "after": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/growth-method.txt": {
+      "before": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "after": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "before": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72",
+      "after": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "before": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "after": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9"
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "before": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "after": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7"
+    },
+    "package/scripts/research_store.py": {
+      "before": "4a4bbe04a6b01848be9d61f531bcbd5d8e5b12fd86642150f27149a215422c0e",
+      "after": "4a4bbe04a6b01848be9d61f531bcbd5d8e5b12fd86642150f27149a215422c0e"
+    },
+    "package/scripts/assess_work.py": {
+      "before": "cfe0948609ebb6c1c687ed37f64a0ae2b750af8e00df2f879e91cace9c1d8653",
+      "after": "cfe0948609ebb6c1c687ed37f64a0ae2b750af8e00df2f879e91cace9c1d8653"
+    },
+    "package/scripts/work_assessment.py": {
+      "before": "caa2ca6e4b15308110e0e7ae7b1ef59386f5d9c210da2a3a3577f4d99e07aaae",
+      "after": "caa2ca6e4b15308110e0e7ae7b1ef59386f5d9c210da2a3a3577f4d99e07aaae"
+    },
+    "package/.claude-plugin/plugin.json": {
+      "before": "c7df28319bf07dd251674f6e49f8f8df85eebeb182ccfadb41a2a26a2640fb92",
+      "after": "c7df28319bf07dd251674f6e49f8f8df85eebeb182ccfadb41a2a26a2640fb92"
+    },
+    "package/.codex-plugin/plugin.json": {
+      "before": "c6f11270d53df6ce6034576eb0a47588b34392e93abaa362658d361de2c5e708",
+      "after": "c6f11270d53df6ce6034576eb0a47588b34392e93abaa362658d361de2c5e708"
+    },
+    "package/scripts/__pycache__/research_store.cpython-312.pyc": {
+      "before": "dc7d0c3410b83d8dfcfc26979f7abcc3d362745e386ff7384598c16f345d8c8c",
+      "after": "dc7d0c3410b83d8dfcfc26979f7abcc3d362745e386ff7384598c16f345d8c8c"
+    },
+    "package/skills/finance-research/SKILL.md": {
+      "before": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e",
+      "after": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e"
+    },
+    "package/skills/sec-data/SKILL.md": {
+      "before": "1b9e251091905acecc7a2575ac093f7dcb76c13ecc6f4625ea5f65fa95bf1923",
+      "after": "1b9e251091905acecc7a2575ac093f7dcb76c13ecc6f4625ea5f65fa95bf1923"
+    },
+    "package/skills/finance-research/references/research-method.md": {
+      "before": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163",
+      "after": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163"
+    },
+    "package/skills/sec-data/scripts/acquire.py": {
+      "before": "971c1b821f9aa22963c4437cfe002f4a60c01b294b21fe0eae737208e3fdf653",
+      "after": "971c1b821f9aa22963c4437cfe002f4a60c01b294b21fe0eae737208e3fdf653"
+    },
+    "package/skills/sec-data/scripts/fiscal_quarter.py": {
+      "before": "d904603ed3f59eb7335f9cf1e34a7ce58468b32e20b44c7b7c36474cdb904950",
+      "after": "d904603ed3f59eb7335f9cf1e34a7ce58468b32e20b44c7b7c36474cdb904950"
+    },
+    "package/skills/sec-data/scripts/sec_client.py": {
+      "before": "544d50cd226a241ba08165a3ba142c4ee313bc24e26b7e248ed194985aea727a",
+      "after": "544d50cd226a241ba08165a3ba142c4ee313bc24e26b7e248ed194985aea727a"
+    },
+    "retained/competition-v1/evidence.json": {
+      "before": "18e852bb3ef318e703c88e398564c59c9f73662764a7170a7cabdcc563f2b81e",
+      "after": "18e852bb3ef318e703c88e398564c59c9f73662764a7170a7cabdcc563f2b81e"
+    },
+    "retained/competition-v1/跨季競爭補充.md": {
+      "before": "24c90dcc3eb27b2549435146e507f0a393e826daf5b9255d550308c6d995e56e",
+      "after": "24c90dcc3eb27b2549435146e507f0a393e826daf5b9255d550308c6d995e56e"
+    },
+    "retained/competition-v1/validation.json": {
+      "before": "03f882a2b80a245f81dd0cf7a3e5b6c24861a1657790d4f7a7bc9702938d727a",
+      "after": "03f882a2b80a245f81dd0cf7a3e5b6c24861a1657790d4f7a7bc9702938d727a"
+    },
+    "retained/forecast-v1/sources.json": {
+      "before": "208360785a0eaf530d3328964fa2c7cd6761c6992c1bd384f8dfb6bc34ac35c7",
+      "after": "208360785a0eaf530d3328964fa2c7cd6761c6992c1bd384f8dfb6bc34ac35c7"
+    },
+    "retained/forecast-v1/research-state.json": {
+      "before": "d9acca7da22de66cbab3dda85bfa6879d157c4dd9e6d55544f43dc42e75085dc",
+      "after": "d9acca7da22de66cbab3dda85bfa6879d157c4dd9e6d55544f43dc42e75085dc"
+    },
+    "retained/forecast-v1/update-examples.json": {
+      "before": "a04c14fb295ecef43c7581017d8d533bd3731d35f63e645164e14e2dacdce5b6",
+      "after": "a04c14fb295ecef43c7581017d8d533bd3731d35f63e645164e14e2dacdce5b6"
+    },
+    "retained/forecast-v1/reported-inputs.json": {
+      "before": "210520305abcda839bd4b8836e246a5db6bdc99f91f8080ededb3c0679584a7d",
+      "after": "210520305abcda839bd4b8836e246a5db6bdc99f91f8080ededb3c0679584a7d"
+    },
+    "retained/forecast-v1/assumptions.json": {
+      "before": "2ae875f60c0076a4988d3a03d60be532b3b6b9ab3efe2c4a7168262db7e9a5f6",
+      "after": "2ae875f60c0076a4988d3a03d60be532b3b6b9ab3efe2c4a7168262db7e9a5f6"
+    },
+    "retained/forecast-v1/METHOD-AND-VALIDATION.md": {
+      "before": "c8ee796c32ee68b6edb8cfa04b79ec8ee3dfe99aeb1037b0278f3f195978ed36",
+      "after": "c8ee796c32ee68b6edb8cfa04b79ec8ee3dfe99aeb1037b0278f3f195978ed36"
+    },
+    "retained/forecast-v1/management-outlook.json": {
+      "before": "d5cf8f840bd7e2a89591e3cacb6b37157ba4d768a0ffbda07030e8fe408a899d",
+      "after": "d5cf8f840bd7e2a89591e3cacb6b37157ba4d768a0ffbda07030e8fe408a899d"
+    },
+    "retained/forecast-v1/calculations.json": {
+      "before": "76803f22adf354048b4a8875b04bdd6898103e594b72b391b01f81d23e21e54e",
+      "after": "76803f22adf354048b4a8875b04bdd6898103e594b72b391b01f81d23e21e54e"
+    },
+    "retained/forecast-v1/2024Q2-營運預測補充.md": {
+      "before": "265a9f8fcfa9583e2d893cd599e659719b341230e3e60aa3dec1424c36ac6e7f",
+      "after": "265a9f8fcfa9583e2d893cd599e659719b341230e3e60aa3dec1424c36ac6e7f"
+    },
+    "retained/forecast-v1/validation.json": {
+      "before": "b4cb05b386bc43b9f6ea6fbb26796a9d51a3cd1d392400b72195f0189c75e212",
+      "after": "b4cb05b386bc43b9f6ea6fbb26796a9d51a3cd1d392400b72195f0189c75e212"
+    },
+    "retained/forecast-v1/更新判斷範例.md": {
+      "before": "7608b18913579b4acf15b62ec9eb87682eacd83c1fcbdda9fe360721d1a8647d",
+      "after": "7608b18913579b4acf15b62ec9eb87682eacd83c1fcbdda9fe360721d1a8647d"
+    },
+    "retained/2024Q3/財務分析.md": {
+      "before": "748a59415100d005aa2476e0cada08885f040856d0ee69ead429a1f650b50c60",
+      "after": "748a59415100d005aa2476e0cada08885f040856d0ee69ead429a1f650b50c60"
+    },
+    "retained/2024Q3/市場與估值.md": {
+      "before": "453fded26dc4790199af39c9add5e90046e9fdedc718853e80737819d29832cf",
+      "after": "453fded26dc4790199af39c9add5e90046e9fdedc718853e80737819d29832cf"
+    },
+    "retained/2024Q3/綜合分析.md": {
+      "before": "2accdc5fcef97dd2e7f9f428ce8ea96ea6ee12d44fb5b390181678a6710fae1c",
+      "after": "2accdc5fcef97dd2e7f9f428ce8ea96ea6ee12d44fb5b390181678a6710fae1c"
+    },
+    "retained/2024Q3/營運與競爭.md": {
+      "before": "ed91c1168dea69de05b2b8df80eafe57df85dc18b49b63129f020db3ecdcf0d7",
+      "after": "ed91c1168dea69de05b2b8df80eafe57df85dc18b49b63129f020db3ecdcf0d7"
+    },
+    "retained/valuation-v1/METHOD.md": {
+      "before": "c3dca14e5d89ba4e19b6cb80586ea690a799752387911cf86799171d6296d147",
+      "after": "c3dca14e5d89ba4e19b6cb80586ea690a799752387911cf86799171d6296d147"
+    },
+    "retained/valuation-v1/price-evidence.json": {
+      "before": "8fff8ad0e35e6ca6b08395baa5429895452a1f24c99614c1c993474ff422e784",
+      "after": "8fff8ad0e35e6ca6b08395baa5429895452a1f24c99614c1c993474ff422e784"
+    },
+    "retained/valuation-v1/reported-inputs.json": {
+      "before": "159f96f5a33b993a8d47d0f79db83fc36afbc21f33d78d18c7ae6fab2f53d171",
+      "after": "159f96f5a33b993a8d47d0f79db83fc36afbc21f33d78d18c7ae6fab2f53d171"
+    },
+    "retained/valuation-v1/assumptions.json": {
+      "before": "d21453d9b5507050da4356da699669db190109cb106b3fcf7c71a437dc820fe9",
+      "after": "d21453d9b5507050da4356da699669db190109cb106b3fcf7c71a437dc820fe9"
+    },
+    "retained/valuation-v1/跨季估值比較.md": {
+      "before": "5f8410af6b619045071e58168f8b9a4af755b849bdeacf651844b132dcd12e65",
+      "after": "5f8410af6b619045071e58168f8b9a4af755b849bdeacf651844b132dcd12e65"
+    },
+    "retained/valuation-v1/calculations.json": {
+      "before": "8ca863c58443fdc09272669fccbf8add2ce94096f7fbf8545ce8eedd2ec382d3",
+      "after": "8ca863c58443fdc09272669fccbf8add2ce94096f7fbf8545ce8eedd2ec382d3"
+    },
+    "retained/valuation-v1/2024Q2-估值補充.md": {
+      "before": "12e9452d7678cc620c334e6cd26b9a2d5560075f4219b72c7aa2e80b0cecf7fb",
+      "after": "12e9452d7678cc620c334e6cd26b9a2d5560075f4219b72c7aa2e80b0cecf7fb"
+    },
+    "retained/valuation-v1/2024Q3-估值補充.md": {
+      "before": "f23d698d42b90d441d3284c0973d812a20759bfab7cb261b8d156cc56ef8253f",
+      "after": "f23d698d42b90d441d3284c0973d812a20759bfab7cb261b8d156cc56ef8253f"
+    },
+    "retained/valuation-v1/validation.json": {
+      "before": "1bb8806431779c09daa20a70dcda3278cbd28c7c4d7bde4a041dadc275825342",
+      "after": "1bb8806431779c09daa20a70dcda3278cbd28c7c4d7bde4a041dadc275825342"
+    },
+    "retained/valuation-v1/financial-source-hashes.json": {
+      "before": "ec73ff2ca1187b90f50eefb6f75d64a39c875aa897f34395cf59273718332c07",
+      "after": "ec73ff2ca1187b90f50eefb6f75d64a39c875aa897f34395cf59273718332c07"
+    },
+    "retained/2024Q2/財務分析.md": {
+      "before": "c8204f921e0da6f2f4dd42b6ea7f6badb5a0b1bd769bbb11411f3ee53eced01d",
+      "after": "c8204f921e0da6f2f4dd42b6ea7f6badb5a0b1bd769bbb11411f3ee53eced01d"
+    },
+    "retained/2024Q2/市場與估值.md": {
+      "before": "0405ea9bd5aaac20f4e88e64d08e6616b47ec0f25287220244a40bd59e153f1b",
+      "after": "0405ea9bd5aaac20f4e88e64d08e6616b47ec0f25287220244a40bd59e153f1b"
+    },
+    "retained/2024Q2/綜合分析.md": {
+      "before": "7dd884e725a1ddf3082adfbddc0acfc9f8bba33a018ac2b832356d79f27b5e7a",
+      "after": "7dd884e725a1ddf3082adfbddc0acfc9f8bba33a018ac2b832356d79f27b5e7a"
+    },
+    "retained/2024Q2/營運與競爭.md": {
+      "before": "ea4cc8056d0dd53a1c178176c16e5a547481303e308a9c3759cad808202eec8b",
+      "after": "ea4cc8056d0dd53a1c178176c16e5a547481303e308a9c3759cad808202eec8b"
+    },
+    "retained/data/temporal-inputs.json": {
+      "before": "1dbd4f1e5d70005f5c229abe857723d721fde10bd7c6639a0924f55379af5a25",
+      "after": "1dbd4f1e5d70005f5c229abe857723d721fde10bd7c6639a0924f55379af5a25"
+    },
+    "retained/data/financial-observations.json": {
+      "before": "f928e8715338b6a82b3724f89ce1096e6b42b26084d91951f7a7f6bdb142949f",
+      "after": "f928e8715338b6a82b3724f89ce1096e6b42b26084d91951f7a7f6bdb142949f"
+    },
+    "retained/data/research-state.json": {
+      "before": "35e7a99e1d1245f58a575c97e1843287769b7b17e2e4aaf6a0d0ecb5343711e0",
+      "after": "35e7a99e1d1245f58a575c97e1843287769b7b17e2e4aaf6a0d0ecb5343711e0"
+    },
+    "retained/data/source-manifests.json": {
+      "before": "6ae4966c2e1ae8707d651a9544452e79809c2707c641e76ade6ac58bf0152b7d",
+      "after": "6ae4966c2e1ae8707d651a9544452e79809c2707c641e76ade6ac58bf0152b7d"
+    },
+    "retained/data/quarter-packs.json": {
+      "before": "1f83b5fe8078fc804ac6d4e8b0b0563f4d89c082c751ab33bb67d1c72b007e62",
+      "after": "1f83b5fe8078fc804ac6d4e8b0b0563f4d89c082c751ab33bb67d1c72b007e62"
+    },
+    "retained/data/calculations.json": {
+      "before": "523994c1f5eda7c871da170e5421ea95cde92481518fc8c01bc22a659b6d5d75",
+      "after": "523994c1f5eda7c871da170e5421ea95cde92481518fc8c01bc22a659b6d5d75"
+    },
+    "retained/data/reference-register.json": {
+      "before": "c153e498d16bab220ace7bc220e9c5c2a323472c2a0329a7920ca2f6db79ef45",
+      "after": "c153e498d16bab220ace7bc220e9c5c2a323472c2a0329a7920ca2f6db79ef45"
+    },
+    "retained/data/verification.json": {
+      "before": "ba392d5949709f012c5bb5a098a74bbf34b8223b163ecac3f95a43ecf7ef5bd5",
+      "after": "ba392d5949709f012c5bb5a098a74bbf34b8223b163ecac3f95a43ecf7ef5bd5"
+    }
+  },
+  "identity_unit_exact_equal": true,
+  "identity_unit": {
+    "consumed": {
+      "filing-2024Q3": {
+        "projection": {
+          "cutoff": "2024-08-02",
+          "end": "2024-06-29",
+          "metrics": {
+            "assets": 331612000000,
+            "buybacks_discrete": 26522000000,
+            "buybacks_ytd": 69866000000,
+            "capex_discrete": 2151000000,
+            "capex_ytd": 6539000000,
+            "cash": 25565000000,
+            "cfo_discrete": 28858000000,
+            "cfo_to_net_income": 1.3454867586721373,
+            "cfo_ytd": 91443000000,
+            "diluted_shares": 15348175000,
+            "diluted_shares_prior_year": 15775021000,
+            "dividends_discrete": 3895000000,
+            "dividends_ytd": 11430000000,
+            "eps_diluted": 1.4,
+            "eps_diluted_prior_year": 1.26,
+            "eps_diluted_yoy_pct": 11.111111111111093,
+            "equity": 66708000000,
+            "fcf_proxy_discrete": 26707000000,
+            "greater_china": 14728000000,
+            "greater_china_prior_year": 15758000000,
+            "greater_china_yoy_pct": -6.536362482548553,
+            "gross_margin_pct": 46.2571551814589,
+            "gross_margin_prior_year_pct": 44.5163025538834,
+            "gross_profit": 39678000000,
+            "gross_profit_prior_year": 36413000000,
+            "ipad": 7162000000,
+            "ipad_prior_year": 5791000000,
+            "ipad_yoy_pct": 23.674667587635987,
+            "iphone": 39296000000,
+            "iphone_prior_year": 39669000000,
+            "iphone_yoy_pct": -0.9402808238170857,
+            "liabilities": 264904000000,
+            "mac": 7009000000,
+            "mac_prior_year": 6840000000,
+            "net_income": 21448000000,
+            "net_income_prior_year": 19881000000,
+            "net_income_yoy_pct": 7.881897288868767,
+            "operating_income": 25352000000,
+            "operating_income_prior_year": 22998000000,
+            "operating_margin_pct": 29.555708406682445,
+            "rd": 8006000000,
+            "rd_prior_year": 7442000000,
+            "revenue": 85777000000,
+            "revenue_prior_year": 81797000000,
+            "revenue_yoy_pct": 4.865704121178038,
+            "services": 24213000000,
+            "services_prior_year": 21213000000,
+            "services_share_pct": 28.227846625552306,
+            "services_yoy_pct": 14.142271248762551,
+            "wearables_home_and_accessories": 8097000000,
+            "wearables_home_and_accessories_prior_year": 8284000000
+          },
+          "original_accession": "0000320193-24-000081",
+          "quarter": "2024Q3",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+          "start": "2024-03-31",
+          "table_rows": [
+            {
+              "cells": [
+                "iPhone",
+                "$",
+                "39,296",
+                "",
+                "",
+                "$",
+                "39,669",
+                "",
+                "",
+                "(1)",
+                "%",
+                "",
+                "$",
+                "154,961",
+                "",
+                "",
+                "$",
+                "156,778",
+                "",
+                "",
+                "(1)",
+                "%"
+              ],
+              "label": "iPhone",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            },
+            {
+              "cells": [
+                "Mac",
+                "7,009",
+                "",
+                "",
+                "6,840",
+                "",
+                "",
+                "2",
+                "%",
+                "",
+                "22,240",
+                "",
+                "",
+                "21,743",
+                "",
+                "",
+                "2",
+                "%"
+              ],
+              "label": "Mac",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            },
+            {
+              "cells": [
+                "iPad",
+                "7,162",
+                "",
+                "",
+                "5,791",
+                "",
+                "",
+                "24",
+                "%",
+                "",
+                "19,744",
+                "",
+                "",
+                "21,857",
+                "",
+                "",
+                "(10)",
+                "%"
+              ],
+              "label": "iPad",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            },
+            {
+              "cells": [
+                "Wearables, Home and Accessories",
+                "8,097",
+                "",
+                "",
+                "8,284",
+                "",
+                "",
+                "(2)",
+                "%",
+                "",
+                "27,963",
+                "",
+                "",
+                "30,523",
+                "",
+                "",
+                "(8)",
+                "%"
+              ],
+              "label": "Wearables, Home and Accessories",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            },
+            {
+              "cells": [
+                "Services",
+                "24,213",
+                "",
+                "",
+                "21,213",
+                "",
+                "",
+                "14",
+                "%",
+                "",
+                "71,197",
+                "",
+                "",
+                "62,886",
+                "",
+                "",
+                "13",
+                "%"
+              ],
+              "label": "Services",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            },
+            {
+              "cells": [
+                "Greater China",
+                "14,728",
+                "",
+                "",
+                "15,758",
+                "",
+                "",
+                "(7)",
+                "%",
+                "",
+                "51,919",
+                "",
+                "",
+                "57,475",
+                "",
+                "",
+                "(10)",
+                "%"
+              ],
+              "label": "Greater China",
+              "source_section": "MD&A net sales tables",
+              "unit": "USD millions; percent columns separately labeled"
+            }
+          ]
+        },
+        "version": "0000320193-24-000081"
+      }
+    },
+    "output": {
+      "digest": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "path": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+    },
+    "verification": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json"
+  },
+  "identity_output_actual_digest": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+  "identity_check_actual_digest": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+  "last_success": {
+    "before_present": false,
+    "after_present": false,
+    "before": null,
+    "after": null
+  },
+  "source_metadata_unchanged": true,
+  "external_attempts": 0,
+  "external_successes": 0
+}

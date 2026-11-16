@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "run-03-q3": "all output/check digests verified; partial; no last_success",
+    "run-03-q2": "all output/check digests verified; partial; no last_success"
+  },
+  "all_preexisting_managed_hashes_unchanged": true,
+  "discovery_repeat_exact_equal": true,
+  "helper_hash_matches_runtime_v2": true,
+  "configured_questions_unchanged": true,
+  "final_report_digest": "cfb5bd7d78d1baf3b37918c1fdec45d0e86ce1f8b1b06d43c2e0afb3349c6c64",
+  "active_transcript_mutable_exception": "run-03-transcript.txt",
+  "self_check_not_independent_review": true
+}

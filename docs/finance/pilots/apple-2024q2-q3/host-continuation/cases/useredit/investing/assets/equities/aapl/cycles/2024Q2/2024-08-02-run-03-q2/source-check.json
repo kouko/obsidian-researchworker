@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "checked_at": "2026-11-16T02:12:31.503407+00:00",
+  "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+  "channel": "web.run open/find",
+  "external_attempted": true,
+  "page_access_success": true,
+  "scope": "bounded Q2 original page corroboration only",
+  "read_coverage": [
+    "cover lines 11-19, 90-94 and extracted declaration text line 0; fiscal Q2 footer line 161",
+    "statements of operations lines 120-158: units and three/six month headers, net sales, gross margin",
+    "MD&A fiscal-period lines 675-677; category rows and drivers lines 723-755; Greater China lines 688-711; gross margin lines 761-788"
+  ],
+  "not_checked": [
+    "raw inline-XBRL contextRef semantics",
+    "filing index/official date independently",
+    "amendment inventory",
+    "complete notes, risk factors, governance/proxy",
+    "full SEC acquisition or current coverage"
+  ],
+  "SEC_USER_AGENT_configured": false,
+  "acquisition_attempts": 0,
+  "new_page_successes": 1,
+  "raw_html_retained": false,
+  "raw_html_digest_this_run": null,
+  "economic_cutoff": "2024-08-02T23:59:59+00:00",
+  "eligible_date_basis": "retained official date 2024-05-03; not retrieval time or May 2 signature",
+  "prior_source_manifests": "retained/data/source-manifests.json",
+  "freshness": "bounded page checked; inventory and full coverage unverified"
+}

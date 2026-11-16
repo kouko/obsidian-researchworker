@@ -1,0 +1,8 @@
+Clean recovery succeeded and was rolled back; the edited case safely refused both operations, preserving all evidence.
+
+- **Clean:** `resume` returned `checkpoint`; rollback returned `rolled_back` and restored eligible predecessor `run-03-q3`. All reports and drafts remain.
+- **Useredit:** verified the exact appended bytes and recorded hashes. Resume and rollback both raised the preserved file-specific conflict; the entire case stayed unchanged.
+- Full investment-case remains pending. No external attempts occurred; freshness remains unverified.
+- Main investing, package and retained files are unchanged. This demonstrates controlled save-worker interruption recovery, not host process death.
+
+[Run-06 report](/private/tmp/finance-host-public-20261116/run-06-report.md) · [Exact calls/errors](/private/tmp/finance-host-public-20261116/run-06-helper-calls.json) · [Preserved hashes](/private/tmp/finance-host-public-20261116/run-06-preserved-file-hashes.json)

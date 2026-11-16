@@ -1,0 +1,1 @@
+v1: Compute revenue year-over-year growth from retained original-quarter current/prior values. Show units, arithmetic and opposing evidence. This bounded question is not a complete investment case.

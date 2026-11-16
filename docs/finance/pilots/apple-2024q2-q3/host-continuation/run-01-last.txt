@@ -1,0 +1,16 @@
+Saved a managed partial checkpoint: **2024Q3 growth and bounded fiscal identity are reusable; the investment case remains pending.**
+
+- Revenue grew **4.87% YoY**, versus **−4.31% in Q2**. Product declines remain counterevidence to a broad recovery.
+- Both original SEC pages were successfully checked. Raw HTML, tagged fiscal-context validation, filing dates/amendments and external freshness remain unverified.
+- All three investment horizons remain **insufficient evidence**. Source, narrative, price, forecast and valuation gaps remain pending.
+- Original managed files are unchanged. Q2 was used for comparison, not marked complete.
+
+Saved files:
+
+- [Checkpoint review](/private/tmp/finance-host-public-20261116/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/review.json)
+- [Report and limitations](/private/tmp/finance-host-public-20261116/run-01-report.md)
+- [Discovery before](/private/tmp/finance-host-public-20261116/run-01-discovery-before.json)
+- [Discovery after](/private/tmp/finance-host-public-20261116/run-01-discovery-after.json)
+- [Exact saved-path inventory](/private/tmp/finance-host-public-20261116/run-01-saved-paths.json)
+
+Post-save discovery omits unreviewed Q2 once the Q3 cycle exists; the report explicitly records this helper limitation.

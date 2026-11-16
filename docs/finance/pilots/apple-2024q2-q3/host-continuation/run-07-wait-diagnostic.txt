@@ -1,0 +1,4 @@
+During a quiet interval after run07 web-source calls, the outer W3 implementer attempted a bounded process-status diagnostic:
+ps -axo pid,etime,stat,command | rg 'codex exec --cd /private/tmp/finance-host-public-20261116/quarter-check-scope|codex.*app-server'
+Result: exit 1; zsh:1: operation not permitted: ps
+No process-inspection escalation or guard bypass was attempted. Normal host session polling continued.

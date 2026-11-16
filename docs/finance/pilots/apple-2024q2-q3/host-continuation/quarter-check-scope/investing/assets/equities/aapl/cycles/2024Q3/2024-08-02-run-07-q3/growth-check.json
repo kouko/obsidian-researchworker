@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "output_digest": "c3210c5b3657006d6727edccf27cd321d46acc33332e18a348e1e512943ae5e0",
+  "checks": {
+    "sources": true,
+    "citations": true,
+    "calculations": true,
+    "counterevidence": true
+  },
+  "unresolved": [],
+  "scope": "Author self-check of bounded required question, not independent review",
+  "evidence": [
+    "source-check.json",
+    "calculations.json",
+    "method-check.json"
+  ]
+}

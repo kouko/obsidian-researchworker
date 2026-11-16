@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "checked_at": "2026-11-16T02:34:37.927015+00:00",
+  "channel": "web.run open/find",
+  "external_attempted": true,
+  "page_access_success": true,
+  "urls": [
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/0000320193-24-000081-index.html",
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/0000320193-24-000069-index.html",
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm"
+  ],
+  "successful_unique_pages": 4,
+  "read_coverage": [
+    "Q3 rendered DEI declaration prefix line 0: false/2024/Q3/0000320193; cover lines 11-56: Form 10-Q, June 29 2024, Apple/AAPL",
+    "Q3 statements of operations lines 120-139: millions, three/nine-month distinction, revenue/gross profit and costs",
+    "Q3 fiscal Q3 2024 footer line 662; MD&A category rows 739-769 and geographic rows 710-725; gross-margin rows/narrative 775-804",
+    "Q2 and Q3 SEC accession indexes lines 9-34: original form, accession, official filing date, acceptance date, period and primary document link",
+    "Q2 original page opened; Q2 prior analysis is adopted verified run03 work, not newly performed analysis"
+  ],
+  "publication_dates": {
+    "Q2": "2024-05-03",
+    "Q3": "2024-08-02"
+  },
+  "acceptance_dates": {
+    "Q2": "2024-05-02 18:04:25",
+    "Q3": "2024-08-01 18:03:34"
+  },
+  "exclusions": [
+    "Raw inline-XBRL contextRef agreement/semantics not revalidated",
+    "No raw HTML retained or original-HTML digest recomputed",
+    "Amendment inventory and complete current SEC coverage not checked",
+    "Full notes, risk factors, governance/proxy, valuation and other full-company questions not researched",
+    "No later economic supplements or future comparative rows used"
+  ],
+  "sec_acquisition": {
+    "configured_identity": false,
+    "attempted": false,
+    "reason": "SEC_USER_AGENT absent; no fabricated identity or private credential/config read; normal public web tools used successfully"
+  },
+  "freshness": "Selected historical original pages/indexes corroborated; external inventory freshness remains unverified",
+  "source_raw_kind": "Retained transformed JSON quarter pack, not original HTML"
+}

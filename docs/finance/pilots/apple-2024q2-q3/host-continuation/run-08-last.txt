@@ -1,0 +1,14 @@
+Confirmed genuine local `no_analysis_update`; no analysis regenerated or duplicate review published.
+
+| Area | Result |
+|---|---|
+| Q2/Q3 growth and identity | All four required units complete and reusable |
+| Inputs and method | Source identities, projections, cutoffs, method hashes, checks and arithmetic agree |
+| Pending work here | No bounded gaps or unfinished publications |
+| Broader research | Company investment-case remains incomplete; A–G obligations unchanged |
+| External freshness | Unverified; no external check, no attempt/success advancement |
+| Preservation | All 46 investing files, imported originals and package bytes unchanged |
+
+Saved [report](/private/tmp/finance-host-public-20261116/quarter-check-scope/run-08-report.md), [discovery](/private/tmp/finance-host-public-20261116/quarter-check-scope/run-08-discovery.json), and [verification](/private/tmp/finance-host-public-20261116/quarter-check-scope/run-08-verification.json).
+
+The verification also discloses an additions-only audit assertion caused by two concurrent external artifacts; preservation checks passed.

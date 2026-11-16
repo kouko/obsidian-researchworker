@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "interruption": "controlled save-process interruption in real host subprocess, not unexpected host crash",
+  "cutoff": "2024-08-02T23:59:59+00:00",
+  "main_investing_unchanged": true,
+  "package_unchanged": true,
+  "cases": [
+    {
+      "case": "clean",
+      "root": "/private/tmp/finance-host-public-20261116/cases/clean",
+      "run_id": "run-05-clean-interrupt",
+      "review_id": "run-05-clean-q3",
+      "predecessor": "run-03-q3",
+      "original_view": "/private/tmp/finance-host-public-20261116/cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json",
+      "target": "/private/tmp/finance-host-public-20261116/cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3",
+      "progress_note": "/private/tmp/finance-host-public-20261116/cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/investment-case-progress.md",
+      "journal": "/private/tmp/finance-host-public-20261116/cases/clean/investing/.research-runs/run-05-clean-interrupt/journal.json",
+      "drafts": "/private/tmp/finance-host-public-20261116/cases/clean/investing/.research-runs/run-05-clean-interrupt/draft",
+      "execution": "/private/tmp/finance-host-public-20261116/run-05-clean-execution.json",
+      "hashes": "/private/tmp/finance-host-public-20261116/run-05-clean-hashes.json",
+      "exit_code": 75,
+      "status": "unfinished; final review.json absent; not resumed or rolled back",
+      "user_edits_this_invocation": false,
+      "complete": false
+    },
+    {
+      "case": "useredit",
+      "root": "/private/tmp/finance-host-public-20261116/cases/useredit",
+      "run_id": "run-05-useredit-interrupt",
+      "review_id": "run-05-useredit-q3",
+      "predecessor": "run-03-q3",
+      "original_view": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json",
+      "target": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3",
+      "progress_note": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md",
+      "journal": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/.research-runs/run-05-useredit-interrupt/journal.json",
+      "drafts": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/.research-runs/run-05-useredit-interrupt/draft",
+      "execution": "/private/tmp/finance-host-public-20261116/run-05-useredit-execution.json",
+      "hashes": "/private/tmp/finance-host-public-20261116/run-05-useredit-hashes.json",
+      "exit_code": 75,
+      "status": "unfinished; final review.json absent; not resumed or rolled back",
+      "user_edits_this_invocation": false,
+      "complete": false
+    }
+  ],
+  "recovery_performed": false,
+  "external_attempts": 0,
+  "external_freshness": "unverified"
+}

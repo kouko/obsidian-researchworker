@@ -10,6 +10,13 @@ local marketplace. Registration is not installation or evidence of fresh-session
 skill execution. No global plugin refresh or host installation is performed;
 OpenCode support is unverified and no finance loader is shipped for that host.
 
+The [actual host-session evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
+records separate Codex CLI invocations using public isolated fixtures and the
+skill source explicitly. Observed native headers identify provider `openai`,
+model `gpt-6.1-sol`; these trials do not establish installed-plugin discovery,
+complete equity research, or support for other hosts. Partial checkpoints retain
+unresolved required investment research, and scoped reuse is not global no-work.
+
 ## Run directly
 
 Python 3.11 or later is the only runtime requirement; all runtime imports use

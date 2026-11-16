@@ -1,0 +1,292 @@
+[
+  {
+    "run": "probe",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "read-only",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/probe-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/probe-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/probe-transcript.txt",
+    "outer_execution": "initial normal sandbox",
+    "exit_code": 1,
+    "runtime_header": {
+      "model": null,
+      "provider": null,
+      "reasoning effort": null,
+      "session id": null,
+      "sandbox": null
+    }
+  },
+  {
+    "run": "probe-escalated",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "read-only",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/probe-escalated-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/probe-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/probe-escalated-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e20f-7954-7d90-8a15-596f70f1a2cb",
+      "sandbox": "read-only"
+    }
+  },
+  {
+    "run": "run-01",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-01-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-01-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-01-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e210-932f-7c92-9b54-926933d9f6a6",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-02",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-02-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-02-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-02-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e214-0db5-7571-a802-ab011278fcb2",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-03",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-03-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-03-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-03-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e21d-ba5c-71f1-a551-30ac424d942d",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-04",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-04-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-04-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-04-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e222-7894-7962-9874-22578d7fbe9b",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-05",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-05-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-05-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-05-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e226-6e0e-7111-82b7-2e1b147b39ab",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-06",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-06-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-06-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-06-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e229-8a0b-7731-ae04-388f8245de9a",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-07",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116/quarter-check-scope",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-07-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-07-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-07-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e22c-e025-71c3-9b81-7080e6ad8870",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  },
+  {
+    "run": "run-08",
+    "command_argv": [
+      "/Users/kouko/.local/bin/codex",
+      "exec",
+      "--cd",
+      "/private/tmp/finance-host-public-20261116/quarter-check-scope",
+      "--sandbox",
+      "workspace-write",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--color",
+      "never",
+      "--output-last-message",
+      "/private/tmp/finance-host-public-20261116/run-08-last.txt",
+      "-"
+    ],
+    "stdin": "/private/tmp/finance-host-public-20261116/run-08-prompt.txt",
+    "combined_stdout_stderr": "/private/tmp/finance-host-public-20261116/run-08-transcript.txt",
+    "outer_execution": "normal approved process-launch escalation",
+    "exit_code": 0,
+    "runtime_header": {
+      "model": "gpt-6.1-sol",
+      "provider": "openai",
+      "reasoning effort": "low",
+      "session id": "01a1e23b-5819-7de3-b47e-fcc5799cbbbe",
+      "sandbox": "workspace-write [workdir, /tmp, $TMPDIR]"
+    }
+  }
+]

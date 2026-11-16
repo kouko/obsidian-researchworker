@@ -398,11 +398,11 @@ review. No live new-tool acquisition, host installation or full research is veri
 |---|---|---|
 | A: definition and evidence | Completed locally within the bounded research gate | Method/report research, Apple two-quarter examples, source/coverage and unknowns recorded in pilots/apple-2024q2-q3/STAGE-A-COMPLETION.md; horizons remain labeled pilot conventions |
 | B: minimal transplant | Accepted locally in the conversation | Accepted acquisition HEAD 08f65d9: 99 package tests and independent review; genuine-contact/fresh-host limits remain explicit |
-| C: small equity case | In progress: examples, valuation diagnostics and Q2/Q3 operating supplements; read-only local work assessor accepted | Base 0462b01 preserves accepted runtime evidence. Actual before/after/repeat supplied-file assessment now demonstrates bounded checkpoint reuse; full discovery/execution, independent research acceptance and investment evidence remain incomplete |
+| C: small equity case | In progress: actual Q2/Q3 research remains partial | Retained financial, valuation/forecast and competition evidence plus folder discovery/publication helpers and a source skill exist. Two-quarter analytical completeness, price/narrative evidence and independent research acceptance remain open; software passes do not close them |
 | D: industry contrasts | In progress: four source-bound bank/energy method cases | JPM 2020Q1/2024Q2 and XOM 2020Q2/2024Q2 originals inspected; model refusals and cash-flow definition arithmetic retained. Full statements, valuation and independent research acceptance remain pending |
-| E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
-| F: ongoing research | Not started | No host chosen or finance plugin installed |
-| G: assets / automation | Not started | Long-term scope only; no scheduling or trading authorization |
+| E: historical expansion | Input inventory and partial early drafts only; zero completed historical-batch quarters | FY2006–FY2026 has 84 original filing candidates. Candidate count is not fiscal/source coverage verification or substantive quarterly research |
+| F: ongoing research | Bounded actual host scenarios observed; full ongoing investment research incomplete | Eight new source-invoked Codex sessions demonstrate discovery, affected research/reuse, separate bounded complete-scope no-work and controlled save recovery/conflict. Failures and high token counts are retained; installed-plugin execution and global refresh remain unverified |
+| G: assets / automation | Bounded ETF/commodity/FX method preparation and cases; full support incomplete | Method applicability and refusal boundaries do not establish full asset research workflows. No scheduler, trading, paid service or background execution authorization |
 
 Earlier next-session guidance, superseded by the active-Build continuation:
 Stage A should examine the original
@@ -449,7 +449,7 @@ existing Build/review episode without resetting earlier counts or publishing.
 | Short/medium/long durations | Unresolved | Method research must justify proposed definitions |
 | Hosts, providers, paid budgets | Unresolved | Determine before related execution or spending |
 | Vault layout and individual note templates | Proposed | Validate against real examples before standardizing |
-| Agent discovers necessary analysis updates from vault/source state | User-stated desired behavior | Core Stage C/F requirement; modification time is a hint, not sufficient evidence; exact behavior remains to specify |
+| Agent discovers necessary analysis updates from vault/source state | Confirmed continuation intent/spec; implementation and bounded actual host trials | Core Stage C/F requirement; modification time is only a hint. Per-quarter discovery, dependency-aware checkpoint reuse and protected recovery have retained source/host evidence; full research and installed-host acceptance remain separate |
 
 ### Updating this record
 
@@ -615,3 +615,27 @@ traced the live command's unconfirmed result to accepted prerequisite
 attestations in the whole trunk delta. Preserve them; no installed-checker
 patch, trunk-ref rewrite, publication or merge was performed. An explicit-base
 diagnostic confirmed the cause but is not an ordinary delivery pass.
+
+
+### Actual continuation host evidence, 2026-11-16
+
+The [actual host record](../loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
+supersedes earlier not-started/source-only status snapshots for this bounded
+continuation capability; their original measurements remain retained. Eight
+separate source-invoked Codex sessions used isolated public Apple originals,
+with observed provider openai/model gpt-6.1-sol. They exposed and revalidated a
+per-quarter discovery repair, executed bounded Q2/Q3 research and changed-method
+recomputation, preserved independent work, and demonstrated controlled save-
+worker interruption/resume/rollback plus refusal of user-edit conflicts.
+
+A separately initialized growth/fiscal-identity study establishes genuine local
+no-work after its required questions finish. The original full research root
+retains required investment-case work for both quarters. Neither scope implies
+current external coverage, installed-plugin behavior, complete two-quarter
+investment analysis, Stage E historical-batch completion or wider asset support.
+The run08 whole-root additions audit failed due to two W3-added measurement
+files; only the narrower managed 46-file equality and no-publication claim pass.
+Raw CLI token counters and all first failures are retained, without dollar/cache
+or 84-quarter cost estimates. Stage A/B acceptance stands; C/D remain partial,
+E has 84 candidates and zero completed historical-batch quarters, and G's bounded
+ETF/commodity/FX methods/cases are not full asset research or automation.

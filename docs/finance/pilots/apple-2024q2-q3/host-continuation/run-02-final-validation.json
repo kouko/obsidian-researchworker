@@ -1,0 +1,8 @@
+{
+  "changed_since_immediate_postpublication_check": [
+    "run-02-transcript.txt"
+  ],
+  "explanation": "Active host transcript continues changing during tool execution; retained evidence, package, managed sources, reports and original units remain unchanged.",
+  "all_other_captured_files_unchanged": true,
+  "immediate_publication_check": "run-02-reuse-evidence.json"
+}

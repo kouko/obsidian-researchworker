@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "repository_head": "b4ee26d76b1c6f5fb49b111e40ca54395e57e29b",
+    "change": "per-quarter missing-cycle discovery fix; source-invoked only",
+    "file": "package/scripts/research_store.py",
+    "old_sha256": "4a4bbe04a6b01848be9d61f531bcbd5d8e5b12fd86642150f27149a215422c0e",
+    "new_sha256": "fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526",
+    "other_runtime_source_files_unchanged": true
+  },
+  "actual_helper_sha256": "fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526",
+  "initial_discovery": "run-03-discovery-before.json",
+  "preserved_defective_discovery": {
+    "run-01-discovery-before.json": "d7fbc9876effc925a24989fe65aa6c9174d7533aec1786f0d7193d90d3a91e03",
+    "run-01-discovery-after.json": "7bd2084a75a03ea45f835621818121d31bea3e010ecba07026b781fa5d790075",
+    "run-02-discovery-before.json": "d493df8fd38c29e346e7e0f63b5a7a9484ed096f3cb6a2cae79a4c39d8100514",
+    "run-02-discovery-after.json": "68f3b0500ea71f4868514c3a0eeea45d72cec302860222332c1814d301e28bf1"
+  },
+  "current_utc_checked": "2026-11-16T02:12:31.503407+00:00",
+  "method_current_not_future": true,
+  "earlier_exact_times": "preparer declarations, unverified; v2 was future; retained errors not rewritten",
+  "method_readme_resolution": "package README.md plus finance-research references/research-method.md; no separate method/README exists in designated root"
+}
