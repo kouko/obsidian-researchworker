@@ -50,3 +50,16 @@ and runtime identity. After repair, record the copied helper revision and use
 a new host invocation to verify the previously omitted Q2 is visible and can
 be continued. Do not erase the original failure or count a source-code test
 as that fresh-host verification.
+
+Agent-decided adapter consistency: synthesize missing per-quarter records from
+the configured issuer questions in both time directions. The pure normalized
+assessor and its accepted tests remain unchanged. Folder discovery will return
+per-question `resume_incomplete_work` for these explicit virtual `/new` records,
+rather than a generic later-quarter proposal with industrial default work names.
+This also avoids retaining a direction-specific branch just for an old adapter
+test. The scoped `test_research_store.py` later-quarter expectation must now
+assert the correct fiscal record, configured work and future exclusion; do not
+remove coverage or alter the pure assessor contract. W2-02's file list is
+expanded only for that adapter regression. The implementer reported eight RED
+cases before repair: older/newer crossed with absent/empty/interrupted/withdrawn
+review states, using two non-Apple issuers and real rollback markers.
