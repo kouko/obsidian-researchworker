@@ -396,9 +396,12 @@ unknown fields remain inert data. No selectors or document commands execute.
   Missing target reviews, dangling or cyclic predecessors, conflicting fiscal
   identities and competing leaves produce explicit review gaps. Every retained
   quarter is considered independently; old reports remain immutable inputs.
-  An asset without saved cycles derives initial missing questions from eligible
-  financial originals and their fiscal identities. Without an eligible original
-  it reports the missing fiscal evidence rather than inventing a quarter.
+  Every eligible source-declared quarter without a usable saved review derives
+  its own `/new` record and configured missing questions, even when an older or
+  newer quarter is already saved. Empty, interrupted or wholly withdrawn
+  quarters cannot hide missing research; existing review/publication gaps remain
+  visible. Reviewed quarters do not receive duplicate candidates. Without an
+  eligible original the helper does not invent a fiscal quarter.
 - A unit contains `consumed: {source-id: {version, projection}}`, freezing
   actual economic identity and relevant projection, `output: {path, digest}`,
   and `verification` (a root-relative JSON reference). Local inputs separately

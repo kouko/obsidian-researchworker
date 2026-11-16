@@ -285,27 +285,27 @@ def _snapshot(root, cutoff, mode, proposed=None):
             quarters = []
         if proposed is not None and proposed[0] == asset:
             quarters = sorted(set(quarters) | {proposed[1]})
-        if not quarters:
-            initial = {}
-            for source in selected_sources:
-                available = _available(source.get("available_at"), cutoff)
-                fiscal = source.get("fiscal")
-                if (source["kind"] == "financial_original" and _adapter._core._fiscal(fiscal)
-                        and available is not None and available <= cutoff
-                        and fiscal["period_end"] <= source["available_at"][:10]):
-                    quarter = f"{fiscal['year']}{fiscal['period']}"
-                    _require(quarter not in initial or initial[quarter] == fiscal, "ambiguous initial fiscal identity")
-                    initial[quarter] = fiscal
-            for quarter, fiscal in sorted(initial.items()):
-                records.append(dict(id=asset + "/" + quarter + "/new", issuer=issuer, fiscal=fiscal,
-                    cutoff=cutoff.isoformat(), required_sources=_required_all(questions, asset, quarter),
-                    work=[dict(id=qid, status="missing", depends_on=q.get("depends_on", []), consumed={}) for qid, q in questions.items()]))
-            if not initial:
-                gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
-        for quarter in quarters:
+        initial = {}
+        for source in selected_sources:
+            available = _available(source.get("available_at"), cutoff)
+            fiscal = source.get("fiscal")
+            if (source["kind"] == "financial_original" and _adapter._core._fiscal(fiscal)
+                    and available is not None and available <= cutoff
+                    and fiscal["period_end"] <= source["available_at"][:10]):
+                quarter = f"{fiscal['year']}{fiscal['period']}"
+                _require(quarter not in initial or initial[quarter] == fiscal, "ambiguous initial fiscal identity")
+                initial[quarter] = fiscal
+        if not quarters and not initial:
+            gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
+        for quarter in sorted(set(quarters) | initial.keys()):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
-            for path, saved in _reviews(root, base, quarter, cutoff, mode, gaps, candidate):
+            reviews = _reviews(root, base, quarter, cutoff, mode, gaps, candidate) if quarter in quarters else []
+            if not reviews and quarter in initial:
+                records.append(dict(id=asset + "/" + quarter + "/new", issuer=issuer, fiscal=initial[quarter],
+                    cutoff=cutoff.isoformat(), required_sources=_required_all(questions, asset, quarter),
+                    work=[dict(id=qid, status="missing", depends_on=q.get("depends_on", []), consumed={}) for qid, q in questions.items()]))
+            for path, saved in reviews:
                 fiscal = saved["fiscal"]
                 _require(_adapter._core._fiscal(fiscal) and f"{fiscal['year']}Q{fiscal['period'][1:]}" == quarter, "fiscal directory mismatch")
                 _id(saved["id"])

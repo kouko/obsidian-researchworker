@@ -179,7 +179,11 @@ def test_source_declared_new_quarters_without_saved_conversation(tmp_path):
         current = tmp_path / ("investing/assets/equities/" + asset + "/cycles/" + quarter)
         current.rename(tmp_path / (asset + "-retained-fixture"))
     result = load().discover(tmp_path, "latest", CUTOFF)
-    assert {d["record"].split("/")[0] for d in result["decisions"] if d["action"] == "create_next_quarter_analysis"} == set(assets)
+    new_work = {(d["record"], d["work"]) for d in result["decisions"] if d["action"] == "resume_incomplete_work"}
+    assert new_work == {(asset + "/" + quarter + "/new", question)
+                        for asset, quarter, primary in zip(assets, ("2024Q2", "2024Q4"), ("credit", "retention"))
+                        for question in (primary, "governance", "synthesis")}
+    assert {e["evidence"] for e in result["excluded"]} == {a + ":market" for a in assets}
     assert len(list((tmp_path / "investing").rglob("review.json"))) == 2
 
 
@@ -250,3 +254,50 @@ def test_equal_local_source_ids_invalidate_only_own_issuer(tmp_path):
                         for quarter in ("2024Q1", "2024Q2") for work in ("credit", "synthesis")}
     assert {r["work"] for r in revised["reusable"] if r["record"].startswith(assets[0] + "/")} == {"governance"}
     assert len([r for r in revised["reusable"] if r["record"].startswith(assets[1] + "/")]) == 6
+
+
+@pytest.mark.parametrize("position", ["older", "newer"])
+@pytest.mark.parametrize("state", ["absent", "empty", "interrupted", "withdrawn"])
+def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, state):
+    assets = two_issuers(tmp_path)
+    module = load()
+    expected_new, expected_saved = set(), set()
+    for asset, periods in zip(assets, (("2024Q1", "2024Q2"), ("2024Q3", "2024Q4"))):
+        missing, retained = periods if position == "older" else reversed(periods)
+        base = "investing/assets/equities/" + asset
+        quarter = tmp_path / base / "cycles" / missing
+        archive = tmp_path / base / "data/archived-quarter"
+        quarter.rename(archive)
+        if state in ("empty", "interrupted"):
+            quarter.mkdir()
+        if state == "interrupted":
+            put(tmp_path, str(quarter.relative_to(tmp_path)) + "/unfinished/pending.json",
+                dict(version=1, run="interrupted-" + asset, review_digest="not-written"))
+        if state == "withdrawn":
+            saved_path = next(archive.rglob("review.json"))
+            saved = json.loads(saved_path.read_text())
+            old_directory = str(saved_path.parent.relative_to(tmp_path))
+            for unit_value in saved["units"].values():
+                unit_value["output"]["path"] = old_directory + "/" + unit_value["output"]["path"].rsplit("/", 1)[1]
+                unit_value["verification"] = old_directory + "/" + unit_value["verification"].rsplit("/", 1)[1]
+            saved.update(id="withdrawable", research=dict(method="Mechanical withdrawal fixture", assumptions=[], changes="Boundary exercise", gaps=[],
+                horizons={h: dict(judgment="insufficient_evidence", evidence=[], invalidation_triggers=["New original"])
+                          for h in ("short", "medium", "long")}))
+            module.publish(tmp_path, asset, saved, {}, module.publication_snapshot(tmp_path), "withdraw-" + asset)
+            module.recover(tmp_path, "withdraw-" + asset, action="rollback")
+        expected_new.add(asset + "/" + missing + "/new")
+        expected_saved.add(asset + "/" + retained + "/r1")
+    before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    # Fresh module, only the root/cutoff; no conversation or supplied work list.
+    result = load().discover(tmp_path, "latest", CUTOFF)
+    pending = {d["record"] for d in result["decisions"] if d["action"] == "resume_incomplete_work"}
+    assert pending == expected_new
+    assert {r["record"] for r in result["reusable"]} == expected_saved
+    assert not any(d["record"].endswith("/new") and d["record"].rsplit("/", 1)[0] + "/r1" in expected_saved
+                   for d in result["decisions"])
+    assert {e["evidence"] for e in result["excluded"]} == {a + ":market" for a in assets}
+    if state in ("empty", "interrupted", "withdrawn"):
+        assert result["gaps"]
+    if state == "interrupted":
+        assert any(g["evidence"].startswith("publication:interrupted-") for g in result["gaps"])
+    assert all(p.read_bytes() == value for p, value in before.items())

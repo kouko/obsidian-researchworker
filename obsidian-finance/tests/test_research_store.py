@@ -108,7 +108,9 @@ def test_new_quarter_and_changed_source(tmp_path, future):
     result = load().discover(tmp_path, "latest", CUTOFF)
     actions = {d["action"] for d in result["decisions"]}
     assert "append_revision_same_quarter" in actions
-    assert ("create_next_quarter_analysis" in actions) is not future
+    new_work = {(d["record"], d["work"]) for d in result["decisions"]
+                if d["action"] == "resume_incomplete_work"}
+    assert new_work == (set() if future else {("aapl/2024Q3/new", "valuation")})
     if future:
         assert result["excluded"] == [dict(evidence="aapl:q3", reason="after_cutoff")]
 

@@ -177,3 +177,77 @@ claimed by these focused checks. Frozen W2-01 trials retain helper `56d276a`;
 this runtime repair is not counted as skill improvement. External freshness
 remains unverified. This adapter still manages equities only; ETF, commodity
 and FX workflows and actual host sessions are separate obligations.
+
+## W2-02 follow-up 1 — individually unreviewed quarters
+
+Continuity: initial dispatch c56676d RED 2 / GREEN 71 remains above. This is
+follow-up 1, not a new task or a reset of W1-01. Actual W3 host execution
+exposed an eligible older Q2 disappearing after a newer Q3 checkpoint. Original
+host runs and research/05-unreviewed-quarter-omission.md remain unchanged.
+Entry HEAD was a25a44a; scope clarification d5132c2 permits the corresponding
+folder-adapter test update. No accepted assessor API or test was changed.
+
+Class: asset-wide saved-cycle presence suppresses individually unreviewed
+eligible fiscal periods. Main searched whole contents of all changed files
+against af839dd, plus Acceptance 1/2 discovery/tests/README/spec surfaces;
+/private/tmp/finance-unreviewed-quarter-sweep.txt retains the search.
+Flagged instance was the asset-wide initialization gate in _snapshot.
+Implementer inspected initialization and _reviews completely: empty,
+interrupted and wholly withdrawn directories also lack usable reviews and
+belong to this class. No second defect class was repaired.
+
+### RED before helper change
+
+Command: /private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_continuation.py -k individually_unreviewed -q -p no:cacheprovider
+
+Captured output: /private/tmp/w2-02-followup1-red.txt. Result: **8 failed,
+7 deselected in 0.60s**. All failures were the exact expected missing /new
+record identities. The eight combinations were older/newer omission crossed
+with absent/empty/interrupted/withdrawn state, each exercising both non-Apple
+issuers with bank Q1/Q2 and software Q3/Q4 fiscal calendars. Withdrawn cases
+use actual publish followed by recover rollback, not forged marker metadata.
+Tests also preserve valid saved records, exclude future market evidence,
+refuse duplicate candidates for reviewed quarters, retain recovery gaps and
+verify every pre-discovery byte remains unchanged.
+
+An initial fixture error archived outputs outside investing; the helper
+correctly rejected the escaping reference. Moving that test archive inside
+the authorized subtree fixed the fixture before the above RED, without any
+helper change. This fixture error is not additional product RED evidence.
+
+### Intermediate verification and scope clarification
+
+After the helper repair the new cases passed: **8 passed, 7 deselected**.
+The focused intermediate run produced **2 failed, 77 passed in 2.15s**:
+
+    FAILED test_research_continuation.py::test_source_declared_new_quarters_without_saved_conversation
+    FAILED test_research_store.py::test_new_quarter_and_changed_source[False]
+
+Full output: /private/tmp/w2-02-followup1-intermediate.txt. These two old
+folder-adapter expectations required the pure assessor's generic later-quarter
+action. A concrete issuer-scoped /new record already represents that quarter,
+so the unchanged assessor now reports resume_incomplete_work for its configured
+questions. Updated assertions verify exact quarter/new record/question sets
+and future exclusion; they do not merely delete the old action assertion.
+The accepted pure assessor API/tests remain unchanged. Scope rationale was
+committed in d5132c2 before changing the folder-adapter test.
+
+### Repair and final focused GREEN
+
+Enumerate eligible source-declared fiscal identities independently of existing
+directories, then inspect their union with saved directories. Only quarters
+lacking a usable eligible saved view receive missing-work records. Reviewed
+quarters remain unchanged; existing publication/review/conflict gaps remain.
+No direction branch, substitute fiscal calendar or deletion was introduced.
+
+Command: /private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py obsidian-finance/tests/test_assess_work.py obsidian-finance/tests/test_work_assessment.py -q -p no:cacheprovider
+
+Actual captured output (/private/tmp/w2-02-followup1-green.txt):
+
+    ........................................................................ [ 91%]
+    .......                                                                  [100%]
+    79 passed in 1.99s
+
+Actual missing-Q2 host continuation must run again with the repaired copied
+helper. These mechanical results do not relabel the old W3 host observations.
+Full package/adversary/closing review remain the main coordinator's checks.
