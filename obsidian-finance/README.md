@@ -262,3 +262,106 @@ exit 0 with `resume_incomplete_work` for forecast and unverified external
 freshness. The example supplies one relevant financial observation, not a full
 financial-analysis dataset. Existing acquisition remains the separate operation
 documented above.
+
+## Read-only saved-folder discovery (metadata v1)
+
+`scripts/research_store.py` provides `discover(root, mode, cutoff) -> dict`.
+The root is an explicitly selected local research folder containing the managed
+`investing/` subtree. Mode and timezone-aware assessment cutoff are explicit;
+the result keeps the accepted assessor's supplied-local-evidence scope and
+unverified external freshness. Discovery does not acquire sources, write notes,
+publish completion, or certify the substance of investment analysis. Existing
+`assess_work.py` and `work_assessment.py` interfaces remain unchanged.
+
+The supported layout is deliberately versioned; arbitrary older Markdown is
+preserved, never interpreted or migrated. Missing configuration, unsupported
+metadata, escaping references, symlinks and ambiguous source identities raise
+`ValueError` with recovery context. No input files change. Configure once:
+
+```text
+investing/research.json
+investing/assets/equities/{asset-id}/asset.json
+investing/assets/equities/{asset-id}/data/sources/{source-revision}.json
+investing/assets/equities/{asset-id}/data/{original-file}
+investing/assets/equities/{asset-id}/cycles/{YYYYQn}/{cutoff}-{review}/review.json
+```
+
+Every metadata object has integer `version: 1` (booleans are rejected).
+Duplicate JSON keys and non-finite numbers are invalid. Asset, question, review
+and logical source IDs contain only ASCII letters, digits, `_` and `-`.
+Filenames do not supply fiscal identity. References are root-relative and must
+stay beneath `investing/`; all directory components and regular-file reads use
+no-follow descriptors, including root ancestors. Document instructions and
+unknown fields remain inert data. No selectors or document commands execute.
+
+- `research.json`: `{version: 1, assets: ["aapl"]}` enumerates asset scope.
+- `asset.json`: `{version: 1, id: "aapl", issuer: "AAPL", questions: [...]}`.
+  Each required question has `id`, `required_sources` (logical source IDs) and
+  optional `depends_on` (question IDs in this asset). These durable research
+  requirements are configuration, not per-invocation work statuses. Empty
+  requirements and unknown question dependencies are rejected. A source ID may
+  use the single literal template `{fiscal}` (for example,
+  `financial-{fiscal}` becomes `financial-2024Q2` for that record); no arbitrary
+  selectors execute and future quarter IDs need no manual question-list edit.
+- Source revision JSON: `version: 1`, stable logical `id`, matching `issuer`,
+  `kind`, economic `identity`, `available_at`, relevant typed `projection`,
+  `raw_ref`, `raw_digest` and `raw_format` (`json` or `text`). The digest is
+  SHA256 of the exact original bytes. JSON originals are strictly parsed;
+  text originals require the full decoded original in `projection.raw_text`
+  so unverifiable prose changes cannot be dismissed as formatting. Projection
+  values retain units and JSON types, including booleans. The full original
+  hash supplies provenance; semantic comparison uses identity and projection.
+  Relevant-field selection is a recorded author responsibility, not proof of
+  authenticity or relevance. Preserve each economic revision and its original
+  file instead of replacing historical metadata. Duplicate `(id, identity)`
+  pairs and tied latest publication times are rejected. The latest eligible
+  publication of each logical source is selected at cutoff; future and unknown
+  publication revisions remain visible as exclusions/gaps, never replacements
+  for an eligible original. Excluded competing revisions use an `@` plus
+  identity SHA256 suffix in result IDs. Selected source IDs are namespaced
+  `{asset-id}:{source-id}`. Missing identity/projection/availability remains
+  incomplete evidence under the accepted assessment contract.
+- Financial-original sources additionally carry source-declared
+  `fiscal: {year, period, period_end, original_accession}` as documented above.
+  A stable financial source ID binds one fiscal identity; new quarters use new
+  IDs, while revisions of the same quarter retain its ID. Cross-quarter reuse
+  of one financial source ID is rejected. Price dates never create financial
+  quarters. Keep local `authored_at`, method
+  versions and assumption authorship separate from original economic
+  publication; do not backdate a newly authored assumption as a historical
+  publication. Shared studies, methods and assumptions that affect a question
+  must appear among its source dependencies with frozen consumed identities.
+- `review.json`: `version: 1`, asset-local review `id`, fiscal identity,
+  timezone-aware saved `cutoff`, optional `predecessor` (review ID in the same
+  asset and quarter), and `units` mapping question IDs to saved results.
+  Fiscal identity must match the quarter directory. Optional `execution_state`,
+  `last_attempt` and `last_success` remain unmodified observations. Per quarter,
+  discovery selects the sole eligible leaf of the predecessor chain. Latest
+  mode includes saved cutoffs at or before the request; historical mode requires
+  an exact saved cutoff. Future children never hide eligible predecessors.
+  Missing target reviews, dangling or cyclic predecessors, conflicting fiscal
+  identities and competing leaves produce explicit review gaps. Every retained
+  quarter is considered independently; old reports remain immutable inputs.
+  An asset without saved cycles derives initial missing questions from eligible
+  financial originals and their fiscal identities. Without an eligible original
+  it reports the missing fiscal evidence rather than inventing a quarter.
+- A unit contains `consumed: {source-id: {version, projection}}`, freezing
+  actual economic identity and relevant projection, `output: {path, digest}`,
+  and `verification` (a root-relative JSON reference). Output digests use the
+  exact UTF-8 bytes decoded and re-encoded without newline normalization.
+  Missing required questions, missing outputs or verification, mismatched
+  output content, and changed dependencies prevent reuse. Question dependency
+  changes propagate through the existing assessor. Saved units cannot remove
+  required questions or introduce unknown questions.
+- Verification JSON contains `version: 1`, the same `output_digest`,
+  `checks: {sources: true, citations: true, calculations: true,
+  counterevidence: true}` and `unresolved: []`. These are recorded author
+  self-checks tied to the output, not independent review or proof of analytical
+  truth. A required unresolved question stays pending. Existence, nonempty text
+  and hashes alone cannot establish completion.
+
+Repeated unchanged discovery is deterministic and read-only. JSON whitespace
+and file modification times alone do not trigger analytical work. A no-work
+decision applies only to the locally checked scope; it establishes neither
+current external coverage nor advisory sufficiency. Folder mechanics and
+recorded checks do not replace the agent's substantive research and review.
