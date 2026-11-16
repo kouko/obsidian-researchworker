@@ -506,7 +506,11 @@ same-filesystem hard link to the fully flushed staged completion file;
 unsupported filesystem behavior fails without replacing research. A digest
 mismatch or incomplete metadata is a named conflict, not a completed review.
 Discovery reports unfinished journals/publications even when an older review is
-still usable. It does not present an interrupted attempt as an unchanged no-work
+still usable. A review or rollback marker resolves only its matching immutable
+run, with journal and published-byte validation. A different run targeting the
+same review cannot conceal an earlier failed attempt; recovery of that earlier
+run reports a conflict and preserves the other run and both drafts.
+It does not present an interrupted attempt as an unchanged no-work
 result without that gap. No mutable overview/latest pointer is maintained:
 the eligible predecessor-chain leaf defines the saved view.
 

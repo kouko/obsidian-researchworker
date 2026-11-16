@@ -192,3 +192,30 @@ def test_user_edit_and_symlink_preserved(tmp_path, monkeypatch, conflict):
         else:
             module.publish(tmp_path, "aapl", saved, {}, expected, "run1")
     assert all(p.read_bytes() == value for p, value in before.items())
+
+
+@pytest.mark.parametrize("other_outcome", ["complete", "rollback"])
+def test_shared_destination_does_not_conceal_failed_run(tmp_path, other_outcome):
+    _, _, saved = proposal(tmp_path)
+    module = load()
+    broken = copy.deepcopy(saved)
+    del broken["research"]["method"]
+    with pytest.raises(ValueError):
+        module.publish(tmp_path, "aapl", broken, {}, module.publication_snapshot(tmp_path), "failed")
+    if other_outcome == "complete":
+        result = module.publish(tmp_path, "aapl", saved, {}, module.publication_snapshot(tmp_path), "successful")
+    else:
+        with pytest.raises(ValueError):
+            module.publish(tmp_path, "aapl", broken, {}, module.publication_snapshot(tmp_path), "successful")
+        result = module.recover(tmp_path, "successful", action="rollback")
+    before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    gaps = module.discover(tmp_path, "latest", CUTOFF)["gaps"]
+    assert any(g["evidence"] == "publication:failed" for g in gaps)
+    assert not any(g["evidence"] == "publication:successful" for g in gaps)
+    with pytest.raises(ValueError, match="conflict"):
+        module.recover(tmp_path, "failed", action="rollback")
+    assert all(p.read_bytes() == content for p, content in before.items())
+    assert (tmp_path / "investing/.research-runs/failed/request.json").is_file()
+    if other_outcome == "complete":
+        assert json.loads((tmp_path / result["review"]).read_text())["publication"]["run"] == "successful"
+        assert module.discover(tmp_path, "latest", CUTOFF)["reusable"] == [dict(record="aapl/2024Q2/r2", work="valuation")]

@@ -677,9 +677,20 @@ def discover(root, mode, cutoff):
             try:
                 request = _object(boundary, run + "/request.json")
                 _, target = _target(request["asset"], request["review"])
-                names = _names(boundary, target)
-                if any(name in names for name in ("review.json", "abandoned.json")):
-                    continue
+                raw = _bytes(boundary, run + "/request.json")
+                journal = _object(boundary, run + "/journal.json")
+                _require(sha256(raw).hexdigest() == journal["request_digest"], "publication request edited")
+                encoded = _publication_bytes(request, target, run_id)
+                names = set(_names(boundary, target))
+                markers = names & {"withdrawn.json", "abandoned.json"}
+                if markers:
+                    if len(markers) == 1:
+                        marker = _object(boundary, target + "/" + next(iter(markers)))
+                        if marker.get("run") == run_id and _rollback_valid(boundary, target, marker):
+                            continue
+                elif "review.json" in names and names == {ref.rsplit("/", 1)[1] for ref in encoded}:
+                    if all(_bytes(boundary, ref) == content for ref, content in encoded.items()):
+                        continue
             except (FileNotFoundError, ValueError):
                 pass
             gaps.append(dict(record=run, evidence="publication:" + run_id,
