@@ -34,7 +34,7 @@ Search every listed vault that exists.
 
 - **3 or fewer matching notes and each is at most 30 KB** → Read them directly.
 - **Otherwise** → dispatch ONE subagent. It reads at most 10 notes (the top 10 by keyword hits), with the same rules as above, and returns, per claim: the claim, a supporting quote, fact or opinion, and the absolute note path. It dispatches no further subagents. The main conversation never receives full note text — only these claims.
-- If subagents are unavailable, read the top notes yourself one by one and quote only what is needed.
+- If subagents are unavailable, say so and do not read the notes yourself: delegated reading is part of this step, and the main conversation never receives full note text.
 
 ## Step 4 — Answer
 

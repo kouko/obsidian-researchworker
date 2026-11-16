@@ -371,6 +371,20 @@ def test_skill_states_3_notes_30kb_threshold():
     assert "3 or fewer matching notes and each is at most 30 KB" in _skill()[0]
 
 
+def test_skill_fallback_never_reads_notes_in_main_conversation():
+    """Acceptance 10: no fallback may let the main agent read note text itself.
+
+    The old fallback told the main agent to read the top notes when subagents
+    were unavailable, which is exactly the full-note-text-in-main-conversation
+    event the threshold exists to prevent. The fallback must instead say so.
+    """
+    text = _skill()[0]
+    assert "read the top notes yourself" not in text
+    assert ("If subagents are unavailable, say so and do not read the notes "
+            "yourself: delegated reading is part of this step, and the main "
+            "conversation never receives full note text.") in text
+
+
 def test_skill_caps_subagent_at_10():
     text = _skill()[0]
     assert "reads at most 10 notes" in text
