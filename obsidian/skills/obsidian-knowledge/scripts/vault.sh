@@ -35,6 +35,12 @@ plutil_vaults() {
             || continue
         ts=$(plutil -extract "vaults.$id.ts" raw -o - "$file" 2>/dev/null)
         [ -n "$ts" ] || ts=0
+        # One entry prints as one `ts path` line; a control character in either
+        # field can split it into extra lines that would become vault paths the
+        # registry never named. Drop the whole entry before it is printed.
+        case "$path $ts" in
+            *[[:cntrl:]]*) continue ;;
+        esac
         printf '%s %s\n' "$ts" "$path"
     done | sort -s -k1,1nr | cut -d' ' -f2-
 }
@@ -48,8 +54,9 @@ try:
     entries = [v for v in data.get("vaults", {}).values() if isinstance(v, dict)]
     entries.sort(key=lambda v: v.get("ts") if isinstance(v.get("ts"), (int, float)) else 0, reverse=True)
     for v in entries:
-        if isinstance(v.get("path"), str):
-            print(v["path"])
+        p = v.get("path")
+        if isinstance(p, str) and not any(c < " " or c == "\x7f" for c in p + str(v.get("ts") or "")):
+            print(p)
 except Exception:
     pass
 EOF
