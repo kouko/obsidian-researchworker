@@ -31,6 +31,7 @@ charter: 1.1
 - Risk: agent-decided — REQ-1–5: isolate real research fixtures; helper tests prove file/state mechanics only. Retain old reports and failure evidence. Use substantive checks at publication without mistaking existence, hashes, generic prose or command success for completed investment analysis.
 - Risk: agent-decided — Acceptance 5: repair the reproduced shared-target/run-identity defect after W2-01 freezes end. Preserve both runs and drafts. research/04-publication-run-identity.md records reproduction, class sweep and continuity; W1-02 history remains applicable.
 - Risk: user-reiterated, 2026-11-16 — AAPL remains a validation case. Static scripts/skills inspection found no Apple runtime branch; dynamic cross-company verification remains required. The equities-only adapter is not ETF/commodity/FX support; Stage G retains those obligations.
+- Risk: agent-decided — W2-02 follow-up 1: actual W3 execution exposed older unreviewed quarters disappearing after a newer checkpoint. research/05-unreviewed-quarter-omission.md records reproduction, class sweep and continuity. Repair within Acceptance 1/2; preserve original host failure and verify a new session afterward.
 
 ### Wave 3 — Actual host and research validation
 
