@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "status": "selected-original-evidence-not-full-research",
+  "unit": "USD million except explicitly labeled fractions, percentages, per-share and production",
+  "cases": [
+    {
+      "id": "JPM-2020Q1",
+      "cutoff": "2020-04-14T23:59:59-04:00",
+      "publication_date": "2020-04-14",
+      "source": "https://www.jpmorganchase.com/content/dam/jpmc/jpmorgan-chase-and-co/investor-relations/documents/quarterly-earnings/2020/1st-quarter/1q20-earnings-press-release.pdf",
+      "locator": "page 1 headline/firmwide metrics; page 8 publication-day conference call",
+      "values": {"net_income_rounded": 2900, "credit_cost_rounded": 8300, "reserve_build_rounded": 6800, "cet1_standardized_percent": 11.5, "rotce_percent": 5},
+      "caveats": ["CET1 includes CECL transition provisions", "Rounded values cannot supply an exact provision reconciliation", "Original accession-bound financial statements not acquired"]
+    },
+    {
+      "id": "JPM-2024Q2",
+      "cutoff": "2024-07-12T23:59:59-04:00",
+      "publication_date": "2024-07-12",
+      "source": "https://jpmorganchaseco.gcs-web.com/node/668526/html",
+      "locator": "8-K Item 2.02; exhibit significant items, firmwide metrics, consolidated results and capital",
+      "values": {"net_income": 18149, "net_income_ex_significant_items_rounded_non_gaap": 13100, "credit_loss_provision": 3052, "cet1_standardized_percent": 15.3, "rotce_percent": 28, "rotce_ex_significant_items_percent_non_gaap": 20, "tangible_book_value_per_share_usd": 92.77},
+      "caveats": ["Do not subtract pretax Visa gain from after-tax net income", "Managed revenue and reported revenue differ", "Capital regimes/CECL transitions require reconciliation before cross-year inference"]
+    },
+    {
+      "id": "XOM-2020Q2",
+      "cutoff": "2020-07-31T23:59:59-04:00",
+      "publication_date": "2020-07-31",
+      "source": "https://investor.exxonmobil.com/company-information/press-releases/detail/111/exxonmobil-reports-results-for-second-quarter-2020",
+      "locator": "results table, opening discussion, production and Released July 31, 2020 footer",
+      "values": {"net_income": -1080, "eps_diluted_usd": -0.26, "eps_ex_identified_items_usd_non_gaap": -0.70, "positive_non_cash_inventory_adjustment_rounded": 1900, "production_million_oil_equivalent_barrels_per_day_rounded": 3.6, "capital_and_exploration_expenditures": 5327},
+      "caveats": ["Company describes estimated quarterly results", "Noncash inventory adjustment is not CFO", "No positive P/E from a negative earnings denominator", "Current market-data footer excluded"]
+    },
+    {
+      "id": "XOM-2024Q2",
+      "cutoff": "2024-08-02T23:59:59-04:00",
+      "publication_date": "2024-08-02",
+      "source": "https://corporate.exxonmobil.com/news/news-releases/2024/0802_exxonmobil-announces-second-quarter-2024-results",
+      "locator": "results summary; production; Free cash flow reconciliation 2Q24 column and footnote 1",
+      "values": {"net_income": 9240, "cfo": 10560, "ppe_additions_outflow": 6235, "additional_investments_and_advances_outflow": 323, "other_investing_including_collections_inflow": 9, "asset_sales_and_returns_of_investments_inflow": 926, "issuer_fcf_non_gaap": 4937, "capital_and_exploration_expenditures": 7039, "production_thousand_oil_equivalent_barrels_per_day": 4358},
+      "caveats": ["Production includes acquired Pioneer operations; not all organic growth", "Capital/exploration expenditure is not PP&E cash additions", "Issuer FCF includes other investing flows and definition excludes cash acquired in M&A"]
+    }
+  ],
+  "method_source": {
+    "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/littlebook/financialsvccompanies.htm",
+    "role": "Current methodological reference, not a historical economic input",
+    "decision": "Bank debt/reinvestment differ; do not mechanically transfer industrial enterprise-value and CFO-capex models"
+  },
+  "calculations": [
+    {"id": "jpm20_reserve_share_approx", "formula": "6800 / 8300 * 100", "result_percent_rounded": 81.93, "precision": "approximate rounded issuer inputs"},
+    {"id": "xom24_simple_cfo_ppe_proxy", "formula": "10560 - 6235", "result": 4325},
+    {"id": "xom24_issuer_fcf_reconciliation", "formula": "10560 - 6235 - 323 + 9 + 926", "result": 4937},
+    {"id": "xom24_definition_difference", "formula": "4937 - 4325", "result": 612}
+  ],
+  "stage_d_complete": false,
+  "independent_review": "pending",
+  "remaining": ["Accession-bound original financial statements", "Full credit/funding and capital reconciliation", "Energy realizations, commodity/margin histories and sustaining investment", "Dated prices, peers, expectations and calibrated valuation", "Independent research challenge", "Broader proposed Microsoft/Costco and failed/acquired/delisted contrasts"]
+}

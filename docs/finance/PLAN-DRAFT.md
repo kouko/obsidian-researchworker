@@ -399,7 +399,7 @@ review. No live new-tool acquisition, host installation or full research is veri
 | A: definition and evidence | Completed locally within the bounded research gate | Method/report research, Apple two-quarter examples, source/coverage and unknowns recorded in pilots/apple-2024q2-q3/STAGE-A-COMPLETION.md; horizons remain labeled pilot conventions |
 | B: minimal transplant | Accepted locally in the conversation | Accepted acquisition HEAD 08f65d9: 99 package tests and independent review; genuine-contact/fresh-host limits remain explicit |
 | C: small equity case | In progress: examples, valuation diagnostics and Q2/Q3 operating supplements; read-only local work assessor accepted | Base 0462b01 preserves accepted runtime evidence. Actual before/after/repeat supplied-file assessment now demonstrates bounded checkpoint reuse; full discovery/execution, independent research acceptance and investment evidence remain incomplete |
-| D: industry contrasts | Not started | Candidate companies proposed; selected periods not yet chosen |
+| D: industry contrasts | In progress: four source-bound bank/energy method cases | JPM 2020Q1/2024Q2 and XOM 2020Q2/2024Q2 originals inspected; model refusals and cash-flow definition arithmetic retained. Full statements, valuation and independent research acceptance remain pending |
 | E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
 | F: ongoing research | Not started | No host chosen or finance plugin installed |
 | G: assets / automation | Not started | Long-term scope only; no scheduling or trading authorization |
@@ -551,3 +551,26 @@ than just a hand-prepared normalized snapshot. Stage F additionally requires
 real new-host sessions, source freshness, user-edit protection and rollback.
 The existing two-attestation branch attribution ambiguity remains unconfirmed;
 accepted evidence is preserved. Stages D-G are not claimed complete.
+
+### Industry contrast evidence, 2026-11-16
+
+The [first bank/energy cases](pilots/industry-contrasts-v1/INDEX.md) compare
+JPMorgan 2020Q1/2024Q2 and ExxonMobil 2020Q2/2024Q2 using original dated issuer
+releases and a primary financial-service-method reference. Agent-decided:
+choose the 2020 stress periods to challenge profitable-survivor assumptions;
+use the 2024 periods as contemporary-reporting contrasts, not claims of normal
+cycle conditions or representative industry averages. Each historical case has
+its own publication cutoff; the 2026 comparison cannot enter a 2020 judgment.
+
+Observed consequences for method design: bank credit provisions/regulatory
+capital require separate analysis from industrial CFO/capex; one-off Visa
+earnings cannot be directly annualized; a loss-making energy quarter does not
+support positive trailing P/E; acquisition-inclusive production is not wholly
+organic growth. Exxon 2024Q2's original FCF reconciliation gives $4,937m versus
+$4,325m for a simple CFO-minus-PP&E proxy, a $612m definition difference.
+Keep both named measures instead of treating matching field names as equivalent.
+
+Arithmetic and source-date/link self-checks are recorded in the pilot; no
+independent semantic review or full Stage D acceptance is claimed. Original
+accession-bound statements, sector-specific drivers, prices/expectations and
+valuation remain; so do the proposed broader contrasts and failure-case work.
