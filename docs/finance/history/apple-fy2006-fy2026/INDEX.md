@@ -31,7 +31,9 @@ separate status and is not overwritten by this inventory count.
 - [2006Q3 publication-lag audit](2006Q3-publication-lag-evidence.json): the issuer
   declared its July 1 fiscal endpoint in a July 19 release, while the original
   10-Q was filed December 29. Its later explanatory note cannot enter the July
-  reconstruction. Three selected quarter bindings are verified in the inventory;
+  reconstruction. Selected later comparative earnings also differ from the
+  July release even though the whole-percent growth headline can stay unchanged;
+  the audit retains both inputs and calculations. Three selected quarter bindings are verified in the inventory;
   the remaining candidates still require original-document binding.
 - [2006Q1 original-vintage draft](2006Q1-原始版本研究草稿.md) and
   [selected evidence](2006Q1-selected-evidence.json): the original first-quarter

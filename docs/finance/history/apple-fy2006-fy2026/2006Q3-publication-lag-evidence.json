@@ -13,7 +13,16 @@
     "claims": [
       "Stock-option investigation was ongoing and management expectations were conditional",
       "The quarter 10-Q was still to be filed"
-    ]
+    ],
+    "selected_values": {
+      "unit": "USD million except explicitly marked percentages",
+      "current_net_income": 472,
+      "prior_net_income": 320,
+      "current_diluted_eps_usd": "0.54",
+      "prior_diluted_eps_usd": "0.37",
+      "gross_margin_percent": "30.3",
+      "prior_gross_margin_percent": "29.7"
+    }
   },
   "sec_original": {
     "accession": "0001104659-06-084286",
@@ -26,7 +35,13 @@
     },
     "reading": "Cover and explanatory-note passages inspected; not full filing",
     "later_information": "Explanatory note discusses investigation results announced October4, after the July release",
-    "index_page_attempt": "Direct -index.html returned Cache miss; retained submissions index remains filing-date evidence"
+    "index_page_attempt": "Direct -index.html returned Cache miss; retained submissions index remains filing-date evidence",
+    "selected_later_comparative_values": {
+      "locator": "Note1 EPS computation, three months ended7/1/06 and6/25/05, prior column explicitly As Restated",
+      "unit": "USD million",
+      "current_net_income": 472,
+      "prior_net_income_as_restated": 319
+    }
   },
   "cutoff_checks": [
     {
@@ -47,5 +62,11 @@
     "Original July SEC earnings-release filing identity",
     "Full required source review",
     "Market/valuation and independent challenge"
-  ]
+  ],
+  "calculations": {
+    "july_release_net_income_growth_percent": "47.5000",
+    "december_comparative_net_income_growth_percent": "47.9624",
+    "prior_comparative_revision_usd_million": -1,
+    "interpretation": "Both can round to the same whole-percent headline; an unchanged headline does not establish identical historical inputs"
+  }
 }
