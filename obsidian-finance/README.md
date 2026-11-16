@@ -1,8 +1,9 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.1.0 provides one `sec-data` skill for public SEC
-filing metadata and financial observations. It runs independently of the
-general-note `obsidian` plugin and the original Monkey Skills project.
+Optional `obsidian-finance` 0.1.0 provides `sec-data` for public SEC filing
+metadata/financial observations and `finance-research` for agent-led research
+continuation from a designated folder. It runs independently of the general-note
+`obsidian` plugin and the original Monkey Skills project.
 
 Claude and Codex manifests register this separate package in the repository's
 local marketplace. Registration is not installation or evidence of fresh-session
@@ -115,8 +116,9 @@ distinct; duration start dates preserve annual, year-to-date and shorter facts.
 Raw responses are unfiltered latest endpoint evidence, not historical
 snapshots. A day cutoff does not establish intraday trading availability.
 Observed spans do not establish complete quarterly statements, custom segment
-metrics or twenty-year analysis. No quarterly arithmetic, narrative analysis,
-investment recommendations or automatic note updates are provided.
+metrics or twenty-year analysis. The acquisition operation provides no quarterly
+arithmetic, narrative analysis, investment recommendations or automatic note
+updates.
 
 ## Development and provenance
 
@@ -135,6 +137,34 @@ attributed narrow extraction and retained source license.
 The [quarter replay evidence](../docs/loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md)
 separately records a real-payload offline replay and one live CLI acquisition.
 Neither establishes installed-host skill execution or complete financial research.
+
+## Folder-grounded agent research
+
+The [finance-research skill](skills/finance-research/SKILL.md) guides the host
+agent through scoped discovery, applicable source checks, actual affected
+analysis and append-only publication/recovery using the APIs below. It is
+separate from download-only `sec-data`; no command wrapper, scheduler or general
+workflow engine is added. The persisted asset questions define the research
+scope; the caller supplies the root, mode and assessment cutoff rather than a
+new hand-written work list each time. Unsupported old notes are preserved.
+The current saved-folder adapter manages equities; ETF, commodity and FX
+continuation have not been validated as supported asset workflows.
+
+Its [research method](skills/finance-research/references/research-method.md)
+requires source-bound reasoning, opposing evidence, explicit analysis horizons
+and actual original-section reading coverage with unread exclusions. Retaining
+filing HTML or checking selected numbers does not establish complete SEC reading
+or a full investment case. Independent completed questions can be saved in a
+managed partial checkpoint while required missing work remains pending. Generic
+methods stay in the skill; private assumptions and applied-version manifests
+remain local. Local no-work findings leave external freshness unverified.
+
+[Isolated behavioral evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/iteration-1/review.md)
+compares synthetic fresh-context trials and retains failures and a schema-guidance
+repair. The skill and helpers provide instructions and bounded local mechanics;
+those trials do not prove installed-host execution, live source coverage,
+calibrated returns or completion of the broader financial research program.
+Real fresh-host continuation remains a separate verification requirement.
 
 ## Read-only local work assessment (prototype v1)
 
@@ -445,10 +475,11 @@ recomputation, including dependent synthesis. Legacy reviews without frozen
 question requirements retain the existing discovery contract; new publications
 freeze all question definitions under `requirements` for subsequent checking.
 
-Each proposed review also supplies `research` with `method` (the applied method
-description/version), `assumptions` (list), `changes` (cross-quarter or review
-changes), `gaps` (list), and `horizons`. The latter has exactly `short`, `medium`
-and `long`, each containing `judgment`, `evidence` (reference list) and
+Each proposed review also supplies `research` with `method` (nonempty applied
+method description/version string), `assumptions` (list), `changes` (nonempty
+cross-quarter or review change string, not a list), `gaps` (list), and `horizons`.
+The latter has exactly `short`, `medium` and `long`, each containing `judgment`,
+`evidence` (reference list) and
 `invalidation_triggers` (list). Record `insufficient_evidence` honestly where
 appropriate; the research agent supplies the actual horizon durations and
 conditional reasoning. Structural checks do not judge that reasoning. The

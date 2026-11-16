@@ -1,0 +1,26 @@
+{
+  "run": "noop-baseline-3",
+  "helper_sha": "56d276a15bfaf44b949d90612c0f0dfa9d80a6b3",
+  "initial_hashes": {
+    "investing/assets/equities/aapl/asset.json": "37cd78c6a34e7405fe7e77ec369c88be10621f404993c75ab8671a9937aec9d1",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md": "f44e85c4b8ea2addc796f8beab6600e801d767ccd26c800dce6d88fdaa5eb4e6",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/review.json": "1fdc64a82fd75a71c2481826cd1fd8d908adce350d4bb0fb047dd9e921cb8674",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/verification.json": "0ef52f49bcf40b8c012bc1ceb77b8442da6bfa526184e6308b611d1a11329170",
+    "investing/assets/equities/aapl/data/price.txt": "d7439bee24773bcbfa2d0a97947ee36227b10d1022b1a55847e928965bb6bfde",
+    "investing/assets/equities/aapl/data/sources/future.json": "514f64065852f1d6f4231869182878da17ee92470507f4fd5e0d0cf467c50f83",
+    "investing/assets/equities/aapl/data/sources/price.json": "ffc6b3b08f827040b0f078ec38d7ef1768838b98bd74b15ca8e4c21501352188",
+    "investing/research.json": "e387e7a42e17280a7e21f49a7a25258d1571c619512ace12221375d95c16a800"
+  },
+  "created_hashes": {},
+  "changed_originals": {},
+  "created_contents": {},
+  "operator_artifacts": {
+    "result.md": "# Operator result\n\nNo local analysis continuation is required for the configured AAPL 2024Q2 `valuation` unit in review `r1`, using latest mode and cutoff `2024-08-31T23:59:59+00:00`.\n\n- Read-only discovery returned `status: complete`, `action: no_analysis_update`, no gaps, and reusable `valuation`. Saved output and verification matched the frozen source dependency.\n- Scope is strictly `supplied_local_evidence`: one configured asset, one retained quarter, one required question. This is not a finding that full investment research is complete.\n- Eligible price identity is `price-v1`, available 2024-05-03. The 2024-09-02 revision is after the cutoff and was excluded. Saved review cutoff remains 2024-05-03; latest mode does not update that record.\n- External source freshness is `unverified`; offline inspection cannot establish whether additional eligible sources existed by August 31. Recorded self-checks and the synthetic output text `analysis` do not establish substantive investment quality, real investment proof, or host installation.\n- No analysis was regenerated. SHA256 maps before/after discovery confirmed all ROOT files unchanged.\n",
+    "commands.md": "# Commands and observations\n\nAll commands were offline. No installs or external services were used.\n\n1. `pwd && ls -la /private/tmp/finance-skill-trials/noop-baseline-3 && cat /private/tmp/finance-research-continuation/obsidian-finance/README.md` — exit 0; ROOT contains investing. README output was truncated; targeted follow-up read below recovered the discovery contract.\n2. `sed -n '240,305p' /private/tmp/finance-research-continuation/obsidian-finance/README.md` and `rg --files /private/tmp/finance-skill-trials/noop-baseline-3 /private/tmp/finance-research-continuation/obsidian-finance/scripts` — exit 0; identified supported discover API and local metadata files.\n3. `cat` of ROOT's research.json, asset.json, data/sources/price.json, data/sources/future.json and cycles/2024Q2/2024-05-03-r1/review.json, followed by `sed -n '1,85p' /private/tmp/finance-research-continuation/obsidian-finance/scripts/research_store.py` — exit 0; observed unchanged eligible price and future revision.\n4. Exact assessment command:\n\n```sh\nPYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python - <<'PY'\nimport sys,json,hashlib\nfrom pathlib import Path\nsys.path.insert(0,'/private/tmp/finance-research-continuation/obsidian-finance/scripts')\nimport research_store\nroot=Path('/private/tmp/finance-skill-trials/noop-baseline-3')\ndef hashes():\n return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file()}\nbefore=hashes()\nr=research_store.discover(root,'latest','2024-08-31T23:59:59+00:00')\nprint(json.dumps(r,indent=2))\nprint('ROOT_UNCHANGED',before==hashes())\nPY\n```\n\nExit 0. Result: scope supplied_local_evidence; external_freshness unverified; complete; aapl/2024Q2/r1 no_analysis_update; valuation reusable; gaps empty; future revision excluded after_cutoff. `ROOT_UNCHANGED True`.\n\n5. `cat` of saved analysis.md and verification.json, then `ls -ld /private/tmp/finance-skill-trials/outputs/noop-baseline-3` — exit 1 solely because result directory did not yet exist. Exact error: `ls: /private/tmp/finance-skill-trials/outputs/noop-baseline-3: No such file or directory`. Analysis was literal `analysis`; verification recorded four true checks and no unresolved items.\n6. Used apply_patch to create result.md and commands.md under the requested RESULT directory. No ROOT edits.\n"
+  },
+  "timing": {
+    "total_tokens": null,
+    "duration_ms": null,
+    "reason": "Native completion did not expose these fields; no estimates invented"
+  }
+}

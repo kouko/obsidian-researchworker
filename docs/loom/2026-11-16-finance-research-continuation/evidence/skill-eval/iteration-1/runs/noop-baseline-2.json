@@ -1,0 +1,26 @@
+{
+  "run": "noop-baseline-2",
+  "helper_sha": "56d276a15bfaf44b949d90612c0f0dfa9d80a6b3",
+  "initial_hashes": {
+    "investing/assets/equities/aapl/asset.json": "37cd78c6a34e7405fe7e77ec369c88be10621f404993c75ab8671a9937aec9d1",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md": "f44e85c4b8ea2addc796f8beab6600e801d767ccd26c800dce6d88fdaa5eb4e6",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/review.json": "1fdc64a82fd75a71c2481826cd1fd8d908adce350d4bb0fb047dd9e921cb8674",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/verification.json": "0ef52f49bcf40b8c012bc1ceb77b8442da6bfa526184e6308b611d1a11329170",
+    "investing/assets/equities/aapl/data/price.txt": "d7439bee24773bcbfa2d0a97947ee36227b10d1022b1a55847e928965bb6bfde",
+    "investing/assets/equities/aapl/data/sources/future.json": "514f64065852f1d6f4231869182878da17ee92470507f4fd5e0d0cf467c50f83",
+    "investing/assets/equities/aapl/data/sources/price.json": "ffc6b3b08f827040b0f078ec38d7ef1768838b98bd74b15ca8e4c21501352188",
+    "investing/research.json": "e387e7a42e17280a7e21f49a7a25258d1571c619512ace12221375d95c16a800"
+  },
+  "created_hashes": {},
+  "changed_originals": {},
+  "created_contents": {},
+  "operator_artifacts": {
+    "result.md": "# Operator result\n\n- Latest assessment cutoff: `2024-08-31T23:59:59+00:00`.\n- No continuation required within supplied local evidence: `aapl/2024Q2/r1`, question `valuation`, action `no_analysis_update`. Saved output, verification and relevant dependency match; no local gaps reported. Unchanged analysis was not regenerated.\n- Source selected: `price-v1`, available `2024-05-03`, value `10 USD`. Saved review cutoff is `2024-05-03T23:59:59+00:00`. Revision `future-price`, available `2024-09-02`, was excluded as after cutoff.\n- External freshness is **unverified**. This result does not establish August market coverage, complete investment research, substantive analytical quality, host installation or real investment proof. Inputs are synthetic teaching evidence; the output text is only `analysis` and checks are recorded author assertions.\n- Assessment status `complete` means local assessment completed. All nine ROOT file hashes remained unchanged; no network, installs, acquisition or publication performed.\n",
+    "commands.md": "# Commands and observations\n\nExecuted read-only inspections:\n\n```sh\npwd && ls -la /private/tmp/finance-skill-trials/noop-baseline-2 && cat /private/tmp/finance-research-continuation/obsidian-finance/README.md\nrg --files /private/tmp/finance-skill-trials/noop-baseline-2 /private/tmp/finance-research-continuation/obsidian-finance/scripts && sed -n '275,320p' /private/tmp/finance-research-continuation/obsidian-finance/README.md\nsed -n '255,277p' /private/tmp/finance-research-continuation/obsidian-finance/README.md && rg -n '^def (discover|assess|main)|__main__|argparse' /private/tmp/finance-research-continuation/obsidian-finance/scripts/research_store.py && find /private/tmp/finance-skill-trials/noop-baseline-2 -type f -exec sh -c 'echo \"$1\"; cat \"$1\"' sh {} \\;\n```\n\nREADME initial output was truncated; focused reads recovered the discovery API and metadata contract. Nine input files were listed and read.\n\nExecuted assessment (exit 0):\n\n```sh\nPYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python - <<'PY'\nimport sys,json,hashlib\nfrom pathlib import Path\nsys.path.insert(0,'/private/tmp/finance-research-continuation/obsidian-finance/scripts')\nimport research_store\nroot=Path('/private/tmp/finance-skill-trials/noop-baseline-2')\ndef hashes(): return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(root.rglob('*')) if p.is_file()}\nbefore=hashes()\nr=research_store.discover(root,'latest','2024-08-31T23:59:59+00:00')\nprint(json.dumps(r,indent=2))\nprint('ROOT_UNCHANGED='+str(before==hashes()))\nPY\n```\n\nObserved: `scope=supplied_local_evidence`, `external_freshness=unverified`, `status=complete`, one `no_analysis_update` decision for `aapl/2024Q2/r1`, reusable `valuation`, no gaps or observations. Excluded `aapl:price@ff370360efb9cb0f2f72950e49149ad6f22705394f5b4494a0d16e91fee75404` with reason `after_cutoff`. `ROOT_UNCHANGED=True`.\n\nResult-directory preflight command `ls -ld /private/tmp/finance-skill-trials/outputs/noop-baseline-2` exited 1: `ls: /private/tmp/finance-skill-trials/outputs/noop-baseline-2: No such file or directory`. No assessment errors or guard blocks occurred. Created only the requested result files with `apply_patch`.\n"
+  },
+  "timing": {
+    "total_tokens": null,
+    "duration_ms": null,
+    "reason": "Native completion did not expose these fields; no estimates invented"
+  }
+}

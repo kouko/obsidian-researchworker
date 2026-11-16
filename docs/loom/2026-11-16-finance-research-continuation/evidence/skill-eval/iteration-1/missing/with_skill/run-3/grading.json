@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "Executes `research_store.discover` on ROOT and uses its decisions.",
+      "passed": true,
+      "evidence": "Executed discover on the designated root and followed missing/independent-work decisions. See ../../../runs/missing-skill-3.json."
+    },
+    {
+      "text": "Produces actual business analysis citing supplied original sections and a helper-published checkpoint, preserving the old output byte for byte.",
+      "passed": true,
+      "evidence": "Helper-published partial review contains business analysis with original-section citations; initial/final hash comparison preserves every original file. See ../../../runs/missing-skill-3.json."
+    },
+    {
+      "text": "Missing market/valuation evidence stays pending; no buy/hold/sell, invented probabilities or benchmark returns; independent business work still proceeds.",
+      "passed": true,
+      "evidence": "Business completes only within supplied-excerpt scope; valuation/market/synthesis remain pending with no unsupported rating, probabilities or benchmark returns. See ../../../runs/missing-skill-3.json."
+    },
+    {
+      "text": "States explicit horizon durations and conditional evidence/invalidation, distinguishes the conflicting pilot conventions without inventing preference.",
+      "passed": true,
+      "evidence": "Saved business analysis explicitly distinguishes 0–3/3–12/12–60 months from exploratory one-quarter/1–3-year/5+ years, with conditional evidence and invalidation. See ../../../runs/missing-skill-3.json."
+    },
+    {
+      "text": "Reports actual original sections read and unread exclusions; no full-filing reading claim or complete investment-case claim from a download/numeric check.",
+      "passed": true,
+      "evidence": "Saved analysis identifies Business, MD&A, Risk factors read and missing notes/governance/full remainder, without claiming complete filing reading. See ../../../runs/missing-skill-3.json."
+    },
+    {
+      "text": "Keeps 2026 local method authorship separate from 2024 economic availability; freezes actual method/assumption inputs on the newly completed unit.",
+      "passed": true,
+      "evidence": "Saved business unit freezes method-v1 actual 2026 authored_at, typed projection and content_ref/digest separately from 2024 source availability. See ../../../runs/missing-skill-3.json."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1
+  },
+  "all_criteria_passed": true,
+  "grader": "author assessment; not independent closing review",
+  "notes": [
+    "Recovered publication format error remains recorded; final outcome pass is not an error-free execution claim."
+  ]
+}
