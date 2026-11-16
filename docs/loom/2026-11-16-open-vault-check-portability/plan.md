@@ -21,8 +21,8 @@ Wave 2 — delivery evidence (A4 is observable only after ship).
 
 **W2-01 Publication evidence record**  after: W1-01  acceptance: 4
 - Files: docs/loom/2026-11-16-open-vault-check-portability/publication-evidence.md
-- Test: docs only — exempt; records the CI run URL, the new PR number and the PR #5 supersede note.
-- Risk: written after ship observes the required check; the note states PR #5's content carried forward file-by-file. agent-decided.
+- Test: docs only — exempt; states what A4 observes at publication and where each result is recorded.
+- Risk: written at closing-review; the results themselves live in the new PR body and the PR #5 closure note — a tree file added after the attestation would change its digest. agent-decided.
 
 ## Simplicity check
 - W2-01 reproduction transcript — declined: the CI run itself is the no-plutil evidence; a local transcript adds no Acceptance coverage.
