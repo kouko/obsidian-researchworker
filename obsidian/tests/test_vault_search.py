@@ -17,7 +17,7 @@ HOOK_SH = HOOKS_DIR / "vault_pointer.sh"
 
 def _run_locate(tmp_path, vaults=None, env_vault=None):
     config = tmp_path / "config"
-    config.mkdir()
+    config.mkdir(exist_ok=True)
     if vaults is not None:
         (config / "obsidian.json").write_text(json.dumps({"vaults": vaults}))
     env = {k: v for k, v in os.environ.items() if k != "OBSIDIAN_VAULT"}
@@ -73,18 +73,45 @@ def test_vault_sh_locate_rejects_relative_and_control_char_paths(tmp_path):
     assert _run_locate(tmp_path, vaults) == [str(good)]
 
 
-def test_shipped_scripts_have_no_write_verbs():
-    """A6: the bundled scripts never write, move, copy or delete."""
-    verbs = ("rm ", "rmdir", "mv ", "cp ", "mkdir", "touch", "tee", "dd ",
-             "ln ", "chmod", "chown", "sed -i", "find -delete")
-    for script in (VAULT_SH, HOOKS_DIR / "vault_pointer.sh"):
-        text = script.read_text()
-        assert not any(v in text for v in verbs), (script, [v for v in verbs if v in text])
+def _snapshot(root):
+    """Relative path -> bytes for every file under root, hidden dirs included."""
+    snap = {}
+    for p in sorted(root.rglob("*")):
+        if p.is_file():
+            snap[str(p.relative_to(root))] = p.read_bytes()
+    return snap
+
+
+def test_search_and_locate_leave_vault_unchanged(tmp_path):
+    """A6: running the shipped scripts never creates, changes or deletes any file.
+
+    Snapshots the whole sandbox — the fixture vault including `.obsidian/` and
+    `.trash/`, the registry directory and the temp HOME — then runs the CLI
+    branch, the grep fallback and locate, and requires the file list and every
+    file's bytes to be identical (a write anywhere, not just inside the vault,
+    fails it). Mutation-checked: a script variant that copies a file into the
+    vault fails this test.
+    """
+    vault = _fixture_vault(tmp_path)
+    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'alpha.md\\nsub/beta.md\\n'\n")
+    closed = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    # Prime the config file the helpers write (identical bytes on every helper
+    # call) without running the script, so the snapshot is taken before any
+    # shipped script executes.
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "obsidian.json").write_text(json.dumps(
+        {"vaults": {"v": {"path": str(vault), "open": True}}}))
+    before = _snapshot(tmp_path)
+    _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)          # CLI branch
+    _run_search(tmp_path, vault, "ベクトルDB", cli_bin=closed)    # grep fallback
+    _run_locate(tmp_path)
+    assert _snapshot(tmp_path) == before
 
 
 def _run_search(tmp_path, vault, *query, cli_bin=None, on_path=False, open_vault=True):
     config = tmp_path / "config"
-    config.mkdir()
+    config.mkdir(exist_ok=True)
     entry = {"path": str(vault)}
     if open_vault:
         entry["open"] = True
