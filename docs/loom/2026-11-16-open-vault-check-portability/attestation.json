@@ -1,0 +1,93 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-16-open-vault-check-portability",
+  "content_digest": "7b4ffc5c7a6a8905fe5d6950420d5dcb3703d516",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "No attack succeeded across the 13 tried points, so nothing earned a committed program: a GREEN-first-run probe would restate behaviour rather than demonstrate a defect, and the new package test test_search_cli_branch_reachable_without_plutil already pins the defect (fails on base, passes on HEAD)."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a-security-tests-r1",
+      "vendor": "claude",
+      "model": "inherited",
+      "lens": "tests, security",
+      "verdict": "PASS",
+      "findings": [],
+      "dimension_scores": {
+        "security": "PASS — read the changed script and traced every flow: open_vault from either reader is only compared to $vault (vault.sh:184); it never reaches the CLI invocation (\"vault=$vault\" at :200 is the user argument) nor printed output; the new python reader filters control characters; no new injection surface introduced. No adversarial probe was run (none committed; reviewers do not run them per lenses), which is not grounds for PASS_WITH_NOTES.",
+        "tests": "PASS — ran obsidian/tests/test_vault_search.py: 43 passed. Proved RED for test_search_cli_branch_reachable_without_plutil against pre-fix vault.sh (fails; cli-invoked never created); passes on the fix. No skipped/never-executing tests; _shadow_path_without is airtight (plutil excluded, python3 retained); both new tests can fail for the behaviour they name. 73→75 count in intent A1 is legitimate coverage growth, explained in the acceptance-test-report, not a dropped test."
+      },
+      "notes": [
+        "test_search_grep_fallback_without_plutil_and_python3 passes on both base and fix; it is a regression guard for Risk 2 (no plutil AND no python3 → grep fallback), not a RED demonstration of the portability fix. That is valid coverage, not a defect.",
+        "The two new tests add 2 to the suite (41→43); intent A1's \"73 項\" predates them. All 75 pass under both plutil-present and plutil-free PATH, including the three CLI-branch tests named in the intent."
+      ],
+      "reviewed_sha": "2a689ad",
+      "review_target_sha": "5ddbb132c22108a72771f865176294c52106f073"
+    },
+    {
+      "reviewer": "reviewer-b-code-r1",
+      "vendor": "claude",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "dimension_scores": {
+        "security": "PASS",
+        "architecture": "PASS",
+        "correctness": "PASS",
+        "naming": "PASS",
+        "tests": "PASS",
+        "refactoring": "PASS",
+        "cross-task-coherence": "PASS",
+        "external-surface-grounding": "PASS",
+        "principles-conformance": "PASS",
+        "architecture-conformance": "N/A — no ratified ARCHITECTURE.md exists in the repo; nothing to conform against",
+        "deliberate-simplification": "PASS",
+        "deletion-first": "PASS"
+      },
+      "notes": [
+        "Ran the changed test file only: python3 -m pytest obsidian/tests/test_vault_search.py -q -p no:cacheprovider -> 43 passed. Did not run the full package suite or anything under docs/loom/<change-id>/evidence/probes/ (those run mechanically elsewhere).",
+        "RED→GREEN confirmed: test_search_cli_branch_reachable_without_plutil fails against base vault.sh (2a689ad) — CLI never invoked without plutil — and passes against HEAD (5ddbb13).",
+        "Engine agreement verified on four registry fixtures: python_registry_open_vault and plutil_raw behave identically on a newline-terminated path (both skip), a normal path (both emit it), a first-closed-then-open registry (both skip to the open entry), and malformed JSON (both silent, exit 0). The control-char filter already blocks newline paths, so command-substitution newline-stripping introduces no asymmetry vs the plutil branch.",
+        "The reviewer-b lossy $( ) read of open is fixed: plutil branch now uses lossless plutil_raw (exit 1 on line-spanning => skip), consistent with plutil_vaults' ts handling and the intent's 'accept gate semantics unchanged' constraint.",
+        "deletion-first: python_registry_vaults cannot be reused — it returns all vaults sorted by ts, not the open one; two heredoc-shaped sites is below Rule of Three, so separate functions are justified.",
+        "PRINCIPLES.md exists (ratified-by kouko 2026-11-14): change is read-only, bounded, and evidence-based — no falsifiable clause violated. No DESIGN.md/ARCHITECTURE.md -> those dimensions N/A. docs-lint: none declared in KICKOFF-DEFAULTS.md, but no style findings were raised (no wording-only complaints apply to this engineering change)."
+      ],
+      "reviewed_sha": "2a689ad",
+      "review_target_sha": "5ddbb132c22108a72771f865176294c52106f073"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "2e4b6e5cf05cfd22b37463b41697452b3364c3a4",
+  "tested_commit": "13b5a5c",
+  "reviewed_commit": "5ddbb132c22108a72771f865176294c52106f073",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "not_verified"
+    }
+  ]
+}
