@@ -76,6 +76,23 @@ except Exception:
 EOF
 }
 
+# Best-effort open-vault read on platforms without plutil. UNVERIFIED.
+python_registry_open_vault() {
+    python3 - "$1" 2>/dev/null <<'EOF' || return 0
+import json, sys
+try:
+    data = json.load(open(sys.argv[1], encoding="utf-8"))
+    for v in data.get("vaults", {}).values():
+        if isinstance(v, dict) and v.get("open") is True:
+            p = v.get("path")
+            if isinstance(p, str) and not any(c < " " or c == "\x7f" for c in p):
+                print(p)
+            break
+except Exception:
+    pass
+EOF
+}
+
 # Print the path only if it is a safe, existing, absolute directory.
 emit_vault() {
     p=$1
@@ -152,13 +169,17 @@ do_search() {
     fi
     reg=$(config_dir)/obsidian.json
     open_vault=""
-    if [ -n "$cli" ] && [ -r "$reg" ] && command -v plutil >/dev/null 2>&1; then
-        for id in $(plutil -extract vaults json -o - "$reg" 2>/dev/null \
-                | grep -oE '"[^"]+":\{' | sed 's/"//g;s/:{$//'); do
-            [ "$(plutil -extract "vaults.$id.open" raw -o - "$reg" 2>/dev/null)" = "true" ] || continue
-            open_vault=$(plutil_raw "vaults.$id.path" "$reg")
-            break
-        done
+    if [ -n "$cli" ] && [ -r "$reg" ]; then
+        if command -v plutil >/dev/null 2>&1; then
+            for id in $(plutil -extract vaults json -o - "$reg" 2>/dev/null \
+                    | grep -oE '"[^"]+":\{' | sed 's/"//g;s/:{$//'); do
+                [ "$(plutil_raw "vaults.$id.open" "$reg")" = "true" ] || continue
+                open_vault=$(plutil_raw "vaults.$id.path" "$reg")
+                break
+            done
+        else
+            open_vault=$(python_registry_open_vault "$reg")
+        fi
     fi
     if [ -n "$cli" ] && [ "$open_vault" = "$vault" ]; then
         query=""

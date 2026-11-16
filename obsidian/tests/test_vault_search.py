@@ -7,6 +7,7 @@ OBSIDIAN_CONFIG_DIR, so the real vault registry is never read.
 import json
 import os
 import subprocess
+import tempfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -335,6 +336,94 @@ def test_search_word_with_embedded_quote_falls_back_to_grep(tmp_path):
     out = _run_search(tmp_path, vault, 'zzz" OR file:alpha OR "tail', cli_bin=cli)
     assert out == [str(vault / "quote.md")], out
     assert not args_file.exists(), "a quote-bearing word must never be handed to the CLI"
+
+
+def _shadow_path_without(*exclude_names):
+    """Build a shadow PATH dir containing symlinks to all /usr/bin files except excluded ones.
+
+    Returns (shadow_dir_path, env_dict) where env_dict has PATH set to the shadow dir
+    plus system fallbacks (/bin:/usr/sbin:/sbin) but NOT the excluded binaries.
+    """
+    shadow = tempfile.mkdtemp(prefix="noplutil-bin-")
+    for name in os.listdir("/usr/bin"):
+        if name in exclude_names:
+            continue
+        p = os.path.join("/usr/bin", name)
+        if os.path.isfile(p):
+            try:
+                os.symlink(p, os.path.join(shadow, name))
+            except OSError:
+                pass
+    env = dict(os.environ)
+    env["PATH"] = shadow + ":/bin:/usr/sbin:/sbin"
+    return shadow, env
+
+
+def test_search_cli_branch_reachable_without_plutil(tmp_path):
+    """Without plutil on PATH, a registry entry with 'open': true must still route
+    the search through the CLI branch (using python3 as the portable reader).
+
+    This pins the defect: the current code only reads the open-vault via plutil,
+    so on platforms without plutil (ubuntu CI) open_vault stays empty and the
+    CLI branch is unreachable — 3 CLI-branch tests fell through to grep and failed.
+    """
+    vault = _fixture_vault(tmp_path)
+    cli_invoked = tmp_path / "cli-invoked"
+    cli = _fake_cli(tmp_path, "obsidian-cli",
+                    "#!/bin/sh\nprintf 'alpha.md\\n'\n" +
+                    "touch '" + str(cli_invoked) + "'\n")
+
+    # Build a PATH without plutil, but WITH python3 (the portable fallback)
+    _, env = _shadow_path_without("plutil")
+
+    # Need to manually construct the call with our sanitized env
+    config = tmp_path / "config"
+    config.mkdir(exist_ok=True)
+    entry = {"path": str(vault), "open": True}
+    (config / "obsidian.json").write_text(json.dumps({"vaults": {"v": entry}}))
+    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(config))
+    env["OBSIDIAN_CLI_BIN"] = str(cli)
+
+    result = subprocess.run(
+        [str(VAULT_SH), "search", str(vault), "DuckDB"],
+        env=env, capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    out = result.stdout.splitlines()
+    assert out == [str(vault / "alpha.md")], f"CLI branch should work without plutil: {out}"
+    assert cli_invoked.exists(), "CLI branch should have run without plutil"
+
+
+def test_search_grep_fallback_without_plutil_and_python3(tmp_path):
+    """With no plutil AND no python3 on PATH, the open-vault check must be skipped
+    entirely (open_vault stays empty), and grep answers.
+
+    This pins Risk 2: if both portable readers are absent, the open-vault read
+    must fail silently and the grep fallback must still work correctly.
+    """
+    vault = _fixture_vault(tmp_path)
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+
+    # Build a PATH without plutil AND without python3
+    # Note: /usr/bin/python3 is a stub that may exec the real python3, so we
+    # must exclude it from our shadow dir to ensure command -v python3 fails.
+    _, env = _shadow_path_without("plutil", "python3")
+
+    config = tmp_path / "config"
+    config.mkdir(exist_ok=True)
+    entry = {"path": str(vault), "open": True}
+    (config / "obsidian.json").write_text(json.dumps({"vaults": {"v": entry}}))
+    env.update(HOME=str(tmp_path), OBSIDIAN_CONFIG_DIR=str(config))
+    env["OBSIDIAN_CLI_BIN"] = str(cli)
+
+    result = subprocess.run(
+        [str(VAULT_SH), "search", str(vault), "ベクトルDB"],
+        env=env, capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    out = result.stdout.splitlines()
+    # grep should find the Japanese text in sub/beta.md
+    assert out == [str(vault / "sub" / "beta.md")], f"grep fallback should work: {out}"
 
 
 def _run_hook(tmp_path, env_vault=None, vaults=None):
