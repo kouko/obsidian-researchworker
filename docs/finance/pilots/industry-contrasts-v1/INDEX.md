@@ -49,3 +49,18 @@ Microsoft/Costco and a failed/acquired/delisted contrast also remain in the
 program's proposed broader validation set. Short/medium/long investment ratings
 stay insufficient evidence; mechanical arithmetic is not independent acceptance.
 Do not mark D complete or launch broad twenty-year generation from this draft.
+
+## Extended method checks, 2026-11-16
+
+[Cloud/subscription and membership retail](雲端與會員零售案例.md) add MSFT
+2024Q4 and COST 2024Q3. [The bank-receivership event](銀行接管事件案例.md)
+retains distinct March 10 and March 12 cutoffs; it does not invent quarterly
+coverage or equate bank deposit protection with listed-parent equity recovery.
+[Selected extended evidence](extended-evidence.json) retains six arithmetic
+checks, source dates, definitions and explicit unsupported claims.
+
+These additions advance the broader proposed cases above but do not complete
+their financial/competitive/valuation research or failed-company recovery model.
+Original full SEC narrative reading is not established by retaining a release,
+an original HTML file or selected table cells. The current design's source checks
+do not yet prove complete chapter coverage; that limitation remains explicit.

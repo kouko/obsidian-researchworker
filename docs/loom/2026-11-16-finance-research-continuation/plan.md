@@ -20,9 +20,9 @@ charter: 1.1
 ### Wave 2 — Agent research behavior
 
 **W2-01 Define the research skill and substantive completion rules**  after: W1-01, W1-02  acceptance: 1, 2, 3, 4, 5
-- Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/research-method.md, obsidian-finance/tests/test_finance_research_contract.py, obsidian-finance/README.md
+- Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/research-method.md, docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/, obsidian-finance/README.md
 - Test: A1 positive: scoped-request-discovery; negative: unrelated-note-request. A2 positive: agent-resumes-required-research; boundary: unavailable-source-independent-work. A3 positive: repeated-no-op; negative: false-global-freshness. A4 positive: horizon-and-counterevidence; negative: unsupported-rating. A5 positive: conflict-recovery-explained; boundary: no-private-upload.
-- Risk: agent-decided — REQ-1–5: use existing host tools and acquisition, not a new scheduler. Generic methods stay in the skill; private configuration stays local. Reconcile pilot horizon differences explicitly. Contract checks supplement behavioral trials rather than replacing them.
+- Risk: agent-decided — REQ-1–5: use actual isolated behavioral trials before/with the skill instead of permanent tests mirroring instruction text. Keep methods in the skill, private settings local, horizon conventions explicit, and SEC reading coverage distinct from file acquisition.
 
 **W2-02 Exercise integrated continuation and restore boundaries**  after: W2-01  acceptance: 1, 2, 3, 4, 5
 - Files: obsidian-finance/tests/test_research_continuation.py, docs/loom/2026-11-16-finance-research-continuation/evidence/integration.md
@@ -56,3 +56,4 @@ charter: 1.1
 5. agent-decided — Actual fresh-host feasibility/provider identity remains to verify before W3-01 execution; see research/01-fresh-host-feasibility.md. Existing subscription authentication does not authorize additional API spend, external private-note transfer or silent proxy/model substitution.
 6. agent-decided — Existing accepted attestations remain. Delivery cannot be asserted from old evidence or forced by deleting stacked-change records; investigate the current checker attribution and retain its actual results.
 7. agent-decided — Complete package command is `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`; Build still requires real RED evidence, independent adversarial programs and branch-end review. Green software tests do not validate investment judgments.
+8. agent-decided — W2-01 replaces planned static instruction-contract tests with retained behavioral trials; no accepted outcome changes. Follow skill-creator-advance evaluation-first for this multi-step skill. Native trial contexts do not replace W3-01 actual new-host sessions.

@@ -574,3 +574,34 @@ Arithmetic and source-date/link self-checks are recorded in the pilot; no
 independent semantic review or full Stage D acceptance is claimed. Original
 accession-bound statements, sector-specific drivers, prices/expectations and
 valuation remain; so do the proposed broader contrasts and failure-case work.
+
+### Extended method cases and remaining history inputs, 2026-11-16
+
+Additional [cloud/member-retail](pilots/industry-contrasts-v1/雲端與會員零售案例.md)
+and [bank-receivership](pilots/industry-contrasts-v1/銀行接管事件案例.md) cases
+retain original MSFT 2024Q4/COST 2024Q3 releases and separate March 10/March 12
+2023 agency cutoffs. Agent-decided: use them to challenge cloud/AI investment
+attribution, membership-fee profit attribution, 12-week annualization and
+deposit-protection/equity-value conflation. Six arithmetic checks passed; these
+are bounded method examples, not complete company valuations or Stage D.
+
+The user asked whether full SEC originals are read. Current acquisition retains
+original HTML and research checks selected original passages, but neither the
+current spec nor software proves complete chapter reading. Do not count file
+download or numeric reconciliation as full MD&A, risk, notes or legal review.
+The forthcoming skill must disclose actual reading coverage rather than
+advertising full-document review without evidence; no claim of a newly
+confirmed mandatory word-for-word full-reading requirement is made.
+
+The [history-input audit](../loom/2026-11-16-finance-research-continuation/research/03-apple-history-vintage-gaps.md)
+found cached old comparison rows filed years after their observation periods.
+Agent-decided: do not fill twenty-year historical reports from later comparison
+rows or one modern revenue tag. Obtain period-original evidence and verify the
+latest complete company fiscal year before fixing the exact twenty-year range.
+The audit is input research, not completed Stage E quarters.
+
+The [delivery attribution investigation](../loom/2026-11-16-finance-research-continuation/research/02-stacked-delivery-attribution.md)
+traced the live command's unconfirmed result to accepted prerequisite
+attestations in the whole trunk delta. Preserve them; no installed-checker
+patch, trunk-ref rewrite, publication or merge was performed. An explicit-base
+diagnostic confirmed the cause but is not an ordinary delivery pass.

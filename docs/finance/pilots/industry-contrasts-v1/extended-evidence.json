@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "status": "bounded-method-cases-not-full-research",
+  "quarter_cases": [
+    {
+      "id": "MSFT-2024Q4",
+      "fiscal_end": "2024-06-30",
+      "publication_date": "2024-07-30",
+      "cutoff": "2024-07-30T23:59:59-04:00",
+      "source": "https://www.microsoft.com/en-us/Investor/earnings/FY-2024-q4/press-release-webcast",
+      "locator": "Quarter results, Azure growth and three-month cash-flow column",
+      "usd_million": {"revenue": 64727, "cfo": 37195, "cash_ppe_additions": 13873},
+      "growth_percent": {"azure_and_other_cloud_services_reported": 29, "azure_and_other_cloud_services_constant_currency": 30},
+      "local_calculations": [
+        {"formula": "13873 / 64727 * 100", "result_rounded_percent": 21.43},
+        {"formula": "37195 - 13873", "result_usd_million": 23322}
+      ],
+      "refusals": ["Microsoft Cloud revenue is not separately reported Azure revenue", "All PP&E cash spending cannot be attributed to AI", "CFO-minus-cash-PP&E is not all-in investment or distributable cash"]
+    },
+    {
+      "id": "COST-2024Q3",
+      "fiscal_end": "2024-05-12",
+      "weeks": 12,
+      "publication_date": "2024-05-30",
+      "cutoff": "2024-05-30T23:59:59-04:00",
+      "source": "https://www.sec.gov/Archives/edgar/data/909832/000090983224000026/costex9918-k51224.htm",
+      "accession": "0000909832-24-000026",
+      "locator": "Opening calendar/comparable-sales discussion and 12-week income statement",
+      "usd_million": {"net_sales": 57392, "membership_fees": 1123, "total_revenue": 58515, "operating_income": 2197, "net_income": 1681},
+      "eps_usd": {"current": 3.78, "prior": 2.93, "prior_nonrecurring_charge": 0.50},
+      "local_calculations": [
+        {"formula": "1123 / 2197 * 100", "result_rounded_percent": 51.12, "meaning": "ratio only, not profit attribution"},
+        {"formula": "2197 / 58515 * 100", "result_rounded_percent": 3.75},
+        {"formula": "(3.78 / 2.93 - 1) * 100", "result_rounded_percent": 29.01},
+        {"formula": "(3.78 / (2.93 + 0.50) - 1) * 100", "result_rounded_percent": 10.20, "meaning": "local rounded-EPS bridge, not issuer adjusted results"}
+      ],
+      "refusals": ["Membership fee revenue divided by operating income does not allocate profit", "A 12-week quarter times four is not a full-year forecast", "Prior 53-week calendar shift and nonrecurring expense distort headline comparisons"]
+    }
+  ],
+  "event_cases": [
+    {
+      "id": "SVB-bank-2023-03-10",
+      "entity": "Silicon Valley Bank, not an assumed identity match to its listed parent",
+      "publication_date": "2023-03-10",
+      "cutoff": "2023-03-10T23:59:59-05:00",
+      "source": "https://content.govdelivery.com/accounts/USFDIC/bulletins/34de35b",
+      "issuer": "FDIC official bulletin",
+      "usd_billion_approx_as_of_2022_12_31": {"assets": 209.0, "deposits": 175.4},
+      "uninsured_deposit_amount": null,
+      "uninsured_status": "explicitly undetermined in this notice",
+      "excluded": ["March 12 blanket deposit-protection decision", "Later failure reviews and recovery outcomes"]
+    },
+    {
+      "id": "SVB-bank-2023-03-12",
+      "publication_date": "2023-03-12",
+      "published_at": "2023-03-12T18:15:00-04:00",
+      "cutoff": "2023-03-12T23:59:59-04:00",
+      "source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230312b.htm",
+      "issuer": "Treasury, Federal Reserve and FDIC joint statement",
+      "protected": "all depositors",
+      "not_protected": "shareholders and certain unsecured debtholders",
+      "refusal": "Deposit protection does not establish common-equity value or a listed-parent recovery rate"
+    }
+  ],
+  "failed_source_attempt": {"url": "https://www.fdic.gov/news/press-releases/2023/pr23017.html", "result": "HTTP 403 via web tool; joint statement read at Federal Reserve original instead"},
+  "full_sec_original_reading_verified": false,
+  "independent_research_review": "pending",
+  "stage_d_complete": false
+}
