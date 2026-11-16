@@ -390,3 +390,106 @@ and file modification times alone do not trigger analytical work. A no-work
 decision applies only to the locally checked scope; it establishes neither
 current external coverage nor advisory sufficiency. Folder mechanics and
 recorded checks do not replace the agent's substantive research and review.
+
+## Protected local publication and recovery
+
+The same module exposes Python APIs only; it has no publication CLI. These
+operations are for an explicitly authorized managed subtree or isolated copy.
+They do not acquire evidence, perform analysis, certify investment quality or
+establish external freshness. Persist acquired evidence as immutable inputs,
+then capture the preconditions **before** analysis/publication:
+
+```python
+expected = research_store.publication_snapshot(root)
+result = research_store.publish(
+    root, "aapl", review, files, expected, "unique-run-id", complete=True,
+)
+# Revalidate an interrupted recorded run, or restore its predecessor view:
+result = research_store.recover(root, "unique-run-id", action="resume")
+result = research_store.recover(root, "unique-run-id", action="rollback")
+```
+
+`publication_snapshot(root) -> dict[path, sha256]` captures exact regular-file
+bytes beneath `investing/`, excluding the helper's `.research-runs/` journals.
+The returned map is mandatory and must remain the original pre-analysis map;
+refreshing it to suppress a conflict defeats user-edit protection. Changed,
+added or missing managed files cause a conflict. Publication and recovery check
+these preconditions before work and immediately before the commit point. This
+is conservative: even an unrelated managed edit requires reassessment. All
+directory traversal and writes use anchored no-follow descriptors; new files
+use exclusive creation. Existing files are never overwritten or deleted.
+If source acquisition adds files after initial discovery, first verify every
+previously captured discovery path still has its original digest; then capture
+the publication baseline including only those known new evidence files. An
+unexpected edit or addition requires inspection, not an automatic refresh.
+
+`publish(root, asset, review, files, expected, run_id, *, complete=True) -> dict`
+accepts the saved-review contract above. `asset` must be configured; `run_id`
+is a new stable ASCII ID. The review directory is derived as
+`investing/assets/equities/{asset}/cycles/{YYYYQn}/{cutoff-date}-{review-id}`.
+An existing quarter requires the current eligible leaf as `predecessor`;
+a first review has no predecessor. `files` maps plain filenames ending in
+`.md` or `.json` to UTF-8 text, without subdirectories or reserved marker names.
+New unit output and verification references use their final root-relative
+paths in that directory. An unchanged unit may retain its predecessor's
+output/check references and complete frozen dependency identity. Changing its
+dependencies or verification while keeping that output is rejected; changed
+economic evidence, methods, assumptions or required question dependencies need
+recomputation, including dependent synthesis. Legacy reviews without frozen
+question requirements retain the existing discovery contract; new publications
+freeze all question definitions under `requirements` for subsequent checking.
+
+Each proposed review also supplies `research` with `method` (the applied method
+description/version), `assumptions` (list), `changes` (cross-quarter or review
+changes), `gaps` (list), and `horizons`. The latter has exactly `short`, `medium`
+and `long`, each containing `judgment`, `evidence` (reference list) and
+`invalidation_triggers` (list). Record `insufficient_evidence` honestly where
+appropriate; the research agent supplies the actual horizon durations and
+conditional reasoning. Structural checks do not judge that reasoning. The
+publisher embeds source/local-analysis metadata under `provenance`, retaining
+original references/hashes, fiscal identities, economic publication times and
+separate actual method/assumption authorship. Original evidence files remain
+immutable. The recorded semantic author self-checks remain distinct from an
+independent review of research quality.
+
+With `complete=True`, every configured question must be reusable under the
+existing discovery/assessment rules and declared research gaps must be empty.
+Use `complete=False` to commit a meaningful partial checkpoint: verified units
+remain reusable and missing or unresolved required questions remain pending.
+Saving review metadata never itself establishes analytical completeness. The
+local helper preserves the predecessor's `last_success`; it rejects advancing
+the last successful external verification from a local publication. An actual
+external attempt can be recorded separately as `last_attempt`, while external
+freshness remains unverified by these APIs.
+
+The immutable request, its integrity journal, drafts and staged completion live
+under `investing/.research-runs/{run_id}/`. Outputs and a hash-bound
+`pending.json` precede `review.json`. The commit point creates a no-overwrite,
+same-filesystem hard link to the fully flushed staged completion file;
+unsupported filesystem behavior fails without replacing research. A digest
+mismatch or incomplete metadata is a named conflict, not a completed review.
+Discovery reports unfinished journals/publications even when an older review is
+still usable. It does not present an interrupted attempt as an unchanged no-work
+result without that gap. No mutable overview/latest pointer is maintained:
+the eligible predecessor-chain leaf defines the saved view.
+
+`recover(root, run_id, *, action="resume") -> dict` rechecks the original
+preconditions, journal integrity, saved draft/output bytes and current source,
+method and assumption dependencies before adopting unfinished work. Repeating
+a successful resume returns the same saved result if its files and original
+preconditions still match. `action="rollback"` appends a validated
+`withdrawn.json` for a committed review, or `abandoned.json` for unfinished
+publication; the prior eligible view becomes visible while all reports,
+drafts and failure evidence stay on disk. Rollback refuses edits, unexpected
+files or later dependent reviews rather than hiding or deleting them. Altered
+withdrawal metadata also produces a conflict. Historical discovery still obeys
+the requested exact cutoff; withdrawal never fabricates a predecessor at a
+different cutoff. Rollback is limited to this recorded run, not arbitrary files.
+
+Results contain `status` (`complete`, `checkpoint` or `rolled_back`), `review`
+(root-relative metadata path) and `run`. Validation/conflict errors raise
+`ValueError`; filesystem interruption can raise `OSError`. Preserve the named
+files and draft, inspect the conflict and reassess before starting a new run.
+Do not edit run journals or completion files to force a success. These are
+local mechanics; actual agent continuation and fresh-host research behavior
+require separate verification.
