@@ -170,3 +170,29 @@ def test_local_analysis_dependencies_preserve_actual_authorship(tmp_path, change
     assert {item["work"] for item in after["reusable"]} == {"independent"}
     assert {d["work"] for d in after["decisions"] if "recompute" in d["action"]} == {"valuation", "synthesis"}
     assert any(g["evidence"] == "analysis:model" for g in after["gaps"])
+
+
+@pytest.mark.parametrize("case", ["templated-price", "missing-source"])
+def test_required_economic_inputs_cannot_be_omitted_from_legacy_units(tmp_path, case):
+    base, source, review = sample(tmp_path)
+    asset = json.loads((tmp_path / base / "asset.json").read_text())
+    saved = json.loads((tmp_path / review / "review.json").read_text())
+    asset["questions"] += [dict(id="synthesis", required_sources=[], depends_on=["valuation"]),
+                           dict(id="independent", required_sources=[], depends_on=[])]
+    if case == "templated-price":
+        source["id"] = "price-2024Q2"  # A price has no financial fiscal metadata.
+        put(tmp_path, base + "/data/sources/price.json", source)
+        saved["units"]["valuation"]["consumed"] = {source["id"]: dict(version=source["identity"], projection=source["projection"])}
+        asset["questions"][0]["required_sources"] = ["price-{fiscal}"]
+    else:
+        asset["questions"][0]["required_sources"].append("market")
+    saved["units"]["independent"] = dict(saved["units"]["valuation"])
+    saved["units"]["synthesis"] = dict(saved["units"]["valuation"])
+    if case == "templated-price":
+        saved["units"]["valuation"]["consumed"] = {}
+    put(tmp_path, base + "/asset.json", asset)
+    put(tmp_path, review + "/review.json", saved)  # No frozen requirements in legacy records.
+    result = load().discover(tmp_path, "latest", CUTOFF)
+    assert {item["work"] for item in result["reusable"]} == {"independent"}
+    assert {d["work"] for d in result["decisions"] if "recompute" in d["action"]} == {"valuation", "synthesis"}
+    assert result["gaps"] and all(d["action"] != "no_analysis_update" for d in result["decisions"])

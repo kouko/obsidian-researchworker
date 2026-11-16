@@ -341,6 +341,14 @@ def _snapshot(root, cutoff, mode, proposed=None):
                                     and check.get("unresolved") == [] and item.get("output", {}).get("digest") == check.get("output_digest"))
                         if complete:
                             item.update(status="complete", completion_evidence=json.dumps(check, sort_keys=True))
+                    missing_consumed = sorted(set(_required(question, quarter)) - consumed.keys())
+                    if missing_consumed:
+                        # Resolve against this record, including absent sources and
+                        # nonfinancial inputs without source-declared fiscal data.
+                        item.pop("completion_evidence", None)
+                        gaps.append(dict(record=asset + "/" + quarter + "/" + saved["id"], evidence="dependencies:" + qid,
+                            reason="Required economic inputs lack consumed identities: " + ", ".join(missing_consumed),
+                            recovery="Verify the required sources and recompute this question and dependent synthesis"))
                     if not _analysis_valid(root, base, question.get("required_analysis", []),
                             unit.get("analysis_inputs", {}), asset + "/" + quarter + "/" + saved["id"], gaps):
                         # Preserve the saved completion claim for the assessor's

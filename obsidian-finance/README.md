@@ -305,6 +305,12 @@ unknown fields remain inert data. No selectors or document commands execute.
   use the single literal template `{fiscal}` (for example,
   `financial-{fiscal}` becomes `financial-2024Q2` for that record); no arbitrary
   selectors execute and future quarter IDs need no manual question-list edit.
+  Every question's expanded required source IDs must appear in that unit's
+  frozen consumed identities. Expansion uses the saved record's fiscal quarter,
+  including for prices without financial fiscal metadata. An absent source or
+  omitted consumed identity invalidates the question and dependent synthesis,
+  including legacy reviews without frozen requirements; independent completed
+  questions remain reusable.
 - Source revision JSON: `version: 1`, stable logical `id`, matching `issuer`,
   `kind`, economic `identity`, `available_at`, relevant typed `projection`,
   `raw_ref`, `raw_digest` and `raw_format` (`json` or `text`). The digest is
