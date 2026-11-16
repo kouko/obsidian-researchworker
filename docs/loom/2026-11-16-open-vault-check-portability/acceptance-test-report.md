@@ -1,6 +1,6 @@
 # 讓「目前開著的筆記庫」判定在無 plutil 平台可用 — 我試了什麼、結果如何
 
-Tried on 2026-11-16, in a clean copy of the project at 13b5a5c (13b5a5cb9a65fbed13ffc1cc1e59981d31a37381). How I tried each line and what came back: `docs/loom/2026-11-16-open-vault-check-portability/evidence/acceptance-test-evidence.md`.
+Tried on 2026-11-16, in a clean copy of the project at 102e908 (102e908ed2cb1724325a8335c481756220681b73). How I tried each line and what came back: `docs/loom/2026-11-16-open-vault-check-portability/evidence/acceptance-test-evidence.md`.
 
 ## What you asked for, one line at a time
 
