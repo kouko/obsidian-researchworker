@@ -36,7 +36,7 @@ charter: 1.1
 ### Wave 3 — Actual host and research validation
 
 **W3-01 Verify actual fresh-host behavior and reconcile maturity**  after: W2-02  acceptance: 1, 2, 3, 4, 5, 6
-- Files: docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md, docs/finance/pilots/apple-2024q2-q3/host-continuation/, docs/finance/PLAN-DRAFT.md, obsidian-finance/README.md, obsidian-finance/.claude-plugin/plugin.json, docs/loom/2026-11-16-finance-research-continuation/evidence/acceptance-evidence.md
+- Files: docs/loom/2026-11-16-finance-research-continuation/evidence/, docs/finance/pilots/apple-2024q2-q3/host-continuation/, docs/finance/PLAN-DRAFT.md, obsidian-finance/README.md, obsidian-finance/.claude-plugin/plugin.json, README.md, obsidian-finance/.codex-plugin/plugin.json, .claude-plugin/marketplace.json
 - Test: A1 positive: fresh-discovery; boundary: missing-scope. A2 positive: real-incremental-research; boundary: changed-dependency. A3 positive: real-no-work; negative: duplicate-review. A4 positive: cited-horizon-synthesis; boundary: insufficient-evidence. A5 positive: actual-rollback; boundary: user-edits-survive. A6 positive: real-new-change-resume-no-work-sessions; negative: reviewer-is-not-host-proof.
 - Risk: agent-decided — REQ-1–6: use the authenticated host with isolated public fixtures, no additional paid obligation or global install. Record session/provider identity, writes and recovery. Reconcile documentation against actual results; registration is not installation and unavailable execution leaves acceptance unmet.
 
@@ -62,3 +62,4 @@ charter: 1.1
 7. agent-decided — Complete package command is `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`; Build still requires real RED evidence, independent adversarial programs and branch-end review. Green software tests do not validate investment judgments.
 8. agent-decided — W2-01 replaces planned static instruction-contract tests with retained behavioral trials; no accepted outcome changes. Follow skill-creator-advance evaluation-first for this multi-step skill. Native trial contexts do not replace W3-01 actual new-host sessions.
 9. agent-decided — Automatic approval rejected mandatory trunk sync before execution under the no-merge constraint. research/06-trunk-sync-authorization.md records actual side effects, current main delta and diagnostic 180-test PASS. Do not bypass; user authorization is needed for local integration.
+10. agent-decided — User-authorized local sync passed (evidence/build-handoff.md). Round 1 found stale live package-capability descriptions; W3-01 follow-up 1 repairs four surfaces per research/07-package-capability-descriptions.md. Same requirements and episode; preserve historical evidence and installation limits.
