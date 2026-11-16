@@ -40,9 +40,13 @@ Supplementary: "how to resume an interrupted long session" (`長 session`, `長�
 
 ## Summary counts
 
-- Answerable questions (1-8): found 6 (1, 2, 3, 4, 7, 8 partial); missed on the stated wording 2 (5, 6), each recovered only by adding a zh keyword.
-- Absent topics (9, 10): correctly no relevant note, but with 91 and 2 noisy hits.
-- Totals: found 6, partial 1, missed 2 (+2 correct negatives).
+- Answerable questions (1-8): **five fully found** (1, 2, 3, 4, 7); **one
+  partial** (8 — the acronym appears only incidentally and its expansion
+  floods a 665-hit folder name); **two missed on the stated wording** (5, 6),
+  each recovered only by adding a zh keyword.
+- Absent topics (9, 10): correctly no relevant note, but with 91 and 2 noisy
+  hits.
+- Totals: found 5, partial 1, missed 2 (+2 correct negatives).
 
 ## Observed failure classes
 
@@ -53,4 +57,4 @@ Supplementary: "how to resume an interrupted long session" (`長 session`, `長�
 
 ## Conclusion
 
-Direct search suffices when the question shares a literal, distinctive term with the note (tool or product names, and topics whose title is in the query language): 6 of 8 answerable questions succeeded, and both absent topics were correctly not found. The recurring gap is cross-language and synonym retrieval: questions phrased in English or Japanese against Chinese notes missed until the searcher supplied the Chinese term. That gap, not raw recall on literal names, is what would justify a later semantic or multilingual index; the skill's existing instruction to search zh/ja/en keywords mitigates it only when the searcher guesses the note's vocabulary.
+Direct search suffices when the question shares a literal, distinctive term with the note (tool or product names, and topics whose title is in the query language): five of eight answerable questions were found in full and one more was found partially, and both absent topics were correctly not found. The recurring gap is cross-language and synonym retrieval: questions phrased in English or Japanese against Chinese notes missed until the searcher supplied the Chinese term. That gap, not raw recall on literal names, is what would justify a later semantic or multilingual index; the skill's existing instruction to search zh/ja/en keywords mitigates it only when the searcher guesses the note's vocabulary.

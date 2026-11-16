@@ -116,6 +116,22 @@ def test_search_engines_agree_on_multi_word_phrase(tmp_path):
         f"engines disagree: CLI={cli_hits} grep={grep_hits}")
 
 
+def test_search_engines_agree_on_embedded_quote_word(tmp_path):
+    """A word with an embedded `"` must skip the CLI for both engines.
+
+    With a trailing-quote-only guard the word `zzz" OR file:alpha OR "tail`
+    is emitted as operator syntax (`"zzz" OR file:alpha OR "tail"`), which the
+    fake CLI parses into operator hits the grep engine never returns.
+    """
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (vault / "alpha.md").write_text("innocent", encoding="utf-8")
+    (vault / "quote.md").write_text('zzz" OR file:alpha OR "tail', encoding="utf-8")
+    cli_hits, grep_hits = _both(tmp_path, vault, 'zzz" OR file:alpha OR "tail')
+    assert cli_hits == grep_hits == [str(vault / "quote.md")], (
+        f"engines disagree: CLI={cli_hits} grep={grep_hits}")
+
+
 def test_search_engines_agree_on_note_file_type(tmp_path):
     """A non-note file the CLI never indexes must not appear from grep."""
     vault = tmp_path / "vault"

@@ -93,8 +93,8 @@ def test_search_and_locate_leave_vault_unchanged(tmp_path):
     vault fails this test.
     """
     vault = _fixture_vault(tmp_path)
-    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'alpha.md\\nsub/beta.md\\n'\n")
-    closed = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'alpha.md\\nsub/beta.md\\n'\n")
+    closed = _fake_cli(tmp_path, "obsidian-cli-closed", "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
     # Prime the config file the helpers write (identical bytes on every helper
     # call) without running the script, so the snapshot is taken before any
     # shipped script executes.
@@ -103,16 +103,22 @@ def test_search_and_locate_leave_vault_unchanged(tmp_path):
     (config / "obsidian.json").write_text(json.dumps(
         {"vaults": {"v": {"path": str(vault), "open": True}}}))
     before = _snapshot(tmp_path)
-    _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)          # CLI branch
+    # The CLI branch must actually run and return the fake CLI's two notes;
+    # the snapshot after it pins that the successful path stays read-only.
+    first = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)
+    assert first == [str(vault / "alpha.md"), str(vault / "sub" / "beta.md")], first
+    assert _snapshot(tmp_path) == before
     _run_search(tmp_path, vault, "ベクトルDB", cli_bin=closed)    # grep fallback
+    assert _snapshot(tmp_path) == before
     _run_locate(tmp_path)
     assert _snapshot(tmp_path) == before
 
 
-def _run_search(tmp_path, vault, *query, cli_bin=None, on_path=False, open_vault=True):
+def _run_search(tmp_path, vault, *query, cli_bin=None, on_path=False, open_vault=True,
+                registry_value=None):
     config = tmp_path / "config"
     config.mkdir(exist_ok=True)
-    entry = {"path": str(vault)}
+    entry = {"path": registry_value if registry_value is not None else str(vault)}
     if open_vault:
         entry["open"] = True
     (config / "obsidian.json").write_text(json.dumps({"vaults": {"v": entry}}))
@@ -171,9 +177,9 @@ def test_search_output_paths_are_absolute(tmp_path):
         assert line.startswith("/")
 
 
-def _fake_cli(tmp_path, body):
-    """A fake obsidian-cli binary printing `body` verbatim."""
-    fake = tmp_path / "obsidian-cli"
+def _fake_cli(tmp_path, name, body):
+    """A fake obsidian-cli binary at <tmp_path>/<name> printing `body` verbatim."""
+    fake = tmp_path / name
     fake.write_text(body, encoding="utf-8")
     fake.chmod(0o755)
     return fake
@@ -182,7 +188,7 @@ def _fake_cli(tmp_path, body):
 def test_search_cli_branch_accepts_relative_output(tmp_path):
     """The CLI prints vault-relative paths; the accept gate must not require absolute ones."""
     vault = _fixture_vault(tmp_path)
-    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'sub/beta.md\\nalpha.md\\n'\n")
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'sub/beta.md\\nalpha.md\\n'\n")
     out = _run_search(tmp_path, vault, "ベクトルDB", cli_bin=cli)
     assert out == [str(vault / "sub" / "beta.md"), str(vault / "alpha.md")]
 
@@ -190,9 +196,30 @@ def test_search_cli_branch_accepts_relative_output(tmp_path):
 def test_search_cli_closed_vault_falls_back_to_grep(tmp_path):
     """A CLI that reports no open vault falls through to the grep engine."""
     vault = _fixture_vault(tmp_path)
-    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
     out = _run_search(tmp_path, vault, "ベクトルDB", cli_bin=cli, on_path=True)
     assert out == [str(vault / "sub" / "beta.md")]
+
+
+def test_search_open_vault_registry_newline_falls_back_to_grep(tmp_path):
+    """A registry open-vault path ending in a newline must not open the CLI branch.
+
+    Command substitution strips the trailing newline, so the stripped value
+    equals the requested vault although the registry never named that exact
+    string; the entry must be dropped and the grep engine must answer.
+    """
+    vault = _fixture_vault(tmp_path)
+    args_file = tmp_path / "cli-args-newline.txt"
+    body = (
+        "#!/bin/sh\n"
+        'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
+        "printf 'alpha.md\\n'\n"
+    )
+    cli = _fake_cli(tmp_path, "obsidian-cli", body)
+    out = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli,
+                      registry_value=str(vault) + "\n")
+    assert out == [str(vault / "alpha.md")], out
+    assert not args_file.exists(), "a registry value with a control char must not reach the CLI"
 
 
 def test_search_empty_word_alone_returns_empty(tmp_path):
@@ -213,7 +240,7 @@ def test_search_mixed_empty_and_real_words_uses_real_only(tmp_path):
 
 def test_search_cli_error_line_never_printed_as_path(tmp_path):
     vault = _fixture_vault(tmp_path)
-    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'alpha.md\\nError: Missing required parameter: query\\n'\n")
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'alpha.md\\nError: Missing required parameter: query\\n'\n")
     out = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)
     assert out == [str(vault / "alpha.md")]
     assert not any("Error" in line for line in out)
@@ -247,7 +274,7 @@ def test_search_cli_query_encodes_each_word_as_quoted_phrase(tmp_path):
         'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
         "printf 'alpha.md\\n'\n"
     )
-    cli = _fake_cli(tmp_path, body)
+    cli = _fake_cli(tmp_path, "obsidian-cli", body)
     out = _run_search(tmp_path, vault, "vector database", "file:alpha", cli_bin=cli)
     assert out == [str(vault / "alpha.md")]
     recorded = args_file.read_text().splitlines()
@@ -262,7 +289,7 @@ def test_search_grep_only_matches_md_files(tmp_path):
     """
     vault = _fixture_vault(tmp_path)
     (vault / "config.yaml").write_text("DuckDB settings", encoding="utf-8")
-    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    cli = _fake_cli(tmp_path, "obsidian-cli", "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
     out = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)
     assert out == [str(vault / "alpha.md")], out
 
@@ -283,10 +310,31 @@ def test_search_word_with_double_quote_falls_back_to_grep(tmp_path):
         'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
         "printf 'alpha.md\\n'\n"
     )
-    cli = _fake_cli(tmp_path, body)
+    cli = _fake_cli(tmp_path, "obsidian-cli", body)
     out = _run_search(tmp_path, vault, 'said "hi"', cli_bin=cli)
     assert out == [str(vault / "quote.md")], out
     assert not args_file.exists(), "an unencodable word must never be handed to the CLI"
+
+
+def test_search_word_with_embedded_quote_falls_back_to_grep(tmp_path):
+    """A double quote anywhere in a word — not only a trailing one — bars the CLI.
+
+    The guard must route every quote-bearing word to the grep engine: with an
+    embedded quote the remainder is parsed as operator syntax
+    (`zzz" OR file:alpha OR "tail`), not one literal phrase.
+    """
+    vault = _fixture_vault(tmp_path)
+    (vault / "quote.md").write_text('zzz" OR file:alpha OR "tail', encoding="utf-8")
+    args_file = tmp_path / "cli-args-embedded.txt"
+    body = (
+        "#!/bin/sh\n"
+        'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
+        "printf 'alpha.md\\n'\n"
+    )
+    cli = _fake_cli(tmp_path, "obsidian-cli", body)
+    out = _run_search(tmp_path, vault, 'zzz" OR file:alpha OR "tail', cli_bin=cli)
+    assert out == [str(vault / "quote.md")], out
+    assert not args_file.exists(), "a quote-bearing word must never be handed to the CLI"
 
 
 def _run_hook(tmp_path, env_vault=None, vaults=None):

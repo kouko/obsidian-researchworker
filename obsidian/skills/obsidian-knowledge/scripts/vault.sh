@@ -24,6 +24,18 @@ config_dir() {
     fi
 }
 
+# Read one registry value without lossy capture. Exit 2 when the key is absent,
+# exit 1 when the value spans lines: plutil raw output always ends in exactly
+# one newline, so a value that itself contains one shows up as a leftover line,
+# which command substitution would strip silently and accept as the value.
+plutil_raw() {
+    plutil -extract "$1" raw -o - "$2" 2>/dev/null | {
+        IFS= read -r v || exit 2
+        IFS= read -r extra && exit 1
+        printf '%s\n' "$v"
+    }
+}
+
 # Emit each registry candidate, newest ts first.
 plutil_vaults() {
     file=$1
@@ -31,9 +43,11 @@ plutil_vaults() {
         | grep -oE '"[^"]+":\{' | sed 's/"//g;s/:{$//')
     [ -n "$ids" ] || return 0
     for id in $ids; do
-        path=$(plutil -extract "vaults.$id.path" raw -o - "$file" 2>/dev/null) \
-            || continue
-        ts=$(plutil -extract "vaults.$id.ts" raw -o - "$file" 2>/dev/null)
+        path=$(plutil_raw "vaults.$id.path" "$file") || continue
+        ts=$(plutil_raw "vaults.$id.ts" "$file")
+        # A ts that itself spanned lines is a malformed entry, not a missing
+        # one: drop it rather than fall back to 0 and keep the entry.
+        [ $? -eq 1 ] && continue
         [ -n "$ts" ] || ts=0
         # One entry prints as one `ts path` line; a control character in either
         # field can split it into extra lines that would become vault paths the
@@ -142,7 +156,7 @@ do_search() {
         for id in $(plutil -extract vaults json -o - "$reg" 2>/dev/null \
                 | grep -oE '"[^"]+":\{' | sed 's/"//g;s/:{$//'); do
             [ "$(plutil -extract "vaults.$id.open" raw -o - "$reg" 2>/dev/null)" = "true" ] || continue
-            open_vault=$(plutil -extract "vaults.$id.path" raw -o - "$reg" 2>/dev/null)
+            open_vault=$(plutil_raw "vaults.$id.path" "$reg")
             break
         done
     fi
@@ -157,7 +171,7 @@ do_search() {
             # operator syntax (measured), and the CLI accepts no backslash
             # escape -- so that query is unencodable and the grep engine answers.
             case $w in
-                *\") query=""; break ;;
+                *\"*) query=""; break ;;
             esac
             [ -z "$query" ] && query="\"$w\"" || query="$query OR \"$w\""
         done

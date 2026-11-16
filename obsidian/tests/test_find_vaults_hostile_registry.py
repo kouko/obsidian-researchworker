@@ -60,6 +60,23 @@ def test_find_vaults_newline_plus_real_dir_never_splits_into_two(tmp_path):
     assert lines == [], lines
 
 
+# concern: command substitution strips a trailing newline before the
+# control-char guard runs, so an existing directory whose registry value ends
+# in a newline is accepted as that directory although the registry never
+# named it
+def test_find_vaults_trailing_newline_after_existing_dir_dropped(tmp_path):
+    """A registry path `<existing dir>\\n` must contribute no vault at all.
+
+    plutil raw output for that value ends in two newlines: the value's own and
+    the extractor's terminator; capturing it with command substitution leaves
+    the clean directory name, which the guard then accepts.
+    """
+    real = tmp_path / "real"
+    real.mkdir()
+    lines = _run(tmp_path, {"a": {"path": f"{real}\n", "ts": 1}}, tmp_path)
+    assert lines == [], lines
+
+
 # concern: a control character in `ts` is printed on the same entry line as the
 # path; a whole-entry control-char check must drop the entry, not just its path
 def test_find_vaults_control_char_in_ts_does_not_forge_a_path(tmp_path):
