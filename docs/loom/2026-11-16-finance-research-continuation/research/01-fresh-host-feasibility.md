@@ -42,6 +42,13 @@ that local evidence can settle. No external exploratory search was needed yet.
   `gpt-6.1-sol`, reasoning effort `low`, and no explicit `model_provider` key.
   No credentials, provider secret, auth file or full configuration was printed.
   A missing explicit provider is not by itself proof of actual routing.
+- A further allowlisted routing inspection on 2026-11-16 observed no explicit
+  provider override or selected-provider configuration and no nonempty
+  `OPENAI_BASE_URL`, `OPENAI_API_BASE`, `OPENAI_API_KEY`, `CODEX_HOME` or
+  `CODEX_MODEL_PROVIDER` environment variables. Only presence booleans were
+  printed for environment values. The local selection remains a first-party
+  ChatGPT-authenticated candidate; these negative local checks still do not
+  prove the provider/model of a request that has not run.
 - Local CLI startup warned it could not create PATH aliases (`Operation not
   permitted (os error 1)`) but returned help/auth/version output. Whether that
   warning affects model execution is untested; preserve it, do not treat it as

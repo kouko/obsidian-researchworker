@@ -25,9 +25,12 @@ charter: 1.1
 - Risk: agent-decided — REQ-1–5: use actual isolated behavioral trials before/with the skill instead of permanent tests mirroring instruction text. Keep methods in the skill, private settings local, horizon conventions explicit, and SEC reading coverage distinct from file acquisition.
 
 **W2-02 Exercise integrated continuation and restore boundaries**  after: W2-01  acceptance: 1, 2, 3, 4, 5
-- Files: obsidian-finance/tests/test_research_continuation.py, docs/loom/2026-11-16-finance-research-continuation/evidence/integration.md
+- Files: obsidian-finance/tests/test_research_continuation.py, obsidian-finance/scripts/research_store.py (integration defects only), obsidian-finance/tests/test_research_publication.py (affected recovery regressions), obsidian-finance/README.md (affected contract only), docs/loom/2026-11-16-finance-research-continuation/evidence/integration.md
 - Test: A1 positive: cold-folder-discovery; boundary: no-conversation-state. A2 positive: adjacent-quarter-increment; negative: amended-dependency-reuse. A3 positive: unchanged-repeat; boundary: timestamps-only. A4 positive: source-cutoff-history; negative: future-market-input. A5 positive: interrupted-restore; boundary: user-edit-never-overwritten.
+- Test: A1/A2 boundary: two non-Apple issuers, independent question sets, different fiscal calendars and equal local source IDs; one issuer's change must not invalidate the other. Same calendar endpoints must retain different declared fiscal identities.
 - Risk: agent-decided — REQ-1–5: isolate real research fixtures; helper tests prove file/state mechanics only. Retain old reports and failure evidence. Use substantive checks at publication without mistaking existence, hashes, generic prose or command success for completed investment analysis.
+- Risk: agent-decided — Acceptance 5: repair the reproduced shared-target/run-identity defect after W2-01 freezes end. Preserve both runs and drafts. research/04-publication-run-identity.md records reproduction, class sweep and continuity; W1-02 history remains applicable.
+- Risk: user-reiterated, 2026-11-16 — AAPL remains a validation case. Static scripts/skills inspection found no Apple runtime branch; dynamic cross-company verification remains required. The equities-only adapter is not ETF/commodity/FX support; Stage G retains those obligations.
 
 ### Wave 3 — Actual host and research validation
 
