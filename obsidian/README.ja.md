@@ -20,7 +20,7 @@
 
 ## Version
 
-4.1.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+4.2.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
 
 Vault 初期設定は、個人に合わせた命名・ノート品質・現行 skill の規則を
 `AGENTS.md` にまとめ、`CLAUDE.md` は `@AGENTS.md` と末尾の改行だけにする。
@@ -41,6 +41,7 @@ wikilink は保持し、既存 vault の出力や設定は変更しない。切�
 [移行ガイド](../docs/migration.md)を確認すること。[検証記録](../docs/verification.md)の
 記録リビジョンでは隔離した Codex ローカルソース導入に成功したが、skill 実行と
 ノート作成は未達。他 host とリモート導入は未検証。
+4.2.0 で `obsidian-knowledge` に改名し、同梱の読み取り専用シェルスクリプトで検索する（編集の Grep/Glob は不要。skill 数は 15 のまま）。
 
 ## 背景
 
@@ -82,6 +83,7 @@ move か edit のみ。振り分け先が曖昧な場合は確認を取る。
 | `obsidian-vault-setup` | 対話型 vault 初期設定 — 自由記述の回答から role と scope を推定 |
 | `obsidian-tldr` | 会話の要約を vault に保存し、`memory.md` を更新 |
 | `obsidian-research` | トピックを web 調査（英語＋日本語、テーマ固有の言語があればそれを主に追加）し、目次付きの研究ノートを `research/` に保存 |
+| `obsidian-knowledge` | 任意の project からローカル vault を検索（読み取り専用）。SessionStart hook が各 session に vault の場所を伝える。Grep/Glob 不要 |
 | `obsidian-file-intel` | PDF / PPTX / XLSX / DOCX / CSV / JSON を Gemini で抽出し、Obsidian-ready な要約を生成 |
 | `dashboard-design` | デジタル庁ダッシュボード設計ガイドラインに基づき、要件整理から layout までを引導 |
 
@@ -128,6 +130,13 @@ npm install -g defuddle
 スクリプトは同梱されず、取得・セットアップ手順も本配布にはない。
 既存の互換スクリプトがなければ処理は利用できず、独立版での設定と実行は未検証。
 
+`obsidian-knowledge` skill は他の project から vault を読む。SessionStart hook
+（`hooks/hooks.json`）が session 開始時に vault のパスを出力する。検索は同梱の `skills/obsidian-knowledge/scripts/vault.sh`（POSIX sh。Obsidian 起動中は CLI、それ以外は BSD grep）を使う — macOS で Python も Grep/Glob も不要。vault の読み取りで
+許可確認が出る場合は、`~/.claude/settings.json` → `permissions.allow` に読み取り
+ルールを 1 行追加する（例：`Read(~/Documents/MyVault/**)`）。skill が正確な行を示し、
+同意を得てから追加する。プライバシー：skill が読んだノート本文はモデル提供者に送信
+される。対応状況：Claude Code の macOS は検証済、Linux は未検証、Windows は非対応。
+
 ## Usage
 
 一日を始める：
@@ -162,9 +171,10 @@ note 内に図を描く：
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata、version 4.1.0
+│   └── plugin.json              # plugin metadata、version 4.2.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 保守 agent
+├── hooks/                       # SessionStart vault pointer
 ├── skills/
 │   ├── README.md                # skill 別 attribution 表
 │   ├── using-obsidian/          # router（original）
@@ -172,6 +182,7 @@ obsidian/
 │   ├── obsidian-vault-setup/    # vault 初期設定（original）
 │   ├── obsidian-tldr/           # 会話要約（original）
 │   ├── obsidian-research/       # web research → vault note（original）
+│   ├── obsidian-knowledge/      # 読み取り専用 vault 検索（original）
 │   ├── obsidian-file-intel/     # ファイル → Obsidian 要約（original）
 │   ├── dashboard-design/        # ダッシュボード設計（original）
 │   ├── obsidian-markdown/       # kepano から import

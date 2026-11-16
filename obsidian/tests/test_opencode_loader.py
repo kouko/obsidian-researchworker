@@ -50,7 +50,7 @@ for (const skill of first.skills) {
 
 
 def test_shipped_skills_and_slash_commands():
-    run_loader(ROOT, 14)
+    run_loader(ROOT, 15)
 
 
 def test_skill_without_description_is_not_registered(tmp_path):

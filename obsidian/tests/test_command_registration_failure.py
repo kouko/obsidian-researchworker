@@ -21,7 +21,7 @@ await plugin.setup({
   session: {prompt: async () => {}},
 });
 assert.equal(rejected, true);
-assert.equal(accepted.length, 13);
+assert.equal(accepted.length, 14);
 assert.ok(accepted.every(name => name.startsWith("obsidian:")));
 '''
     subprocess.run(

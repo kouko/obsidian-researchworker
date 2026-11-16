@@ -4,7 +4,7 @@
   "plugins": [{
     "name": "obsidian",
     "source": "./obsidian",
-    "version": "4.1.0",
-    "description": "14 Obsidian skills for notes, research and diagrams, extracted from Monkey Skills."
+    "version": "4.2.0",
+    "description": "15 Obsidian skills for notes, research, diagrams and local vault search from any project, extracted from Monkey Skills."
   }]
 }
