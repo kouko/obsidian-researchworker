@@ -54,6 +54,47 @@ releases, inflation, external balances and positioning on their own availability
 dates. Do not treat a real effective-rate index as a directly tradable pair,
 an unchanged historical vintage or an automatic equilibrium fair value.
 
+## Bounded FX numerical case
+
+The [Fed H.10 release dated July 1, 2024](https://www.federalreserve.gov/releases/h10/20240701/)
+reports June 24–28 observations, explicitly in currency units per USD except
+asterisked currencies. Its yen row rises from 159.7100 to 160.8800 JPY/USD.
+Decimal calculation gives USD appreciation in JPY of 0.7326%, but JPY
+depreciation in USD of -0.7273%; reciprocal returns are not exact arithmetic
+negatives. These are reference-price changes, not funded trading returns.
+
+The [retained selected evidence](../pilots/additional-assets-v1/fx-reference-evidence.json)
+also rejects this July 1 document as an input to a June 28 reconstruction,
+despite its earlier observation dates, and accepts it at a July 2 cutoff.
+`ND` remains missing rather than zero or an implicit forward fill. Corporate
+P/E and cash-flow valuation are refused for this currency pair. The release
+header, units, yen row and missing-value legend were read; raw HTML was not
+retained. Macro evidence, instrument costs, horizon conclusions and independent
+research review remain pending; this does not complete the FX investment case.
+
+## Bounded commodity delivery case
+
+The [EIA article actually dated April 27, 2020](https://www.eia.gov/TodayinEnergy/detail.php?id=43495)
+supports an April 28 reconstruction of negative May-contract prices and delivery
+constraints. Its tank inventory/capacity figures imply 76% occupancy after
+rounding; unused physical space is not necessarily uncommitted storage. The
+[selected evidence](../pilots/additional-assets-v1/wti-delivery-evidence.json)
+separately excludes a November CFTC audit and distinguishes intraday low from
+settlement. Negative values are retained; log returns and a prospective purchase
+of an expired contract are refused. This is not a verified rolling strategy.
+
+## Bounded ETF tracking case
+
+SPY's [original annual report](https://www.sec.gov/Archives/edgar/data/884394/000119312524266771/d814670dn30d.htm)
+reports 36.15% NAV total return versus 36.35% benchmark return, a -0.20
+percentage-point difference. This is not tracking-error volatility or executable
+market-price return. The [filing index](https://www.sec.gov/Archives/edgar/data/884394/000119312524266771/0001193125-24-266771-index.html)
+dates publication to November 27, after the September 30 report endpoint.
+[Selected evidence](../pilots/additional-assets-v1/etf-tracking-evidence.json)
+therefore excludes this document at September 30. Mandate, holdings, liquidity
+and complete investment analysis remain pending; no current fee or return claim
+is inferred from the historical report.
+
 ## Required next evidence before Stage G can pass
 
 For each asset class, select one identified instrument and fixed information

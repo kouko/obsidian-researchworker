@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "asset_class": "commodity",
+  "instrument": "NYMEX WTI May 2020 futures; not spot, Brent, rolling fund or producer equity",
+  "analysis_cutoff": "2020-04-28",
+  "status": "bounded-method-case",
+  "eligible_source": {
+    "url": "https://www.eia.gov/TodayinEnergy/detail.php?id=43495",
+    "publication_date": "2020-04-27",
+    "locators": [
+      "Article header",
+      "Negative-price and physical-delivery paragraphs",
+      "Cushing storage paragraphs"
+    ],
+    "values": {
+      "april20_intraday_low_usd_per_barrel": "-40.32",
+      "april17_total_inventory_million_barrels": "60",
+      "in_transit_million_barrels": "2",
+      "tank_inventory_million_barrels": "58",
+      "working_capacity_million_barrels": "76",
+      "published_fill_percent": "76"
+    },
+    "reading": "Article body inspected; charts not independently digitized",
+    "raw_html_retained": false
+  },
+  "calculations": {
+    "tank_fill_percent_unrounded": "76.31578947368421052631578947",
+    "physical_unfilled_million_barrels": "18",
+    "uncommitted_capacity": null
+  },
+  "excluded_later_audit": {
+    "url": "https://www.cftc.gov/PressRoom/PressReleases/8315-20",
+    "publication_date": "2020-11-23",
+    "april20_settlement_usd_per_barrel": "-37.63",
+    "reason": "Later staff-release evidence, not eligible April28 input; settlement and intraday low are different observations",
+    "reading": "Release body inspected, not full linked staff report"
+  },
+  "model_refusals": [
+    "Negative prices are retained, not replaced with zero",
+    "Log returns are undefined across positive-to-negative prices; no forced CAGR",
+    "Physical unfilled space is not uncommitted storage",
+    "An expired May contract cannot be a prospective April28 buy recommendation",
+    "Producer equity, later contracts and rolling-fund returns are different exposures"
+  ],
+  "failure_handling": [
+    "Missing historical contract prices remain missing; do not substitute generic spot series",
+    "Missing delivery/storage/margin terms prevent an executable strategy conclusion"
+  ],
+  "complete_investment_case": false,
+  "independent_research_review": "pending"
+}
