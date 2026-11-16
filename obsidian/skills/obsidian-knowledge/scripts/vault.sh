@@ -149,33 +149,48 @@ do_search() {
     if [ -n "$cli" ] && [ "$open_vault" = "$vault" ]; then
         query=""
         for w in "$@"; do
-            [ -z "$query" ] && query=$w || query="$query OR $w"
+            # Quote each word so the CLI reads it as a literal phrase. A bare
+            # word with a space is AND-of-terms and a `file:`/`path:` prefix is
+            # an operator; the grep fallback below matches fixed strings only,
+            # so quoting is what makes both engines read the same words alike.
+            # A `"` inside a word ends the phrase and the rest is parsed as
+            # operator syntax (measured), and the CLI accepts no backslash
+            # escape -- so that query is unencodable and the grep engine answers.
+            case $w in
+                *\") query=""; break ;;
+            esac
+            [ -z "$query" ] && query="\"$w\"" || query="$query OR \"$w\""
         done
-        out=$("$cli" search "query=$query" "vault=$vault" 2>/dev/null) || out=""
-        if [ -n "$out" ] && ! printf '%s\n' "$out" | grep -q "Vault not found" \
-           && ! printf '%s\n' "$out" | grep -q "No matches found"; then
-            printf '%s\n' "$out" | while read -r rel; do
-                case $rel in
-                    Error:*|*": "*) continue ;;
-                    [!/]*) ;;
-                    *) continue ;;
-                esac
-                [ -n "$rel" ] || continue
-                # Same dot-component filter as the grep fallback: drop any
-                # relative path with a dot-prefixed component (.., .obsidian,
-                # .claudian, .trash) so both engines return the same hit set
-                # and no traversal line can become a printed note path.
-                printf '%s\n' "$rel" | awk '{ n=split($0, a, "/"); for (i=1;i<=n;i++) if (substr(a[i],1,1)==".") next; print }' \
-                    | while read -r safe; do
-                        printf '%s/%s\n' "$vault" "$safe"
-                    done
-            done
-            return 0
+        if [ -n "$query" ]; then
+            out=$("$cli" search "query=$query" "vault=$vault" 2>/dev/null) || out=""
+            if [ -n "$out" ] && ! printf '%s\n' "$out" | grep -q "Vault not found" \
+               && ! printf '%s\n' "$out" | grep -q "No matches found"; then
+                printf '%s\n' "$out" | while read -r rel; do
+                    case $rel in
+                        Error:*|*": "*) continue ;;
+                        [!/]*) ;;
+                        *) continue ;;
+                    esac
+                    [ -n "$rel" ] || continue
+                    # Same dot-component filter as the grep fallback: drop any
+                    # relative path with a dot-prefixed component (.., .obsidian,
+                    # .claudian, .trash) so both engines return the same hit set
+                    # and no traversal line can become a printed note path.
+                    printf '%s\n' "$rel" | awk '{ n=split($0, a, "/"); for (i=1;i<=n;i++) if (substr(a[i],1,1)==".") next; print }' \
+                        | while read -r safe; do
+                            printf '%s/%s\n' "$vault" "$safe"
+                        done
+                done
+                return 0
+            fi
         fi
     fi
 
+    # Fixed-string match per word, notes only: the CLI indexes `.md` files, so
+    # a non-note file grep could return would make the hit set depend on which
+    # engine ran.
     for w in "$@"; do
-        grep -rliF -e "$w" --exclude-dir=.obsidian --exclude-dir=.trash "$vault" 2>/dev/null
+        grep -rliF -e "$w" --include='*.md' --exclude-dir=.obsidian --exclude-dir=.trash "$vault" 2>/dev/null
     done | awk -v v="$vault/" '{ p=substr($0, length(v)+1); n=split(p, a, "/"); for (i=1;i<=n;i++) if (substr(a[i],1,1)==".") next; print }' | sort -u
     return 0
 }

@@ -205,6 +205,63 @@ def test_search_grep_skips_hidden_directories(tmp_path):
     assert not any(".claudian" in line for line in out)
 
 
+def test_search_cli_query_encodes_each_word_as_quoted_phrase(tmp_path):
+    """Each query word must reach the CLI as a double-quoted literal phrase.
+
+    The CLI reads a bare multi-word query as AND-of-terms and `file:` /
+    `path:` prefixes as operators; only a quoted phrase is a literal. The
+    grep fallback always matches fixed strings, so quoting is what makes the
+    two engines interpret the same words the same way.
+    """
+    vault = _fixture_vault(tmp_path)
+    args_file = tmp_path / "cli-args.txt"
+    body = (
+        "#!/bin/sh\n"
+        'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
+        "printf 'alpha.md\\n'\n"
+    )
+    cli = _fake_cli(tmp_path, body)
+    out = _run_search(tmp_path, vault, "vector database", "file:alpha", cli_bin=cli)
+    assert out == [str(vault / "alpha.md")]
+    recorded = args_file.read_text().splitlines()
+    assert 'query="vector database" OR "file:alpha"' in recorded, recorded
+
+
+def test_search_grep_only_matches_md_files(tmp_path):
+    """The grep fallback must not return non-note files the CLI never indexes.
+
+    The Obsidian CLI indexes only `.md` notes; a `.yaml` hit returned only by
+    grep makes the result set depend on which engine ran.
+    """
+    vault = _fixture_vault(tmp_path)
+    (vault / "config.yaml").write_text("DuckDB settings", encoding="utf-8")
+    cli = _fake_cli(tmp_path, "#!/bin/sh\nprintf 'Vault not found.\\n'\n")
+    out = _run_search(tmp_path, vault, "DuckDB", cli_bin=cli)
+    assert out == [str(vault / "alpha.md")], out
+
+
+def test_search_word_with_double_quote_falls_back_to_grep(tmp_path):
+    """A word the CLI cannot hold inside a phrase must not reach the CLI bare.
+
+    Measured on the real CLI: a `"` inside the query ends the phrase and the
+    remainder is parsed as operator syntax (`"zzz" OR "file:alpha"` returned
+    operator hits). Such a word makes the query unencodable, so the CLI branch
+    is skipped and the fixed-string grep engine answers.
+    """
+    vault = _fixture_vault(tmp_path)
+    (vault / "quote.md").write_text('he said "hi" twice', encoding="utf-8")
+    args_file = tmp_path / "cli-args.txt"
+    body = (
+        "#!/bin/sh\n"
+        'printf \'%s\\n\' "$@" >> "' + str(args_file) + '"\n'
+        "printf 'alpha.md\\n'\n"
+    )
+    cli = _fake_cli(tmp_path, body)
+    out = _run_search(tmp_path, vault, 'said "hi"', cli_bin=cli)
+    assert out == [str(vault / "quote.md")], out
+    assert not args_file.exists(), "an unencodable word must never be handed to the CLI"
+
+
 def _run_hook(tmp_path, env_vault=None, vaults=None):
     if vaults is not None:
         config = tmp_path / "config"
