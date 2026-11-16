@@ -398,7 +398,7 @@ review. No live new-tool acquisition, host installation or full research is veri
 |---|---|---|
 | A: definition and evidence | Completed locally within the bounded research gate | Method/report research, Apple two-quarter examples, source/coverage and unknowns recorded in pilots/apple-2024q2-q3/STAGE-A-COMPLETION.md; horizons remain labeled pilot conventions |
 | B: minimal transplant | Accepted locally in the conversation | Accepted acquisition HEAD 08f65d9: 99 package tests and independent review; genuine-contact/fresh-host limits remain explicit |
-| C: small equity case | Report examples prepared; runtime behavior not implemented | Stage A drafts are not completed investment cases or automatic work selection/resumption; price, valuation and independent evidence gaps remain |
+| C: small equity case | In progress: examples, valuation diagnostics and Q2/Q3 operating supplements; read-only local work assessor accepted | Base 0462b01 preserves accepted runtime evidence. Actual before/after/repeat supplied-file assessment now demonstrates bounded checkpoint reuse; full discovery/execution, independent research acceptance and investment evidence remain incomplete |
 | D: industry contrasts | Not started | Candidate companies proposed; selected periods not yet chosen |
 | E: historical expansion | Not started | Twenty-year target remains; complete quarterly availability unproven |
 | F: ongoing research | Not started | No host chosen or finance plugin installed |
@@ -513,3 +513,41 @@ These are research fixtures, not a production forecast or implemented updater.
 Short/medium/long ratings remain insufficient_evidence. Stage C runtime,
 cross-session recovery, long-horizon calibration and cross-industry validation
 remain pending; no accepted acquisition attestation or existing note is replaced.
+
+### Goal continuation and Q3 operating evidence, 2026-11-16
+
+The user's active Goal preserves the complete A-G outcome; it is not satisfied
+by the already accepted read-only assessor or this research batch. Work continues
+on isolated branch `docs/2026-11-16-finance-stage-c-pilot` from accepted 0462b01.
+The [Q3 continuation record](pilots/apple-2024q2-q3/continuation-pilot/RUN.md)
+and linked inputs/results retain actual partial before/after/repeat assessments.
+Twenty-eight self-check assertions passed; all three assessors returned exit 2.
+The completed operating supplement is reusable under supplied evidence, while
+valuation and consensus work stay pending. No fresh agent or host session ran.
+
+Agent-decided research choices:
+
+- Derive the seasonal FY2023 Q4 base from original annual less original nine
+  months. Reject later comparative rows and subtraction of EPS or average shares;
+  retain original accession/duration rows in reported-inputs.json.
+- Use the August 1 call's September outlook rather than copying May guidance.
+  The inspected [contemporaneous call report](https://www.macrumors.com/2024/08/01/apple-3q-2024-earnings/)
+  at 2:23 pm provides 45.5-46.5% margin, $14.2-14.4bn expenses and about 16.5%
+  tax. It remains secondary evidence, not an issuer transcript.
+- Choose local 3/5/7% revenue and 12/14/16% services sensitivity coordinates
+  around that qualitative outlook; reject presenting them as company guidance,
+  calibrated probabilities or a five-year earnings path.
+- Retain the June 14 [Rakuten analyst article](https://media.rakuten-sec.net/articles/-/45520)
+  only as a dated individual expectation eligible for Q3. It is too late for
+  Q2 and cannot substitute for broad independent consensus.
+- Keep local 2026-authored assumptions as analysis metadata rather than inventing
+  2024 publication dates. The assessor currently covers declared source/output
+  identity only; manual file hashes do not imply recursive dependency tracking.
+
+Remaining Stage C work: independent semantic challenge of the integrated two-
+quarter case; explicit unresolved valuation/model evidence; and the authorized
+software station for actual folder discovery and research continuation rather
+than just a hand-prepared normalized snapshot. Stage F additionally requires
+real new-host sessions, source freshness, user-edit protection and rollback.
+The existing two-attestation branch attribution ambiguity remains unconfirmed;
+accepted evidence is preserved. Stages D-G are not claimed complete.
