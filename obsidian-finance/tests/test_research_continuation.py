@@ -1,3 +1,4 @@
+# concern: unreviewed fiscal quarters and interrupted publications must remain discoverable without losing independent research.
 """Folder integration, not research-quality or fresh-host acceptance tests.
 
 Non-Apple records below are invented mechanical fixtures, not issuer facts.
