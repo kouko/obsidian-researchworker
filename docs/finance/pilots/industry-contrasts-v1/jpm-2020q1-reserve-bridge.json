@@ -5,7 +5,7 @@
   "cutoff": "2020-04-14T23:59:59-04:00",
   "source": {
     "url": "https://jpmorganchaseco.gcs-web.com/static-files/9dfecfe4-da07-4563-88c4-ce0fa236b046",
-    "role": "Issuer-hosted 44-page 8-K export with exhibits; original accession not independently bound",
+    "role": "Issuer-hosted 44-page 8-K export; subsequent SEC index, cover and selected original exhibit fields independently checked",
     "report_date": "2020-04-14",
     "locators": [
       "Web PDF page index13 (14th PDF page; printed supplement page1), selected income data",
@@ -46,8 +46,30 @@
     "Loan/commitment bridge is not every credit-loss category; unexplained residual9 stays unresolved",
     "Capital transition adjustments prevent direct comparison of headline CET1 across regimes",
     "Loss provision is not cash chargeoffs or distributable cash",
-    "Original accession, full funding/capital review and valuation remain pending"
+    "Full funding/capital review and valuation remain pending; original accession binding is now verified"
   ],
   "stage_d_complete": false,
-  "independent_review": "pending"
+  "independent_review": "pending",
+  "sec_binding": {
+    "accession": "0000019617-20-000280",
+    "filing_date": "2020-04-14",
+    "accepted_as_displayed": "2020-04-14 06:43:57",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/0000019617-20-000280-index.htm",
+    "cover_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/a1q20erf8kcover.htm",
+    "exhibit_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/a1q20erfexhibit992supp.htm",
+    "exhibit": "99.2",
+    "selected_cross_checks": [
+      "Loan allowance beginning17295 and ending23244",
+      "Commitment allowance ending2147",
+      "Reported credit-loss provision8285 and net income2865"
+    ],
+    "full_original_reading": false,
+    "raw_html_retained": false,
+    "period_of_report_event_date": "2020-04-14",
+    "date_semantics": "8-K event/report date is not the financial quarter end; exhibit identity and March31 balance/credit columns support the Q1 case"
+  },
+  "prior_probe_limits_retained": [
+    "Initial issuer-PDF probe had not independently bound the original accession; this was resolved by subsequent SEC index/cover/exhibit inspection",
+    "PDF screenshots failed with Cache miss; full visual review remains unverified"
+  ]
 }
