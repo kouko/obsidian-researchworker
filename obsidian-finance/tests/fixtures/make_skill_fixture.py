@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import sys
 
-REPO = Path(__file__).resolve().parents[5]
+REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "obsidian-finance/tests"))
 from test_research_store import sample, put, load, CUTOFF
 from test_research_publication import proposal

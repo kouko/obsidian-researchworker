@@ -13,7 +13,9 @@ Missing scope requires a focused question; already supplied scope is reused.
 No further user interview or technical-plan approval is required by the
 confirmed decisions. Evaluation uses the full path for this multi-step skill.
 
-The system `python3` could not import pytest when running `make_fixture.py`.
+The system `python3` could not import pytest when running the original
+`evidence/skill-eval/make_fixture.py` (now
+`obsidian-finance/tests/fixtures/make_skill_fixture.py`).
 No package was installed. The existing `/private/tmp/finance-validation-env/bin/python`
 has pytest and successfully generated all three preparation fixtures. The
 generator reuses existing test fixture helpers; it is not a product entry point.

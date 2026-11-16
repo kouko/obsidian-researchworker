@@ -33,7 +33,7 @@ Recreate a root from the repository with an existing pytest environment:
 
 ```sh
 /private/tmp/finance-validation-env/bin/python \
-  docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/make_fixture.py \
+  obsidian-finance/tests/fixtures/make_skill_fixture.py \
   missing /private/tmp/new-isolated-finance-root
 ```
 
@@ -58,3 +58,20 @@ made the skill/reference available and requested reading/applying them. ROOT
 and RESULT are the only task substitutions; no expected assertions were given
 to the executor. The author graded retained behavior inline, not as an
 independent closing reviewer.
+
+## Fixture placement follow-up 1
+
+The executable benchmark helper was moved from this reserved evidence store to
+`obsidian-finance/tests/fixtures/make_skill_fixture.py`; only its repository-root
+lookup changed (`parents[5]` to `parents[3]`). It remains a real fixture CLI,
+not a probe. Original preparation failures and trial outputs were preserved.
+At repository revision `d2dd22b`, the existing interpreter generated fresh
+`missing`, `noop` and `conflict` roots before and after the move: all six
+commands exited 0. Relative file sets matched, and direct byte comparisons
+matched every file: 11 missing-case files, 8 no-op files and 10 conflict files
+(29 total). This verifies placement equivalence, not a new behavioral trial or
+final package/adversarial acceptance.
+
+Full commands, stdout/stderr, before hashes and per-file byte-comparison results
+remain outside the evidence store at
+`/private/tmp/finance-fixture-placement-zbmc7cxj/equivalence-proof.json`.

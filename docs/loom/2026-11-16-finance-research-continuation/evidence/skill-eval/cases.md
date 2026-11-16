@@ -5,7 +5,8 @@ confirmed continuation spec's missing-work, false-freshness and user-edit risks.
 They use synthetic local fixtures, not investment evidence. No network, installed
 host, external provider, private notes or added spend is involved.
 
-Each run receives a fresh isolated copy made by `make_fixture.py CASE ROOT`.
+Each run receives a fresh isolated copy made from the repository root by
+`obsidian-finance/tests/fixtures/make_skill_fixture.py CASE ROOT`.
 Run from the repository root with existing Python/pytest available. Each run uses
 the same task below, repo README/helper access and local shell tools; only the
 with-skill run additionally receives the new SKILL.md. RESULT is a separate
