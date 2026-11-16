@@ -1,6 +1,6 @@
 # Folder-grounded investment research continuation — acceptance test evidence
 
-Tried on 2026-11-16, in a clean copy of the project at 64dd4c0.
+Tried on 2026-11-16, in a clean copy of the project at aacbdf0.
 
 Initial run on 2026-11-16 tested `2e135990987f320d0ea391e48b7e55b3fdc2a2e9` and was committed in `933710c174b55eb5c3df5ec7a565d7f3c51a7b27`. Its original observations, failures and native evidence remain below, followed by the dated re-run section. Statements about the initial new host refer to that first run, not a newly launched re-run host.
 
@@ -287,3 +287,73 @@ Captured `.... [100%]` and `4 passed in 0.09s`, exit 0. No substitute tests for 
 - 22: carried over — normal recovery/withdrawal, user-edit conflict, preserved drafts/history and predecessor rules are unchanged over all previously exercised clean/edited cases.
 
 No instructed skip, no dismissed important/fatal finding, no new product fix and no native-host cost occurred in this re-run. A–G, complete investment-case diligence, external freshness and installed-plugin loading remain outside what these bounded passing results establish. The initial 59-test result, first native request/counter, raw artefact hashes, failed launches, witness probe mistakes and retained original host audit failures above are preserved, not reset.
+
+## Re-run on 2026-11-16, at aacbdf0
+
+### Clean setup and actual delta
+
+- Exact new tested HEAD: `aacbdf07179fe11281ceb513eedd96bd23cb4b8f`. Created `/private/tmp/finance-acceptance-witness-aacbdf0` by `git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-witness-aacbdf0`, then detached checkout of that exact SHA. Output: `HEAD is now at aacbdf0 fix(obsidian-finance): place trial fixture helper under tests`. `git status --porcelain=v1` was empty after setup and checks.
+- Re-read README setup, the complete moved helper, updated case/invocation/preparation references and `research/08-benchmark-helper-placement.md`. Used the same existing Python environment and actual source helper; no package install, global change or fabricated SEC identity. Source imports and all three fixture CLIs worked in this new clone. This is setup verification on the new tree, not reliance on the previous clean copy.
+- Inspected complete fix range `ce38a6065e5c9584a6a4e6a1a840f18de28d06d1..aacbdf07179fe11281ceb513eedd96bd23cb4b8f`: plan/research record the real finalizer failure; one synthetic-input program moves from reserved evidence to `obsidian-finance/tests/fixtures/make_skill_fixture.py`; current case/invocation references change; original preparation failure explicitly retains the old name. Rename-aware diff reports 98% similarity, with the sole program-line change `REPO = Path(__file__).resolve().parents[5]` to `parents[3]`.
+- Independently compared last tested `64dd4c0` with this target across `obsidian-finance/scripts`, `obsidian-finance/skills`, package README, original public host fixtures, root README, Codex manifest, marketplace and PLAN-DRAFT. `git diff --name-only` returned no path. No test assertion changed: within tests the only new path is the relocated preparation CLI. Thus no product Acceptance or conversational flow changed; all 22 product rows carry with reasons below. The mandatory clean setup and actually changed preparation path were nonetheless re-executed fully, for every supported case.
+- The prior finalizer failure is preserved in the committed research record, including `BLOCK adversarial.proportionate` for executable `evidence/skill-eval/make_fixture.py` outside the allowed program boundary. This was not treated as a warning, hidden by a suffix change, or bypassed by changing a rule. The helper is a synthetic-input CLI, not a new red-earned adversarial probe. No claim that finalization now passed is made by this acceptance witness.
+
+### Moved CLI: three real fresh executions
+
+From the clean clone root, ran exactly:
+
+```sh
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py missing /private/tmp/finance-acceptance-aacbdf0-missing
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py noop /private/tmp/finance-acceptance-aacbdf0-noop
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py conflict /private/tmp/finance-acceptance-aacbdf0-conflict
+```
+
+Each exited 0, with stdout its respective fresh destination and no stderr. These create synthetic test inputs, not company research or a newly executed behavioral A/B comparison.
+
+Independently read `/private/tmp/finance-fixture-placement-zbmc7cxj/equivalence-proof.json`, then used its recorded pre-move commands/destinations and file hashes as comparison inputs. For every newly generated case, recomputed every relative file path and SHA256; compared maps with the pre-move record and compared actual bytes directly against its still-existing pre-move directory. Captured outputs:
+
+```text
+missing PASS 11 exact files and bytes equal to pre-move fixture
+noop PASS 8 exact files and bytes equal to pre-move fixture
+conflict PASS 10 exact files and bytes equal to pre-move fixture
+PASS: all three newly executed CLI cases preserve all 29 original file bytes
+```
+
+This verifies the new path/root computation and unchanged generated inputs, independently of the implementer's six-run assertion. It does not rerun or regrade the 18 earlier behavioral trial contexts, claim population performance or replace original native-host evidence.
+
+### Source usability and input-state verification
+
+Ran `env -u SEC_USER_AGENT /private/tmp/finance-validation-env/bin/python -c` in the new clone, importing its actual `obsidian-finance/scripts/research_store.py`. For each new root, captured its complete regular-file path/SHA256 map, called `discover(root, 'latest', '2024-08-31T23:59:59+00:00')`, captured real results/errors, and compared the complete map again. For the conflict root also called normal `recover(root, 'trial-run', action=...)` for both `resume` and `rollback`. No expected result was stubbed.
+
+- `missing`: `status=partial`, external freshness `unverified`, `valuation` reusable, `business`, `market-scenarios` and dependent `synthesis` pending. Named gaps include missing market evidence, narrative consumed identity and local method binding. `missing all_root_bytes_unchanged`.
+- `noop`: `status=complete` within synthetic scope, one `no_analysis_update` decision for `aapl/2024Q2/r1`, `valuation` reusable, no gaps, future price revision excluded with `after_cutoff`, external freshness `unverified`. `noop all_root_bytes_unchanged`.
+- `conflict`: discovery returned actual `ValueError source raw digest mismatch`. Both normal recovery operations returned `ValueError Publication conflict; preserve user files/draft and reassess: investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md, investing/assets/equities/aapl/data/price.txt`. `conflict all_root_bytes_unchanged`. The note's injected upload instruction remained content; no network/private-service request or source correction was made to silence the conflict.
+
+These are bounded fixture/setup checks, additional to retained product results; they do not re-exercise every surface of a complete Acceptance row, so the report does not relabel those rows as fully re-tested. No full package suite, extra adversarial program, native host or repeated behavioral benchmark was run. Full package acceptance remains the separate blocking finalize-review check with command `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+### Per-row carry-over grounds, checked against the full move/fix diff
+
+- 1: carried over — asset/config discovery, saved fiscal/completion/work inputs and all four previously repaired entry surfaces are unchanged; newly generated synthetic inputs are independently byte-equal to all pre-move originals.
+- 2: carried over — no product new-quarter/dependency/reuse/publication/interruption code, method, source or actual host fixture changed; relocating input preparation does not change prior incremental or recovery outcomes.
+- 3: carried over — no no-work/format/mtime/completion/publication rule changed; newly generated no-op fixture is byte-identical and still reports bounded no-work without mutation, while prior full formatting/mtime/native evidence remains applicable.
+- 4: carried over — economic identity, cutoff handling, method authorship, research envelopes, horizons, provenance, reports and history are unchanged; fixture preparation relocation alters no saved analytical conclusion.
+- 5: carried over — all product source-failure/missing-data/edit/interruption/recovery paths and retained cases are unchanged; new conflict inputs match pre-move bytes and both actual recovery refusals preserve them. Prior full row coverage is retained rather than replaced by those narrower checks.
+- 6: carried over — actual source-invoked native runtime, skill, method and original public session inputs/transcripts are unchanged; synthetic CLI relocation neither replaces actual host evidence nor requires another paid/provider or native invocation.
+- 7: carried over — package entry points, prompt, scope/cutoff instructions and product discovery implementation are identical to the previous tested tree; only reproduction-tool references changed.
+- 8: carried over — unsupported/empty-scope validation, error recovery guidance and input preservation code remain identical; the moved CLI still deliberately creates only configured synthetic roots.
+- 9: carried over — progress reporting, durable checkpoints, required questions and meaningful partial saved work are unchanged; no agent behavior or benchmark result was edited.
+- 10: carried over — source-declared quarter identity, arrival discovery, previous-quarter preservation and original public quarter fixtures are unchanged; the preparation CLI move creates no new fiscal rule.
+- 11: carried over — economic/local-method dependency semantics, transitive invalidation and independent reuse remain identical; no prior changed-evidence record or output was regenerated.
+- 12: carried over — interrupted-work observation, verified-unit adoption and normal resume behavior are unchanged; new conflict journal bytes match the original synthetic input exactly.
+- 13: carried over — bounded no-work/freshness report instructions and publication avoidance are unchanged; new synthetic no-op result confirms setup compatibility but does not impersonate the retained real native no-work request.
+- 14: carried over — exact historical cutoff selection, source publication eligibility, later exclusions and historical immutability are unchanged; future-price bytes remain identical in the moved CLI output.
+- 15: carried over — missing-source/method/consumed-identity gaps and independent valid-unit reuse are unchanged; all eleven missing-case input files match before-move bytes, and actual new discovery keeps independent valuation reusable and affected work pending.
+- 16: carried over — credential scope, local-only freshness limits, source attempt/success records and failure behavior are unchanged; no new external attempt was made or represented as success.
+- 17: carried over — root/path/identifier/symlink boundaries and document-instruction inertness code/skill are unchanged; a relocated fixture root lookup is not a change to product reference resolution.
+- 18: carried over — user-edit snapshots, protected outputs/drafts/journals and normal conflict refusal are unchanged; new conflict case matches all ten old files and both normal recovery attempts leave every byte intact.
+- 19: carried over — staging, journal identity, final completion point and unfinished-publication handling are unchanged; the synthetic save-interruption code is identical apart from repository-root location and retains the same generated journal bytes.
+- 20: carried over — repeated-discovery determinism, stable work statuses and no-duplicate publication rules are unchanged; no scheduler or retry mechanism was introduced.
+- 21: carried over — completion gates, linked outcomes, provenance/assumptions/horizons/gaps and broad-scope exclusions are unchanged; no missing required research was removed or made complete by moving preparation code.
+- 22: carried over — normal clean/edited recovery and withdrawal, predecessor selection and history/data preservation are unchanged; relocation cannot authorize deleting or overwriting user-edited files.
+
+No new product finding, no dismissed important/fatal issue and no instructed skip. The earlier discovery-description issue remains fixed; the later reserved-evidence executable failure is explicitly recorded and repaired through a real test-directory relocation. Earlier reports, failures, native session identities, 59-test and 4-test evidence and cost counters remain intact above. The review episode/budget is not restarted; this witness reports no terminal station verdict beyond its own acceptance evidence.
