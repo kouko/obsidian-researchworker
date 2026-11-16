@@ -600,6 +600,16 @@ rows or one modern revenue tag. Obtain period-original evidence and verify the
 latest complete company fiscal year before fixing the exact twenty-year range.
 The audit is input research, not completed Stage E quarters.
 
+Agent-decided history window, 2026-11-16: use FY2006–FY2026 (84 expected
+quarters), extending the preliminary twenty-fiscal-year window by one year to
+avoid a literal twenty-calendar-year boundary ambiguity. The original issuer
+FY2006 Q1 declaration and SEC filing bind the first endpoint, while the FY2026
+annual header binds the last. The retained SEC indexes yield 84 unique original
+filing candidates; each fiscal identity, required supporting filing, cutoff and
+substantive analysis still requires verification. See the
+[history inventory and limits](history/apple-fy2006-fy2026/INDEX.md).
+No historical-batch quarter is accepted complete by this source count.
+
 The [delivery attribution investigation](../loom/2026-11-16-finance-research-continuation/research/02-stacked-delivery-attribution.md)
 traced the live command's unconfirmed result to accepted prerequisite
 attestations in the whole trunk delta. Preserve them; no installed-checker
