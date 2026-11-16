@@ -20,7 +20,7 @@ charter: 1.1
 ### Wave 2 — Agent research behavior
 
 **W2-01 Define the research skill and substantive completion rules**  after: W1-01, W1-02  acceptance: 1, 2, 3, 4, 5
-- Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/research-method.md, docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/, obsidian-finance/README.md
+- Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/research-method.md, docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/, obsidian-finance/README.md, obsidian-finance/tests/fixtures/make_skill_fixture.py (fixture CLI entry)
 - Test: A1 positive: scoped-request-discovery; negative: unrelated-note-request. A2 positive: agent-resumes-required-research; boundary: unavailable-source-independent-work. A3 positive: repeated-no-op; negative: false-global-freshness. A4 positive: horizon-and-counterevidence; negative: unsupported-rating. A5 positive: conflict-recovery-explained; boundary: no-private-upload.
 - Risk: agent-decided — REQ-1–5: use actual isolated behavioral trials before/with the skill instead of permanent tests mirroring instruction text. Keep methods in the skill, private settings local, horizon conventions explicit, and SEC reading coverage distinct from file acquisition.
 
@@ -63,3 +63,4 @@ charter: 1.1
 8. agent-decided — W2-01 replaces planned static instruction-contract tests with retained behavioral trials; no accepted outcome changes. Follow skill-creator-advance evaluation-first for this multi-step skill. Native trial contexts do not replace W3-01 actual new-host sessions.
 9. agent-decided — Automatic approval rejected mandatory trunk sync before execution under the no-merge constraint. research/06-trunk-sync-authorization.md records actual side effects, current main delta and diagnostic 180-test PASS. Do not bypass; user authorization is needed for local integration.
 10. agent-decided — User-authorized local sync passed (evidence/build-handoff.md). Round 1 found stale live package-capability descriptions; W3-01 follow-up 1 repairs four surfaces per research/07-package-capability-descriptions.md. Same requirements and episode; preserve historical evidence and installation limits.
+11. agent-decided — Finalization rejected the benchmark helper inside the reserved evidence store. W2-01 follow-up 1 relocates it to test support with equivalent outputs; research/08-benchmark-helper-placement.md retains the failure and class sweep. Round 3 is terminal.
