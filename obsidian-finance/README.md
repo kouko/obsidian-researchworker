@@ -282,6 +282,7 @@ metadata, escaping references, symlinks and ambiguous source identities raise
 investing/research.json
 investing/assets/equities/{asset-id}/asset.json
 investing/assets/equities/{asset-id}/data/sources/{source-revision}.json
+investing/assets/equities/{asset-id}/data/analysis/{analysis-id}.json
 investing/assets/equities/{asset-id}/data/{original-file}
 investing/assets/equities/{asset-id}/cycles/{YYYYQn}/{cutoff}-{review}/review.json
 ```
@@ -297,7 +298,8 @@ unknown fields remain inert data. No selectors or document commands execute.
 - `research.json`: `{version: 1, assets: ["aapl"]}` enumerates asset scope.
 - `asset.json`: `{version: 1, id: "aapl", issuer: "AAPL", questions: [...]}`.
   Each required question has `id`, `required_sources` (logical source IDs) and
-  optional `depends_on` (question IDs in this asset). These durable research
+  optional `required_analysis` (local method/assumption IDs) and `depends_on`
+  (question IDs in this asset). These durable research
   requirements are configuration, not per-invocation work statuses. Empty
   requirements and unknown question dependencies are rejected. A source ID may
   use the single literal template `{fiscal}` (for example,
@@ -326,11 +328,27 @@ unknown fields remain inert data. No selectors or document commands execute.
   A stable financial source ID binds one fiscal identity; new quarters use new
   IDs, while revisions of the same quarter retain its ID. Cross-quarter reuse
   of one financial source ID is rejected. Price dates never create financial
-  quarters. Keep local `authored_at`, method
-  versions and assumption authorship separate from original economic
-  publication; do not backdate a newly authored assumption as a historical
-  publication. Shared studies, methods and assumptions that affect a question
-  must appear among its source dependencies with frozen consumed identities.
+  quarters. Shared economic studies belong among the applicable source
+  dependencies; local methods and assumptions use the separate analysis-input
+  contract below. A 2026-authored reconstruction method is not a 2024 economic
+  publication and must never acquire a fabricated historical availability date.
+- Local analysis metadata under `data/analysis/{analysis-id}.json` contains
+  `version: 1`, matching `id`, `kind: method` or `assumption`, actual
+  timezone-aware `authored_at`, method/assumption `identity`, typed `projection`,
+  `content_ref` and SHA256 `content_digest` of the exact local file bytes.
+  It must not contain `available_at`, `fiscal` or `raw_ref`; economic facts and
+  prices remain economic sources, never reclassified to bypass cutoff checks.
+  Method/assumption kinds are rejected in economic source metadata. Local
+  inputs are not screened against the economic cutoff: their actual authorship
+  remains visible in each unit's frozen identity, including a 2026 method used
+  to reconstruct a 2024 judgment. This does not permit future economic data.
+  A method's content file may be a compact applied-version manifest rather
+  than a copied generic manual. Generic methodology stays in the skill; the
+  calling research agent verifies its selected bundled method's content/version
+  before discovery and refreshes this local applied-version manifest when it
+  changes. The read-only helper checks only in-root files; it cannot detect or
+  certify changes to an external plugin skill without that refresh. Assumptions
+  and their content remain local.
 - `review.json`: `version: 1`, asset-local review `id`, fiscal identity,
   timezone-aware saved `cutoff`, optional `predecessor` (review ID in the same
   asset and quarter), and `units` mapping question IDs to saved results.
@@ -347,7 +365,14 @@ unknown fields remain inert data. No selectors or document commands execute.
   it reports the missing fiscal evidence rather than inventing a quarter.
 - A unit contains `consumed: {source-id: {version, projection}}`, freezing
   actual economic identity and relevant projection, `output: {path, digest}`,
-  and `verification` (a root-relative JSON reference). Output digests use the
+  and `verification` (a root-relative JSON reference). Local inputs separately
+  use `analysis_inputs: {analysis-id: {kind, version, authored_at, projection,
+  content_ref, content_digest}}`, with `version` freezing metadata `identity`.
+  Required and previously consumed local inputs are checked, so removing an
+  input from configuration cannot silently remove a saved dependency. Missing
+  files, changed content, versions, typed projections or authorship invalidate
+  the unit and its dependent synthesis transitively; independent work remains
+  reusable. Output digests use the
   exact UTF-8 bytes decoded and re-encoded without newline normalization.
   Missing required questions, missing outputs or verification, mismatched
   output content, and changed dependencies prevent reuse. Question dependency

@@ -123,6 +123,36 @@ def _required_all(questions, asset, quarter):
     return sorted({asset + ":" + sid for q in questions.values() for sid in _required(q, quarter)})
 
 
+def _analysis_valid(root, base, required, consumed, record, gaps):
+    """Local analysis authorship is not economic publication eligibility."""
+    fields = {"kind", "version", "authored_at", "projection", "content_ref", "content_digest"}
+    _require(isinstance(consumed, dict), "analysis_inputs object")
+    valid = True
+    for identity in sorted(set(required) | consumed.keys()):
+        _id(identity)
+        frozen = consumed.get(identity)
+        _require(frozen is None or isinstance(frozen, dict) and set(frozen) == fields, "frozen analysis identity")
+        try:
+            metadata = _object(root, base + "/data/analysis/" + identity + ".json")
+            _require(metadata.get("id") == identity and metadata.get("kind") in ("method", "assumption"), "local analysis identity/kind")
+            _require(not {"available_at", "fiscal", "raw_ref"} & metadata.keys(), "economic evidence cannot be a local analysis input")
+            _adapter._timestamp(metadata["authored_at"])
+            _require(_adapter._text(metadata.get("identity")), "local analysis version")
+            current = {key: metadata[key] for key in fields - {"version"}}
+            current["version"] = metadata["identity"]
+            content = _bytes(root, metadata["content_ref"])
+            matches = (sha256(content).hexdigest() == metadata["content_digest"]
+                       and frozen is not None and _adapter._core._same_json(frozen, current))
+        except FileNotFoundError:
+            matches = False
+        if not matches:
+            valid = False
+            gaps.append(dict(record=record, evidence="analysis:" + identity,
+                reason="Local analysis input is missing, changed or not bound to this unit",
+                recovery="Review the actual authored method/assumption and recompute dependent analysis; never backdate economic availability"))
+    return valid
+
+
 def _reviews(root, base, quarter, cutoff, mode, gaps):
     saved = {}
     for directory in _names(root, base + "/cycles/" + quarter):
@@ -172,6 +202,9 @@ def _snapshot(root, cutoff, mode):
         _require(questions, "required questions missing")
         for question in questions.values():
             _require(_adapter._strings(question.get("required_sources")) and _adapter._strings(question.get("depends_on", [])), "question dependencies")
+            _require(_adapter._strings(question.get("required_analysis", [])), "local analysis requirements")
+            for identity in question.get("required_analysis", []):
+                _id(identity)
             _require(set(question.get("depends_on", [])) <= questions.keys(), "unknown question dependency")
             _required(question, "2024Q1")  # Validate the sole literal template.
         local = []
@@ -180,6 +213,7 @@ def _snapshot(root, cutoff, mode):
             source = _object(root, base + "/data/sources/" + name)
             _require(source.get("issuer") == issuer, "source issuer mismatch")
             _require(_adapter._text(source.get("kind")), "source kind")
+            _require(source["kind"] not in ("method", "assumption"), "local analysis inputs must not be economic sources")
             _require("fiscal" not in source or isinstance(source["fiscal"], dict), "source fiscal")
             _require(source.get("identity") is None or _adapter._text(source["identity"]), "source identity")
             _require(source.get("available_at") is None or _adapter._text(source["available_at"]), "source availability")
@@ -261,6 +295,11 @@ def _snapshot(root, cutoff, mode):
                                     and check.get("unresolved") == [] and item.get("output", {}).get("digest") == check.get("output_digest"))
                         if complete:
                             item.update(status="complete", completion_evidence=json.dumps(check, sort_keys=True))
+                    if not _analysis_valid(root, base, question.get("required_analysis", []),
+                            unit.get("analysis_inputs", {}), asset + "/" + quarter + "/" + saved["id"], gaps):
+                        # Preserve the saved completion claim for the assessor's
+                        # invalidation action, but withdraw its reusable evidence.
+                        item.pop("completion_evidence", None)
                     work.append(item)
                 records.append(dict(id=asset + "/" + quarter + "/" + saved["id"], issuer=issuer, fiscal=fiscal,
                     cutoff=saved["cutoff"], required_sources=_required_all(questions, asset, quarter), work=work,

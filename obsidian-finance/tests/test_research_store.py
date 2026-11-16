@@ -129,3 +129,44 @@ def test_unchanged_no_work(tmp_path, format_only):
     historical = module.discover(tmp_path, "historical", "2024-05-03T23:59:59+00:00")
     assert historical["reusable"] == before["reusable"]
     assert historical["excluded"]
+
+
+@pytest.mark.parametrize("change", ["projection", "authorship", "version", "content", "missing"])
+def test_local_analysis_dependencies_preserve_actual_authorship(tmp_path, change):
+    base, _, review = sample(tmp_path)
+    asset = json.loads((tmp_path / base / "asset.json").read_text())
+    asset["questions"][0]["required_analysis"] = ["model"]
+    asset["questions"] += [dict(id="synthesis", required_sources=[], depends_on=["valuation"]),
+                           dict(id="independent", required_sources=[], depends_on=[])]
+    put(tmp_path, base + "/asset.json", asset)
+    content_ref = base + "/data/model.md"
+    (tmp_path / content_ref).write_text("local method")
+    identity = dict(kind="method", version="v1", authored_at="2026-11-16T10:00:00+08:00",
+                    projection=dict(rate=1, unit="percent"), content_ref=content_ref,
+                    content_digest=hashlib.sha256(b"local method").hexdigest())
+    metadata = dict(identity, version=1, identity="v1", id="model")
+    put(tmp_path, base + "/data/analysis/model.json", metadata)
+    saved = json.loads((tmp_path / review / "review.json").read_text())
+    saved["units"]["independent"] = dict(saved["units"]["valuation"])
+    saved["units"]["synthesis"] = dict(saved["units"]["valuation"])
+    saved["units"]["valuation"]["analysis_inputs"] = {"model": identity}
+    put(tmp_path, review + "/review.json", saved)
+    module = load()
+    cutoff = "2024-05-03T23:59:59+00:00"
+    before = module.discover(tmp_path, "historical", cutoff)
+    assert {item["work"] for item in before["reusable"]} == {"valuation", "synthesis", "independent"}
+    assert before["excluded"] == []
+    if change == "missing":
+        (tmp_path / base / "data/analysis/model.json").unlink()
+    elif change == "content":
+        (tmp_path / content_ref).write_text("changed method")
+    else:
+        key, value = {"projection": ("projection", dict(rate=True, unit="percent")),
+                      "authorship": ("authored_at", "2026-11-16T11:00:00+08:00"),
+                      "version": ("identity", "v2")}[change]
+        metadata[key] = value
+        put(tmp_path, base + "/data/analysis/model.json", metadata)
+    after = module.discover(tmp_path, "historical", cutoff)
+    assert {item["work"] for item in after["reusable"]} == {"independent"}
+    assert {d["work"] for d in after["decisions"] if "recompute" in d["action"]} == {"valuation", "synthesis"}
+    assert any(g["evidence"] == "analysis:model" for g in after["gaps"])
