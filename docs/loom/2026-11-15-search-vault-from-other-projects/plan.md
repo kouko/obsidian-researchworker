@@ -82,3 +82,4 @@ Wave 3 — Python-free search fix-round (2026-11-15, after A6 FAIL: host CC 2.1.
 2. Note text sent to the model provider; accepted by user at ① (intent Constraints, spec Design decision).
 3. Global settings write only on explicit yes; never automated by code in this change.
 4. Linux unverified, Windows unsupported; README must say so (PRINCIPLES #3).
+- user-decided — second-vendor selection-confirmed: codex (direct request 「可以用 codex 做一次獨立 review 嗎」, target: change 2026-11-15-search-vault-from-other-projects, PR #5).
