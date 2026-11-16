@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-16-open-vault-check-portability",
-  "content_digest": "7b4ffc5c7a6a8905fe5d6950420d5dcb3703d516",
+  "content_digest": "b03bdb6947715bb7e6f5e10e129930549505c88a",
   "executions": [
     {
       "kind": "package-tests",
@@ -70,8 +70,8 @@
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "2e4b6e5cf05cfd22b37463b41697452b3364c3a4",
-  "tested_commit": "13b5a5c",
-  "reviewed_commit": "5ddbb132c22108a72771f865176294c52106f073",
+  "tested_commit": "102e908",
+  "reviewed_commit": "b5ea3b64ec80ee2451116ecf693bf8beb9c4d3e8",
   "acceptance_status": [
     {
       "acceptance": 1,
