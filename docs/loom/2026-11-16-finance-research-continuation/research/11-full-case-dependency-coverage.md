@@ -66,3 +66,39 @@ was never repaired by the witness. Five other bounded checks passed: clean
 loading/discovery, unchanged local reuse, original-file preservation, cutoff
 control and substantive finite research/arithmetic. They do not override the
 failed actual-input update requirement or grant Stage C/F/A-G completion.
+
+## W3-02 implementation and completed August class assessment
+
+After native August execution terminated, the parent authorized surgical generic
+skill/method-reference edits and preparation of a corrected study copy. Source
+instructions now require mapping each actual claim/operand/counterevidence to
+that unit's input, actual comparison of adopted references before no-work, and
+economic-source revision handling for changed live retained economic selections.
+No runtime defect or schema expansion was established; description/layout stay.
+
+Read all three August outputs and their actual frozen identities. Unlike Q2,
+Q3 growth makes no IDC market-relative claim, so no industry dependency should
+be invented. Q3 identity already consumes Q2 and Q3 filings plus actual method;
+its single-quarter cash operands are covered by those originals. Q3 synthesis
+still adopts the model, correction comparison, final research judgment and
+saved Q2 growth analysis without applied research binding. That old Q2 output
+is a known dependency-flawed historical publication, not independently accepted
+corrected work; a later corrected target changes the actual adopted identity.
+
+`/private/tmp/finance-fullcase-v10-20261117` preserves all 435 original v9 files
+as a verified initial copy; original publications/journals remain exact after
+preparation. It adds a genuinely dated retained Q1 economic source and per-case
+authored adopted-research identities, and truthfully updates the generic applied
+method identity/identity-question requirement. No corrected completed output is
+published or metadata-only rebound. Actual before discovery has May/August 3/6
+reusable units; after preparation all 3/6 units are pending. That is preparation,
+not a claim of repaired native behavior or acceptance.
+
+All 29 declared reference comparisons and the live Q1 selected economic rows were
+actually checked. The concrete protocol permits unchanged selected case JSON to
+survive other-case-only changes; unstructured shared narrative changes require
+review. Static unchecked hashes remain insufficient. Preserved baseline failures,
+new exact maps, instruction snapshots, complete cutoff observations and remaining
+actual-host/independent verification obligations are documented in
+`../evidence/w3-02-dependency-preparation.md`. No source acquisition, original
+economic model redo, software counter reset or new attestation occurred.

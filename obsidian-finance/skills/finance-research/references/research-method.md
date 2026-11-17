@@ -63,6 +63,25 @@ independent answers. Recompute dependent synthesis when evidence, assumptions,
 method versions or declared question dependencies change. Do not reduce required
 questions or rebind old outputs to new dependencies to create apparent completion.
 
+Independently reusable answers need their own complete input mapping. Trace each
+material claim, arithmetic operand and competing explanation to its economic
+source or authored analysis input. Earlier-period values used in a difference
+and industry evidence used as counterevidence are dependencies of the answer
+that uses them, even if another answer already records them. Do not require
+unrelated quarters or assumptions simply to make the mapping look exhaustive.
+
+Adopting another study's model, interpretation or completion judgment is also an
+input choice. Preserve its actual authorship and the exact adopted content in a
+local applied-method identity; this does not turn its economic observations into
+methods or make later facts historically eligible. A compact manifest may name
+the necessary adopted files or selected projections, but compare each reference
+to the actual current content before relying on reuse. Preserve and investigate
+mismatches, then version the applied identity and reassess its consumers. An
+unchecked list of hashes or hashes hidden in self-checks cannot detect change.
+A self-contained adopted snapshot is another option when the analysis genuinely
+uses that bound snapshot rather than live references. Neither option requires
+recursive certification of every source behind an already accepted finite study.
+
 Cover the applicable dimensions without duplicating prose across files:
 
 - Business/competition: distinguish demand, volumes, price, mix, currency,

@@ -63,6 +63,20 @@ work become pending. Do not add fictitious historical economic availability to
 a locally authored method. Do not invent new dependencies merely to regenerate
 otherwise unchanged work.
 
+Apply the same check to adopted research and model inputs. Before accepting
+reuse, compare every declared content reference in an applied research manifest
+with its actual in-root bytes or explicitly selected projection. A saved hash
+that was not compared is not a check. Missing, changed or unchecked references
+prevent no-work for their consumers: preserve the previous input record, inspect
+the change and refresh its authored identity honestly before reassessing affected
+units. The helper does not follow arbitrary research links. Alternatively bind
+a self-contained adopted snapshot and use that snapshot, not unbound live files.
+For a text change, actually review meaning before claiming formatting-only
+equivalence; changed bytes alone do not justify new investment advice.
+If a saved economic projection relies on a live retained upstream source, check
+that selected upstream content too; a change is an economic source revision,
+not a new authored method that can bypass its original availability rules.
+
 When local eligible evidence is unchanged, preserve outputs and return the
 bounded no-work result without publishing another review. State exactly what
 was checked and that external freshness is unverified unless an actual external
@@ -114,6 +128,17 @@ dependencies and `analysis_inputs` for actual methods/assumptions. Partial
 progress is useful: save a managed checkpoint with completed independent units,
 not merely a standalone note that discovery cannot resume. Do not mark an entire
 dimension complete when only an unsupported fragment has been examined.
+
+Before marking a unit complete, trace its claims, calculations and counterevidence
+to the inputs it actually used. Bind every material economic input in that unit's
+`consumed`, including earlier-period operands and evidence cited only to challenge
+a thesis; another unit's registration does not cover it. Bind adopted analysis,
+models and completion judgments through their actual authored applied identities
+in `analysis_inputs`, keeping their underlying economic facts separately dated.
+Check this mapping against the output and calculation operands, not only its link
+list. A self-check's artifact hashes do not create reusable dependencies. When
+repairing an omission, re-evaluate and check the affected unit as a new version;
+do not attach new identities to an unchanged output to manufacture coverage.
 
 Construct version-1 review metadata using the README contract, final root-relative
 output/check paths, current eligible predecessor and the exact source-declared
