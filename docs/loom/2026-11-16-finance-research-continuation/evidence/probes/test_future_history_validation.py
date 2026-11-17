@@ -6,7 +6,9 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[5] / 'obsidian-finance/tests'))
+repository = next(parent for parent in Path(__file__).resolve().parents
+                  if (parent / 'obsidian-finance/scripts/research_store.py').is_file())
+sys.path.insert(0, str(repository / 'obsidian-finance/tests'))
 from test_research_continuation import two_issuers
 from test_research_store import load, put
 
