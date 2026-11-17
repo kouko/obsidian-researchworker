@@ -46,6 +46,11 @@ charter: 1.1
 - Test: Negative baseline: IDC, prior-quarter cash and adopted-model revisions leave affected units reusable. Positive: corrected versions invalidate affected units for each dependency class; unchanged cases stay reusable. Boundary: distinct authorship/availability, unrelated-quarter preservation.
 - Risk: agent-decided — Prefer existing input/publication contracts. Audit each unit's claims and actual dependencies; verify referenced research before reuse. Unchecked hashes cannot close this failure. Preserve authorship, economic availability, accepted finite research and original failures.
 
+**W3-03 Exclude valid future-only saved quarters from earlier latest assessment**  after: W3-02  acceptance: 1, 2, 3, 4, 5
+- Files: obsidian-finance/scripts/research_store.py (cutoff review selection only), obsidian-finance/tests/test_research_store.py, obsidian-finance/tests/test_research_continuation.py (existing boundary coverage), docs/loom/2026-11-16-finance-research-continuation/research/12-future-only-saved-review-gap.md, docs/loom/2026-11-16-finance-research-continuation/evidence/
+- Test: Negative: valid saved future-only quarters create false earlier-cutoff gaps. Positive: two-issuer earlier assessment ignores ineligible future research. Boundaries: eligible unreviewed quarters, incomplete/withdrawn/malformed publications and ambiguous eligible reviews remain visible; preserve historical exact-cutoff and publication predecessor safeguards.
+- Risk: agent-decided — Same accepted cutoff/isolation obligations, no new episode or counter reset. Preserve actual run03 failure and protected input maps. Do not silence real missing evidence, mutate future reports or redesign branch/history insertion semantics.
+
 ## Simplicity check
 
 - Combine W3 documentation/evidence reconciliation into host verification, retaining all six acceptance checks across five tasks because reconciliation has no independent implementation boundary — taken
