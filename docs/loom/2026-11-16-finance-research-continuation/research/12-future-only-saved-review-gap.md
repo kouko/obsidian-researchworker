@@ -124,3 +124,29 @@ study maps remain unchanged (v9 435 files, v10 446). No publication, guard retry
 or provider execution occurred. Detailed RED/GREEN progression, environment
 failure separation, exact commands, boundaries and full external witness paths
 are retained in `../evidence/w3-03-future-review-selection.md`.
+
+## W3-04 adversarial validation follow-up
+
+The committed adversarial program subsequently demonstrated two important
+classes in the future-only exemption: malformed frozen authored identities and
+absent/invalid/unbound completion evidence. The full class comprised eight
+variants, all retained in the adversarial report. The implementer reran the
+unchanged program and observed both REDs, then observed eight RED variants plus
+a green old-method control in existing store-test regression coverage.
+
+Shared version-1 identity/completion validators now protect the future branch
+and ordinary checks. Future identities receive structural/authorship/kind checks,
+without requiring an old method/economic identity to equal today's selected
+input. An output-bearing future unit requires valid existing verification bound
+to its actual output digest and all four successful checks. Actual defects remain
+quarter-scoped gaps; no future economics becomes eligible and no publication
+history/predecessor rule changes.
+
+Final focused store/publication/continuation plus the unchanged committed probe:
+84 passed in 2.36s. Exact actual v10 May/August discovery remains unchanged from
+W3-03's corrected readback; all 446 v10 and 435 v9 files remain byte-exact, with
+no publication or completed-unit claim. See
+`../evidence/w3-04-future-history-validation.md` for complete variants, commands,
+RED/GREEN progression, readback paths and retained limits. No probe was edited
+or graduated; original failures/counters remain and actual research is still
+pending, rather than replaced with additional infrastructure work.

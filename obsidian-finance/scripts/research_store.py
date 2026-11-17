@@ -123,15 +123,35 @@ def _required_all(questions, asset, quarter):
     return sorted({asset + ":" + sid for q in questions.values() for sid in _required(q, quarter)})
 
 
+_ANALYSIS_FIELDS = {"kind", "version", "authored_at", "projection", "content_ref", "content_digest"}
+
+
+def _analysis_identity(frozen):
+    _require(isinstance(frozen, dict) and set(frozen) == _ANALYSIS_FIELDS, "frozen analysis identity")
+    _require(frozen["kind"] in ("method", "assumption"), "local analysis identity/kind")
+    _adapter._timestamp(frozen["authored_at"])
+    _require(all(_adapter._text(frozen[key]) for key in ("version", "content_ref", "content_digest")),
+             "frozen analysis content/version")
+
+
+def _completion_valid(check, output_digest):
+    checks = check.get("checks", {})
+    return (output_digest is not None and isinstance(checks, dict)
+            and set(checks) == {"sources", "citations", "calculations", "counterevidence"}
+            and all(value is True for value in checks.values()) and check.get("unresolved") == []
+            and output_digest == check.get("output_digest"))
+
+
 def _analysis_valid(root, base, required, consumed, record, gaps):
     """Local analysis authorship is not economic publication eligibility."""
-    fields = {"kind", "version", "authored_at", "projection", "content_ref", "content_digest"}
+    fields = _ANALYSIS_FIELDS
     _require(isinstance(consumed, dict), "analysis_inputs object")
     valid = True
     for identity in sorted(set(required) | consumed.keys()):
         _id(identity)
         frozen = consumed.get(identity)
-        _require(frozen is None or isinstance(frozen, dict) and set(frozen) == fields, "frozen analysis identity")
+        if frozen is not None:
+            _analysis_identity(frozen)
         try:
             metadata = _object(root, base + "/data/analysis/" + identity + ".json")
             _require(metadata.get("id") == identity and metadata.get("kind") in ("method", "assumption"), "local analysis identity/kind")
@@ -238,11 +258,18 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
                         _require(isinstance(identity, dict) and set(identity) == {"version", "projection"}
                                  and _adapter._text(identity["version"]), "consumed identity")
                     _require(isinstance(unit.get("analysis_inputs", {}), dict), "analysis_inputs object")
+                    for identity, frozen in unit.get("analysis_inputs", {}).items():
+                        _id(identity)
+                        _analysis_identity(frozen)
                     if "output" in unit:
                         output = unit["output"]
                         _require(isinstance(output, dict), "saved output object")
                         _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest"),
                                  "Future review output changed or incomplete")
+                        _require("verification" in unit, "Future review completion evidence missing")
+                        check = _object(root, unit["verification"])
+                        _require(_completion_valid(check, output["digest"]),
+                                 "Future review completion evidence invalid or unbound")
             parents = {pair[1].get("predecessor") for pair in saved.values()}
             _require(sum(rid not in parents for rid in saved) == 1, "ambiguous competing future reviews")
             return []
@@ -359,10 +386,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
                             check = _object(root, unit["verification"])
                         except FileNotFoundError:
                             check = {}
-                        checks = check.get("checks", {})
-                        complete = (isinstance(checks, dict) and set(checks) == {"sources", "citations", "calculations", "counterevidence"}
-                                    and all(value is True for value in checks.values())
-                                    and check.get("unresolved") == [] and item.get("output", {}).get("digest") == check.get("output_digest"))
+                        complete = _completion_valid(check, item.get("output", {}).get("digest"))
                         if complete:
                             item.update(status="complete", completion_evidence=json.dumps(check, sort_keys=True))
                     missing_consumed = sorted(set(_required(question, quarter)) - consumed.keys())

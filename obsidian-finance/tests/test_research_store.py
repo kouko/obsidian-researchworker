@@ -285,3 +285,45 @@ def test_future_only_directories_do_not_hide_absent_initial_fiscal_evidence(tmp_
         assert result["status"] == "partial" and result["reusable"] == []
         assert result["decisions"] == []
         assert {g["record"] for g in result["gaps"] if g["evidence"] == "fiscal"} == set(assets)
+
+
+@pytest.mark.parametrize("state", ["scalar-analysis", "missing-authorship", "economic-kind", "missing-check",
+                                  "invalid-check", "failed-check", "unbound-check", "omitted-check", "old-method"])
+def test_future_saved_identity_and_completion_evidence(tmp_path, state):
+    from test_research_continuation import two_issuers
+
+    assets = two_issuers(tmp_path)
+    directory = "investing/assets/equities/" + assets[0] + "/cycles/2024Q2/2024-08-01-r1"
+    saved = json.loads((tmp_path / directory / "review.json").read_text())
+    unit = saved["units"]["credit"]
+    frozen = dict(kind="method", version="historical-method", authored_at="2026-11-16T10:00:00+08:00",
+                  projection={"rule": "old"}, content_ref=directory + "/credit.md",
+                  content_digest=unit["output"]["digest"])
+    if state in ("scalar-analysis", "missing-authorship", "economic-kind", "old-method"):
+        if state == "missing-authorship":
+            frozen.pop("authored_at")
+        elif state == "economic-kind":
+            frozen["kind"] = "economic-source"
+        unit["analysis_inputs"] = {"old-method": 7 if state == "scalar-analysis" else frozen}
+    elif state == "missing-check":
+        (tmp_path / unit["verification"]).unlink()
+    elif state == "invalid-check":
+        (tmp_path / unit["verification"]).write_text("not JSON")
+    elif state == "omitted-check":
+        unit.pop("verification")
+    else:
+        check = json.loads((tmp_path / unit["verification"]).read_text())
+        if state == "failed-check":
+            check["checks"]["sources"] = False
+        else:
+            check["output_digest"] = hashlib.sha256(b"different output").hexdigest()
+        put(tmp_path, unit["verification"], check)
+    put(tmp_path, directory + "/review.json", saved)
+    before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    result = load().discover(tmp_path, "latest", "2024-05-01T23:59:59+00:00")
+    assert {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()} == before
+    if state == "old-method":
+        assert result["status"] == "complete" and len(result["reusable"]) == 6
+    else:
+        assert result["status"] == "partial"
+        assert any("/cycles/2024Q2" in str(g["record"]) for g in result["gaps"])
