@@ -1,0 +1,114 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-16-finance-research-continuation",
+  "content_digest": "65d2b665c806dceb64ef9b0b751a6eedf6c3123c",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_research_continuation.py",
+      "result": "pass",
+      "command_digest": "b542681ef6bdd1f4d63ff12208238f00c4801b7f0a3673c52e82f785549154eb"
+    },
+    {
+      "kind": "adversarial",
+      "command": "/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_future_history_validation.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_future_history_validation.py",
+      "result": "pass",
+      "command_digest": "27c7857932f5a1a7f708b5bc361ec1d3fe1ab6f8bf22f0f201bda0745b8b3507"
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "code",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "03b38d2ab4c20740cfddbf27bb69f26ee6a4a5b3",
+      "dimension_scores": {
+        "security": "PASS — Changed validation continues to use confined no-follow reads, preserves user bytes and rejects invalid completion evidence. No new transport, executable selector, credential access or write boundary was introduced.",
+        "architecture": "PASS — Future-history selection remains in the existing folder adapter; small shared identity/completion predicates serve ordinary and future validation. Dependency-content interpretation stays explicitly with the research agent rather than silently expanding the pure assessor.",
+        "correctness": "PASS — Independently ran both ordinary changed test files: 44 passed. Also ran publication and continuation callers with them: 84 passed. Read complete changed selection/identity/completion functions and their callers, including historical exact-cutoff and publication-predecessor handling; retained RED evidence supports the repaired false-gap and malformed-future cases.",
+        "naming": "PASS — Shared validators and future-history checks name their bounded responsibilities; no misleading new public capability or entry was introduced.",
+        "tests": "PASS — Both ordinary changed files, including the graduated two-case adversarial regression, executed with no skips. Tests exercise discover through disposable real folder records and verify preserved bytes; existing publication/continuation coverage also passed. Read retained pre-fix RED and isolated validator-removal evidence for the graduated regression.",
+        "refactoring": "PASS — Shared frozen-identity and completion validation avoids inconsistent ordinary/future rules without creating a new module or public test seam. Existing fixture helpers and entry tests are reused.",
+        "cross-task-coherence": "PASS — Per-unit economic operands/counterevidence and adopted authored inputs now have explicit binding instructions; live-reference comparisons are distinguished from helper-only reuse. Future exclusion preserves real corruption gaps, exact historical selection and predecessor safety. Canonical acceptance distinguishes these software behaviors from wider research completion.",
+        "external-surface-grounding": "PASS_WITH_NOTES — Retain the prior limitation: live SEC/OpenCode/Obsidian external documentation was not independently reopened. This fix adds no external API call or contract shape; actual native claims were assessed through retained reports and independent acceptance, not a new reviewer-launched host.",
+        "principles-conformance": "PASS — Read current intent/spec/plan, retained failure/research records and canonical acceptance. Changes preserve histories/user bytes and explicitly distinguish structural completion, finite research, external freshness, installation and whole-program outcomes.",
+        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md exists; unchanged from prior rounds.",
+        "deliberate-simplification": "PASS — Helper remains nonrecursive for adopted study references; agent-side actual comparisons or genuinely self-contained snapshots are explicit bounded choices. Future identities are structurally checked without falsely requiring old methods to equal current methods.",
+        "deletion-first": "PASS — Existing adapter and skill are extended for reproduced omissions rather than introducing a workflow engine or dependency framework. Proven regression is relocated into normal tests with its assertions retained, not replaced by another mechanism."
+      },
+      "findings": [],
+      "notes": [
+        "Cumulative Round 5, same original reviewer and episode under explicit temporary user count/round authorization. Original three rounds, terminal refusals and Round 4 are retained; prior findings were empty and none were dismissed. Reviewed fix delta 4c649a6..03b38d2 and affected callers/context, not unrelated accepted stacked changes.",
+        "Independent focused command: /private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_future_history_validation.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider; 84 passed in 2.28s. Earlier changed-file-only invocation passed 44 in 0.59s. No complete suite, stored probe or new probe program was run.",
+        "No repository edits, provider/native/network request, installation or private-vault access. Canonical independent acceptance at 3547b84 was read, including raw Stop-hook failures and bounded recovery limits. Fixed-cap finalization and stacked delivery remain unconfirmed; this verdict does not supply an attestation or certify A–G, full original SEC reading or installed-plugin loading."
+      ],
+      "reviewer": "/root/continuation_round1_code",
+      "vendor": "openai",
+      "model": "inherited"
+    },
+    {
+      "verdict": "PASS_WITH_NOTES",
+      "lens": "skill",
+      "reviewed_sha": "af839ddc6ace9580cf94276ae60fa47697ea7979",
+      "review_target_sha": "03b38d2ab4c20740cfddbf27bb69f26ee6a4a5b3",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS_WITH_NOTES — Prior selected-source audit limits remain; no exhaustive original-filing/vintage authentication or independent whole-model economic re-audit was performed in this round.",
+        "missing-population": "PASS",
+        "user-judgment-leak": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [],
+      "notes": [
+        "Same original reviewer and cumulative episode, under the recorded temporary user count/round exceptions; prior README inconsistency remains FIXED and no prior finding was dismissed. Read the complete operative skill/method, original ground-truth context, research11/12, W3-02 through W3-05, current canonical acceptance and scoped independent full-case reports. The new instructions directly address demonstrated per-unit operand/counterevidence and adopted-research omissions, preserve economic eligibility separately from actual authored identities, require actual current-reference comparison before no-work, and explicitly limit the helper's nonrecursive scope. No new finding arose within 4c649a6..target.",
+        "Inspected the actual corrected Q2/Q3 growth, identity and investment-case outputs and frozen unit inputs. Q2 growth now binds IDC, Q2 cash and synthesis bind the retained Q1 cash operands, and adopted research/model/assumptions have 2026-authored identities; Q3 growth remains appropriately filing-only while synthesis binds its genuine cross-period/industry inputs. Independently recomputed all 29 current adopted-reference comparisons (12 Q2, 17 Q3), including selected JSON-pointer projections: they match. Reviewed future-only selection/identity/completion changes against the retained before/after evidence; they preserve malformed-history gaps, source cutoff and safe incomplete publication rather than declaring future analysis reusable.",
+        "Canonical clean-target acceptance at3547b84 distinguishes actual native new-quarter/no-work/changed-model/recovery from independent API reproduction, finite research from full-source/model certification, and partial model-conflict checkpoints from completion. Independently confirmed native session/provider headers and raw Stop Failed lines for run06/07/08; exit0 is not hook success. Parent257/17 and code-reviewer84 test passes are supplied observations, not this reviewer's executions. No full suite, stored probe, network/provider request, installation, private configuration/vault access or repository edit occurred. Preserve original failures/counters and selected-source limitations; no installed loading, external freshness, A–G completion, fixed-cap finalizer success or attestation is certified."
+      ],
+      "reviewer": "/root/continuation_round1_prose",
+      "vendor": "openai",
+      "model": "inherited"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "7db31aab2ec4dfb68d86093575fb8bbe432de2f1",
+  "tested_commit": "3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d",
+  "reviewed_commit": "03b38d2ab4c20740cfddbf27bb69f26ee6a4a5b3",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
