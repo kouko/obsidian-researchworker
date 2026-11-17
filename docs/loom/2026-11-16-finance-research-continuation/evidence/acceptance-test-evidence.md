@@ -1,6 +1,6 @@
 # Folder-grounded investment research continuation — acceptance test evidence
 
-Tried on 2026-11-16, in a clean copy of the project at aacbdf0.
+Tried on 2026-11-17, in a clean copy of the project at 3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d.
 
 Initial run on 2026-11-16 tested `2e135990987f320d0ea391e48b7e55b3fdc2a2e9` and was committed in `933710c174b55eb5c3df5ec7a565d7f3c51a7b27`. Its original observations, failures and native evidence remain below, followed by the dated re-run section. Statements about the initial new host refer to that first run, not a newly launched re-run host.
 
@@ -408,3 +408,115 @@ Captured `.... [100%]`, `4 passed in 0.49s`, exit 0. Source setup uses existing 
 Before replacing the canonical report, archived its exact bytes to `evidence/2026-11-16-acceptance-report-before-resumption.md`; pre-sync supplements remain frozen. Original canonical evidence is preserved as an exact prefix and this dated section is append-only. Prior failed audit assumptions, author-time corrections, actual session identities/counters, terminal refusal and authorized ceiling exceptions remain, with no reset or dismissal. No important/fatal issue was dismissed and no new product finding arose. Actual fresh-host replay is unnecessary for this unchanged finance runtime/skill/fixture; installation discovery remains unverified and is not a newly imposed global-install obligation. Original full investment case and A–G program remain incomplete.
 
 Post-write verification compared archive bytes with `git show bfee85e:docs/loom/2026-11-16-finance-research-continuation/acceptance-test-report.md` and checked current evidence starts with its exact committed predecessor bytes. Exit 0: `PASS archive byte-exact c209fa24d123f85c5f6077a5320511b94967a9dc35ffe5a7f08f2a2566511768 canonical evidence original exact prefix`.
+
+## Re-run on 2026-11-17, at 3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d — canonical cumulative acceptance
+
+### Identity, scope and preservation
+
+This is the same six-line software-change acceptance and original A–G program, not a reset, new program or whole-program certification. Original branch/review attribution remains af839ddc6ace9580cf94276ae60fa47697ea7979; current trunk merge-base aa1c0cb does not replace it. Read current Loom3.84 acceptance witness instructions/template, original intent at docs/loom/intent/2026-11-16-finance-research-continuation.md, spec, plan, existing canonical report/evidence and scoped independent reports.
+
+Preserved previous canonical report and evidence verbatim as:
+- evidence/2026-11-17-acceptance-report-before-canonical-3547b84.md
+- evidence/2026-11-17-acceptance-evidence-before-canonical-3547b84.md
+
+All preceding evidence remains below/above with original attribution, failures and qualifications. Prior Round4 material and rejected runs were neither deleted nor reclassified as successful. No important-or-worse dismissal was supplied.
+
+Started fresh:
+```sh
+git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-3547b84
+```
+Clone succeeded at exact3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d; initial status clean. Read root/finance README, used documented Python discover/publication_snapshot/recover APIs rather than inventing a CLI. Existing isolated /private/tmp/finance-validation-env/bin/python required no installation. Did not launch a model, network call, private configuration access, real-vault operation, Git publication or global installation.
+
+Fix range4c649a6..3547b84 changes dependency guidance and future-only saved-review selection/identity/completion validation. Therefore all six Acceptance lines and all16 UI flows were re-tested; no current row is carried over merely on a code-reading assumption. Confirmed git diff b543365..3547b84 over research_store.py and finance-research skill is empty: the actual native full-case runs used the same functional code/guidance as this witness, subsequent changes being evidence-only.
+
+### Actual current executions
+
+```sh
+/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_future_history_validation.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider
+```
+Exit0, **84 passed in2.65s**. These four files are the complete focused discovery/publication/continuation criteria, not the full package suite. They include supported/unsupported scope, new/changed source, formatting-only reuse, full local/economic dependency identities, future-only good/bad histories, exact historical cutoff, envelopes/provenance, interruption resume/rollback, user edits/symlinks/races, multi-issuer and older unreviewed quarters. Graduated malformed-future-history regression ran in normal test location.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python /private/tmp/finance-canonical-witness-3547.py > /private/tmp/finance-canonical-witness-3547.json
+```
+Final exit0. Witness-only script loaded clean research_store.py, copied public actual studies to new canonicalized temporary roots, rehashed every actual file, called ordinary discover/recover and compared pre/post bytes. First attempt rejected an unresolved macOS temporary symlink root with ValueError("symlink root"); corrected only witness path construction using Path.resolve(), then reran. This was an input-boundary rejection, not a guard bypass or product repair.
+
+Durable observed output:
+| Measurement | Actual output |
+|---|---|
+| Real study versus run06-before-all-root.files |490 paths, exact map equal|
+| May cutoff2024-05-03T23:59:59-04:00|complete,3 reusable,gaps0,excluded7,no_analysis_update|
+| August cutoff2024-08-02T23:59:59-04:00|complete,6 reusable,gaps0,excluded0,two no_analysis_update|
+| Changed-model study at August cutoff|partial,5 reusable,gaps3,Q2 investment-case resume_incomplete_work|
+| Every read-only copied discovery|all old bytes unchanged, no new files|
+| Reconstructed actual interruption|510 exact whitelist files from before-native.files, all hashes checked|
+| Ordinary recover(managed-interruption-01,action=resume)|checkpoint;510→512,all510 original bytes unchanged,original request bytes unchanged|
+| Exact recovery additions|run completion.json and recovery-checkpoint-01/review.json only|
+| Post-recovery research|partial,5 reusable; contradiction not promoted to completion|
+| Final real-root verification|same490-file map, exact equality|
+
+Recovery initial copy was reconstructed exclusively from510 before-native whitelist paths whose current original bytes matched their historical digests; no original run/review was removed or rewritten. Called normal current-code recover once in that disposable reconstructed copy. Original expected428-entry preconditions remained inside unchanged request bytes. This script is independent API reproduction, not a new actual native-host run.
+
+### Actual native evidence inspected
+
+Read raw prompts, native headers, terminal reports, parent all-file integrity observations, scoped independent evidence/report and relevant actual saved output for run04 May,run05 August,run06 no-work,run07 changed adopted-model and run08 managed interruption recovery. Distinct actual source-invoked sessions:
+- May01a1e7d3-e2af-7f10-b141-30d66ad7a115:446 old files preserved,467 final; corrected three-question publication.
+- August01a1e7df-a37c-71c2-b379-22ca19dfac78:467 old preserved,490 final; three new questions.
+- No-work01a1e7f1-da1d-7931-82f8-b52f31e5fcce:490→490,all-file equality; six reusable, no publication.
+- Changed-model01a1e7fb-5425-7433-9e77-39d813ad1439:hypothetical999999 authored-model mutation; native checks detect discrepancy, register genuine changed authorship while preserving history, publish partial only; five independent units remain.
+- Recovery01a1e802-707d-7fc1-96a8-7686eddff886:actual managed checkpoint interrupted by controlled I/O before review commit; original428-entry baseline retained; normal resume adds exactly review and completion, not a completed model.
+
+Headers identify Codex0.169.0,first-party openai/gpt-6.1-sol,low effort. Witness did not re-launch those sessions. Exact raw material is under /private/tmp/finance-fullcase-v10-evidence, /private/tmp/finance-fullcase-v10-modelchange-audit and /private/tmp/finance-fullcase-v10-recovery-audit; committed2026-11-17-full-case*.md scoped evidence preserves durable account/limits. Parent control maps were used for witness verification, not misrepresented as available to the actual native agent.
+
+Raw run06 transcript3057,run07 transcript7158 and run08 transcript6323 retain "hook: Stop Failed". Run08 also retains PreToolUse failures, earlier sandbox initialization denial and nonexistent-path read preparation error. Native terminal exit0 is research/process observation, not proof these hooks passed. Their causes remain undetermined. No guarded-command replay, configuration change or bypass was made by this witness.
+
+### Acceptance rows — re-tested in full
+
+#### 1. Saved assets, quarters, completion and pending work
+Actual current-code May/August/changed-model discoveries above derive scope solely from saved records. Focused folder, future-history and older-unreviewed-quarter cases passed. Native runs discover their scope without a supplied successful work list. Verdict works.
+
+#### 2. New-quarter, changed evidence and interruption continuation/reuse
+Current changed-model and reconstructed recovery calls preserve five independent units and leave affected synthesis pending. Native runs04/05/07/08 demonstrate actual analysis/new season/current reference discrepancy handling/resume. Focused economic/method/assumption/requirements invalidation and new-quarter cases passed. Helper alone remains intentionally nonrecursive for adopted external references; native current reference checking is separate actual evidence. Verdict works.
+
+#### 3. No duplicate research or unsupported advice
+Actual run06 has exact490-file equality. Current cold-copy discovery yields two no_analysis_update and six reusable; focused unchanged format/mtime cases passed. No local no-work claim establishes current external coverage. Verdict works.
+
+#### 4. Source/cutoff/assumption/horizon/history
+Read actual complete growth.md,identity.md,investment-case.md for both corrected Q2 and Q3 publications; also read scoped independent Q2/Q3 content/dependency reports/evidence. Text distinguishes2024 economics from2026 authored reconstruction, retains predecessors/links, business/financial/competition/governance/risk/valuation reasoning, opposing evidence,0–3/3–12/12–60-month horizons and conditional or insufficient conclusions. Q2 includes16 and Q3 includes20 economic dependencies in independently scoped verification. Current May excludes7 later observations; future malformed identity/completion remains a visible gap. Focused provenance/envelope/authorship/completion tests passed. This is readable Markdown/content review, not Obsidian visual-render QA, exhaustive original SEC reading, vintage authentication or full-model economic re-audit. Verdict works within confirmed finite software behavior.
+
+#### 5. Unavailable freshness/missing data/user edits/interruption protection
+Every current discover reports external_freshness=unverified. Changed model remains partial, no last-success advancement. Current focused user-edit/symlink/draft/marker/source/race tests and interruption resume/rollback passed; actual run08 preserves510 old files and original request on resume. A successful partial checkpoint never substitutes for conflict rollback. Current UI rollback is supported by dedicated focused tests plus retained prior scoped protection evidence, not newly claimed native conflicting rollback. Verdict works.
+
+#### 6. Actual fresh-host cross-session operation
+Five distinct native sessions provide new-quarter, changed-evidence/current adopted-reference validation, no-work and managed interrupted-continuation observations. Current same-code clean clone independently reproduces resulting states and preservation. This meets the bounded source-invoked host contract; reviewer freshness or API scripts are not substituted for those native executions. Installation/loading, every crash boundary, actual native user-edited rollback and full A–G remain outside observed proof. Verdict works.
+
+### UI rows — same numbering as canonical report, all re-tested
+
+| Row | Evidence |
+|---|---|
+|UI-1 Start|Current May/August discovery and folder-discovers-cycles tests; native persisted scope|
+|UI-2 Unsupported folder|Seven unsupported-folder cases preserve/reject invalid configuration/content|
+|UI-3 In progress|Native run07 partial checkpoint and run08 durable interrupted state; partial not complete|
+|UI-4 New quarter|Native run05 preserves467 old files,adds23; current August six reusable|
+|UI-5 Changed evidence|Native run07 detects actual adopted model mismatch; current five reusable; transitive-input tests|
+|UI-6 Interrupted work|Reconstructed actual510-file initial state normal recover yields checkpoint and five reusable|
+|UI-7 No work|Native490→490 equality; current no_analysis_update and format-only tests|
+|UI-8 Historical|Current May excludes7; valid future-only not a false gap; malformed futures and exact-cutoff tests|
+|UI-9 Missing data|Changed-model synthesis remains pending; independent five reusable; incomplete-envelope tests|
+|UI-10 Source unavailable|Native reports and all current discover retain unverified; no external success advancement|
+|UI-11 Escaping input|Focused escape/symlink cases and actual witness symlink-root rejection; no external reads/writes|
+|UI-12 User edit conflict|Ten focused publication user-edit/symlink/race states preserve/reject; prior raw conflict evidence retained|
+|UI-13 Interrupted publication|Current reconstruction510→512 adds only review/completion with request unchanged|
+|UI-14 Repeat|Repeated readonly discovery preserves files; native no-work no duplicated outputs|
+|UI-15 Success|Both actual finite research versions source-bound and predecessor-linked; incomplete changed model remains partial|
+|UI-16 Recovery/rollback|Dedicated interruption resume/rollback tests and linked-provenance rollback preserve history; native run08 is resume only|
+
+### Data, decisions, gates and findings
+
+No actual study, private vault or original source was edited. Witness reports only are written back to source worktree. Explicit temporary copies were used for every product mutation. Original490-path baseline remains exact; controlled test values never become accepted market facts.
+
+No newly found fatal/important product defect and no dismissed important finding. Minor diagnostic precision limitation remains: changed-model helper's generic missing-consumed-source/method gaps can sound like absent physical sources even though saved research.gaps correctly states the model inconsistency; pending state is correct and original scoped note is retained.
+
+Full package suite was NOT run by this witness. Owning station reported257PASS32.81s and adversarial17PASS1.18s; these remain supplied observations, not witness executions. Separate required finalize-review package command remains python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider. Package-tests/finalizer are not skipped; normal finalizer will still be attempted, and old fixed6>5 cap may refuse. No fresh counter, altered base, discarded failed evidence or fake attestation is authorized.
+
+No additional native test is necessary for the six bounded software-change rows. This does not fulfill original whole-program84-quarter, cross-sector/multi-asset, full-source/vintage, installed-host or every-conflict/crash obligations. Those retain their separate original scope and remain unaccepted here.
