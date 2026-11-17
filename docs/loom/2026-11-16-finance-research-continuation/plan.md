@@ -39,6 +39,12 @@ charter: 1.1
 - Files: docs/loom/2026-11-16-finance-research-continuation/evidence/, docs/finance/pilots/apple-2024q2-q3/host-continuation/, docs/finance/PLAN-DRAFT.md, obsidian-finance/README.md, obsidian-finance/.claude-plugin/plugin.json, README.md, obsidian-finance/.codex-plugin/plugin.json, .claude-plugin/marketplace.json
 - Test: A1 positive: fresh-discovery; boundary: missing-scope. A2 positive: real-incremental-research; boundary: changed-dependency. A3 positive: real-no-work; negative: duplicate-review. A4 positive: cited-horizon-synthesis; boundary: insufficient-evidence. A5 positive: actual-rollback; boundary: user-edits-survive. A6 positive: real-new-change-resume-no-work-sessions; negative: reviewer-is-not-host-proof.
 - Risk: agent-decided — REQ-1–6: use the authenticated host with isolated public fixtures, no additional paid obligation or global install. Record session/provider identity, writes and recovery. Reconcile documentation against actual results; registration is not installation and unavailable execution leaves acceptance unmet.
+- Risk: agent-decided — W3-01 follow-up 2: independent trials found missing reusable-unit dependencies: IDC, prior-quarter cash and adopted research. Same Acceptance 2/3/4; preserve publications, repair the class and re-test changes. See research/11-full-case-dependency-coverage.md.
+
+**W3-02 Close actual full-case dependency omissions**  after: W3-01  acceptance: 2, 3, 4
+- Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/research-method.md, obsidian-finance/README.md (only affected dependency guidance), docs/loom/2026-11-16-finance-research-continuation/evidence/, docs/loom/2026-11-16-finance-research-continuation/research/11-full-case-dependency-coverage.md; corrected research stays in an isolated public study.
+- Test: Negative baseline: IDC, prior-quarter cash and adopted-model revisions leave affected units reusable. Positive: corrected versions invalidate affected units for each dependency class; unchanged cases stay reusable. Boundary: distinct authorship/availability, unrelated-quarter preservation.
+- Risk: agent-decided — Prefer existing input/publication contracts. Audit each unit's claims and actual dependencies; verify referenced research before reuse. Unchecked hashes cannot close this failure. Preserve authorship, economic availability, accepted finite research and original failures.
 
 ## Simplicity check
 
