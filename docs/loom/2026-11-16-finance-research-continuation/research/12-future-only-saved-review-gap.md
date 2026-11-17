@@ -74,3 +74,27 @@ the accepted finite economic research is not reopened. User's temporary count/
 review waivers do not skip TDD, independent inspection, complete checks or actual
 host proof. No source fetch, new provider cost, installation, private-vault write,
 outbound publication, global guard patch or manual attestation is authorized.
+
+## W3-03 implementation readback
+
+The smallest two-issuer earlier-cutoff test failed on the retained code with two
+false future-only-quarter gaps. A bounded `_reviews` exemption now ignores only
+strictly future saved history after fiscal/unit/consumed-envelope, output-integrity
+and single-chain checks, while preserving local publication/withdrawal gaps.
+It applies to both latest and historical assessment; historical still rejects a
+different past cutoff instead of falling back. The separate publication-current-
+predecessor assertion is unchanged, so this does not authorize branch insertion.
+
+An additional all-future-data RED showed that physical saved directories also
+suppressed the explicit initial-fiscal-evidence gap. `_snapshot` now determines
+that per-asset absence after eligible selection; requests with no eligible
+original/review remain partial with no fabricated current-quarter work.
+
+Final focused store/publication/continuation command passed 73 tests, including
+all 15 existing continuation cases. Actual v10 May readback removes **only** the
+false future Q3 review gap, retaining all required-method/dependency pending
+work; August result is byte-equivalent JSON to pre-fix discovery. Both original
+study maps remain unchanged (v9 435 files, v10 446). No publication, guard retry
+or provider execution occurred. Detailed RED/GREEN progression, environment
+failure separation, exact commands, boundaries and full external witness paths
+are retained in `../evidence/w3-03-future-review-selection.md`.

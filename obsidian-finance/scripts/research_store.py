@@ -154,6 +154,7 @@ def _analysis_valid(root, base, required, consumed, record, gaps):
 
 
 def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
+    gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
     try:
@@ -221,11 +222,35 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
         eligible = {rid: pair for rid, pair in saved.items() if rid not in withdrawn
                     and (_adapter._core._instant(pair[1]["cutoff"]) == cutoff if mode == "historical"
                         else _adapter._core._instant(pair[1]["cutoff"]) <= cutoff)}
+        if (saved and not withdrawn and not eligible
+                and len(gaps) == gaps_start
+                and all(_adapter._core._instant(pair[1]["cutoff"]) > cutoff for pair in saved.values())):
+            for _, review in saved.values():
+                fiscal = review.get("fiscal")
+                _require(_adapter._core._fiscal(fiscal)
+                         and f"{fiscal['year']}{fiscal['period']}" == quarter, "fiscal directory mismatch")
+                _require(isinstance(review.get("units"), dict)
+                         and all(isinstance(unit, dict) for unit in review["units"].values()), "saved unit object")
+                for unit in review["units"].values():
+                    _require(isinstance(unit.get("consumed", {}), dict), "consumed identities")
+                    for sid, identity in unit.get("consumed", {}).items():
+                        _id(sid)
+                        _require(isinstance(identity, dict) and set(identity) == {"version", "projection"}
+                                 and _adapter._text(identity["version"]), "consumed identity")
+                    _require(isinstance(unit.get("analysis_inputs", {}), dict), "analysis_inputs object")
+                    if "output" in unit:
+                        output = unit["output"]
+                        _require(isinstance(output, dict), "saved output object")
+                        _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest"),
+                                 "Future review output changed or incomplete")
+            parents = {pair[1].get("predecessor") for pair in saved.values()}
+            _require(sum(rid not in parents for rid in saved) == 1, "ambiguous competing future reviews")
+            return []
         parents = {pair[1].get("predecessor") for pair in eligible.values()}
         leaves = [pair for rid, pair in eligible.items() if rid not in parents]
         _require(len(leaves) == 1, "missing cutoff review or ambiguous competing reviews")
         return leaves
-    except ValueError as error:
+    except (ValueError, FileNotFoundError) as error:
         gaps.append(dict(record=base + "/cycles/" + quarter, evidence="reviews", reason=str(error), recovery="Repair review metadata or provide the requested cutoff review; preserve existing research"))
         return []
 
@@ -237,6 +262,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
     _require(len(set(assets)) == len(assets), "duplicate asset identity")
     sources, records, gaps = [], [], []
     for asset in assets:
+        records_start = len(records)
         base = "investing/assets/equities/" + asset
         metadata = _object(root, base + "/asset.json")
         _require(metadata.get("id") == asset and _adapter._text(metadata.get("issuer")), "asset identity mismatch")
@@ -295,8 +321,6 @@ def _snapshot(root, cutoff, mode, proposed=None):
                 quarter = f"{fiscal['year']}{fiscal['period']}"
                 _require(quarter not in initial or initial[quarter] == fiscal, "ambiguous initial fiscal identity")
                 initial[quarter] = fiscal
-        if not quarters and not initial:
-            gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
         for quarter in sorted(set(quarters) | initial.keys()):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
@@ -363,6 +387,8 @@ def _snapshot(root, cutoff, mode, proposed=None):
                 records.append(dict(id=asset + "/" + quarter + "/" + saved["id"], issuer=issuer, fiscal=fiscal,
                     cutoff=saved["cutoff"], required_sources=_required_all(questions, asset, quarter), work=work,
                     **{k: saved[k] for k in ("execution_state", "last_attempt", "last_success") if k in saved}))
+        if not initial and len(records) == records_start:
+            gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
     return dict(version=1, sources=sources, records=records), gaps
 
 

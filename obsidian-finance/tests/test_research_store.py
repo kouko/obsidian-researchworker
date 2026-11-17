@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -198,3 +199,89 @@ def test_required_economic_inputs_cannot_be_omitted_from_legacy_units(tmp_path, 
     assert {item["work"] for item in result["reusable"]} == {"independent"}
     assert {d["work"] for d in result["decisions"] if "recompute" in d["action"]} == {"valuation", "synthesis"}
     assert result["gaps"] and all(d["action"] != "no_analysis_update" for d in result["decisions"])
+
+
+@pytest.mark.parametrize("mode", ["latest", "historical"])
+def test_earlier_cutoff_ignores_valid_future_only_saved_quarters(tmp_path, mode):
+    from test_research_continuation import two_issuers
+
+    assets = two_issuers(tmp_path)
+    before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    result = load().discover(tmp_path, mode, "2024-05-01T23:59:59+00:00")
+    assert result["gaps"] == []
+    assert len(result["reusable"]) == 6
+    assert {d["record"] for d in result["decisions"]} == {
+        assets[0] + "/2024Q1/r1", assets[1] + "/2024Q3/r1"}
+    assert {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()} == before
+
+
+@pytest.mark.parametrize("state", ["empty", "interrupted", "withdrawn", "fiscal", "units", "consumed", "consumed-entry", "analysis-inputs", "edited-output", "ambiguous"])
+def test_future_only_history_does_not_hide_real_gaps(tmp_path, state):
+    from test_research_continuation import two_issuers
+
+    assets = two_issuers(tmp_path)
+    directory = "investing/assets/equities/" + assets[0] + "/cycles/2024Q2/2024-08-01-r1"
+    saved = json.loads((tmp_path / directory / "review.json").read_text())
+    if state == "empty":
+        shutil.rmtree(tmp_path / directory)
+    elif state == "interrupted":
+        (tmp_path / directory / "review.json").unlink()
+        put(tmp_path, directory + "/pending.json", dict(version=1, run="future-interrupted", review_digest="missing"))
+    elif state == "withdrawn":
+        put(tmp_path, directory + "/withdrawn.json", dict(version=1, run="missing-run"))
+    elif state == "fiscal":
+        saved["fiscal"]["period"] = "Q4"
+        put(tmp_path, directory + "/review.json", saved)
+    elif state == "units":
+        saved["units"] = []
+        put(tmp_path, directory + "/review.json", saved)
+    elif state == "consumed":
+        saved["units"]["credit"]["consumed"] = []
+        put(tmp_path, directory + "/review.json", saved)
+    elif state == "consumed-entry":
+        saved["units"]["credit"]["consumed"] = {"filing-2024Q2": None}
+        put(tmp_path, directory + "/review.json", saved)
+    elif state == "analysis-inputs":
+        saved["units"]["credit"]["analysis_inputs"] = []
+        put(tmp_path, directory + "/review.json", saved)
+    elif state == "edited-output":
+        (tmp_path / directory / "credit.md").write_text("user-edited future output")
+    elif state == "ambiguous":
+        saved["id"] = "r2"
+        put(tmp_path, directory.rsplit("/", 1)[0] + "/2024-08-01-r2/review.json", saved)
+    result = load().discover(tmp_path, "latest", "2024-05-01T23:59:59+00:00")
+    assert result["status"] == "partial"
+    assert any("/cycles/2024Q2" in str(g["record"]) for g in result["gaps"])
+
+
+def test_historical_does_not_fall_back_to_another_past_cutoff(tmp_path):
+    from test_research_continuation import two_issuers
+
+    two_issuers(tmp_path)
+    result = load().discover(tmp_path, "historical", "2024-05-31T23:59:59+00:00")
+    assert result["reusable"] == []
+    assert any(g["record"].endswith("bank-fixture/cycles/2024Q1") for g in result["gaps"])
+
+
+def test_future_only_directories_do_not_hide_absent_initial_fiscal_evidence(tmp_path):
+    from test_research_continuation import two_issuers
+
+    assets = two_issuers(tmp_path)
+    for asset in assets:
+        base = tmp_path / "investing/assets/equities" / asset
+        for path in (base / "data/sources").glob("*.json"):
+            source = json.loads(path.read_text())
+            source["available_at"] = "2024-09-01"
+            path.write_text(json.dumps(source))
+        for path in (base / "cycles").glob("*/*/review.json"):
+            saved = json.loads(path.read_text())
+            saved["cutoff"] = "2024-09-01T23:59:59+00:00"
+            path.write_text(json.dumps(saved))
+    with_future = load().discover(tmp_path, "latest", "2024-05-31T23:59:59+00:00")
+    for asset in assets:
+        shutil.rmtree(tmp_path / "investing/assets/equities" / asset / "cycles")
+    without_future = load().discover(tmp_path, "latest", "2024-05-31T23:59:59+00:00")
+    for result in (with_future, without_future):
+        assert result["status"] == "partial" and result["reusable"] == []
+        assert result["decisions"] == []
+        assert {g["record"] for g in result["gaps"] if g["evidence"] == "fiscal"} == set(assets)
