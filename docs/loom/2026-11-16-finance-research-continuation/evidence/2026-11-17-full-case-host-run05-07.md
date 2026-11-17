@@ -68,9 +68,21 @@ Parent fixture/baseline: /private/tmp/finance-fullcase-v10-modelchange-control/.
 Parent all-file result: parent-integrity.json in that control directory.
 Fixture: /private/tmp/finance-fullcase-v10-modelchange-20261117/.
 
-Independent acceptance of runs 06/07 is pending. Inspect the pending work's
-diagnostic accuracy as well as its durable state; do not infer managed
-publication interruption/recovery from a successful partial checkpoint.
+Independent acceptance of runs 06/07 now passes with notes. A clean clone at
+9a126b9 independently reproduced the five-reusable/one-pending state and
+verified the whole-root preservation and old registration bytes. The helper's
+generic missing-consumed-source/method messages are less precise than the
+saved research gap: original inputs exist, while the synthesis was intentionally
+omitted because the model is inconsistent. This note does not change pending
+status and was not judged fatal or important within the scoped acceptance.
+
+Both native transcripts also contain `hook: Stop Failed` despite terminal
+process exit 0. The independent witness accepts the research/file observations,
+not hook success, and does not infer a cause. See the retained
+[report](2026-11-17-full-case-host-run06-run07-independent-report.md) and
+[evidence](2026-11-17-full-case-host-run06-run07-independent-evidence.md).
+Do not infer managed publication interruption/recovery from a successful
+partial checkpoint.
 
 ## Remaining obligations
 
