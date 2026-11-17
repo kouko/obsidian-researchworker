@@ -1,0 +1,16 @@
+{
+  "head": "683f128c3b9154614a45836a966b66aaa770c99c",
+  "branch": "feat/2026-11-16-finance-research-continuation",
+  "actual_base": "aa1c0cb259b393571b70bd270b56e25ddb70ff7a",
+  "identification": [
+    null,
+    "the branch identifies change '2026-11-16-finance-research-continuation' but its attestation names 2026-11-15-finance-sec-baseline, 2026-11-15-finance-work-assessment, 2026-11-16-finance-research-continuation; rename the branch to <type>/<change-id> or commit the intent docs/loom/intent/<change-id>.md"
+  ],
+  "verification": "stale (branch carries 3 attestations)",
+  "stored": [],
+  "graduated": [
+    "obsidian-finance/tests/test_future_history_validation.py",
+    "obsidian-finance/tests/test_research_continuation.py"
+  ],
+  "proportionate": []
+}
