@@ -13,10 +13,13 @@
 独立版の Claude/Cowork 互換性は未検証。[検証記録](../docs/verification.md)には
 過去の Codex ローカルソース導入成功のみを記録し、実利用は未達。
 
+下表は独立版の検証状況を示す。上記の `defuddle` の制限は upstream の情報であり、
+本バージョンでの実測結果ではない。
+
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
-| `defuddle` | block（URL fetch） | 動作 |
-| その他すべての obsidian skill | 動作 | 動作 |
+| `defuddle` | 未検証；upstream では URL 取得の制限を報告 | 未検証 |
+| その他の obsidian skill | 未検証 | 個別 skill の証拠を参照；全 skill の検証は未実施 |
 
 ## Version
 

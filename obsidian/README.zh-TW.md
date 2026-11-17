@@ -13,10 +13,12 @@
 獨立版本的 Claude/Cowork 相容性尚未驗證。[驗證紀錄](../docs/verification.md)
 僅記載過去 Codex 本機來源安裝成功，實際使用仍未達成。
 
+下表列出獨立版本的驗證狀態；上述 `defuddle` 限制來自上游，並非本版本的實測結果。
+
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
-| `defuddle` | 阻擋（URL 抓取） | 可運作 |
-| 其他所有 obsidian skill | 可運作 | 可運作 |
+| `defuddle` | 未驗證；上游記載 URL 抓取受阻 | 未驗證 |
+| 其他 obsidian skill | 未驗證 | 依個別 skill 證據；尚無全套驗證 |
 
 ## Version
 
