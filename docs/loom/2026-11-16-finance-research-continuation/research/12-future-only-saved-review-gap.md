@@ -75,6 +75,32 @@ review waivers do not skip TDD, independent inspection, complete checks or actua
 host proof. No source fetch, new provider cost, installation, private-vault write,
 outbound publication, global guard patch or manual attestation is authorized.
 
+## Independent follow-up: future validity checks were incomplete
+
+At eac3f25 the adversary executed fifteen disposable cases. Eight variations
+exposed two important classes: malformed frozen analysis identities and missing,
+malformed, failed or output-mismatched completion verification were hidden by
+the new future-only exemption. It committed one minimal program at a58e8e6,
+pinning two actual RED cases. No original study was edited and no product was
+repaired by the adversary. The full actual cases and temporal controls are in
+`../evidence/adversarial-future-review-selection.md`.
+
+All discovered important instances go back to Build together. Frozen identity
+structure must preserve economic versus authored input types and real authorship;
+do not require an old valid future method to match today's selected method.
+When an output claims completion, its actual verification must exist, parse,
+pass required checks and bind that output. Output-less partial units remain
+distinct; do not invent complete status from them. Current missing-output/path
+safe refusals are retained, not falsely reported as hidden completion.
+
+The main class sweep is the full future-only branch, existing local identity
+validation and completion-evidence checks, plus store/publication/continuation
+tests and the committed adversarial program. Fix these demonstrated classes,
+not speculative numerical finance rules. Preserve all genuine REDs, re-run the
+whole observed variant set, and retain original publications. The proven program
+must graduate into the normal suite before finalization; Build relocates it and
+the adversary alone owns any necessary program bootstrap adaptation.
+
 ## W3-03 implementation readback
 
 The smallest two-issuer earlier-cutoff test failed on the retained code with two

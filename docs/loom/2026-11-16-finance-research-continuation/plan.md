@@ -51,6 +51,16 @@ charter: 1.1
 - Test: Negative: valid saved future-only quarters create false earlier-cutoff gaps. Positive: two issuers, latest/historical earlier assessment excludes future research. Boundaries: eligible unreviewed quarters, incomplete/withdrawn/malformed publications, ambiguous reviews and no eligible initial evidence; preserve historical exact-cutoff and publication predecessor safeguards.
 - Risk: agent-decided — Same accepted cutoff/isolation obligations, no new episode or counter reset. Preserve actual run03 failure and protected input maps. Do not silence real missing evidence, mutate future reports or redesign branch/history insertion semantics.
 
+**W3-04 Preserve malformed future identity and completion gaps**  after: W3-03  acceptance: 1, 3, 5
+- Files: obsidian-finance/scripts/research_store.py, obsidian-finance/tests/test_research_store.py, docs/loom/2026-11-16-finance-research-continuation/research/12-future-only-saved-review-gap.md, docs/loom/2026-11-16-finance-research-continuation/evidence/
+- Test: Existing committed adversarial program is RED twice. Fix all eight observed malformed identity/completion variants; preserve valid old-method identities differing from current inputs, future exclusion, exact cutoff, user bytes and unrelated work.
+- Risk: agent-decided — Close demonstrated structural/completion validation omissions only. Never compare future frozen methods to current versions or redo economic analysis. Preserve the adversary's program and actual failure; no new framework or unrelated hardening.
+
+**W3-05 Graduate the proven future-history regression**  after: W3-04  acceptance: 5
+- Files: docs/loom/2026-11-16-finance-research-continuation/evidence/probes/test_future_history_validation.py, obsidian-finance/tests/test_future_history_validation.py
+- Test: The same two assertions run in the normal suite; restoring the pre-fix product makes the graduated program RED. Retain exact original failure evidence and change no semantic assertion merely to fit its new path.
+- Risk: agent-decided — Build owns relocation; only the adversary edits its program if bootstrap adaptation is necessary. Graduate before finalization, preserving counters and test purpose rather than deleting a successful regression.
+
 ## Simplicity check
 
 - Combine W3 documentation/evidence reconciliation into host verification, retaining all six acceptance checks across five tasks because reconciliation has no independent implementation boundary — taken

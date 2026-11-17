@@ -1,6 +1,7 @@
 # Future-review-selection adversary
 
-Counts: **6 attack points attempted; 2 succeeded and earned coverage; 1 RED
+Counts after the requested class sweep: **15 attack points attempted; 8 exposed
+the two failure classes and earned coverage; 1 RED
 program committed.** Target `eac3f25b94f5d000067298e4fb7bb50434115122`.
 The prior dependency-preparation report and all original programs remain.
 
@@ -65,3 +66,38 @@ probe and evidence; no additional durable lesson or implementation choice is
 introduced by this test-only commit. No memory trailers. Exact final commit text
 is privacy-scanned before commit; no private-party identifiers require a semantic
 judge. Parent owns the product repair, complete suite and subsequent acceptance.
+
+## Requested whole-class extension
+
+Parent requested this extension after the initial RED program was committed as
+`a58e8e6`. Reran the disposable runner with fifteen named cases, exit 0.
+No probe or product code changed. The first six attempts above remain actual
+history; the cumulative named case inventory is below.
+
+| Case | Actual earlier-cutoff result | Assessment |
+|---|---|---|
+| Scalar frozen analysis identity `7` | complete, no gaps, 6 reusable | Important malformed-envelope failure |
+| Frozen identity missing authored_at | complete, no gaps, 6 reusable | Same important malformed-envelope failure |
+| Frozen identity kind economic-source | complete, no gaps, 6 reusable | Same important economic/authored distinction failure |
+| Structurally complete old method identity differing from current inputs | complete, no gaps, 6 reusable | Held temporal boundary; not a finding |
+| Referenced verification file deleted | complete, no gaps, 6 reusable | Important incomplete-evidence failure |
+| Referenced verification contains invalid JSON | complete, no gaps, 6 reusable | Same important malformed-evidence failure |
+| Verification sources check is false | complete, no gaps, 6 reusable | Same important failed-evidence failure |
+| Verification output_digest differs from bound output | complete, no gaps, 6 reusable | Same important unbound-evidence failure |
+| Output retained but verification field omitted | complete, no gaps, 6 reusable | Same important absent completion evidence failure |
+| Output object omitted, old verification retained | complete, no gaps, 6 reusable | Recorded boundary; no separate finding because output-less units may be partial |
+| Output digest omitted | partial with future-review output gap | Held |
+| Output path omitted | loud ValueError | Held safe refusal, not silent completion |
+| Output path escapes root | partial with escaping-reference gap | Held |
+| Valid future predecessor chain | complete, no gaps, 6 reusable | Held |
+| Cutoff equals future review cutoff | complete, no gaps, 12 reusable | Held |
+
+All successful-return cases preserved every existing fixture byte. The temporal
+control intentionally does not demand that a future frozen method equal the
+currently selected method or that its old source still be available today. The
+repair must distinguish structural/completion-evidence validation from changing
+current economic or method identity. The missing-output-object observation is
+not included in the eight demonstrated false-complete cases or promoted into a
+new finding. No fatal finding was demonstrated. The two important classes above
+are the complete discovered findings for this dispatch; no further native call
+or actual-study mutation was performed.
