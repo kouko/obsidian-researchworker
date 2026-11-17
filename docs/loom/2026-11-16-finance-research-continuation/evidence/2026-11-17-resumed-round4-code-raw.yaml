@@ -1,0 +1,22 @@
+verdict: PASS_WITH_NOTES
+lens: code
+reviewed_sha: af839ddc6ace9580cf94276ae60fa47697ea7979
+review_target_sha: 4c649a6c3b3197aa3598afc39bc1720144c6c3b9
+dimension_scores:
+  security: "PASS — Inspected newly integrated vault discovery, CLI query construction, traversal/dot-component rejection and read-only hook; independently exercised hostile-registry and search boundary tests. Finance security code is unchanged."
+  architecture: "PASS — Integration preserves two independently selected packages and shares one locator/search script between the note skill and hook; no new finance dependency on note search was introduced."
+  correctness: "PASS — Five changed integrated test files independently passed 54/54 with no skips; inspected registry, search/CLI fallback and hook callers. Finance runtime, skill and fixtures remain unchanged from the prior reviewed target."
+  naming: "PASS — Integrated locator/search helpers and hook name their bounded roles; metadata now consistently advertises Obsidian 4.2.0 and fifteen skills alongside finance 0.1.0."
+  tests: "PASS — All five incoming changed test files independently passed 54/54 with no skips. Source-substring skill tests are inherited unchanged from accepted current trunk aa1c0cb; no new test-quality regression was caused by the finance integration, so that pre-existing debt is outside this resumed fix review."
+  refactoring: "PASS — Shared vault discovery/search avoids separate hook and skill implementations; no new finance abstraction or duplicated runtime was added by integration."
+  cross-task-coherence: "PASS — Registry conflict resolution preserves the complete upstream Obsidian entry and prior finance entry; live root descriptions, package manifests and independent acceptance agree on current scope and retained installation limits."
+  external-surface-grounding: "PASS_WITH_NOTES — Retained SEC/OpenCode live-documentation limitation remains. Integrated Obsidian CLI behavior has recorded measured-entry evidence and specification grounding, but I did not independently reopen live external documentation or invoke a real host/provider in this round."
+  principles-conformance: "PASS — Integration and acceptance preserve historical failures, scope limits and existing user-data protections; no global installation, provider spending or full-investment-completion claim is added."
+  architecture-conformance: "N/A — No ratified ARCHITECTURE.md exists; unchanged from previous rounds."
+  deliberate-simplification: "PASS — The portable registry fallback is explicitly best-effort, Linux remains unverified and Windows unsupported; finance continues to disclose its managed-equities and structural-validation ceilings."
+  deletion-first: "PASS — Integration reuses the upstream locator/search and existing finance runtime; registry/README reconciliation replaces stale descriptions without adding mechanisms."
+findings: []
+notes:
+  - "Original reviewer context, three rounds and terminal finalizer refusal are preserved. This resumed fourth round follows explicit temporary user round/count authorization; no original finding was dismissed or episode reset. Current trunk aa1c0cb259b393571b70bd270b56e25ddb70ff7a is separate from the echoed historical review base; inspected integration delta is 9be8abfc..4c649a6."
+  - "Independent command: /private/tmp/finance-validation-env/bin/python -m pytest obsidian/tests/test_vault_search.py obsidian/tests/test_find_vaults_hostile_registry.py obsidian/tests/test_command_registration_failure.py obsidian/tests/test_opencode_loader.py obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider; 54 passed in 2.71s. No full suite or stored probes were run."
+  - "Read current intent/spec/plan, integrated Build handoff and independent acceptance. No repository edit, new provider request, host relaunch or installation occurred. Formal count-cap finalization remains unconfirmed; this verdict supplies no attestation success or A–G completion claim."
