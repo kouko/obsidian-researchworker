@@ -75,3 +75,25 @@ test is warranted for this merge-only metadata resolution.
 The two new independent acceptance resumption reports remain untracked and
 must not enter this merge commit. The parent owns ordered post-merge Build
 checks, including the complete package suite and reused adversarial programs.
+
+## Follow-up: live root README after integration
+
+The parent identified the root README's current fourteen-skill introduction
+and finance-section 4.1.0 statement as live stale capability/version labels
+within the original acceptance surface. This extends the repair beyond the
+earlier registry-only boundary; the observation above remains historical.
+Class: **stale live package capability/version descriptions after trunk sync**.
+
+The whole content of every branch-touched file was searched with
+`git diff --name-only -z origin/main...HEAD | xargs -0 rg -l 'Fourteen|14 Obsidian skills|4\.1\.0'`.
+Matches were root `README.md` and this retained historical research record.
+The root README, `obsidian/README*`, `obsidian/skills/README*` and finance README
+were also searched in full. Only root README had live stale labels: its
+opening current skill count and finance-section current general-note version.
+The 4.1.0 feature sentence is valid release history; its tense is now explicit.
+
+The minimal correction states fifteen skills, current 4.2.0 local vault search
+from any project, and the current general-note package version. Distribution,
+unverified installation and finance limitations remain unchanged. Direct
+manifest/inventory assertions and `git diff --check` verify this documentation
+repair; no permanent wording test, full suite or adversarial run is added here.
