@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-18-resume-topic-research",
-  "content_digest": "cfcc9ccae98a622fad328c554d7dc9964fb18997",
+  "content_digest": "7dffdf50e12f68499774e1a70c8e71e72c2e7b0a",
   "executions": [
     {
       "kind": "package-tests",
@@ -20,35 +20,35 @@
   ],
   "verdicts": [
     {
-      "reviewer": "resume_close_one",
+      "reviewer": "resume_final_code_a",
       "vendor": "openai",
-      "model": "gpt-6.2-sol",
+      "model": "unobserved",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "tests",
+          "anchor": "docs/loom/2026-11-18-resume-topic-research/plan.md:18",
+          "text": "nitpick: The task marks main in its Risk line. The Files line lists the helper without identifying its CLI entry.",
+          "fix": "Move the existing CLI entry annotation from Risk to Files."
+        }
+      ]
+    },
+    {
+      "reviewer": "resume_final_code_b",
+      "vendor": "openai",
+      "model": "unobserved",
       "lens": "code",
       "verdict": "PASS",
       "findings": []
-    },
-    {
-      "reviewer": "resume_close_two",
-      "vendor": "openai",
-      "model": "gpt-6.2-sol",
-      "lens": "code",
-      "verdict": "PASS_WITH_NOTES",
-      "findings": [
-        {
-          "severity": "important",
-          "dimension": "correctness",
-          "anchor": "obsidian/skills/obsidian-research-resume/SKILL.md:126",
-          "text": "issue (non-blocking): The lock serializes helper sessions. An ordinary editor can still write between the final byte comparison and replacement.",
-          "fix": "Document that users should pause edits to the research folder during apply and recovery."
-        }
-      ]
     }
   ],
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "ab7b05a",
-  "tested_commit": "5bcc33858ee253d7f7219b450825d5969ce3f26e",
-  "reviewed_commit": "593cfdf13b8ef2de194484ece7f2bc6a18fecc5b",
+  "tested_commit": "de0472aa1e65b3d6cb2d6be44f034bd6f66b3fb7",
+  "reviewed_commit": "8b062d2ba98b096b8a905c8ec1ca1e0300e80603",
   "acceptance_status": [
     {
       "acceptance": 1,
