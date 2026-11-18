@@ -171,12 +171,13 @@ def run(argv=None, fetch=None):
     run_path = None
     try:
         args = parser.parse_args(argv)
-        mode = 'historical' if args.as_of else 'retrospective'
+        mode = 'historical' if args.as_of is not None else 'retrospective'
         if args.fiscal_quarter is not None:
             if (not re.fullmatch(r'[0-9]{4}Q[1-4]', args.fiscal_quarter)
                     or args.period_start is not None or args.period_end is not None):
                 raise ValueError('INVALID_INPUT: use YYYYQq without date-range selectors')
-            args.as_of = args.as_of or datetime.now(timezone.utc).date().isoformat()
+            if args.as_of is None:
+                args.as_of = datetime.now(timezone.utc).date().isoformat()
             start = end = None
         else:
             start, end = map(_date, (args.period_start, args.period_end))
