@@ -1,0 +1,35 @@
+{
+  "target": "2024Q4",
+  "authored_at": "2026-11-16",
+  "historical_reconstruction": true,
+  "scenario_design": "Local sensitivity coordinates around qualitative management outlook; no probabilities, not calibrated bull/base/bear",
+  "service_margin": "0.740",
+  "service_margin_basis": "Carry Q3 reported margin; local assumption, not forward guidance",
+  "other_income_usd_million": 0,
+  "other_income_basis": "Local simplifying assumption, not reported guidance",
+  "tax_rate": "0.165",
+  "tax_basis": "Attributed management outlook via secondary call notes",
+  "coordinates": [
+    {
+      "id": "lower",
+      "revenue_growth": "0.03",
+      "services_growth": "0.12",
+      "gross_margin": "0.455",
+      "opex": 14400
+    },
+    {
+      "id": "middle",
+      "revenue_growth": "0.05",
+      "services_growth": "0.14",
+      "gross_margin": "0.460",
+      "opex": 14300
+    },
+    {
+      "id": "upper",
+      "revenue_growth": "0.07",
+      "services_growth": "0.16",
+      "gross_margin": "0.465",
+      "opex": 14200
+    }
+  ]
+}

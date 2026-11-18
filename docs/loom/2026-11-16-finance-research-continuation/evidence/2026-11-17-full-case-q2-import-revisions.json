@@ -1,0 +1,154 @@
+[
+  {
+    "case": "q1-cash",
+    "mutation": {
+      "path": "inputs.2024Q1.cash_flow_ytd_rows[label=CFO].current",
+      "before": 39895,
+      "after": 40000
+    },
+    "old_sha256": "6644d4f32848c9405d34d9a71a2f9a81de86387c69825465732c9313e3f86bdf",
+    "changed_sha256": "d18c7afc2746fc32e5ce257d6da7d09deedb71b5470e42b1951e6656dc7c0314",
+    "result": {
+      "version": 1,
+      "scope": "supplied_local_evidence",
+      "external_freshness": "unverified",
+      "mode": "latest",
+      "cutoff": "2024-05-03T23:59:59-04:00",
+      "decisions": [
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "action": "no_analysis_update",
+          "work": null,
+          "evidence": [
+            "aapl:filing-2024Q2"
+          ],
+          "reason": "Completed outputs and relevant dependencies agree within supplied evidence",
+          "affected": []
+        }
+      ],
+      "gaps": [],
+      "excluded": [
+        {
+          "evidence": "aapl:bls-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:ec-original-release",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:expectations-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:fed-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:filing-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:idc-2024Q2",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:samsung-2024Q2",
+          "reason": "after_cutoff"
+        }
+      ],
+      "reusable": [
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "growth"
+        },
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "identity"
+        },
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "investment-case"
+        }
+      ],
+      "observations": [],
+      "status": "complete"
+    }
+  },
+  {
+    "case": "adopted-model",
+    "mutation": {
+      "path": "cases[Q2,reference].annualRows[0].productRevenue",
+      "before": "297778.267097401195018357209704124973004103376",
+      "after": "999999"
+    },
+    "old_sha256": "b5cf85af81d796fbf7b03693221fb961ac7e4b8a169e1ea30e3c57e9e8d4e8c3",
+    "changed_sha256": "b4444a97c091381fe31248df9d3df74625a54da24fec1d019b7fb750bf21a6de",
+    "result": {
+      "version": 1,
+      "scope": "supplied_local_evidence",
+      "external_freshness": "unverified",
+      "mode": "latest",
+      "cutoff": "2024-05-03T23:59:59-04:00",
+      "decisions": [
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "action": "no_analysis_update",
+          "work": null,
+          "evidence": [
+            "aapl:filing-2024Q2"
+          ],
+          "reason": "Completed outputs and relevant dependencies agree within supplied evidence",
+          "affected": []
+        }
+      ],
+      "gaps": [],
+      "excluded": [
+        {
+          "evidence": "aapl:bls-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:ec-original-release",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:expectations-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:fed-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:filing-2024Q3",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:idc-2024Q2",
+          "reason": "after_cutoff"
+        },
+        {
+          "evidence": "aapl:samsung-2024Q2",
+          "reason": "after_cutoff"
+        }
+      ],
+      "reusable": [
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "growth"
+        },
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "identity"
+        },
+        {
+          "record": "aapl/2024Q2/fullcase-v1",
+          "work": "investment-case"
+        }
+      ],
+      "observations": [],
+      "status": "complete"
+    }
+  }
+]

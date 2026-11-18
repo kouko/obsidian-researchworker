@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "output_digest": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+  "checks": {
+    "sources": true,
+    "citations": true,
+    "calculations": true,
+    "counterevidence": true
+  },
+  "unresolved": [],
+  "scope": "author self-check of bounded question, not independent/full investment diligence"
+}

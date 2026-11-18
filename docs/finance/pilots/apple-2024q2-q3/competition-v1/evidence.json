@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "status": "partial-research",
+  "cutoffs": {
+    "2024Q2": "2024-05-03T23:59:59-04:00",
+    "2024Q3": "2024-08-02T23:59:59-04:00"
+  },
+  "idc": [
+    {
+      "calendar_period": "2024Q1",
+      "published_at": "2024-04-15T08:30:00-04:00",
+      "url": "https://www.businesswire.com/news/home/20240415509032/en/",
+      "distribution_copy": "https://markets.financialcontent.com/stocks/article/bizwire-2024-4-15-worldwide-smartphone-market-up-78-in-the-first-quarter-of-2024-as-samsung-moves-back-into-the-top-position-according-to-idc-tracker?CSSURL=36.htm",
+      "source_role": "IDC-authored distributed release; direct IDC URL returned 403",
+      "eligible_for": [
+        "2024Q2",
+        "2024Q3"
+      ],
+      "unit": "million new branded smartphones shipped",
+      "global_shipments": 289.4,
+      "apple_shipments": 50.1,
+      "apple_prior_shipments": 55.4,
+      "apple_market_share_percent": 17.3,
+      "apple_prior_share_percent": 20.7,
+      "apple_published_yoy_percent": -9.6
+    },
+    {
+      "calendar_period": "2024Q2",
+      "published_at": "2024-07-15T08:30:00-04:00",
+      "source_url_attempt": "https://www.businesswire.com/news/home/20240715289324/en/",
+      "distribution_copy": "https://investor.wedbush.com/wedbush/article/bizwire-2024-7-15-worldwide-smartphone-market-grew-65-in-the-second-quarter-of-2024-as-momentum-continues-to-build-according-to-idc-tracker",
+      "source_role": "IDC-authored distributed release; direct wire URL inaccessible via web tool",
+      "eligible_for": [
+        "2024Q3"
+      ],
+      "excluded_for": [
+        "2024Q2"
+      ],
+      "unit": "million new branded smartphones shipped",
+      "global_shipments": 285.4,
+      "apple_shipments": 45.2,
+      "apple_prior_shipments": 44.5,
+      "apple_market_share_percent": 15.8,
+      "apple_prior_share_percent": 16.6,
+      "apple_published_yoy_percent": 1.5
+    }
+  ],
+  "samsung": [
+    {
+      "calendar_period": "2024Q1",
+      "published_date": "2024-04-30",
+      "period_end": "2024-03-31",
+      "url": "https://news.samsung.com/global/samsung-electronics-announces-first-quarter-2024-results",
+      "segment": "MX and Networks",
+      "revenue_krw_trillion": 33.53,
+      "operating_profit_krw_trillion": 3.51,
+      "eligible_for": [
+        "2024Q2",
+        "2024Q3"
+      ],
+      "locator": "MX Business Posts Revenue Growth Amid Market Decline"
+    },
+    {
+      "calendar_period": "2024Q2",
+      "published_date": "2024-07-31",
+      "period_end": "2024-06-30",
+      "url": "https://news.samsung.com/global/samsung-electronics-announces-results-for-second-quarter-of-2024",
+      "segment": "MX and Networks",
+      "revenue_krw_trillion": 27.38,
+      "operating_profit_krw_trillion": 2.23,
+      "eligible_for": [
+        "2024Q3"
+      ],
+      "excluded_for": [
+        "2024Q2"
+      ],
+      "locator": "MX Business To Focus on Flagship Smartphones and Ecosystem Products for Revenue Growth"
+    }
+  ],
+  "calculations": {
+    "apple_share_yoy_change_pp": [
+      -3.4,
+      -0.8
+    ],
+    "apple_yoy_from_displayed_rounded_volumes_percent": [
+      "-9.57",
+      "1.57"
+    ],
+    "samsung_segment_operating_margin_percent": [
+      "10.47",
+      "8.14"
+    ]
+  },
+  "limits": [
+    "IDC preliminary estimates are subject to revision; exclude refurbished units and OEM sales",
+    "Published growth may use unrounded values: preserve 1.5% source growth separately from rounded-volume calculation",
+    "Shipments are not Apple revenue or end-user sell-through",
+    "Samsung MX and Networks is not a pure smartphone or directly comparable Apple segment",
+    "Samsung calendar ends differ from Apple fiscal ends by one day",
+    "Live site tickers and related-news blocks are excluded from historical evidence",
+    "No complete-file reading, independent research acceptance or complete investment case claimed"
+  ]
+}

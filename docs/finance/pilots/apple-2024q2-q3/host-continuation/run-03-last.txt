@@ -1,0 +1,9 @@
+Saved both run-03 managed partial checkpoints under method v3; investment-case remains required and pending for both quarters.
+
+- Q2 growth and fiscal identity verified at bounded scope.
+- Q3 growth freshly recomputed; independent identity reused exactly.
+- Revenue growth: Q2 −4.305327%; Q3 +4.865704%.
+- Preexisting managed hashes preserved; exact discovery before/after retained.
+- One Q2 original-page check succeeded; full source freshness remains unverified. No `last_success` advanced.
+
+[Run-03 report](/private/tmp/finance-host-public-20261116/run-03-report.md) · [Final validation](/private/tmp/finance-host-public-20261116/run-03-final-validation.json)

@@ -1,0 +1,33 @@
+{
+  "method_version": "earnings-exit-multiple-diagnostic-1",
+  "created": "2026-11-15",
+  "origin": "agent-decided illustrative stress assumptions, not historically estimated or contemporaneous analyst forecasts",
+  "years": 5,
+  "earnings_growth_grid": [
+    -0.02,
+    0.02,
+    0.06,
+    0.1
+  ],
+  "exit_multiple_grid": [
+    20,
+    25,
+    30
+  ],
+  "constant_shares": true,
+  "dividends": "excluded",
+  "fees_taxes_fx": "excluded",
+  "hurdle": 0.08,
+  "scenario_probabilities": null,
+  "rating": "insufficient_evidence",
+  "benchmark": {
+    "name": "S&P 500 Total Return",
+    "currency": "USD",
+    "use": "future evaluation convention only; no series acquired or excess return computed"
+  },
+  "horizons_months": {
+    "short": "(0,3]",
+    "medium": "(3,12]",
+    "long": "(12,60]"
+  }
+}

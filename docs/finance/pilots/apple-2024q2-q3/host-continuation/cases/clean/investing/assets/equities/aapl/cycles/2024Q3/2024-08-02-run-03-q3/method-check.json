@@ -1,0 +1,34 @@
+{
+  "applied": {
+    "version": 1,
+    "id": "growth-method",
+    "kind": "method",
+    "identity": "v3-authorship-corrected",
+    "authored_at": "2026-11-16T02:08:46.931664+00:00",
+    "projection": {
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected"
+    },
+    "content_ref": "investing/assets/equities/aapl/data/growth-method-v3.txt",
+    "content_digest": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36"
+  },
+  "actual_content_digest": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+  "authorship_correction": "AUTHORSHIP-CORRECTION.md",
+  "generic_method_hashes": {
+    "package/README.md": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967",
+    "package/skills/finance-research/SKILL.md": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e",
+    "package/skills/finance-research/references/research-method.md": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163"
+  },
+  "prior_growth_input": {
+    "growth-method": {
+      "authored_at": "2026-11-16T02:10:00+00:00",
+      "content_digest": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618",
+      "content_ref": "investing/assets/equities/aapl/data/growth-method-v2.txt",
+      "kind": "method",
+      "projection": {
+        "method": "revenue-yoy-and-gross-margin-v2"
+      },
+      "version": "v2"
+    }
+  },
+  "new_analysis_not_relabel": true
+}

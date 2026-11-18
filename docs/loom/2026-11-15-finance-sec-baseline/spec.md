@@ -1,6 +1,6 @@
 # Independent US financial-data acquisition — spec
 intent: 2026-11-15-finance-sec-baseline@b5c4dcd
-confirmed-behavior: 2026-11-15 @d5c8b23
+confirmed-behavior: 2026-11-15 @2dfcce4
 pre-build-review: required — adds an independently distributed plugin and a public data-artifact/command contract, with historical-eligibility semantics
 
 ## Requirements
@@ -9,13 +9,13 @@ REQ-1 — Optional independent finance capability
   The finance plugin shall be selectable separately from the existing general-note plugin and execute its data operation with the original Monkey Skills checkout and installed plugins unavailable → Acceptance #1
 
 REQ-2 — Traceable Apple acquisition
-  WHEN the user requests an Apple financial-data sample, the finance capability shall return acquired public filing metadata and structured financial observations with issuer identity, source identifiers/URLs, reporting dates, publication dates and retrieval timestamps → Acceptance #2
+  WHEN the user requests an Apple financial-data sample by company fiscal quarter YYYYQq, the finance capability shall resolve the issuer-declared fiscal period and return acquired public filing metadata and structured financial observations with issuer identity, source identifiers/URLs, reporting dates, publication dates and retrieval timestamps; unresolved or contradictory fiscal-period evidence shall be reported without guessing from calendar months → Acceptance #2
 
 REQ-3 — Honest coverage and failure
   WHEN acquisition finishes or cannot finish, the capability shall identify acquired, partial, empty and failed results and observed coverage without claiming annual/comparative observations are complete quarterly statements or twenty-year analysis → Acceptance #3
 
 REQ-4 — Historical date eligibility
-  WHEN the user supplies a historical information cutoff, the capability shall separate eligible observations and filings from later or undated information, preserving their publication evidence and making no claim of knowledge before that evidence → Acceptance #4
+  WHEN the user supplies a historical information cutoff, the capability shall separate eligible observations and filings from later or undated information, preserving their publication evidence and making no claim of knowledge before that evidence; a quarter-only request shall instead be labeled a retrospective snapshot using the acquisition-date cutoff, not information known at quarter end → Acceptance #4
 
 REQ-5 — Repeatable, non-destructive output
   WHEN acquisition is repeated or encounters input, identity, network or data errors, the capability shall preserve existing research/output, return a reproducible source-linked result or an explicit actionable error, and never present failure as success → Acceptance #5
@@ -25,13 +25,22 @@ REQ-6 — Provenance and bounded compatibility
 
 ## Design decision
 
+- user-decided — The quarter-entry behavior was confirmed with「對」on 2026-11-15; subsequent clarification distinguishes fiscal-quarter selection from analysis time and allows market conditions and other dimensions to update more frequently. Neither the selected quarter end nor its filing date is a universal information cutoff for every future analysis. Historical release-time assessments and later current assessments must remain distinguishable. This acquisition slice does not implement market or macro ingestion or recommendations; no runtime changes have been made under the amendment yet.
+- agent-decided — Acquisition and analysis are separate. A quarter-only acquisition defaults to the UTC acquisition date as its recorded data cutoff; it does not produce a recommendation or choose a historical assessment time. Source official filing dates and original accessions remain explicit so a future analysis can use release-time or later market evidence with its own cutoff. The interim suggestion to freeze every analysis at the original filing date is superseded by the user's multi-frequency clarification. An explicit --as-of requests a historical data snapshot. The wider research contract is recorded in docs/finance/PLAN-DRAFT.md section 6.
+
+- user-decided — On 2026-11-15 the user requested company fiscal quarters as the research unit and approved continuing in that direction. Quarter identity is distinct from disclosure timing; different issuer release schedules do not change the fiscal-quarter key.
+- agent-decided — Add a fiscal-quarter entry accepting YYYYQq, with explicitly company-fiscal-year semantics. Keep the existing date-range entry for compatibility; reject mixed quarter/date-range selectors. Resolve periods against issuer-declared filing evidence; never relabel comparative rows using companyfacts fy/fp, infer historic calendars from today's fiscalYearEnd, or use calendar months as fiscal quarters. Preserve annual and year-to-date durations; selecting Q4 does not derive single-quarter Q4 values.
+- agent-decided — A quarter-only operation uses the acquisition UTC date as an explicit retrospective cutoff; an optional explicit historical cutoff keeps the existing no-later-information rule. Record requested quarter, resolved period, source evidence, effective cutoff and retrospective/historical mode in results. Unresolved periods fail with FISCAL_PERIOD_UNRESOLVED / exit 1, without an eligible dataset or completion marker.
+- agent-decided — SEC acceptance date need not equal official filing date. Preserve both; use source filing dates for date-cutoff eligibility and check independently conflicting evidence without enforcing equality. No holiday calendar or reverse reconstruction of official filing dates from acceptance time is introduced. See the live finding and primary sources in docs/loom/research/2026-11-15-finance-quarter-and-filing-date.md.
+- user-decided — The user confirmed the quarter-entry read-back with「對」and resumed implementation with「開始吧」after the multi-frequency clarification. Keep the same change and review episode: this adds a quarter selector and fixes the demonstrated eligibility defect, not a new project or reset retry budget. Previous review/attestation certifies only the earlier content; it must be replaced. Publication remains pending separate authorization after the earlier automatic-review rejection.
+
 - agent-decided — Reuse the existing dedicated `finese-research` branch: its uncommitted work and user-selected worktree have exclusively carried this finance program, and its base contains no unrelated in-flight implementation. No branch reset or source worktree mutation is needed.
 - agent-decided — Use `obsidian-finance` as the initial sibling plugin identifier, matching the user's candidate and optional installation outcome; no separate repository, proxy plugin or general-purpose shared framework.
 - agent-decided — Deliver one data acquisition skill and a narrow command under its own plugin root. Extract only dependency-complete SEC acquisition functions and necessary enduring behavior tests after confirmation, retaining provenance; do not copy the 6,197-line adapter and unrelated provider/model entrypoints wholesale.
 - user-decided — Source tools must be transplanted here before reuse or modification; no runtime import, subprocess or cache dependency on Monkey Skills. Preserve source repository and existing vault.
-- agent-decided — Use the public SEC submissions/companyfacts endpoints, not paid providers, to validate the first slice. Follow archived submissions pages for the requested filing interval; explicitly report archive retrieval failures. No filing-document narrative parsing, three-statement stitching or quarterly arithmetic in this slice.
+- agent-decided — Use the public SEC submissions/companyfacts endpoints, not paid providers, to validate the first slice. Follow archived submissions pages for the requested filing interval; explicitly report archive retrieval failures. Permit only issuer fiscal declaration extraction from candidate primary filing documents; no narrative analysis, three-statement stitching or quarterly arithmetic in this slice.
 - agent-decided — A successful manifest registers only currently shipped finance data behavior, not research recommendations. Register separate Claude/Codex plugin metadata; any OpenCode metadata/loader must be tested independently before declaring that host usable. No user/global plugin refresh is performed by this change. Validate executable data behavior directly in isolated output first; disclose fresh-session skill invocation limitations separately.
-- agent-decided — A single operation accepts `--ticker`, `--period-start`, `--period-end`, `--as-of` and `--output-dir`. All dates are ISO dates; start/end filter observation end dates, not guessed fiscal quarter names. Endpoints are public and no API key is required. `SEC_USER_AGENT` supplies a user-provided identifying contact string and is never copied from a private config, inferred from a source default, committed or logged in full. Missing identity is an actionable pre-network error. Avoid treating an arbitrary default address as a genuine operator identity.
+- agent-decided — A single operation accepts --ticker, --output-dir and either --fiscal-quarter YYYYQq (optional --as-of), or the compatible --period-start/--period-end/--as-of date-range form. Mixed selectors fail before network access. All explicit dates remain ISO dates; date ranges filter observation end dates. Endpoints are public and no API key is required. `SEC_USER_AGENT` supplies a user-provided identifying contact string and is never copied from a private config, inferred from a source default, committed or logged in full. Missing identity is an actionable pre-network error. Avoid treating an arbitrary default address as a genuine operator identity.
 - agent-decided — Output is a structured data artifact, not a Markdown investment report. The CLI's machine-readable stdout is one summary object; progress is stderr only. The skill translates that summary into concise Traditional Chinese when used in this conversation's language.
 - agent-decided — Write a new immutable run subdirectory under the explicitly requested output directory, refusing file collisions and avoiding existing content. Missing parent directories may be created only beneath that requested root. The user chooses a test/output location; the program does not discover or write the actual vault or global config.
 - agent-decided — Store a source manifest, complete acquired raw endpoint responses, eligible fact rows, a filing inventory and exclusion/coverage counts. Raw latest API responses may contain information later than cutoff and are explicitly labeled unfiltered evidence; only eligible rows/inventory are analytical inputs. If all acquisition fails, write no success dataset. A finalized failed manifest may be retained in the new run directory for diagnostics. An interrupted/unfinished directory has no completion marker and cannot be mistaken for an eligible completed run.
@@ -43,6 +52,8 @@ REQ-6 — Provenance and bounded compatibility
 - agent-decided — After input/identity validation, failure to resolve a trustworthy issuer or obtain any valid endpoint section is failed (exit 1). Otherwise any required endpoint/archive failure is partial (exit 2), even when eligible counts are zero. With all required sections valid, zero eligible facts is empty (exit 3), even if filings exist. With eligible facts and all required sections valid, the result is complete (exit 0); zero matching filings is disclosed as an inventory limitation, not converted into invented coverage. This precedence is failed, partial, empty, complete. Empty means no eligible financial observations, not no disclosures. HTTP denial/rate limiting, malformed data, issuer mismatch and archive-page failures remain distinguishable errors. No silent provider/issuer/current-data fallback.
 - agent-decided — Package/runtime dependencies use an isolated project environment; no setup in conda base, credentials migration or changes to global host settings. Exact dependency pins, command filename and public schema details belong to the technical plan with tests, within these visible semantics.
 - agent-decided — No investment analysis, automatic update assessment, price history, total-return computation, FRED vintage retrieval, task scheduler or recommendations are included. Data identity/date evidence is useful input to those later capabilities, not evidence they work now.
+
+- agent-decided — Bind fiscal quarter only using inline-XBRL primary-filing declarations dei:DocumentFiscalYearFocus, dei:DocumentFiscalPeriodFocus and dei:DocumentPeriodEndDate, tied to the same issuer CIK, accession and submissions reportDate. Preserve declaration source URL/hash and contexts. Companyfacts fy/fp may nominate candidate original 10-Q/10-K documents only when the observation end matches that accession reportDate; they never authorize period identity. Confirm the primary document declares the requested year and Q1/Q2/Q3, or FY for requested Q4. Resolve only a unique original filing/period; amendments are versions, not alternate quarter identities. Use the issuer's literal reporting endpoint for 52/53-week calendars and do not invent a quarter start. Report resolved fiscal year/quarter, period_end, original accession and filing date; facts with that endpoint retain their own original start/end durations. Fiscal focus FY for Q4 is an annual endpoint, not a promise of standalone Q4 values. Missing, contradictory or ambiguous declaration evidence returns failed / exit 1 with FISCAL_PERIOD_UNRESOLVED, retaining raw diagnostics but no eligible dataset or completion marker; this takes precedence over complete/empty/partial. Filings after explicit cutoff cannot resolve the requested period; report unresolved rather than using future declarations. Primary-document transport failures remain explicit alongside the unresolved error. Reject malformed accession/document paths before any document request and retain existing no-redirect/throttle/retry protections.
 
 ## Alternatives considered
 
@@ -63,6 +74,26 @@ REQ-6 — Provenance and bounded compatibility
 - Boundary: `docs/finance/PLAN-DRAFT.md`, Sections 7, 9.1 and 10, separates minimal acquisition from quarterly reports, automatic work selection and twenty-year historical expansion.
 
 ## UI flows
+
+### Fiscal-quarter acquisition operation
+
+The user requests Apple company fiscal quarter 2024Q3 and an output location.
+They see the source-resolved quarter and period, a retrospective snapshot as of
+acquisition date, source versions, publication evidence and coverage limits.
+An optional historical cutoff instead limits what was known by that date;
+it does not turn the fiscal-quarter end into a publication date.
+
+| Case | What the user does | What they see / recovery |
+|---|---|---|
+| Quarter-only request | Request AAPL fiscal 2024Q3 | Resolved company fiscal period, effective acquisition-date cutoff and retrospective label; no claim of knowledge at quarter end |
+| Historical request | Request a fiscal quarter with a historical cutoff | Only evidence eligible at cutoff; unavailable filing/data is explicitly missing or unresolved |
+| Fiscal period cannot be established | Request an unknown or ambiguous quarter | Failed / exit 1, FISCAL_PERIOD_UNRESOLVED, retained raw diagnostics and no eligible dataset/completion marker |
+| Invalid or mixed selectors | Enter 2024Q5 or combine a fiscal quarter with a date range | Input error before requests; preserve previous outputs |
+| Accepted before official filing date | Source acceptance and official filing dates differ legitimately | Retain both dates; do not discard the filing solely for differing dates |
+| Q4 or year-to-date facts | Request Q4 or obtain cumulative observations | Preserve original duration; no fabricated standalone-quarter value or completeness claim |
+
+Existing progress, source failure, partial/empty results, repeat, interruption,
+identity and output protections below also apply to quarter requests.
 
 ### Finance acquisition operation
 

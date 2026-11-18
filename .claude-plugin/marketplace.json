@@ -4,12 +4,12 @@
   "plugins": [{
     "name": "obsidian",
     "source": "./obsidian",
-    "version": "4.1.0",
-    "description": "14 Obsidian skills for notes, research and diagrams, extracted from Monkey Skills."
+    "version": "4.2.0",
+    "description": "15 Obsidian skills for notes, research, diagrams and local vault search from any project, extracted from Monkey Skills."
   }, {
     "name": "obsidian-finance",
     "source": "./obsidian-finance",
     "version": "0.1.0",
-    "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs."
+    "description": "Optional sec-data acquisition and finance-research continuation for managed version-1 equities folders, with evidence-bound conditional judgments; installed-plugin loading remains unverified."
   }]
 }

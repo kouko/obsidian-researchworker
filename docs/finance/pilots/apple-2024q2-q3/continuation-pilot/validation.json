@@ -1,0 +1,34 @@
+{
+  "status": "self-check-pass",
+  "independent_review": "not_performed",
+  "checks": [
+    "original fact rows precede cutoff",
+    "prior Q4 revenue reconciles products",
+    "prior Q4 revenue exact",
+    "prior Q4 net income exact",
+    "lower revenue",
+    "lower services",
+    "lower residual",
+    "lower margin recomposition",
+    "lower after tax",
+    "middle revenue",
+    "middle services",
+    "middle residual",
+    "middle margin recomposition",
+    "middle after tax",
+    "upper revenue",
+    "upper services",
+    "upper residual",
+    "upper margin recomposition",
+    "upper after tax",
+    "note has cutoff and historical authorship",
+    "no Q4 actual inputs"
+  ],
+  "artifact_sha256": {
+    "reported-inputs.json": "c03a216c81bd7c121f9476d37555625a507c6dde354cb380698a0b3c5c6570b5",
+    "sources.json": "d162ea716dfb005d398ecc543aa31d39aaf719c972f779d255749de74ec50180",
+    "assumptions.json": "3e1684ddbb84988a42adace40971d152d2392bc987733a1b20740a7326974e67",
+    "calculations.json": "8985c58ed158fce7335f9904d2ba6d92e8d7e22c28b40a1191604c8895ec99e2",
+    "2024Q3-\u71df\u904b\u9810\u6e2c\u88dc\u5145.md": "0b42f1e970b5fc8edc8db87cddf41cc9b0ee8f167ec777ec1cc0ff1c0bc18a86"
+  }
+}

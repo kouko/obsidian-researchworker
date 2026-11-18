@@ -1,0 +1,13 @@
+{
+  "old_paths_unchanged": true,
+  "known_new_paths": {
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/calculations.json": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/method-check.json": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/pending.json": "c56c1d3183307fb4c003d855a53fad10ae098e0af36aac0350e50022f5c21f05",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/source-check.json": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e"
+  },
+  "reason": "Only reviewed Q3 partial checkpoint additions; baseline extended for subsequent Q2 publication"
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "external_attempted": false,
+  "external_success": false,
+  "external_freshness": "unverified",
+  "retained_prior_check": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json",
+  "read_coverage": [
+    "investing/assets/equities/aapl/data/2024Q3.json: period metadata, four metric inputs and MD&A table_rows"
+  ],
+  "limitations": [
+    "Retained transformed pack, not raw HTML; no new external reading or filing-index/amendment verification."
+  ]
+}

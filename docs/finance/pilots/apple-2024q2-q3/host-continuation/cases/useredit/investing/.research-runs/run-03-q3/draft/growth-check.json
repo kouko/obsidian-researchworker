@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "output_digest": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+  "checks": {
+    "sources": true,
+    "citations": true,
+    "calculations": true,
+    "counterevidence": true
+  },
+  "unresolved": [],
+  "scope": "author self-check, bounded retained original-quarter evidence; not independent review",
+  "evidence": [
+    "calculations.json",
+    "source-check.json"
+  ]
+}

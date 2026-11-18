@@ -1,0 +1,522 @@
+# Folder-grounded investment research continuation — acceptance test evidence
+
+Tried on 2026-11-17, in a clean copy of the project at 3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d.
+
+Initial run on 2026-11-16 tested `2e135990987f320d0ea391e48b7e55b3fdc2a2e9` and was committed in `933710c174b55eb5c3df5ec7a565d7f3c51a7b27`. Its original observations, failures and native evidence remain below, followed by the dated re-run section. Statements about the initial new host refer to that first run, not a newly launched re-run host.
+
+## Environment, setup and evidence boundaries
+
+- Tested exact HEAD: `2e135990987f320d0ea391e48b7e55b3fdc2a2e9`.
+- Independent witness did not implement or repair product code. First attempted `git worktree add --detach /private/tmp/finance-acceptance-clean <HEAD>` failed because that path already existed. A different new worktree path failed because the shared Git metadata was outside writable roots. Neither failed directory was accepted as the test environment.
+- Started clean instead with `git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-witness-2e13599`, then `git checkout --detach 2e135990987f320d0ea391e48b7e55b3fdc2a2e9`. Checkout reported `HEAD is now at 2e13599 test(finance): retain post-sync adversarial evidence`; initial and final `git status --porcelain=v1` were empty. No preexisting working artefacts were copied into the clone.
+- Followed root README and `obsidian-finance/README.md`: Python 3.11+, standard-library runtime, existing pytest/Node for checks, source invocation rather than global installation. Existing `/private/tmp/finance-validation-env/bin/python --version` returned `Python 3.15.0`; `node --version` returned `v26.12.0`. Loaded the shipped `research_store.py` Python API; no nonexistent CLI was invented. The new actual host read skill, method reference and README and used that exact helper.
+- Ran only the criterion-focused command below, not the entire package suite:
+
+```sh
+/private/tmp/finance-validation-env/bin/python -m pytest \
+  obsidian-finance/tests/test_research_store.py \
+  obsidian-finance/tests/test_research_publication.py \
+  obsidian-finance/tests/test_research_continuation.py \
+  -q -p no:cacheprovider
+```
+
+Captured result: `........................................................... [100%]` and `59 passed in 2.00s`, exit 0. The automated test suite, which runs before the change is accepted and blocks it on failure, remains the separate finalize-review check. Its command is `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`; this witness did not run or claim its result.
+
+- Local direct probe: `/private/tmp/finance-acceptance-probe.py`; captured JSONL: `/private/tmp/finance-acceptance-probe-output.jsonl`. These are witness-only temporary artefacts, not executable committed evidence. Public fixtures were copied exclusively from the clean clone's `docs/finance/pilots/apple-2024q2-q3/host-continuation/` into new temporary directories. Discovery never used conversation-supplied work statuses.
+- Prior actual runtime evidence is retained in `docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md` and the pilot's `host-continuation/run-01` through `run-08` transcripts, prompts, source-checks, reviews, before/after hashes and recovery calls. Independently opened all eight native headers and terminal results. Their session IDs differ and their headers report `provider: openai`, `model: gpt-6.1-sol`, `reasoning effort: low`. These are prior actual executions, not new acceptance executions or native-reviewer substitutes.
+- Verified `git diff b4ee26d76b1c6f5fb49b111e40ca54395e57e29b 2e135990987f320d0ea391e48b7e55b3fdc2a2e9 -- obsidian-finance/scripts/research_store.py obsidian-finance/skills/finance-research` is empty. Current helper SHA256 is `fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526`, matching retained fixed-runtime evidence. Thus the later real sessions use the same functional helper/skill, while run-01's original discovery failure remains explicitly preserved. This does not claim all original transitions were newly replayed during this witness run.
+
+## New actual host request on 2026-11-16
+
+Copied the initially bounded `quarter-check-scope` public fixture to `/private/tmp/finance-acceptance-host-study`. Supplied `/private/tmp/finance-acceptance-host-prompt.txt`, explicitly requesting source invocation, persisted-scope discovery, independent Decimal calculations, source/method checks, conditional horizons and no publication unless needed. No new paid provider/API, private data transfer, install, real-vault write, external message or provider configuration was authorized or performed.
+
+```sh
+/Users/kouko/.local/bin/codex exec \
+  --cd /private/tmp/finance-acceptance-host-study --sandbox workspace-write \
+  --ephemeral --skip-git-repo-check --color never \
+  --output-last-message /private/tmp/finance-acceptance-host-last.txt \
+  - < /private/tmp/finance-acceptance-host-prompt.txt
+```
+
+Initial normal outer-sandbox launch exited 1 before a request: `failed to initialize in-process app-server client: Operation not permitted (os error 1)`. The same command with ordinary process-launch approval ran with the host's normal sandbox and guards; no dangerous bypass, trust mutation or allowlist edit occurred. Exit 0. Native header:
+
+```text
+OpenAI Codex v0.169.0
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: low
+session id: 01a1e258-950a-7d03-bade-691c18bf2dec
+```
+
+The host independently discovered two `no_analysis_update` decisions, four reusable growth/identity units, `gaps=[]`, `excluded=[]`, and `external_freshness=unverified`. It read notes, checks, source metadata, method metadata and retained numerical originals, recalculated both quarters and reported all investment horizons as insufficient. It did not access external sources, advance attempts/success, publish a review, or change managed/imported evidence.
+
+It correctly disclosed that the witness prompt's requested cutoff `2024-08-02T23:59:59-04:00` is four hours later than persisted `2024-08-02T23:59:59+00:00`; latest mode permits the earlier saved reviews. No external coverage for the extra hours was inferred. Current method/skill hashes agree with saved checks; README hash differs, so the host did not claim all generic hashes agreed. Current README SHA256 `ea573de4769864e7aa693936f60a842b72d16abe6cf5a2c5a2f37fe0b5e5e387`; saved method-check README hash `d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967`. Same local applied method and equations were verified; exact old README reconstruction was not claimed. No metadata was refreshed to conceal the difference.
+
+One long shell write was blocked by the host's existing PreToolUse guard: `BLOCKED by dcg`; reason `Embedded shell command blocked: command contains too many substitutions for bounded static analysis (line 7 of heredoc)`. The command was not executed. The host used the dedicated patch tool to create its report and reran read-only verification. It did not follow the guard's suggested allowlist/allow-once alternatives. Final output: `PASS: repeated discovery identical; investing/imports hashes unchanged across final verification; both deliverables exist.`
+
+Independently compared the finished host copy with clean committed originals: `managed_count=46`, `identical=true`, `added=[]`, `deleted=[]`, `changed=[]`, `import_original_preserved=True`. This comparison included all managed files, not only old paths, and imports. The only new root result files were the two requested witness outputs; the earlier run-08 concurrent-audit failure remains a separate preserved event.
+
+Native reported `tokens used: 60,641`. This is a raw host counter, not billable/cached breakdown or monetary cost. Exact individual wall duration and billing remain unknown. Native transcript contains UTC event `2026-11-16T03:15:34.201658Z`; no fabricated start/end timing is supplied.
+
+Original acceptance request artefacts remain locally accessible:
+
+| Artefact | SHA256 |
+|---|---|
+| `/private/tmp/finance-acceptance-host-transcript-approved.txt` | `fa0805ceaa2030bcd9132b551d23b2f5f29571215712a257ceb05a3b9c3f765f` |
+| `/private/tmp/finance-acceptance-host-study/acceptance-host-result.md` | `620e6845c526d0f359b635c54c00dfad5885545faaee38bf71ff37e5b3ff86d3` |
+| `/private/tmp/finance-acceptance-host-study/acceptance-host-discovery.json` | `52985308a0f19d40a397e46875aba6530fbbfecaaef5f75cfec0931d2dcce471` |
+
+The raw host report is Traditional Chinese because it is host-produced user output; this witness evidence and probe descriptions are English. Temporary paths are retained locally, not a promise of archival availability on another computer.
+
+## 1. Saved assets, fiscal quarters, completion and work discovery
+
+- How tried: direct `discover(public_copy, 'latest', '2024-08-02T23:59:59-04:00')`, then independent new-host discovery from persisted configuration. Also ran `test_folder_discovers_cycles`, `test_source_declared_new_quarters_without_saved_conversation`, and all parametrizations of `test_individually_unreviewed_quarters_remain_visible`.
+- Observed: bounded Q2/Q3 growth and identity are four reusable units, two no-work decisions, no bounded gaps. A separate direct discovery of the original full-scope root returns `status=partial`, two `resume_incomplete_work` decisions for `investment-case`, and four independent reusable units.
+- Evidence: captured JSONL probes `test_folder_saved_scope_discovered` and `test_folder_full_scope_pending_not_completed`; new native discovery file above; named tests passed in the 59-test criterion run. No hand-written current work list was provided.
+
+## 2. New-quarter, changed-evidence, interruption and incremental reuse
+
+- How tried: criterion tests `test_new_quarter_and_changed_source`, `test_local_analysis_dependencies_preserve_actual_authorship`, `test_transitive_input_change_rejects_old_units`, `test_interrupted_publication_recovers`, `test_equal_local_source_ids_invalidate_only_own_issuer`; inspected native run-02/03/05/06/07 terminal outcomes, saved outputs and frozen dependencies.
+- Observed: eligible new quarters are discovered separately, future evidence is excluded; economic/method/assumption changes invalidate affected work and dependent synthesis; independent results remain reusable. New actual run independently recalculated saved eligible results without regenerating them.
+- Prior actual evidence: run-02 linked partial review recomputes growth and preserves identity; run-03 fixes observed older-quarter omission and saves both quarters with pending investment-case; run-05 interrupts the save worker; run-06 performs ordinary resume and rollback; run-07 saves Q3 after controlled historical original-source arrival. This is bounded research, not newly published 2026 SEC evidence or a complete company case.
+
+## 3. Unchanged, formatting-only and mtime-only requests
+
+- How tried: `test_unchanged_no_work[False]`, `[True]`; repeated direct discovery; actual new ephemeral host independently checked saved scope/calculations before deciding no-work.
+- Observed: identical discovery; no publication; all 46 managed files and imports remain exact, with no added/deleted managed file. External freshness remains unverified. The full original scope still has pending investment-case work, so bounded no-work never became global no-work.
+
+## 4. Sources, dates, assumptions, horizons and history
+
+- How tried: `test_completed_unit_reused_and_linked_provenance`, `test_incomplete_envelope_rejected`, local-authorship and public-pilot cutoff tests; new actual host read both saved reviews, source/method records, outputs/checks and recomputed arithmetic.
+- Observed: fiscal originals Q2 accession `0000320193-24-000069` and Q3 `0000320193-24-000081`, period ends `2024-03-30`/`2024-06-29`, and publication dates `2024-05-03`/`2024-08-02` remain separate from 2026 actual method authorship. Original source URLs remain in research; original HTML is not retained in this bounded copy and was not newly verified.
+- Recomputed from saved USD originals with Decimal: Q2 revenue YoY `-4.305327090978%`, Q3 `4.865704121178%`; Q3 margins `46.257155181459%` / `44.516302553883%`, change `1.740852627576` percentage points. Q2 margins `46.578074554009%` / `44.261672782488%`. Category changes and Greater China weakness remain counterevidence rather than universal-recovery claims.
+- Short/medium/long advisory conclusions remain `insufficient_evidence`; Q3 explicitly preserves `(0,3]`, `(3,12]`, `(12,60]` months as pilot convention, not the user's holding period. Full forecasts, valuation, governance, narrative and competitive diligence remain incomplete. Wrong v1/v2 exact authorship declarations and their correction remain historical evidence, not verified original timestamps.
+
+## 5. Unknown freshness, missing evidence, user edits and failure protection
+
+- How tried: missing/unsupported/source/output/verification cases, publication interruption and all edit/symlink preservation parametrizations in the criterion tests. Copied the committed actual `cases/useredit` fixture and called normal recovery for its real run ID, both actions.
+- Initial witness-only error: used shortened `run-05-useredit`, yielding `FileNotFoundError`; did not count this as a product conflict result. A first convenience replay of the entire probe prefix also hit `FileExistsError` on an already created temporary copy and did not run the intended recovery calls. Inspected persisted run directories, then invoked correct `run-05-useredit-interrupt` directly without recreating the fixture.
+- Correct captured output for both `resume` and `rollback`: `ValueError Publication conflict: user edited investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md`. Full before/after byte map matched: `all_case_bytes_preserved True`.
+- New host made zero external requests and zero newly opened original pages. Prior source-reading declarations remain prior evidence, not new source verification. `last_attempt` is retained and no `last_success` is invented. The native guard rejection and safe report-tool fallback above are preserved separately from product recovery.
+
+## 6. Genuine fresh-host continuation and recovery
+
+- How tried: independently read all eight retained CLI headers and final outcomes and checked functional helper/skill equality with tested HEAD; newly launched ephemeral native session `01a1e258-950a-7d03-bade-691c18bf2dec` with its own isolated public copy and direct source invocation.
+- Actual prior sessions: run-02 `01a1e214-0db5-7571-a802-ab011278fcb2` (changed method); run-03 `01a1e21d-ba5c-71f1-a551-30ac424d942d` (fixed two-quarter continuation); run-05 `01a1e226-6e0e-7111-82b7-2e1b147b39ab` (controlled worker interruption); run-06 `01a1e229-8a0b-7731-ae04-388f8245de9a` (normal recovery/rollback and edited conflicts); run-07 `01a1e22c-e025-71c3-9b81-7080e6ad8870` (new-quarter arrival); run-08 `01a1e23b-5819-7de3-b47e-fcc5799cbbbe` (bounded no-work).
+- Observed: new request repeats bounded no-work and independent arithmetic without modifying research. Prior native evidence supplies the other actual transitions; criterion tests are only additional mechanical verification. Source invocation is not installed-plugin discovery. Controlled save-worker exit 75 is not a claim of unexpected host process death. The retained run-08 whole-root additions audit failure caused by two concurrent measurement files is not erased by the managed-only pass or this clean new run.
+
+## 7. Start flow
+
+- How tried: new actual host source-invoked skill, read SCOPE/config/asset questions and called the shipped helper.
+- Observed: identified AAPL, both fiscal quarters, requested/latest cutoff, required growth/identity scope and advisory insufficiency; no per-note todo supplied. Native report/discovery above.
+
+## 8. Empty or unsupported folder flow
+
+- How tried: direct discovery on a newly created root containing only `user.md`; also ran all `test_unsupported_folder_preserved` cases.
+- Observed: `ValueError: Cannot discover version-1 investing research: [Errno 2] No such file or directory: 'investing'; supply missing metadata or repair the reference and retry`; `test_folder_unsupported_user_note_preserved: true`. This is the actual helper's refusal and recovery information; no fresh-host conversational rendering of this error was separately claimed.
+
+## 9. In-progress flow
+
+- How tried: direct full-root discovery and checkpoint/publication criterion tests; inspected retained native partial-checkpoint and interruption reports.
+- Observed: four independently complete units remain reusable while both required investment-case questions stay pending. Meaningful saved progress exists; no background service or full-case success asserted.
+
+## 10. New financial quarter flow
+
+- How tried: `test_new_quarter_and_changed_source`, `test_source_declared_new_quarters_without_saved_conversation`, multi-issuer/cold/public-pilot tests and retained actual run-07 source-arrival output.
+- Observed: eligible source-declared Q3 generates work, source after cutoff is excluded, Q2 remains preserved. New quarter is not inferred from a price observation or filename. Actual run-07 wrote bounded growth/identity with the preceding Q2 baseline intact.
+
+## 11. Changed evidence flow
+
+- How tried: changed source, local method/assumption and transitive-dependency criterion cases, plus run-02/03 actual saved results.
+- Observed: affected growth recomputed; independent fiscal identity reused with exact output/check digests. Method v3 correction remains honestly 2026-authored. No stale output merely receives a new dependency identity.
+
+## 12. Interrupted work flow
+
+- How tried: interruption resume/rollback criterion cases and independently opened actual run-05/06 results.
+- Observed: incomplete publication leaves predecessor visible and a gap; clean resume validates staged data and yields a checkpoint; required investment-case work is still pending. Tests did not stand in for the original host invocations.
+
+## 13. No necessary work flow
+
+- How tried: actual new session and repeated direct/format-only discovery.
+- Observed: two `no_analysis_update` decisions, four reusable units, zero bounded gaps and no duplicate review. Explicit external freshness limitation and incomplete broader scope are in actual host output.
+
+## 14. Historical review flow
+
+- How tried: `test_folder_discovers_cycles` saved exact historical cutoff and `test_unchanged_no_work` future-source exclusions; directly requested historical `2024-05-03T23:59:59+00:00`-equivalent saved-test scope and the public bounded root at `2024-05-03T23:59:59-04:00`.
+- Observed: saved exact cutoff selected in the criterion test; the public bounded root lacks that exact review, reports partial/missing-cutoff gaps and excludes Q3 as `after_cutoff`. It did not silently reinterpret a later review as a historical completion or mutate history. No fresh-host conversational error rendering is claimed for this boundary.
+
+## 15. Missing data flow
+
+- How tried: direct original full-root discovery, missing source/output/verification and required-economic-input criterion cases.
+- Observed: two investment-case questions remain incomplete with recovery instructions, while four independent units are reusable. Missing required dependency identities cannot be dropped to force completion.
+
+## 16. Source-check unavailable flow
+
+- How tried: actual new request explicitly limited to local public inputs; checked its returned freshness, observation and no-success state, alongside incomplete-envelope last-success criterion.
+- Observed: no credentials fabricated, SEC acquisition not invoked without genuine operator identification, no network request or freshness advancement. Local support remains usable but external freshness is `unverified`; a local publication cannot advance successful external checking. A new live remote failure was not induced.
+
+## 17. Invalid or escaping input flow
+
+- How tried: unsupported-folder `escape`, `symlink`, `duplicate`, ambiguous and incomplete cases; publication's symlink and race preservation cases.
+- Observed: invalid references/identities rejected, unchanged-byte assertions passed, no external read/write or execution of document instructions established by these inputs. These are executed boundary checks, not a claim that a conversational host rephrased every error.
+
+## 18. User-edit conflict flow
+
+- How tried: correct-run normal resume and rollback on actual retained useredit fixture copy, plus ten publication preservation cases.
+- Observed: exact file-specific conflict for both calls; every case-file byte preserved. User text, staged draft and journal were not overwritten, deleted, refreshed or forced into success.
+
+## 19. Publication interrupted flow
+
+- How tried: `test_interrupted_publication_recovers` for both finish paths, generic multi-issuer interruption cases, shared-target/run-identity tests; inspected native run-05 worker exit 75 and retained incomplete state.
+- Observed: draft/journal/proposed output precede review completion; predecessor remains visible and a different run cannot conceal the failed run. Recovery is not falsely complete because some output exists.
+
+## 20. Repeated request flow
+
+- How tried: direct repeated discovery, formatting/mtime variants and independent actual new-host invocation.
+- Observed: deterministic decisions and no publication; 46 managed files and imports identical. Native invocation itself still consumed tokens; no zero-cost or global no-work inference.
+
+## 21. Success flow
+
+- How tried: normal complete/linked-provenance criterion test, retained actual bounded run-07 publication and new native checks of saved review/source/assumption/horizon fields.
+- Observed: completed review points to prior evidence and preserves original full-scope imports. Only the initially configured bounded questions are complete; full investment-case, 84 historical quarter candidates and A–G obligations remain incomplete. Self-check flags and hashes alone are not analytical truth or advisory sufficiency.
+
+## 22. Recovery or rollback flow
+
+- How tried: clean normal recovery/rollback criterion tests, retained actual run-06 clean recovery and direct edited-fixture attempts on the exact tested helper.
+- Observed: clean recovery succeeds and withdrawal restores eligible predecessor while retaining all new/old reports; edited case refuses both actions with no byte changes. Rollback does not delete arbitrary user files or fabricate a historical predecessor at a different cutoff.
+
+## Findings, decisions and skipped steps
+
+- No new fatal/important product defect was reproduced. No important/fatal dismissal was supplied by the closing-review owner.
+- This is first independent acceptance for the post-sync target; no row is carried from an earlier acceptance report. Prior native execution is explicitly identified as retained source evidence, not a claimed new replay.
+- No `skipped-by-instruction` record was present in intent Constraints or plan Risks. No package-test or finalize-review skip was supplied. The full suite remains owned by finalize-review, not omitted from the workflow.
+- The report's resolved choices summarize the retained spec's bounded configuration/adapter, local method/source separation, dependency/fiscal semantics, append-only protection, completion/advice distinction and source-invoked validation. No new product design decision was implemented by this witness.
+- Git-memory classification for this report-only commit: routine acceptance evidence capture, no new reopened design decision, newly undisclosed product constraint or product gotcha; no memory trailers required. Exact commit message must pass the deterministic privacy scan. Only report and evidence are to be committed.
+
+## Re-run on 2026-11-16, at 64dd4c0
+
+### Fresh setup and inspected fix scope
+
+- Exact new tested HEAD: `64dd4c0119aa10dd7ef677608878cfcae5249469`. Created a genuinely new clone at `/private/tmp/finance-acceptance-witness-64dd4c0` using `git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-witness-64dd4c0`, then detached checkout of that exact SHA. Checkout confirmed `64dd4c0 docs(finance): reconcile live package-capability descriptions`; status was clean before and after verification.
+- Re-read the new root README, finance source setup contract, edited JSON interfaces and marketplace, PLAN-DRAFT ownership summary, retained plan delta, `research/07-package-capability-descriptions.md` and `/private/tmp/finance-round1-prose.yaml`. The earlier important inconsistency was fixed, not dismissed: discovery surfaces had incorrectly denied research continuation and made SEC contact identity appear necessary for local reuse. No new fatal/important finding was reproduced.
+- Inspected the complete `933710c..64dd4c0` diff: six paths only. Four live description surfaces changed (`README.md`, `obsidian-finance/.codex-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `docs/finance/PLAN-DRAFT.md`), plus the existing plan and new class-sweep research record. No new requirements, runtime change, method change, analysis change or fixture change.
+- Independently ran `git diff --name-only 2e135990987f320d0ea391e48b7e55b3fdc2a2e9 64dd4c0119aa10dd7ef677608878cfcae5249469 -- obsidian-finance/scripts obsidian-finance/skills obsidian-finance/tests obsidian-finance/README.md docs/finance/pilots/apple-2024q2-q3/host-continuation`; captured output was empty. This is the exact equality ground for carried behavior, retained actual session transcripts and all earlier criterion tests, not an assumption from the fix title.
+- Followed README setup again with the existing Python environment, loaded the shipped helper in the new clean clone and executed both bounded and full-scope discovery with `SEC_USER_AGENT` explicitly absent. No global installation, fresh provider/API obligation, native host relaunch, source fetch or full suite was needed to validate this description-only fix. Earlier actual-host observations remain earlier actual-host observations, with unchanged functional source and inputs.
+
+### Executed re-run checks and captured outputs
+
+Executed via `env -u SEC_USER_AGENT /private/tmp/finance-validation-env/bin/python -c`, with this actual inline body (line breaks added for readability):
+
+```python
+import sys,json,hashlib
+from pathlib import Path
+sys.path.insert(0,"obsidian-finance/scripts")
+import research_store as m
+r=Path("docs/finance/pilots/apple-2024q2-q3/host-continuation/quarter-check-scope")
+before={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in r.rglob("*") if p.is_file()}
+x=m.discover(r,"latest","2024-08-02T23:59:59+00:00")
+assert len(x["reusable"])==4 and not x["gaps"] and all(d["action"]=="no_analysis_update" for d in x["decisions"])
+assert x["external_freshness"]=="unverified"
+assert before=={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in r.rglob("*") if p.is_file()}
+print(json.dumps({"setup":"source API loaded with SEC_USER_AGENT absent","status":x["status"],"decisions":x["decisions"],"reusable_count":len(x["reusable"]),"gaps":x["gaps"],"external_freshness":x["external_freshness"],"all_fixture_files_unchanged":True},sort_keys=True))
+plugin=json.loads(Path("obsidian-finance/.codex-plugin/plugin.json").read_text())
+market=json.loads(Path(".claude-plugin/marketplace.json").read_text())
+assert any(p["name"]==plugin["name"] for p in market["plugins"])
+assert all((Path("obsidian-finance/skills")/s/"SKILL.md").is_file() for s in ("sec-data","finance-research"))
+print("PASS: both edited JSON parse and both advertised source skills exist")
+```
+
+The inline probe imported `obsidian-finance/scripts/research_store.py` by its actual path. It read the clean clone's committed `host-continuation/quarter-check-scope`, captured all fixture paths and exact SHA256 bytes before discovery, called the public `discover` API, asserted four reusable units, no gaps, two no-work decisions and unverified external freshness, then compared the full fixture map. No manually constructed work list or mocked output was supplied. Captured output:
+
+```json
+{"all_fixture_files_unchanged":true,"external_freshness":"unverified","gaps":[],"reusable_count":4,"setup":"source API loaded with SEC_USER_AGENT absent","status":"complete"}
+```
+
+The returned decisions were `aapl/2024Q2/bounded-baseline-q2` and `aapl/2024Q3/run-07-q3`, both `no_analysis_update`, preserving the existing publication-attempt observation. Edited JSON parsed successfully; marketplace finance name matches plugin name and both advertised `skills/sec-data/SKILL.md` and `skills/finance-research/SKILL.md` exist. Captured: `PASS: both edited JSON parse and both advertised source skills exist`.
+
+A separate real full-root discovery, again under `env -u SEC_USER_AGENT`, returned `status=partial`, four reusable units, exactly two `resume_incomplete_work` decisions for `investment-case`, and `external_freshness=unverified`. Captured: `PASS: full-scope discovery keeps four reusable units, two pending investment-case questions, partial status and unverified freshness`.
+
+Re-read the whole four changed paragraphs/interfaces rather than relying on matching a word: root README separates acquisition from agent-led research; plugin description/interface and default prompt identify designated managed equities folder, scope/cutoff, protected edits and gaps; marketplace exposes both skills and unverified installation; current program ownership summary includes both while retaining incomplete broader research. Old acquisition-only intake/history remains historical. No scheduler, trading, global install, completed investment case or installed-host proof was advertised. Verified all four local links from the complete root finance section resolve:
+
+```text
+PASS: all four root finance-section links resolve
+obsidian-finance/README.md
+obsidian-finance/skills/sec-data/SKILL.md
+obsidian-finance/skills/finance-research/SKILL.md
+docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md
+PASS: scope/cutoff prompt and acquisition-only contact requirement are explicit
+```
+
+Ran only focused criteria, not a full package suite:
+
+```sh
+/private/tmp/finance-validation-env/bin/python -m pytest \
+  obsidian-finance/tests/test_research_store.py::test_folder_discovers_cycles \
+  obsidian-finance/tests/test_research_store.py::test_unchanged_no_work \
+  obsidian-finance/tests/test_research_continuation.py::test_source_declared_new_quarters_without_saved_conversation \
+  -q -p no:cacheprovider
+```
+
+Captured `.... [100%]` and `4 passed in 0.09s`, exit 0. No substitute tests for the four new wording paragraphs were created. Full suite remains `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`, owned by finalize-review and blocking acceptance on failure; this witness does not assert the owner's supplied full-suite result as its own run.
+
+### Per-row re-run decision, checked against the entire fix diff
+
+- 1: re-tested — read all four live discovery surfaces, followed every root finance link and source setup in the fresh clone, ran bounded and full-root discovery without SEC identity; identified two fiscal quarters, four reusable units and two unresolved full-scope questions without a supplied task list.
+- 2: carried over — the entire script/skill/method/test/public-fixture trees are byte-identical; the fix changes no new-quarter, economic/local-method dependency, interruption or reuse behavior, so prior complete criterion and native incremental evidence remains applicable.
+- 3: carried over — no no-work, typed-projection, formatting/mtime or publication code/input changed; earlier formatting/mtime and actual-host no-duplicate evidence remains applicable. Setup's incidental no-work result is additional evidence, not a substituted new native replay.
+- 4: carried over — research envelopes, original sources, cutoffs, method/assumption identities, horizon rules, outputs and historical records are unchanged; description prose does not revise their meaning or advisory status.
+- 5: carried over — no freshness/state/validation/publication/recovery helper, protection rule or failure fixture changed; exact prior useredit and interruption checks remain valid over all named failure surfaces.
+- 6: re-tested — checked all four changed discovery descriptions now expose continuation while preserving source-invoked versus installed-host limits; loaded the exact new source successfully; verified complete functional source/fixture equality and retained actual native evidence for new-quarter/change/resume/no-work plus the prior independent ephemeral request. Did not launch a redundant host or label a subprocess/test as a new host.
+- 7: re-tested — followed root package/skill/evidence links; parsed the actual Codex interface and marketplace; inspected the new defaultPrompt for designated folder and cutoff; loaded source helper and discovered both persisted scopes without acquisition credentials. Installation itself remains unverified.
+- 8: carried over — empty/unsupported-folder validation and recovery text in the helper/skill are unchanged; no changed manifest/default prompt bypasses missing-scope refusal.
+- 9: carried over — progress reporting instruction, checkpoint publication, pending-question configuration and saved partial research are unchanged; the description now correctly exposes existing behavior without changing it.
+- 10: carried over — fiscal-source identity, quarter discovery, original arrival fixture and append-only research are unchanged; description edits do not alter the source-declared quarter boundary.
+- 11: carried over — economic/local-method/assumption dependency tracking, transitive synthesis, independent reuse and old-review links are unchanged, including all prior actual changed-method source inputs.
+- 12: carried over — interrupted-work detection, reusable-unit validation, pending work and normal resume are unchanged; no process/session continuation mechanism was edited.
+- 13: carried over — local no-work reporting, freshness qualification and publication avoidance instruction/code/fixtures are unchanged; retained actual native no-work and exact-byte preservation remain applicable.
+- 14: carried over — historical exact-cutoff selection, future-source exclusion, missing-review gaps and preserved research are unchanged; the new default prompt still requires an explicit assessment cutoff.
+- 15: carried over — missing-input/question semantics, recovery information and independent work are unchanged; no required investment-case question or original scope was removed by the wording fix.
+- 16: re-tested — inspected all four changed surfaces for acquisition-only SEC contact requirements and preserved freshness/installation limits; actual local bounded and full discovery ran without SEC_USER_AGENT and returned external freshness unverified. Original attempt/success records remain unchanged; no external request/success was invented.
+- 17: carried over — no root/path/symlink/identifier validation, anchored I/O or instruction-inertness rule changed; prior executed invalid/escape cases remain valid over the complete named boundary.
+- 18: carried over — no snapshot, output/draft/hash protection or resume/rollback conflict path changed; the exact retained edited-case inputs and earlier all-bytes preservation evidence are unchanged.
+- 19: carried over — staging, journal/run identity, final completion point and interrupted-publication observations are unchanged; prior real worker interruption and mechanical recovery evidence remain applicable.
+- 20: carried over — stable discovery/reuse and no-duplicate publication behavior plus inputs are unchanged; no repeated invocation or scheduler was introduced by the new description/default prompt.
+- 21: carried over — completion conditions, source/provenance/assumptions/horizons/gap envelopes and saved links are unchanged; the four descriptions explicitly retain incomplete full investment research rather than broadening success.
+- 22: carried over — normal recovery/withdrawal, user-edit conflict, preserved drafts/history and predecessor rules are unchanged over all previously exercised clean/edited cases.
+
+No instructed skip, no dismissed important/fatal finding, no new product fix and no native-host cost occurred in this re-run. A–G, complete investment-case diligence, external freshness and installed-plugin loading remain outside what these bounded passing results establish. The initial 59-test result, first native request/counter, raw artefact hashes, failed launches, witness probe mistakes and retained original host audit failures above are preserved, not reset.
+
+## Re-run on 2026-11-16, at aacbdf0
+
+### Clean setup and actual delta
+
+- Exact new tested HEAD: `aacbdf07179fe11281ceb513eedd96bd23cb4b8f`. Created `/private/tmp/finance-acceptance-witness-aacbdf0` by `git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-witness-aacbdf0`, then detached checkout of that exact SHA. Output: `HEAD is now at aacbdf0 fix(obsidian-finance): place trial fixture helper under tests`. `git status --porcelain=v1` was empty after setup and checks.
+- Re-read README setup, the complete moved helper, updated case/invocation/preparation references and `research/08-benchmark-helper-placement.md`. Used the same existing Python environment and actual source helper; no package install, global change or fabricated SEC identity. Source imports and all three fixture CLIs worked in this new clone. This is setup verification on the new tree, not reliance on the previous clean copy.
+- Inspected complete fix range `ce38a6065e5c9584a6a4e6a1a840f18de28d06d1..aacbdf07179fe11281ceb513eedd96bd23cb4b8f`: plan/research record the real finalizer failure; one synthetic-input program moves from reserved evidence to `obsidian-finance/tests/fixtures/make_skill_fixture.py`; current case/invocation references change; original preparation failure explicitly retains the old name. Rename-aware diff reports 98% similarity, with the sole program-line change `REPO = Path(__file__).resolve().parents[5]` to `parents[3]`.
+- Independently compared last tested `64dd4c0` with this target across `obsidian-finance/scripts`, `obsidian-finance/skills`, package README, original public host fixtures, root README, Codex manifest, marketplace and PLAN-DRAFT. `git diff --name-only` returned no path. No test assertion changed: within tests the only new path is the relocated preparation CLI. Thus no product Acceptance or conversational flow changed; all 22 product rows carry with reasons below. The mandatory clean setup and actually changed preparation path were nonetheless re-executed fully, for every supported case.
+- The prior finalizer failure is preserved in the committed research record, including `BLOCK adversarial.proportionate` for executable `evidence/skill-eval/make_fixture.py` outside the allowed program boundary. This was not treated as a warning, hidden by a suffix change, or bypassed by changing a rule. The helper is a synthetic-input CLI, not a new red-earned adversarial probe. No claim that finalization now passed is made by this acceptance witness.
+
+### Moved CLI: three real fresh executions
+
+From the clean clone root, ran exactly:
+
+```sh
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py missing /private/tmp/finance-acceptance-aacbdf0-missing
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py noop /private/tmp/finance-acceptance-aacbdf0-noop
+/private/tmp/finance-validation-env/bin/python obsidian-finance/tests/fixtures/make_skill_fixture.py conflict /private/tmp/finance-acceptance-aacbdf0-conflict
+```
+
+Each exited 0, with stdout its respective fresh destination and no stderr. These create synthetic test inputs, not company research or a newly executed behavioral A/B comparison.
+
+Independently read `/private/tmp/finance-fixture-placement-zbmc7cxj/equivalence-proof.json`, then used its recorded pre-move commands/destinations and file hashes as comparison inputs. For every newly generated case, recomputed every relative file path and SHA256; compared maps with the pre-move record and compared actual bytes directly against its still-existing pre-move directory. Captured outputs:
+
+```text
+missing PASS 11 exact files and bytes equal to pre-move fixture
+noop PASS 8 exact files and bytes equal to pre-move fixture
+conflict PASS 10 exact files and bytes equal to pre-move fixture
+PASS: all three newly executed CLI cases preserve all 29 original file bytes
+```
+
+This verifies the new path/root computation and unchanged generated inputs, independently of the implementer's six-run assertion. It does not rerun or regrade the 18 earlier behavioral trial contexts, claim population performance or replace original native-host evidence.
+
+### Source usability and input-state verification
+
+Ran `env -u SEC_USER_AGENT /private/tmp/finance-validation-env/bin/python -c` in the new clone, importing its actual `obsidian-finance/scripts/research_store.py`. For each new root, captured its complete regular-file path/SHA256 map, called `discover(root, 'latest', '2024-08-31T23:59:59+00:00')`, captured real results/errors, and compared the complete map again. For the conflict root also called normal `recover(root, 'trial-run', action=...)` for both `resume` and `rollback`. No expected result was stubbed.
+
+- `missing`: `status=partial`, external freshness `unverified`, `valuation` reusable, `business`, `market-scenarios` and dependent `synthesis` pending. Named gaps include missing market evidence, narrative consumed identity and local method binding. `missing all_root_bytes_unchanged`.
+- `noop`: `status=complete` within synthetic scope, one `no_analysis_update` decision for `aapl/2024Q2/r1`, `valuation` reusable, no gaps, future price revision excluded with `after_cutoff`, external freshness `unverified`. `noop all_root_bytes_unchanged`.
+- `conflict`: discovery returned actual `ValueError source raw digest mismatch`. Both normal recovery operations returned `ValueError Publication conflict; preserve user files/draft and reassess: investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md, investing/assets/equities/aapl/data/price.txt`. `conflict all_root_bytes_unchanged`. The note's injected upload instruction remained content; no network/private-service request or source correction was made to silence the conflict.
+
+These are bounded fixture/setup checks, additional to retained product results; they do not re-exercise every surface of a complete Acceptance row, so the report does not relabel those rows as fully re-tested. No full package suite, extra adversarial program, native host or repeated behavioral benchmark was run. Full package acceptance remains the separate blocking finalize-review check with command `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+### Per-row carry-over grounds, checked against the full move/fix diff
+
+- 1: carried over — asset/config discovery, saved fiscal/completion/work inputs and all four previously repaired entry surfaces are unchanged; newly generated synthetic inputs are independently byte-equal to all pre-move originals.
+- 2: carried over — no product new-quarter/dependency/reuse/publication/interruption code, method, source or actual host fixture changed; relocating input preparation does not change prior incremental or recovery outcomes.
+- 3: carried over — no no-work/format/mtime/completion/publication rule changed; newly generated no-op fixture is byte-identical and still reports bounded no-work without mutation, while prior full formatting/mtime/native evidence remains applicable.
+- 4: carried over — economic identity, cutoff handling, method authorship, research envelopes, horizons, provenance, reports and history are unchanged; fixture preparation relocation alters no saved analytical conclusion.
+- 5: carried over — all product source-failure/missing-data/edit/interruption/recovery paths and retained cases are unchanged; new conflict inputs match pre-move bytes and both actual recovery refusals preserve them. Prior full row coverage is retained rather than replaced by those narrower checks.
+- 6: carried over — actual source-invoked native runtime, skill, method and original public session inputs/transcripts are unchanged; synthetic CLI relocation neither replaces actual host evidence nor requires another paid/provider or native invocation.
+- 7: carried over — package entry points, prompt, scope/cutoff instructions and product discovery implementation are identical to the previous tested tree; only reproduction-tool references changed.
+- 8: carried over — unsupported/empty-scope validation, error recovery guidance and input preservation code remain identical; the moved CLI still deliberately creates only configured synthetic roots.
+- 9: carried over — progress reporting, durable checkpoints, required questions and meaningful partial saved work are unchanged; no agent behavior or benchmark result was edited.
+- 10: carried over — source-declared quarter identity, arrival discovery, previous-quarter preservation and original public quarter fixtures are unchanged; the preparation CLI move creates no new fiscal rule.
+- 11: carried over — economic/local-method dependency semantics, transitive invalidation and independent reuse remain identical; no prior changed-evidence record or output was regenerated.
+- 12: carried over — interrupted-work observation, verified-unit adoption and normal resume behavior are unchanged; new conflict journal bytes match the original synthetic input exactly.
+- 13: carried over — bounded no-work/freshness report instructions and publication avoidance are unchanged; new synthetic no-op result confirms setup compatibility but does not impersonate the retained real native no-work request.
+- 14: carried over — exact historical cutoff selection, source publication eligibility, later exclusions and historical immutability are unchanged; future-price bytes remain identical in the moved CLI output.
+- 15: carried over — missing-source/method/consumed-identity gaps and independent valid-unit reuse are unchanged; all eleven missing-case input files match before-move bytes, and actual new discovery keeps independent valuation reusable and affected work pending.
+- 16: carried over — credential scope, local-only freshness limits, source attempt/success records and failure behavior are unchanged; no new external attempt was made or represented as success.
+- 17: carried over — root/path/identifier/symlink boundaries and document-instruction inertness code/skill are unchanged; a relocated fixture root lookup is not a change to product reference resolution.
+- 18: carried over — user-edit snapshots, protected outputs/drafts/journals and normal conflict refusal are unchanged; new conflict case matches all ten old files and both normal recovery attempts leave every byte intact.
+- 19: carried over — staging, journal identity, final completion point and unfinished-publication handling are unchanged; the synthetic save-interruption code is identical apart from repository-root location and retains the same generated journal bytes.
+- 20: carried over — repeated-discovery determinism, stable work statuses and no-duplicate publication rules are unchanged; no scheduler or retry mechanism was introduced.
+- 21: carried over — completion gates, linked outcomes, provenance/assumptions/horizons/gaps and broad-scope exclusions are unchanged; no missing required research was removed or made complete by moving preparation code.
+- 22: carried over — normal clean/edited recovery and withdrawal, predecessor selection and history/data preservation are unchanged; relocation cannot authorize deleting or overwriting user-edited files.
+
+No new product finding, no dismissed important/fatal issue and no instructed skip. The earlier discovery-description issue remains fixed; the later reserved-evidence executable failure is explicitly recorded and repaired through a real test-directory relocation. Earlier reports, failures, native session identities, 59-test and 4-test evidence and cost counters remain intact above. The review episode/budget is not restarted; this witness reports no terminal station verdict beyond its own acceptance evidence.
+
+## Integrated re-run on 2026-11-17, at bfee85e
+
+### Exact boundary, clean setup and real integration delta
+- Tested SHA: `bfee85ec33a1da8086731a3fb8425715545e63c4`. Fresh clone via `git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-integrated-bfee85e`, then `git checkout --detach bfee85ec33a1da8086731a3fb8425715545e63c4`; both exit 0, checkout printed `HEAD is now at bfee85e docs(finance): retain integrated resumption verification`. Final clean-clone `git status --porcelain=v1` was empty.
+- Read Build handoff and complete changed-path inventory/numstat for `216254b..bfee85e`, actual root README and registry diff, both finance manifests and finance source setup. Upstream general-note package adds local vault search and its hooks/tests/docs, version 4.2.0 with 15 skills. It is separately selected from finance. Root README reconciles count/version; finance registry object remains 0.1.0. Finance `git diff 216254b..bfee85e -- obsidian-finance` is empty. Existing source-host fixture, methods and product-runtime bytes are unchanged; upstream general-note behavior is not silently treated as finance acceptance.
+- Local merge `89413384df8eb5c55c44aaf98bcc0c807f821cd5` integrates upstream `aa1c0cb259b393571b70bd270b56e25ddb70ff7a`; README reconciliation `eaa76a78eb58de72419270dbbfe28f0d49a16394` is included. This supersedes pre-sync-only setup, not prior runtime/failure/cost history.
+- Parent supplied complete suite 232 passed in 31.59s and reused program 15 passed in 1.22s. These are parent-observed, not this witness's suite run. This witness ran no full package suite. Fixed-cap formal finalization remains mechanically unconfirmed; neither a future success nor an attestation is asserted.
+
+### Actual entry and full affected-scope verification
+In the new clone, ran `env -u SEC_USER_AGENT /private/tmp/finance-validation-env/bin/python -c` with real JSON parsing, filesystem checks and actual helper import. Checked two unique registry names, exact versions, source directories, both Claude/Codex package manifests, actual 15 `obsidian/skills/*/SKILL.md` files, both finance source skills, all four root-finance-section Markdown links and default prompt's designated scope/cutoff. Captured output:
+`PASS registry: obsidian 4.2.0 / 15 skills; finance 0.1.0; Claude/Codex manifests agree; both finance skills and all four finance README links resolve; default prompt requires designated scope/cutoff`.
+Read complete finance descriptions: acquisition versus continuation remain distinguished; only live SEC acquisition requires identifying contact; source-invoked sessions do not claim installed loading, external freshness or complete investment research.
+
+Imported current `obsidian-finance/scripts/research_store.py`, called `discover(root,"latest","2024-08-02T23:59:59-04:00")` on BOTH committed public `host-continuation/quarter-check-scope` and original full `host-continuation`. No hand-supplied work statuses:
+- bounded: status complete, Q2/Q3 each no_analysis_update; growth and identity reusable for both (four units), external_freshness unverified.
+- full: status partial; Q2 and Q3 each retain investment-case resume_incomplete_work and named required-evidence recovery; same four growth/identity units reusable; external_freshness unverified. No missing question removed or investment recommendation added.
+- Complete recursive regular-file SHA256 maps before/after each discovery matched. Each printed `PASS entire selected input tree byte-preserved`. This includes existing attempt/success records, drafts and useredit cases within the full selected root; no external success was invented.
+
+Ran exactly:
+`/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_store.py::test_folder_discovers_cycles obsidian-finance/tests/test_research_store.py::test_unchanged_no_work obsidian-finance/tests/test_research_continuation.py::test_source_declared_new_quarters_without_saved_conversation -q -p no:cacheprovider`.
+Captured `.... [100%]`, `4 passed in 0.49s`, exit 0. Source setup uses existing isolated interpreter and standard-library runtime; no download, acquisition, provider/model CLI, global install or real vault was used.
+
+### Every Acceptance row and retained UI flow
+- 1: re-tested — all changed entry surfaces, both persisted scopes, fiscal quarters, reusable units and required outstanding work verified above; original native discovery remains retained.
+- 7: re-tested — root/package/skill/evidence links, actual two-package manifests/registry, designated scope/cutoff prompt, source helper load and both actual discovery scopes verified above; no installed-host claim.
+- 16: re-tested — complete current acquisition/local-reuse wording inspected; real discovery without SEC_USER_AGENT retains external_freshness unverified in both scopes and unchanged attempt/success bytes; original actual local-only host output retained. No new live remote failure was induced.
+- 2: carried over — new-quarter discovery, economic/local-method invalidation, interrupted research and independent reuse code/skill/fixtures unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 2 retained.
+- 3: carried over — no-work, formatting/mtime and publication avoidance code and actual native inputs unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 3 retained.
+- 4: carried over — envelopes, source/cutoff/authorship identities, horizons and immutable research history unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 4 retained.
+- 5: carried over — missing-source, freshness, user-edit and interrupted-publication protections unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 5 retained.
+- 6: carried over — actual source-invoked host runtime/skill/method and public run-02/03/05/06/07/08 artifacts unchanged; general-note hook belongs to separately selected obsidian package, not finance; checked against complete integration delta and unchanged finance tree, original evidence section 6 retained.
+- 8: carried over — unsupported-scope validation and preservation unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 8 retained.
+- 9: carried over — progress/checkpoint rules and full-scope required questions unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 9 retained.
+- 10: carried over — source-declared fiscal identity, original arrival and prior-quarter preservation unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 10 retained.
+- 11: carried over — economic/method dependency invalidation, linked review and independent reuse unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 11 retained.
+- 12: carried over — unfinished-work adoption and normal resume unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 12 retained.
+- 13: carried over — bounded no-work and unverified-freshness rules unchanged; additional local discovery does not replace prior actual host; checked against complete integration delta and unchanged finance tree, original evidence section 13 retained.
+- 14: carried over — exact historical cutoff and future exclusions unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 14 retained.
+- 15: carried over — required investment-case questions and independent work semantics unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 15 retained.
+- 17: carried over — root/path/symlink/identity boundary validation unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 17 retained.
+- 18: carried over — user-edit preconditions, original drafts and both recovery refusal paths unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 18 retained.
+- 19: carried over — journals, staging and final completion point unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 19 retained.
+- 20: carried over — deterministic repeat and no-duplicate semantics unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 20 retained.
+- 21: carried over — completion gates, linked review, sources/horizons and full-case gaps unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 21 retained.
+- 22: carried over — normal recovery/withdrawal and predecessor/history/user-edit protection unchanged; checked against complete integration delta and unchanged finance tree, original evidence section 22 retained.
+
+### Preservation and honest limits
+Before replacing the canonical report, archived its exact bytes to `evidence/2026-11-16-acceptance-report-before-resumption.md`; pre-sync supplements remain frozen. Original canonical evidence is preserved as an exact prefix and this dated section is append-only. Prior failed audit assumptions, author-time corrections, actual session identities/counters, terminal refusal and authorized ceiling exceptions remain, with no reset or dismissal. No important/fatal issue was dismissed and no new product finding arose. Actual fresh-host replay is unnecessary for this unchanged finance runtime/skill/fixture; installation discovery remains unverified and is not a newly imposed global-install obligation. Original full investment case and A–G program remain incomplete.
+
+Post-write verification compared archive bytes with `git show bfee85e:docs/loom/2026-11-16-finance-research-continuation/acceptance-test-report.md` and checked current evidence starts with its exact committed predecessor bytes. Exit 0: `PASS archive byte-exact c209fa24d123f85c5f6077a5320511b94967a9dc35ffe5a7f08f2a2566511768 canonical evidence original exact prefix`.
+
+## Re-run on 2026-11-17, at 3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d — canonical cumulative acceptance
+
+### Identity, scope and preservation
+
+This is the same six-line software-change acceptance and original A–G program, not a reset, new program or whole-program certification. Original branch/review attribution remains af839ddc6ace9580cf94276ae60fa47697ea7979; current trunk merge-base aa1c0cb does not replace it. Read current Loom3.84 acceptance witness instructions/template, original intent at docs/loom/intent/2026-11-16-finance-research-continuation.md, spec, plan, existing canonical report/evidence and scoped independent reports.
+
+Preserved previous canonical report and evidence verbatim as:
+- evidence/2026-11-17-acceptance-report-before-canonical-3547b84.md
+- evidence/2026-11-17-acceptance-evidence-before-canonical-3547b84.md
+
+All preceding evidence remains below/above with original attribution, failures and qualifications. Prior Round4 material and rejected runs were neither deleted nor reclassified as successful. No important-or-worse dismissal was supplied.
+
+Started fresh:
+```sh
+git clone --no-hardlinks /private/tmp/finance-research-continuation /private/tmp/finance-acceptance-3547b84
+```
+Clone succeeded at exact3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d; initial status clean. Read root/finance README, used documented Python discover/publication_snapshot/recover APIs rather than inventing a CLI. Existing isolated /private/tmp/finance-validation-env/bin/python required no installation. Did not launch a model, network call, private configuration access, real-vault operation, Git publication or global installation.
+
+Fix range4c649a6..3547b84 changes dependency guidance and future-only saved-review selection/identity/completion validation. Therefore all six Acceptance lines and all16 UI flows were re-tested; no current row is carried over merely on a code-reading assumption. Confirmed git diff b543365..3547b84 over research_store.py and finance-research skill is empty: the actual native full-case runs used the same functional code/guidance as this witness, subsequent changes being evidence-only.
+
+### Actual current executions
+
+```sh
+/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_future_history_validation.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider
+```
+Exit0, **84 passed in2.65s**. These four files are the complete focused discovery/publication/continuation criteria, not the full package suite. They include supported/unsupported scope, new/changed source, formatting-only reuse, full local/economic dependency identities, future-only good/bad histories, exact historical cutoff, envelopes/provenance, interruption resume/rollback, user edits/symlinks/races, multi-issuer and older unreviewed quarters. Graduated malformed-future-history regression ran in normal test location.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python /private/tmp/finance-canonical-witness-3547.py > /private/tmp/finance-canonical-witness-3547.json
+```
+Final exit0. Witness-only script loaded clean research_store.py, copied public actual studies to new canonicalized temporary roots, rehashed every actual file, called ordinary discover/recover and compared pre/post bytes. First attempt rejected an unresolved macOS temporary symlink root with ValueError("symlink root"); corrected only witness path construction using Path.resolve(), then reran. This was an input-boundary rejection, not a guard bypass or product repair.
+
+Durable observed output:
+| Measurement | Actual output |
+|---|---|
+| Real study versus run06-before-all-root.files |490 paths, exact map equal|
+| May cutoff2024-05-03T23:59:59-04:00|complete,3 reusable,gaps0,excluded7,no_analysis_update|
+| August cutoff2024-08-02T23:59:59-04:00|complete,6 reusable,gaps0,excluded0,two no_analysis_update|
+| Changed-model study at August cutoff|partial,5 reusable,gaps3,Q2 investment-case resume_incomplete_work|
+| Every read-only copied discovery|all old bytes unchanged, no new files|
+| Reconstructed actual interruption|510 exact whitelist files from before-native.files, all hashes checked|
+| Ordinary recover(managed-interruption-01,action=resume)|checkpoint;510→512,all510 original bytes unchanged,original request bytes unchanged|
+| Exact recovery additions|run completion.json and recovery-checkpoint-01/review.json only|
+| Post-recovery research|partial,5 reusable; contradiction not promoted to completion|
+| Final real-root verification|same490-file map, exact equality|
+
+Recovery initial copy was reconstructed exclusively from510 before-native whitelist paths whose current original bytes matched their historical digests; no original run/review was removed or rewritten. Called normal current-code recover once in that disposable reconstructed copy. Original expected428-entry preconditions remained inside unchanged request bytes. This script is independent API reproduction, not a new actual native-host run.
+
+### Actual native evidence inspected
+
+Read raw prompts, native headers, terminal reports, parent all-file integrity observations, scoped independent evidence/report and relevant actual saved output for run04 May,run05 August,run06 no-work,run07 changed adopted-model and run08 managed interruption recovery. Distinct actual source-invoked sessions:
+- May01a1e7d3-e2af-7f10-b141-30d66ad7a115:446 old files preserved,467 final; corrected three-question publication.
+- August01a1e7df-a37c-71c2-b379-22ca19dfac78:467 old preserved,490 final; three new questions.
+- No-work01a1e7f1-da1d-7931-82f8-b52f31e5fcce:490→490,all-file equality; six reusable, no publication.
+- Changed-model01a1e7fb-5425-7433-9e77-39d813ad1439:hypothetical999999 authored-model mutation; native checks detect discrepancy, register genuine changed authorship while preserving history, publish partial only; five independent units remain.
+- Recovery01a1e802-707d-7fc1-96a8-7686eddff886:actual managed checkpoint interrupted by controlled I/O before review commit; original428-entry baseline retained; normal resume adds exactly review and completion, not a completed model.
+
+Headers identify Codex0.169.0,first-party openai/gpt-6.1-sol,low effort. Witness did not re-launch those sessions. Exact raw material is under /private/tmp/finance-fullcase-v10-evidence, /private/tmp/finance-fullcase-v10-modelchange-audit and /private/tmp/finance-fullcase-v10-recovery-audit; committed2026-11-17-full-case*.md scoped evidence preserves durable account/limits. Parent control maps were used for witness verification, not misrepresented as available to the actual native agent.
+
+Raw run06 transcript3057,run07 transcript7158 and run08 transcript6323 retain "hook: Stop Failed". Run08 also retains PreToolUse failures, earlier sandbox initialization denial and nonexistent-path read preparation error. Native terminal exit0 is research/process observation, not proof these hooks passed. Their causes remain undetermined. No guarded-command replay, configuration change or bypass was made by this witness.
+
+### Acceptance rows — re-tested in full
+
+#### 1. Saved assets, quarters, completion and pending work
+Actual current-code May/August/changed-model discoveries above derive scope solely from saved records. Focused folder, future-history and older-unreviewed-quarter cases passed. Native runs discover their scope without a supplied successful work list. Verdict works.
+
+#### 2. New-quarter, changed evidence and interruption continuation/reuse
+Current changed-model and reconstructed recovery calls preserve five independent units and leave affected synthesis pending. Native runs04/05/07/08 demonstrate actual analysis/new season/current reference discrepancy handling/resume. Focused economic/method/assumption/requirements invalidation and new-quarter cases passed. Helper alone remains intentionally nonrecursive for adopted external references; native current reference checking is separate actual evidence. Verdict works.
+
+#### 3. No duplicate research or unsupported advice
+Actual run06 has exact490-file equality. Current cold-copy discovery yields two no_analysis_update and six reusable; focused unchanged format/mtime cases passed. No local no-work claim establishes current external coverage. Verdict works.
+
+#### 4. Source/cutoff/assumption/horizon/history
+Read actual complete growth.md,identity.md,investment-case.md for both corrected Q2 and Q3 publications; also read scoped independent Q2/Q3 content/dependency reports/evidence. Text distinguishes2024 economics from2026 authored reconstruction, retains predecessors/links, business/financial/competition/governance/risk/valuation reasoning, opposing evidence,0–3/3–12/12–60-month horizons and conditional or insufficient conclusions. Q2 includes16 and Q3 includes20 economic dependencies in independently scoped verification. Current May excludes7 later observations; future malformed identity/completion remains a visible gap. Focused provenance/envelope/authorship/completion tests passed. This is readable Markdown/content review, not Obsidian visual-render QA, exhaustive original SEC reading, vintage authentication or full-model economic re-audit. Verdict works within confirmed finite software behavior.
+
+#### 5. Unavailable freshness/missing data/user edits/interruption protection
+Every current discover reports external_freshness=unverified. Changed model remains partial, no last-success advancement. Current focused user-edit/symlink/draft/marker/source/race tests and interruption resume/rollback passed; actual run08 preserves510 old files and original request on resume. A successful partial checkpoint never substitutes for conflict rollback. Current UI rollback is supported by dedicated focused tests plus retained prior scoped protection evidence, not newly claimed native conflicting rollback. Verdict works.
+
+#### 6. Actual fresh-host cross-session operation
+Five distinct native sessions provide new-quarter, changed-evidence/current adopted-reference validation, no-work and managed interrupted-continuation observations. Current same-code clean clone independently reproduces resulting states and preservation. This meets the bounded source-invoked host contract; reviewer freshness or API scripts are not substituted for those native executions. Installation/loading, every crash boundary, actual native user-edited rollback and full A–G remain outside observed proof. Verdict works.
+
+### UI rows — same numbering as canonical report, all re-tested
+
+| Row | Evidence |
+|---|---|
+|UI-1 Start|Current May/August discovery and folder-discovers-cycles tests; native persisted scope|
+|UI-2 Unsupported folder|Seven unsupported-folder cases preserve/reject invalid configuration/content|
+|UI-3 In progress|Native run07 partial checkpoint and run08 durable interrupted state; partial not complete|
+|UI-4 New quarter|Native run05 preserves467 old files,adds23; current August six reusable|
+|UI-5 Changed evidence|Native run07 detects actual adopted model mismatch; current five reusable; transitive-input tests|
+|UI-6 Interrupted work|Reconstructed actual510-file initial state normal recover yields checkpoint and five reusable|
+|UI-7 No work|Native490→490 equality; current no_analysis_update and format-only tests|
+|UI-8 Historical|Current May excludes7; valid future-only not a false gap; malformed futures and exact-cutoff tests|
+|UI-9 Missing data|Changed-model synthesis remains pending; independent five reusable; incomplete-envelope tests|
+|UI-10 Source unavailable|Native reports and all current discover retain unverified; no external success advancement|
+|UI-11 Escaping input|Focused escape/symlink cases and actual witness symlink-root rejection; no external reads/writes|
+|UI-12 User edit conflict|Ten focused publication user-edit/symlink/race states preserve/reject; prior raw conflict evidence retained|
+|UI-13 Interrupted publication|Current reconstruction510→512 adds only review/completion with request unchanged|
+|UI-14 Repeat|Repeated readonly discovery preserves files; native no-work no duplicated outputs|
+|UI-15 Success|Both actual finite research versions source-bound and predecessor-linked; incomplete changed model remains partial|
+|UI-16 Recovery/rollback|Dedicated interruption resume/rollback tests and linked-provenance rollback preserve history; native run08 is resume only|
+
+### Data, decisions, gates and findings
+
+No actual study, private vault or original source was edited. Witness reports only are written back to source worktree. Explicit temporary copies were used for every product mutation. Original490-path baseline remains exact; controlled test values never become accepted market facts.
+
+No newly found fatal/important product defect and no dismissed important finding. Minor diagnostic precision limitation remains: changed-model helper's generic missing-consumed-source/method gaps can sound like absent physical sources even though saved research.gaps correctly states the model inconsistency; pending state is correct and original scoped note is retained.
+
+Full package suite was NOT run by this witness. Owning station reported257PASS32.81s and adversarial17PASS1.18s; these remain supplied observations, not witness executions. Separate required finalize-review package command remains python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider. Package-tests/finalizer are not skipped; normal finalizer will still be attempted, and old fixed6>5 cap may refuse. No fresh counter, altered base, discarded failed evidence or fake attestation is authorized.
+
+No additional native test is necessary for the six bounded software-change rows. This does not fulfill original whole-program84-quarter, cross-sector/multi-asset, full-source/vintage, installed-host or every-conflict/crash obligations. Those retain their separate original scope and remain unaccepted here.

@@ -1,0 +1,148 @@
+[
+  {
+    "id": "mtime-only",
+    "mode": "historical",
+    "change": "Note mtime changed; dependency projections and method unchanged",
+    "action": "no_analysis_update",
+    "affected": [],
+    "reason": "Filesystem touch is not new evidence"
+  },
+  {
+    "id": "same-payload-new-fetch",
+    "mode": "historical",
+    "change": "Same relevant values fetched again; retrieval timestamp changed",
+    "action": "no_analysis_update",
+    "affected": [],
+    "reason": "Record transport attempt separately; do not refresh analysis freshness"
+  },
+  {
+    "id": "new-eligible-source",
+    "mode": "historical",
+    "change": "Previously missing May 2 guidance discovered; publication before cutoff",
+    "action": "append_revision_same_quarter",
+    "affected": [
+      "forecast",
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "Author a new retrospective version with new discovery time; do not rewrite earlier version"
+  },
+  {
+    "id": "new-price-after-cutoff",
+    "mode": "historical",
+    "change": "May 6 price arrives for frozen May 3 assessment",
+    "action": "exclude_from_frozen_assessment",
+    "affected": [],
+    "reason": "Later observation is ineligible; a separate latest-mode assessment may consume it"
+  },
+  {
+    "id": "new-price-latest-mode",
+    "mode": "latest",
+    "change": "New dated price while Q2 remains latest filed quarter",
+    "action": "append_market_revision_same_quarter",
+    "affected": [
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "Advance assessment cutoff explicitly; do not fabricate new fiscal quarter or rebuild unchanged financials"
+  },
+  {
+    "id": "new-fiscal-quarter",
+    "mode": "latest",
+    "change": "Eligible Q3 filing with source-declared fiscal identity appears",
+    "action": "create_next_quarter_analysis",
+    "affected": [
+      "financial-analysis",
+      "business-analysis",
+      "forecast",
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "Use actual financial statement identity and published availability; do not infer from mtime or calendar month"
+  },
+  {
+    "id": "later-amendment-frozen",
+    "mode": "historical",
+    "change": "An amendment is published after frozen cutoff",
+    "action": "preserve_original_and_record_later_amendment",
+    "affected": [],
+    "reason": "Not available at historical cutoff; do not backfill as known then"
+  },
+  {
+    "id": "later-amendment-latest",
+    "mode": "latest",
+    "change": "Eligible amendment changes NI but not product revenue",
+    "action": "append_affected_revision",
+    "affected": [
+      "financial-analysis",
+      "forecast",
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "Diff the relevant fields; unchanged business evidence can be referenced"
+  },
+  {
+    "id": "missing-consensus",
+    "mode": "either",
+    "change": "External consensus source unavailable",
+    "action": "record_gap_and_continue_independent_work",
+    "affected": [
+      "forecast",
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "No invented zero/default; recommendation stays insufficient_evidence; bounded retries recorded"
+  },
+  {
+    "id": "unknown-publication",
+    "mode": "historical",
+    "change": "Important article has no verifiable publication time",
+    "action": "quarantine_until_time_verified",
+    "affected": [],
+    "reason": "Fetched now does not prove it was available before cutoff"
+  },
+  {
+    "id": "method-change",
+    "mode": "either",
+    "change": "Forecast method version changes with source data unchanged",
+    "action": "append_method_revision",
+    "affected": [
+      "forecast",
+      "valuation",
+      "synthesis"
+    ],
+    "reason": "Method is a dependency too; preserve old result and record why"
+  },
+  {
+    "id": "interrupted-run",
+    "mode": "either",
+    "change": "Forecast output exists but synthesis and verification are incomplete",
+    "action": "resume_incomplete_work",
+    "affected": [
+      "synthesis",
+      "verification"
+    ],
+    "reason": "Verify saved output digest and dependency identity first; resume only valid checkpoints"
+  },
+  {
+    "id": "checkpoint-invalid",
+    "mode": "either",
+    "change": "Dependency changes after a forecast checkpoint",
+    "action": "invalidate_dependent_checkpoint_and_recompute",
+    "affected": [
+      "forecast",
+      "valuation",
+      "synthesis",
+      "verification"
+    ],
+    "reason": "Existing filename is not proof of usable completed work"
+  },
+  {
+    "id": "duplicate-claim",
+    "mode": "either",
+    "change": "Another agent holds a valid claim for the same work identity",
+    "action": "do_not_duplicate_active_work",
+    "affected": [],
+    "reason": "Inspect claim state; no parallel execution based on file mtime; lease/locking design remains unimplemented"
+  }
+]

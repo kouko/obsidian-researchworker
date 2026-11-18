@@ -1,0 +1,10 @@
+{
+  "investing/research.json": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+  "investing/assets/equities/aapl/asset.json": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+  "investing/assets/equities/aapl/data/2024Q3.json": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+  "investing/assets/equities/aapl/data/2024Q2.json": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+  "investing/assets/equities/aapl/data/growth-method.txt": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+  "investing/assets/equities/aapl/data/analysis/growth-method.json": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72",
+  "investing/assets/equities/aapl/data/sources/2024Q3.json": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+  "investing/assets/equities/aapl/data/sources/2024Q2.json": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7"
+}

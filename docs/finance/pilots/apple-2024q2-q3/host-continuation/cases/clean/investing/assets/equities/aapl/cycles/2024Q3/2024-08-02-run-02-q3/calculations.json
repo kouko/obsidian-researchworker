@@ -1,0 +1,60 @@
+{
+  "source": {
+    "metadata": "investing/assets/equities/aapl/data/sources/2024Q3.json",
+    "raw_ref": "investing/assets/equities/aapl/data/2024Q3.json",
+    "raw_digest": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+    "identity": "0000320193-24-000081",
+    "available_at": "2024-08-02",
+    "fiscal": {
+      "year": 2024,
+      "period": "Q3",
+      "period_end": "2024-06-29",
+      "original_accession": "0000320193-24-000081"
+    },
+    "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm"
+  },
+  "period": {
+    "start": "2024-03-31",
+    "end": "2024-06-29",
+    "comparison": "prior-year three-month quarter, not YTD"
+  },
+  "input_unit": "USD",
+  "display_unit": "USD millions; divide USD inputs by 1000000",
+  "inputs": {
+    "revenue": 85777000000,
+    "revenue_prior_year": 81797000000,
+    "gross_profit": 39678000000,
+    "gross_profit_prior_year": 36413000000
+  },
+  "calculations": {
+    "revenue_yoy_pct": {
+      "formula": "100*(85777000000/81797000000-1)",
+      "value": "4.865704121178038314363607500"
+    },
+    "gross_margin_current_pct": {
+      "formula": "100*39678000000/85777000000",
+      "value": "46.25715518145889923872366718"
+    },
+    "gross_margin_prior_pct": {
+      "formula": "100*36413000000/81797000000",
+      "value": "44.51630255388339425651307505"
+    },
+    "gross_margin_change_pp": {
+      "formula": "current gross margin percent - prior gross margin percent",
+      "value": "1.74085262757550498221059213"
+    }
+  },
+  "method": {
+    "version": 1,
+    "id": "growth-method",
+    "kind": "method",
+    "identity": "v2",
+    "authored_at": "2026-11-16T02:10:00+00:00",
+    "projection": {
+      "method": "revenue-yoy-and-gross-margin-v2"
+    },
+    "content_ref": "investing/assets/equities/aapl/data/growth-method-v2.txt",
+    "content_digest": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618"
+  },
+  "external_verification_this_run": false
+}

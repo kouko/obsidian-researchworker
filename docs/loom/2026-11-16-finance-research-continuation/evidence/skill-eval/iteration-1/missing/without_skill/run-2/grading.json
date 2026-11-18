@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "Executes `research_store.discover` on ROOT and uses its decisions.",
+      "passed": true,
+      "evidence": "Actual discover in commands.md; partial gaps inform the output. See ../../../runs/missing-baseline-2.json."
+    },
+    {
+      "text": "Produces actual business analysis citing supplied original sections and a helper-published checkpoint, preserving the old output byte for byte.",
+      "passed": true,
+      "evidence": "Helper publish returned checkpoint r2partial; partial.md contains cited business analysis and original hashes unchanged. See ../../../runs/missing-baseline-2.json."
+    },
+    {
+      "text": "Missing market/valuation evidence stays pending; no buy/hold/sell, invented probabilities or benchmark returns; independent business work still proceeds.",
+      "passed": true,
+      "evidence": "Market, valuation and synthesis remain pending; no unsupported rating or invented returns. See ../../../runs/missing-baseline-2.json."
+    },
+    {
+      "text": "States explicit horizon durations and conditional evidence/invalidation, distinguishes the conflicting pilot conventions without inventing preference.",
+      "passed": true,
+      "evidence": "Result explicitly distinguishes earlier windows from one-quarter/1–3-years/5+ exploratory alternative and supplies conditional triggers. See ../../../runs/missing-baseline-2.json."
+    },
+    {
+      "text": "Reports actual original sections read and unread exclusions; no full-filing reading claim or complete investment-case claim from a download/numeric check.",
+      "passed": true,
+      "evidence": "Result identifies exact supplied sections and missing notes/proxy/remainder, without full reading claims. See ../../../runs/missing-baseline-2.json."
+    },
+    {
+      "text": "Keeps 2026 local method authorship separate from 2024 economic availability; freezes actual method/assumption inputs on the newly completed unit.",
+      "passed": false,
+      "evidence": "Saved review units is empty: method authored_at is in provenance but not frozen on any newly completed independent unit. See ../../../runs/missing-baseline-2.json."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 1,
+    "total": 6,
+    "pass_rate": 0.8333333333333334
+  },
+  "all_criteria_passed": false,
+  "grader": "author assessment; not independent closing review"
+}

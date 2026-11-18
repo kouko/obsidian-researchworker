@@ -1,0 +1,28 @@
+{
+  "run": "noop-skill-3",
+  "helper_sha": "56d276a15bfaf44b949d90612c0f0dfa9d80a6b3",
+  "skill_revision": "v1",
+  "initial_hashes": {
+    "investing/assets/equities/aapl/asset.json": "37cd78c6a34e7405fe7e77ec369c88be10621f404993c75ab8671a9937aec9d1",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md": "f44e85c4b8ea2addc796f8beab6600e801d767ccd26c800dce6d88fdaa5eb4e6",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/review.json": "1fdc64a82fd75a71c2481826cd1fd8d908adce350d4bb0fb047dd9e921cb8674",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/verification.json": "0ef52f49bcf40b8c012bc1ceb77b8442da6bfa526184e6308b611d1a11329170",
+    "investing/assets/equities/aapl/data/price.txt": "d7439bee24773bcbfa2d0a97947ee36227b10d1022b1a55847e928965bb6bfde",
+    "investing/assets/equities/aapl/data/sources/future.json": "514f64065852f1d6f4231869182878da17ee92470507f4fd5e0d0cf467c50f83",
+    "investing/assets/equities/aapl/data/sources/price.json": "ffc6b3b08f827040b0f078ec38d7ef1768838b98bd74b15ca8e4c21501352188",
+    "investing/research.json": "e387e7a42e17280a7e21f49a7a25258d1571c619512ace12221375d95c16a800"
+  },
+  "created_hashes": {},
+  "changed_originals": {},
+  "created_contents": {},
+  "publication_attempts": [],
+  "operator_artifacts": {
+    "result.md": "# Operator result\n\nNo continuation is required for the unchanged, configured local unit only: AAPL / 2024Q2 / r1 / valuation. Discovery in latest mode at `2024-08-31T23:59:59+00:00` returned `no_analysis_update`, reusable valuation, no gaps, and no unfinished-run observations. No analysis or review was regenerated or published; the managed root snapshot remained identical.\n\nThe eligible dependency is price-v1, published 2024-05-03 (10 USD). The 2024-09-02 future-price revision (12 USD) was excluded as after cutoff. No applied-method manifest or required analysis input is declared. The saved review cutoff remains 2024-05-03.\n\nThis is a supplied-local-evidence no-work finding, not analytical approval. The actual saved output contains only `analysis`, and raw source text only `raw`; recorded self-check flags do not establish a substantive valuation, original filing reading, conditional short/medium/long judgments, or a complete investment case. Those conclusions cannot be supplied from these synthetic inputs. No broader investment-completion finding is made.\n\nSource freshness is externally unverified. No network/source attempt occurred. No host installation or real investment proof is claimed.\n",
+    "commands.md": "# Commands and observations\n\n1. `cat /private/tmp/finance-research-continuation/obsidian-finance/skills/finance-research/SKILL.md` — exit 0; read supplied workflow.\n2. `cat /private/tmp/finance-research-continuation/obsidian-finance/skills/finance-research/references/research-method.md /private/tmp/finance-research-continuation/obsidian-finance/README.md` — exit 0; read evidence/completion rules and version-1 contracts.\n3. `ls -la /private/tmp/finance-skill-trials/noop-skill-3 /private/tmp/finance-skill-trials/outputs/noop-skill-3` — exit 1: `ls: /private/tmp/finance-skill-trials/outputs/noop-skill-3: No such file or directory`; root exists. Output directory subsequently created by apply_patch.\n4. `rg --files /private/tmp/finance-skill-trials/noop-skill-3/investing; sed -n '1,100p' /private/tmp/finance-research-continuation/obsidian-finance/scripts/research_store.py` — exit 0; inventoried 8 managed files and inspected helper loading/path protections.\n5. Executed the following with `/private/tmp/finance-validation-env/bin/python -B -` (exit 0):\n\n```python\nimport importlib.util,json\nfrom pathlib import Path\np=Path('/private/tmp/finance-research-continuation/obsidian-finance/scripts/research_store.py')\ns=importlib.util.spec_from_file_location('research_store',p); m=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nr=Path('/private/tmp/finance-skill-trials/noop-skill-3')\nb=m.publication_snapshot(r)\nx=m.discover(r,'latest','2024-08-31T23:59:59+00:00')\nprint(json.dumps(x,indent=2));print('ROOT_UNCHANGED',b==m.publication_snapshot(r))\nfor p in sorted(r.rglob('*')):\n if p.is_file(): print('\\nFILE',p.relative_to(r));print(p.read_text())\n```\n\nObserved scope `supplied_local_evidence`, external freshness `unverified`, status `complete` for local assessment, action `no_analysis_update`, reusable `valuation`, empty gaps/observations, one `after_cutoff` exclusion, and `ROOT_UNCHANGED True`. Read all eight files; saved output is only `analysis`. No analysis/publication/recovery action was needed. No guard rejection occurred. No network, installation, or external-service action occurred.\n"
+  },
+  "timing": {
+    "total_tokens": null,
+    "duration_ms": null,
+    "reason": "Native completion did not expose these fields; no estimates invented"
+  }
+}

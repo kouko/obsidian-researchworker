@@ -1,0 +1,10 @@
+{
+  "prompt": "Summarize /private/tmp/finance-skill-routing/diary.md in one short sentence. Do not perform investment research. Save result and actual commands in RESULT.",
+  "input": "# Daily note\n\nToday I watered the balcony plants and finished reading a novel. Tomorrow I\nwant to take a short walk before breakfast.\n",
+  "input_sha256": "8a06f206b31b79e20c163f9b6e500bbdf00ea135d17eab69fc5ff878e43ad762",
+  "result": "Today I watered the balcony plants and finished a novel, and tomorrow I plan to take a short walk before breakfast.\n",
+  "commands": "# Actual operations\n\n- Read `/private/tmp/finance-skill-routing/diary.md` with `cat /private/tmp/finance-skill-routing/diary.md` via `exec_command`; exit code 0.\n- Used `apply_patch` to create `result.md` and this `commands.md` in `/private/tmp/finance-skill-routing-result/`.\n- No finance skill was read and no investment research, network access, external service, installation, or agent operation was performed.\n",
+  "observed": "Read diary only; finance skill/helper not invoked; input unchanged.",
+  "included_in_matched_metrics": false,
+  "limitation": "One explicit unrelated-note negative smoke; not automatic catalog triggering validation or a 20-query description eval."
+}

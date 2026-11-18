@@ -1,0 +1,8 @@
+{
+  "repository_head": "b4ee26d76b1c6f5fb49b111e40ca54395e57e29b",
+  "change": "per-quarter missing-cycle discovery fix; source-invoked only",
+  "file": "package/scripts/research_store.py",
+  "old_sha256": "4a4bbe04a6b01848be9d61f531bcbd5d8e5b12fd86642150f27149a215422c0e",
+  "new_sha256": "fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526",
+  "other_runtime_source_files_unchanged": true
+}

@@ -1,0 +1,1882 @@
+{
+  "scope": "Final retained evidence files; inventory excludes itself to avoid self-reference",
+  "file_count": 469,
+  "files": {
+    "AUTHORSHIP-CORRECTION.md": {
+      "sha256": "06e01141d853909978a1621117edbddbdd79da4ffbfef4e5030fbe61465cbb15",
+      "bytes": 1041
+    },
+    "FINAL-DIRECT-CHECK.json": {
+      "sha256": "8c0b03f7fe752219b42fb04eeff897f4da31e41a37ebccbabc12c02030fd276f",
+      "bytes": 503
+    },
+    "SCOPE.md": {
+      "sha256": "b4866e2b4c75e959b73c9db5fcf8361cde8a322aca961bcb98c0e83a95676620",
+      "bytes": 694
+    },
+    "SOURCE-BOUNDARY.md": {
+      "sha256": "c3f255b6eab2efd7f86948fe621471676a34f0ce54e3274650887211b8dfd587",
+      "bytes": 2747
+    },
+    "VERIFICATION-CHECKS.md": {
+      "sha256": "fc14c2cc8b42e2288d03e124f0f51e5a67086852213f01fc368d693c16d745bf",
+      "bytes": 1496
+    },
+    "after-run-01.json": {
+      "sha256": "6a3d483bd150131a04122099623af5895ea23051316be38614017c7255f41ab2",
+      "bytes": 3647
+    },
+    "after-run-02.json": {
+      "sha256": "5faaa02d34c4da155879d92357968cbad3890236c8ea5b66a95cc7414d52721d",
+      "bytes": 5875
+    },
+    "after-run-03.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "after-run-04.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "before-run-01.json": {
+      "sha256": "620ff1006c584aa36e2b1f68530844ca4bdecef3410154c3ea2dfa3545be896a",
+      "bytes": 979
+    },
+    "before-run-02.json": {
+      "sha256": "c41fd7436fd6d738eb917b236cf3155dc8000435b8caaa6e066d2db8bcb98c36",
+      "bytes": 3777
+    },
+    "before-run-03.json": {
+      "sha256": "d05b92bcebd77a752a54b5f8cc97ca90c52f3a292ace4ed76548d0292601b0a4",
+      "bytes": 6005
+    },
+    "before-run-04.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "before-run-05.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "before-run-06-main.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "before-run-07-main.json": {
+      "sha256": "b39021cdba891ddb011f04025137c808190534e045dd87e7e8125a443eba0442",
+      "bytes": 10771
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/completion.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/draft/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/journal.json": {
+      "sha256": "86f7d639d74857a4b3475ba92a8cf4508981533728083a907a5ab3b172ca55e7",
+      "bytes": 100
+    },
+    "cases/clean/investing/.research-runs/run-01-q3/request.json": {
+      "sha256": "7e994a2b34bbf07f74c9a8b21e74f4e10b79e0d792d9bb19b9ea5f2fd6996a3e",
+      "bytes": 32916
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/completion.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/draft/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/draft/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/draft/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/draft/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/draft/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/journal.json": {
+      "sha256": "5a76003eb71f1d34fdac024412d029d5802f27f0a9ab793cde638948faf92dbd",
+      "bytes": 100
+    },
+    "cases/clean/investing/.research-runs/run-02-q3/request.json": {
+      "sha256": "104677c0df10d6243b73188afee05de8fb4e770cfc4a1a7f19e6c955b88fe606",
+      "bytes": 54834
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/completion.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/draft/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/journal.json": {
+      "sha256": "815ddba9c6a085034e7cf5220c02b4559196e9f90dd2c9fcaa3dc28466bc1aaf",
+      "bytes": 100
+    },
+    "cases/clean/investing/.research-runs/run-03-q2/request.json": {
+      "sha256": "24fdd1ed5dd09fb58d33d049f1a9bc1bf33d0e8a1777513117e90c2cbf137e9e",
+      "bytes": 43524
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/completion.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/draft/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/draft/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/draft/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/draft/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/journal.json": {
+      "sha256": "297e54548dffcdd1f2e150c1488ec0a6af9f564f73629e455e048e14816e7bc0",
+      "bytes": 100
+    },
+    "cases/clean/investing/.research-runs/run-03-q3/request.json": {
+      "sha256": "55af98f29013018e84782c3074148798486d28f4d491bb473598edd81d678eaf",
+      "bytes": 59586
+    },
+    "cases/clean/investing/.research-runs/run-05-clean-interrupt/completion.json": {
+      "sha256": "fa637fd3b017af66015138dbe4fed600579e2ba2d8123327415ad4c31fa23c19",
+      "bytes": 20460
+    },
+    "cases/clean/investing/.research-runs/run-05-clean-interrupt/draft/investment-case-progress.md": {
+      "sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+      "bytes": 4434
+    },
+    "cases/clean/investing/.research-runs/run-05-clean-interrupt/draft/progress-coverage.json": {
+      "sha256": "b5a946634f3fe09ebe006a85155a336299fc84eaa534c25cae2d19881c2d9696",
+      "bytes": 12439
+    },
+    "cases/clean/investing/.research-runs/run-05-clean-interrupt/journal.json": {
+      "sha256": "9db2b2dbe97a2b5f394693bcf5582a0b8cca5918b901014b6b721b211ddf7087",
+      "bytes": 100
+    },
+    "cases/clean/investing/.research-runs/run-05-clean-interrupt/request.json": {
+      "sha256": "b2ba0a45f8f85227117b992cc3423e83beda295b3ba1bd2ea67070a6c0d3af0b",
+      "bytes": 65449
+    },
+    "cases/clean/investing/assets/equities/aapl/asset.json": {
+      "sha256": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "bytes": 556
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/pending.json": {
+      "sha256": "3609e56468f3749eebab72111eeb71a8e53f37ff8cfb2f84cb8c5702677446f5",
+      "bytes": 119
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/review.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/pending.json": {
+      "sha256": "2422375381531f52c41daa92b21534c41d6a18d9e9686cb73095aad603ae2719",
+      "bytes": 119
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/review.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/pending.json": {
+      "sha256": "45b138b54ab0f4d0decd35c50018e20e9d291995206f87dcf74a8ee2e0e2b3fc",
+      "bytes": 119
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/review.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/pending.json": {
+      "sha256": "c56c1d3183307fb4c003d855a53fad10ae098e0af36aac0350e50022f5c21f05",
+      "bytes": 119
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/investment-case-progress.md": {
+      "sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+      "bytes": 4434
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/pending.json": {
+      "sha256": "a6426ea34a24fa358db9840c8ba677a472541fbd2ee74557de1c8f60815fe408",
+      "bytes": 132
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/progress-coverage.json": {
+      "sha256": "b5a946634f3fe09ebe006a85155a336299fc84eaa534c25cae2d19881c2d9696",
+      "bytes": 12439
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/review.json": {
+      "sha256": "fa637fd3b017af66015138dbe4fed600579e2ba2d8123327415ad4c31fa23c19",
+      "bytes": 20460
+    },
+    "cases/clean/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/withdrawn.json": {
+      "sha256": "d0803be2296ea623113aad9b9d90a890ed90317d2dcada9eb850bc000b32a0f8",
+      "bytes": 706
+    },
+    "cases/clean/investing/assets/equities/aapl/data/2024Q2.json": {
+      "sha256": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "bytes": 4890
+    },
+    "cases/clean/investing/assets/equities/aapl/data/2024Q3.json": {
+      "sha256": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "bytes": 4880
+    },
+    "cases/clean/investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "sha256": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+      "bytes": 415
+    },
+    "cases/clean/investing/assets/equities/aapl/data/growth-method-v2.txt": {
+      "sha256": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618",
+      "bytes": 255
+    },
+    "cases/clean/investing/assets/equities/aapl/data/growth-method-v3.txt": {
+      "sha256": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+      "bytes": 563
+    },
+    "cases/clean/investing/assets/equities/aapl/data/growth-method.txt": {
+      "sha256": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "bytes": 198
+    },
+    "cases/clean/investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "sha256": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "bytes": 5815
+    },
+    "cases/clean/investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "sha256": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "bytes": 5805
+    },
+    "cases/clean/investing/research.json": {
+      "sha256": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "bytes": 49
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/completion.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/draft/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/journal.json": {
+      "sha256": "86f7d639d74857a4b3475ba92a8cf4508981533728083a907a5ab3b172ca55e7",
+      "bytes": 100
+    },
+    "cases/useredit/investing/.research-runs/run-01-q3/request.json": {
+      "sha256": "7e994a2b34bbf07f74c9a8b21e74f4e10b79e0d792d9bb19b9ea5f2fd6996a3e",
+      "bytes": 32916
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/completion.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/draft/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/draft/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/draft/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/draft/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/draft/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/journal.json": {
+      "sha256": "5a76003eb71f1d34fdac024412d029d5802f27f0a9ab793cde638948faf92dbd",
+      "bytes": 100
+    },
+    "cases/useredit/investing/.research-runs/run-02-q3/request.json": {
+      "sha256": "104677c0df10d6243b73188afee05de8fb4e770cfc4a1a7f19e6c955b88fe606",
+      "bytes": 54834
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/completion.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/draft/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/journal.json": {
+      "sha256": "815ddba9c6a085034e7cf5220c02b4559196e9f90dd2c9fcaa3dc28466bc1aaf",
+      "bytes": 100
+    },
+    "cases/useredit/investing/.research-runs/run-03-q2/request.json": {
+      "sha256": "24fdd1ed5dd09fb58d33d049f1a9bc1bf33d0e8a1777513117e90c2cbf137e9e",
+      "bytes": 43524
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/completion.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/draft/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/draft/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/draft/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/draft/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/journal.json": {
+      "sha256": "297e54548dffcdd1f2e150c1488ec0a6af9f564f73629e455e048e14816e7bc0",
+      "bytes": 100
+    },
+    "cases/useredit/investing/.research-runs/run-03-q3/request.json": {
+      "sha256": "55af98f29013018e84782c3074148798486d28f4d491bb473598edd81d678eaf",
+      "bytes": 59586
+    },
+    "cases/useredit/investing/.research-runs/run-05-useredit-interrupt/draft/investment-case-progress.md": {
+      "sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+      "bytes": 4434
+    },
+    "cases/useredit/investing/.research-runs/run-05-useredit-interrupt/draft/progress-coverage.json": {
+      "sha256": "b5a946634f3fe09ebe006a85155a336299fc84eaa534c25cae2d19881c2d9696",
+      "bytes": 12439
+    },
+    "cases/useredit/investing/.research-runs/run-05-useredit-interrupt/journal.json": {
+      "sha256": "4dbd1cb2447a8fd96596a1f16c8f38483f6804a08c9091f41eb4709397e83ab0",
+      "bytes": 100
+    },
+    "cases/useredit/investing/.research-runs/run-05-useredit-interrupt/request.json": {
+      "sha256": "faf50bda2422c14104b965e9721ad1df038847e378d1cfe5952fcb624146e74d",
+      "bytes": 65458
+    },
+    "cases/useredit/investing/assets/equities/aapl/asset.json": {
+      "sha256": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "bytes": 556
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/pending.json": {
+      "sha256": "3609e56468f3749eebab72111eeb71a8e53f37ff8cfb2f84cb8c5702677446f5",
+      "bytes": 119
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/review.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/pending.json": {
+      "sha256": "2422375381531f52c41daa92b21534c41d6a18d9e9686cb73095aad603ae2719",
+      "bytes": 119
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/review.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/pending.json": {
+      "sha256": "45b138b54ab0f4d0decd35c50018e20e9d291995206f87dcf74a8ee2e0e2b3fc",
+      "bytes": 119
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/review.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/pending.json": {
+      "sha256": "c56c1d3183307fb4c003d855a53fad10ae098e0af36aac0350e50022f5c21f05",
+      "bytes": 119
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md": {
+      "sha256": "70ad6a336f4c1cf311ccdf058ab06492135bd7a6ce27f6f77d853adf84d29fb1",
+      "bytes": 4561
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/pending.json": {
+      "sha256": "00ccd6d6892035a7b1b8c185bd42ba7e44fd01d53d221d20726658d4645410cc",
+      "bytes": 135
+    },
+    "cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/progress-coverage.json": {
+      "sha256": "b5a946634f3fe09ebe006a85155a336299fc84eaa534c25cae2d19881c2d9696",
+      "bytes": 12439
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/2024Q2.json": {
+      "sha256": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "bytes": 4890
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/2024Q3.json": {
+      "sha256": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "bytes": 4880
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "sha256": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+      "bytes": 415
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/growth-method-v2.txt": {
+      "sha256": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618",
+      "bytes": 255
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/growth-method-v3.txt": {
+      "sha256": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+      "bytes": 563
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/growth-method.txt": {
+      "sha256": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "bytes": 198
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "sha256": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "bytes": 5815
+    },
+    "cases/useredit/investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "sha256": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "bytes": 5805
+    },
+    "cases/useredit/investing/research.json": {
+      "sha256": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "bytes": 49
+    },
+    "execution-records.json": {
+      "sha256": "a4d3d9ab4b6f25232d775ed76d9a058a4afa228c0aff472c9921ecc234d5b9d4",
+      "bytes": 9067
+    },
+    "fixture-initial/investing/assets/equities/aapl/asset.json": {
+      "sha256": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "bytes": 556
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/2024Q2.json": {
+      "sha256": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "bytes": 4890
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/2024Q3.json": {
+      "sha256": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "bytes": 4880
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "sha256": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72",
+      "bytes": 346
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/growth-method.txt": {
+      "sha256": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "bytes": 198
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "sha256": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "bytes": 5815
+    },
+    "fixture-initial/investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "sha256": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "bytes": 5805
+    },
+    "fixture-initial/investing/research.json": {
+      "sha256": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "bytes": 49
+    },
+    "independent-run-03-check.json": {
+      "sha256": "5bfa6e61dfeae46ae3ddb19fa3ba4959ec4768660f6166570b71be920b29e6d1",
+      "bytes": 445
+    },
+    "independent-run-04-check.json": {
+      "sha256": "7764ad50b108651602e0e90d13fa0eb50d97548b1ad288530d29b6418aae308e",
+      "bytes": 263
+    },
+    "independent-run-06-check.json": {
+      "sha256": "093030003f733c8d2ad926fe0ee1ee9bbe999e7ed7979592dae3064c038e884b",
+      "bytes": 295
+    },
+    "independent-runs-01-02-check.json": {
+      "sha256": "5d1c2a9118b1f04fb796ed02b3a8aa85ef6fe34a56012496b36953c4f077297a",
+      "bytes": 367
+    },
+    "investing/.research-runs/run-01-q3/completion.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "investing/.research-runs/run-01-q3/draft/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "investing/.research-runs/run-01-q3/draft/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "investing/.research-runs/run-01-q3/draft/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "investing/.research-runs/run-01-q3/draft/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "investing/.research-runs/run-01-q3/draft/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "investing/.research-runs/run-01-q3/draft/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "investing/.research-runs/run-01-q3/draft/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "investing/.research-runs/run-01-q3/journal.json": {
+      "sha256": "86f7d639d74857a4b3475ba92a8cf4508981533728083a907a5ab3b172ca55e7",
+      "bytes": 100
+    },
+    "investing/.research-runs/run-01-q3/request.json": {
+      "sha256": "7e994a2b34bbf07f74c9a8b21e74f4e10b79e0d792d9bb19b9ea5f2fd6996a3e",
+      "bytes": 32916
+    },
+    "investing/.research-runs/run-02-q3/completion.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "investing/.research-runs/run-02-q3/draft/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "investing/.research-runs/run-02-q3/draft/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "investing/.research-runs/run-02-q3/draft/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "investing/.research-runs/run-02-q3/draft/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "investing/.research-runs/run-02-q3/draft/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "investing/.research-runs/run-02-q3/journal.json": {
+      "sha256": "5a76003eb71f1d34fdac024412d029d5802f27f0a9ab793cde638948faf92dbd",
+      "bytes": 100
+    },
+    "investing/.research-runs/run-02-q3/request.json": {
+      "sha256": "104677c0df10d6243b73188afee05de8fb4e770cfc4a1a7f19e6c955b88fe606",
+      "bytes": 54834
+    },
+    "investing/.research-runs/run-03-q2/completion.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "investing/.research-runs/run-03-q2/draft/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "investing/.research-runs/run-03-q2/draft/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "investing/.research-runs/run-03-q2/draft/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "investing/.research-runs/run-03-q2/draft/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "investing/.research-runs/run-03-q2/draft/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "investing/.research-runs/run-03-q2/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "investing/.research-runs/run-03-q2/draft/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "investing/.research-runs/run-03-q2/journal.json": {
+      "sha256": "815ddba9c6a085034e7cf5220c02b4559196e9f90dd2c9fcaa3dc28466bc1aaf",
+      "bytes": 100
+    },
+    "investing/.research-runs/run-03-q2/request.json": {
+      "sha256": "24fdd1ed5dd09fb58d33d049f1a9bc1bf33d0e8a1777513117e90c2cbf137e9e",
+      "bytes": 43524
+    },
+    "investing/.research-runs/run-03-q3/completion.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "investing/.research-runs/run-03-q3/draft/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "investing/.research-runs/run-03-q3/draft/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "investing/.research-runs/run-03-q3/draft/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "investing/.research-runs/run-03-q3/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "investing/.research-runs/run-03-q3/draft/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "investing/.research-runs/run-03-q3/journal.json": {
+      "sha256": "297e54548dffcdd1f2e150c1488ec0a6af9f564f73629e455e048e14816e7bc0",
+      "bytes": 100
+    },
+    "investing/.research-runs/run-03-q3/request.json": {
+      "sha256": "55af98f29013018e84782c3074148798486d28f4d491bb473598edd81d678eaf",
+      "bytes": 59586
+    },
+    "investing/assets/equities/aapl/asset.json": {
+      "sha256": "b15bdb70e8e6cc165e825661204a59ab231e70deae9c1816f064a5d885806058",
+      "bytes": 556
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/pending.json": {
+      "sha256": "3609e56468f3749eebab72111eeb71a8e53f37ff8cfb2f84cb8c5702677446f5",
+      "bytes": 119
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/review.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/calculations.json": {
+      "sha256": "f3e456cd03cbd23b6ed510eaba1fc2e277613515df8e8ce78b8378d5fe47ebc9",
+      "bytes": 466
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth-check.json": {
+      "sha256": "b450b9e8e372cc458afeefeed3769ecb9528cae03cc6428f9bd89b1469b1685d",
+      "bytes": 337
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/growth.md": {
+      "sha256": "1c40a67c314caf85a5a3a738f6f6e897e0b4b63899768babc956577e8a19125c",
+      "bytes": 2604
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json": {
+      "sha256": "c226637441de859800b328549e89a927a50ff47571d35d1ddb17c6298293b0a0",
+      "bytes": 337
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md": {
+      "sha256": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+      "bytes": 1770
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/method-check.json": {
+      "sha256": "9bcf98f8957dcb25e7d89a23ba3fa6f35e9eb566380a982b69442804b193d756",
+      "bytes": 970
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/pending.json": {
+      "sha256": "2422375381531f52c41daa92b21534c41d6a18d9e9686cb73095aad603ae2719",
+      "bytes": 119
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/review.json": {
+      "sha256": "4d47ff69984e9a7ee805bcc57bcdf7e375fbe6da80f7456cd1e9cacd0a522719",
+      "bytes": 23550
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json": {
+      "sha256": "4d7b1089d42bc53897c558addc6e85609e53bc46dfc0df7ef615e187545abd8f",
+      "bytes": 1335
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/calculations.json": {
+      "sha256": "83d3bcea90231791f03995edb9a62b08b9b56ad817d7c09da74e663bd18088e5",
+      "bytes": 1988
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth-check.json": {
+      "sha256": "14de6eced4a1771744902a57ab860d34cb0c860f006c160840fd509eb865e0d1",
+      "bytes": 481
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/growth.md": {
+      "sha256": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+      "bytes": 3513
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/method-check.json": {
+      "sha256": "7123736e9e1554c4badde22906c2c02a16c357f9cf5011c18dcf217427948a9d",
+      "bytes": 1208
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/pending.json": {
+      "sha256": "45b138b54ab0f4d0decd35c50018e20e9d291995206f87dcf74a8ee2e0e2b3fc",
+      "bytes": 119
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/review.json": {
+      "sha256": "0108aef4fe12efa4f2b0eaba12dab4f25cc1d8bf6a954faff84b9c3095815d94",
+      "bytes": 20501
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/source-check.json": {
+      "sha256": "857c878853f53617f35966bfaa48e28c520ca4d08139ed3671c0c74ec71de10c",
+      "bytes": 501
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/calculations.json": {
+      "sha256": "eea49d22eeb0e45f5cab0db077bc4bd40f1ba1d135cf244e46474569a425ac83",
+      "bytes": 7971
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json": {
+      "sha256": "856abb9731df2e6e24e34190b04ac3f3b3ff3ce85cdaac1d152e93f272996d53",
+      "bytes": 412
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md": {
+      "sha256": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+      "bytes": 3531
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/pending.json": {
+      "sha256": "c56c1d3183307fb4c003d855a53fad10ae098e0af36aac0350e50022f5c21f05",
+      "bytes": 119
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json": {
+      "sha256": "82470f00d619288b274c08f322718eec5f1d338876a8bc4b777879b15ad211e2",
+      "bytes": 20369
+    },
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/source-check.json": {
+      "sha256": "2a709cb700b7dca53797de32a0140be431fbbdddb768fc22c887d5c43aa6583e",
+      "bytes": 408
+    },
+    "investing/assets/equities/aapl/data/2024Q2.json": {
+      "sha256": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "bytes": 4890
+    },
+    "investing/assets/equities/aapl/data/2024Q3.json": {
+      "sha256": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "bytes": 4880
+    },
+    "investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "sha256": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+      "bytes": 415
+    },
+    "investing/assets/equities/aapl/data/growth-method-v2.txt": {
+      "sha256": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618",
+      "bytes": 255
+    },
+    "investing/assets/equities/aapl/data/growth-method-v3.txt": {
+      "sha256": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+      "bytes": 563
+    },
+    "investing/assets/equities/aapl/data/growth-method.txt": {
+      "sha256": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283",
+      "bytes": 198
+    },
+    "investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "sha256": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "bytes": 5815
+    },
+    "investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "sha256": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "bytes": 5805
+    },
+    "investing/research.json": {
+      "sha256": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "bytes": 49
+    },
+    "observed-cli-metrics.json": {
+      "sha256": "f13ceb9cc9a5cda7ca958f328f23dba005144369f4b70e570cfa346f0aad3f92",
+      "bytes": 3189
+    },
+    "probe-escalated-last.txt": {
+      "sha256": "5dcb146c191ae5ad71be2f72211a7766829d7843213c4614994c5d4d85daf4d5",
+      "bytes": 15
+    },
+    "probe-escalated-transcript.txt": {
+      "sha256": "d50522dfe9679e07a19bdeebde53c8e899248c70b3c8999c09d7f0e3bbfb784b",
+      "bytes": 707
+    },
+    "probe-last.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "probe-prompt.txt": {
+      "sha256": "e7b4cd0cef3c25c81bdad305b0f5fbf4a71df5145d2353906ac8145471701ae6",
+      "bytes": 153
+    },
+    "probe-transcript.txt": {
+      "sha256": "2d8b902fb51c4fb0108c58a40b037f3ed52641f00cdae67901d7cbda9b4b8473",
+      "bytes": 199
+    },
+    "quarter-check-scope/SCOPE.md": {
+      "sha256": "c3207268702611a36656bd9c60393286d104059b2fbc60ecab91af9fe6d6b168",
+      "bytes": 1520
+    },
+    "quarter-check-scope/SETUP-output.txt": {
+      "sha256": "448b0d8495026c827055f4bd1ec080e7e8e33bda54ca4e78de294f908358d231",
+      "bytes": 143
+    },
+    "quarter-check-scope/SETUP.py": {
+      "sha256": "02a81b4330fc1cbfdcb23001d1fcd529cb0661b613a7265b7c3cf62102715cd7",
+      "bytes": 5979
+    },
+    "quarter-check-scope/after-run-07.json": {
+      "sha256": "8f746192b4338cb774955c5b0c3be49723618f96fe68580fdea66ae5392ad322",
+      "bytes": 6478
+    },
+    "quarter-check-scope/after-run-08.json": {
+      "sha256": "8f746192b4338cb774955c5b0c3be49723618f96fe68580fdea66ae5392ad322",
+      "bytes": 6478
+    },
+    "quarter-check-scope/arrival-added.json": {
+      "sha256": "bed299a800c3d58e881f02d2fd20cddb8283b21b381bdbe343a6063f6f95886c",
+      "bytes": 493
+    },
+    "quarter-check-scope/arrival-before.json": {
+      "sha256": "565727b65b83e0cd8c834a01e3859ff8a34afb95de28b4f9e161708125e9b52e",
+      "bytes": 3590
+    },
+    "quarter-check-scope/arrival-discovery.json": {
+      "sha256": "716210f5c7ac43372869433f6fcb5197b0c04d6bfd2debb56d6e914e7cb3fdac",
+      "bytes": 2084
+    },
+    "quarter-check-scope/baseline-before-publication.json": {
+      "sha256": "b0b16686a4a783e57ccc387151caadd0e4d966c88832856ee0b874b2d09a43ce",
+      "bytes": 732
+    },
+    "quarter-check-scope/baseline-discovery.json": {
+      "sha256": "4d9ece1e017c0e8fd44bd220b121fad29cd6fe9f3a78af29e582ea550e8195fc",
+      "bytes": 746
+    },
+    "quarter-check-scope/baseline-publication.json": {
+      "sha256": "e66cf5d16e8d4a1c875b55441ae1570541f601fbb6c07e286ade7cb59fa880d0",
+      "bytes": 162
+    },
+    "quarter-check-scope/before-run-07.json": {
+      "sha256": "8858c269daa166bea9ab54da90c1046d098b8158a82a34d73ae84e0cf6a182fb",
+      "bytes": 3840
+    },
+    "quarter-check-scope/before-run-08.json": {
+      "sha256": "8f746192b4338cb774955c5b0c3be49723618f96fe68580fdea66ae5392ad322",
+      "bytes": 6478
+    },
+    "quarter-check-scope/imports/original-q2-review/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "quarter-check-scope/imports/original-q2-review/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "quarter-check-scope/imports/original-q2-review/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "quarter-check-scope/imports/original-q2-review/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "quarter-check-scope/imports/original-q2-review/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "quarter-check-scope/imports/original-q2-review/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "quarter-check-scope/imports/original-q2-review/pending.json": {
+      "sha256": "3609e56468f3749eebab72111eeb71a8e53f37ff8cfb2f84cb8c5702677446f5",
+      "bytes": 119
+    },
+    "quarter-check-scope/imports/original-q2-review/review.json": {
+      "sha256": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+      "bytes": 20361
+    },
+    "quarter-check-scope/imports/original-q2-review/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "quarter-check-scope/independent-run-08-check.json": {
+      "sha256": "4c555b0028fe6da0805724c8d9a33b54cb1a13c4c85cc34d05c8ed5100d918d8",
+      "bytes": 326
+    },
+    "quarter-check-scope/independent-setup-check.json": {
+      "sha256": "53a38de2a7148e360b0c55af5daedcccc920c9cadbbe2183d4bd1487900b910e",
+      "bytes": 424
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/completion.json": {
+      "sha256": "b04696f92c3d8de098e80fc350617a8b1f3daa1d62a3d179e7eabaf7d5dbacdc",
+      "bytes": 14712
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/draft/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/journal.json": {
+      "sha256": "c5581c1c92405059958bf769186cf99308ddc903c8bb8fc7ea07b1c19e627781",
+      "bytes": 100
+    },
+    "quarter-check-scope/investing/.research-runs/bounded-baseline-q2/request.json": {
+      "sha256": "370f015e1df4172155ac5adb32936bc9151514045d3b55f49679a16a08a6904b",
+      "bytes": 33871
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/completion.json": {
+      "sha256": "0c1f6815fc333601173e44bb5fbfcf6fccaa37d34bf446fe4779f17884e16f43",
+      "bytes": 20126
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/calculations.json": {
+      "sha256": "887d430181766a29ed88c99a805cdf5624bf7478d7557df315494f198c51022e",
+      "bytes": 1247
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/growth-check.json": {
+      "sha256": "bf73635a3196888d583fa87a0e7545174f2f87c3907274a8f31555d52596f4de",
+      "bytes": 423
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/growth.md": {
+      "sha256": "c3210c5b3657006d6727edccf27cd321d46acc33332e18a348e1e512943ae5e0",
+      "bytes": 2793
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/identity-check.json": {
+      "sha256": "763806a83ea1e7b0bab6d94592653d6300031840712fea705fab28254003071a",
+      "bytes": 423
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/identity.md": {
+      "sha256": "231c59e5933d2b29dd6dc663c8f83b8af8ad4bbd4d2037a872acf258a7451a41",
+      "bytes": 2391
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/method-check.json": {
+      "sha256": "3139677d70f333a50c1dd22644e3a914116e959020e0059a4821ee65352f616b",
+      "bytes": 1096
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/draft/source-check.json": {
+      "sha256": "4b68a0a41298cd2d0c5241d40c3e17cdd1c1293ab0049f5ca87745d4cee5fadf",
+      "bytes": 2284
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/journal.json": {
+      "sha256": "ab68583c24dcdb426b572e51fc6be607a8f96a2b51f382c6359f38f821653c0b",
+      "bytes": 100
+    },
+    "quarter-check-scope/investing/.research-runs/run-07/request.json": {
+      "sha256": "3f2da809d0492f1605ad8d5339e2d1fbdafebc46272c1c3014b93c078e5ebbfb",
+      "bytes": 33910
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/asset.json": {
+      "sha256": "0f101271a355af8fa68aee88e92291f8749a41201fc737f2d5238ae46447e749",
+      "bytes": 382
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/calculations.json": {
+      "sha256": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+      "bytes": 7984
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/growth-check.json": {
+      "sha256": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+      "bytes": 412
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/growth.md": {
+      "sha256": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+      "bytes": 3624
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/identity-check.json": {
+      "sha256": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+      "bytes": 412
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/identity.md": {
+      "sha256": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+      "bytes": 1716
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/method-check.json": {
+      "sha256": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+      "bytes": 1430
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/pending.json": {
+      "sha256": "5a3d488c2fdad509d48eedf6c03904c1b5e8f35380dd57946e15f92dd5381822",
+      "bytes": 129
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/review.json": {
+      "sha256": "b04696f92c3d8de098e80fc350617a8b1f3daa1d62a3d179e7eabaf7d5dbacdc",
+      "bytes": 14712
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/source-check.json": {
+      "sha256": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+      "bytes": 1386
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/calculations.json": {
+      "sha256": "887d430181766a29ed88c99a805cdf5624bf7478d7557df315494f198c51022e",
+      "bytes": 1247
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/growth-check.json": {
+      "sha256": "bf73635a3196888d583fa87a0e7545174f2f87c3907274a8f31555d52596f4de",
+      "bytes": 423
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/growth.md": {
+      "sha256": "c3210c5b3657006d6727edccf27cd321d46acc33332e18a348e1e512943ae5e0",
+      "bytes": 2793
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/identity-check.json": {
+      "sha256": "763806a83ea1e7b0bab6d94592653d6300031840712fea705fab28254003071a",
+      "bytes": 423
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/identity.md": {
+      "sha256": "231c59e5933d2b29dd6dc663c8f83b8af8ad4bbd4d2037a872acf258a7451a41",
+      "bytes": 2391
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/method-check.json": {
+      "sha256": "3139677d70f333a50c1dd22644e3a914116e959020e0059a4821ee65352f616b",
+      "bytes": 1096
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/pending.json": {
+      "sha256": "d68a2196f33438a1ede6d02e4b0a254fdd274f99eca3ef866b4447be2eef36e6",
+      "bytes": 116
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/review.json": {
+      "sha256": "0c1f6815fc333601173e44bb5fbfcf6fccaa37d34bf446fe4779f17884e16f43",
+      "bytes": 20126
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/source-check.json": {
+      "sha256": "4b68a0a41298cd2d0c5241d40c3e17cdd1c1293ab0049f5ca87745d4cee5fadf",
+      "bytes": 2284
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/2024Q2.json": {
+      "sha256": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+      "bytes": 4890
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/2024Q3.json": {
+      "sha256": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+      "bytes": 4880
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/analysis/growth-method.json": {
+      "sha256": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+      "bytes": 415
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/growth-method-v3.txt": {
+      "sha256": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+      "bytes": 563
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/sources/2024Q2.json": {
+      "sha256": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+      "bytes": 5815
+    },
+    "quarter-check-scope/investing/assets/equities/aapl/data/sources/2024Q3.json": {
+      "sha256": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+      "bytes": 5805
+    },
+    "quarter-check-scope/investing/research.json": {
+      "sha256": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+      "bytes": 49
+    },
+    "quarter-check-scope/run-07-after-discovery.json": {
+      "sha256": "67bad0d7757b29fc7e898561b8e14d11fa4e0944388d88679680dd0a967634ed",
+      "bytes": 1324
+    },
+    "quarter-check-scope/run-07-before-discovery.json": {
+      "sha256": "716210f5c7ac43372869433f6fcb5197b0c04d6bfd2debb56d6e914e7cb3fdac",
+      "bytes": 2084
+    },
+    "quarter-check-scope/run-07-execute.py": {
+      "sha256": "3a0daf60881421aad956d1239cd4b28843dcd705c12fcaa785cb1bcc44fde324",
+      "bytes": 14595
+    },
+    "quarter-check-scope/run-07-final-verification.json": {
+      "sha256": "79d4bcc08542dc58f38be194a1a2d445a6573374c7b2f133b1cba7e4239c80df",
+      "bytes": 590
+    },
+    "quarter-check-scope/run-07-preservation.json": {
+      "sha256": "e989931079e5aa9e629a821ed3a30d7cf29dc573d13077392a28a0ed8b7d25f3",
+      "bytes": 9933
+    },
+    "quarter-check-scope/run-07-proposal.json": {
+      "sha256": "a5abbed0daf3abcf0b879eeb42cd256ab7784e68d6e816a7ff250aacfdfc8428",
+      "bytes": 31551
+    },
+    "quarter-check-scope/run-07-publication-before.json": {
+      "sha256": "c3b3c10ac2289e90c34c781e4368ebff6d7fa88ddadf3bc6c27234d1b316784b",
+      "bytes": 2462
+    },
+    "quarter-check-scope/run-07-publication.json": {
+      "sha256": "9e72c0a6675a93e2359d83278e41f1cfca56743f914b18dd666a6ec4aa89b69d",
+      "bytes": 139
+    },
+    "quarter-check-scope/run-07-report.md": {
+      "sha256": "0d326e6712ac1a455dad357b9da81ac01315021da4269b8fa5f960a6a12bd9df",
+      "bytes": 6636
+    },
+    "quarter-check-scope/run-07-root-before.json": {
+      "sha256": "016a19c282772bf526101e190eb3b0b17d7c262579d73983959a1bc4f89f2e47",
+      "bytes": 6014
+    },
+    "quarter-check-scope/run-08-discovery.json": {
+      "sha256": "67bad0d7757b29fc7e898561b8e14d11fa4e0944388d88679680dd0a967634ed",
+      "bytes": 1324
+    },
+    "quarter-check-scope/run-08-report.md": {
+      "sha256": "c609112ee979285098ea57553650348eca11198e813055541c5ade5cfad2a8ef",
+      "bytes": 5765
+    },
+    "quarter-check-scope/run-08-verification.json": {
+      "sha256": "ecb1aea01cd76c2d0c3dc2882a566324a8337b8cc1d32025653596dc647c61a9",
+      "bytes": 15249
+    },
+    "run-01-baseline.json": {
+      "sha256": "6ea03a33ee526d15a0fb2e58109a7754849e9f1585ac52a0c409de5d41f31106",
+      "bytes": 978
+    },
+    "run-01-discovery-after.json": {
+      "sha256": "7bd2084a75a03ea45f835621818121d31bea3e010ecba07026b781fa5d790075",
+      "bytes": 1705
+    },
+    "run-01-discovery-before.json": {
+      "sha256": "d7fbc9876effc925a24989fe65aa6c9174d7533aec1786f0d7193d90d3a91e03",
+      "bytes": 4163
+    },
+    "run-01-last.txt": {
+      "sha256": "2caf6a2e6ddbe914293bc25d200f1f56e0c8860bc422c99963ec46f1a837ef47",
+      "bytes": 1287
+    },
+    "run-01-prompt.txt": {
+      "sha256": "85abdfcb1a9864134c065262e5fbcde99d918ba47d72626658358e60dd8a97f2",
+      "bytes": 1223
+    },
+    "run-01-publication.json": {
+      "sha256": "0f5771f230de4555c4a2e7a0e2582cf1f360ccfc1a84ba878576273f55dbf822",
+      "bytes": 143
+    },
+    "run-01-report.md": {
+      "sha256": "476bc61a395420c633da0310264a7d6728f0192cd260e25dd0228b6cab12cd58",
+      "bytes": 2901
+    },
+    "run-01-save.py": {
+      "sha256": "9ee59e2a9eb45028837a2ecd0098bfbb030baa4dc9cdd5b65fcc2f278114c77d",
+      "bytes": 10064
+    },
+    "run-01-saved-paths.json": {
+      "sha256": "0bc50283e29409751a86389521f78fd4ab1577735abf6c343543a1cd6b8ce748",
+      "bytes": 3103
+    },
+    "run-01-transcript.txt": {
+      "sha256": "6445756373aabdad4db807a9d4c6aea7e38dde53ac1ca39cde86a1e3fe4a208d",
+      "bytes": 145793
+    },
+    "run-02-baseline.json": {
+      "sha256": "aec4e3879372a678cdf8ea0c862d13d00fe6f065ecc29da5641f50bdd97c12cd",
+      "bytes": 2498
+    },
+    "run-02-discovery-after.json": {
+      "sha256": "68f3b0500ea71f4868514c3a0eeea45d72cec302860222332c1814d301e28bf1",
+      "bytes": 1706
+    },
+    "run-02-discovery-before.json": {
+      "sha256": "d493df8fd38c29e346e7e0f63b5a7a9484ed096f3cb6a2cae79a4c39d8100514",
+      "bytes": 2559
+    },
+    "run-02-files-before.json": {
+      "sha256": "f742837d78742746b03291546160d2ee77b5fb0790f238087c5104282fb2930e",
+      "bytes": 13435
+    },
+    "run-02-final-validation.json": {
+      "sha256": "54a2c266b99de564a786ab7837df24c3bec6fd0ee98208e96e29fbd1ef609e00",
+      "bytes": 373
+    },
+    "run-02-last.txt": {
+      "sha256": "060431472d1b00e303034ec526283e590369e95284f69ff8d4ce43bfc48c49ce",
+      "bytes": 630
+    },
+    "run-02-old-method.json": {
+      "sha256": "d88c67f63e867e01329d081e148dc184f037c00f2e9e9ad687f9e34f42348d72",
+      "bytes": 346
+    },
+    "run-02-original-v2-method.json": {
+      "sha256": "496e3244c7efedb7f6af3906f6253d7fb47d31d3c9605be8f7bee518f3367d04",
+      "bytes": 366
+    },
+    "run-02-prompt.txt": {
+      "sha256": "e2d604abfa086c4a7394f5990dcf6eb8cd485046eaa974763ce931d094c4d349",
+      "bytes": 1042
+    },
+    "run-02-publication.json": {
+      "sha256": "21eb4a134cc5b90a2078daad3ec6a9bc2f45fbbbe67a91235d5bc1f6b6e8aac0",
+      "bytes": 144
+    },
+    "run-02-report.md": {
+      "sha256": "d2beeafcfeb27caf6e31e0b35cac195307d994f622d206a7f2d1a9e88de02b5e",
+      "bytes": 3460
+    },
+    "run-02-reuse-evidence.json": {
+      "sha256": "64c4176f0467a59d5af43eef3d036974f6060c0c49c866bac5adcb9335609c96",
+      "bytes": 33799
+    },
+    "run-02-save.py": {
+      "sha256": "6d936f1ba4063d348111f1f04c8e3bd226ff588edd7d58a5372d13d267ff5deb",
+      "bytes": 9817
+    },
+    "run-02-transcript.txt": {
+      "sha256": "cfee7bfe9f3a15d378785d7975a8010e55d17fb8dfed3261e79912641826939e",
+      "bytes": 158747
+    },
+    "run-03-baseline.json": {
+      "sha256": "e38756640bab458385c54cfce546473f1cc1e7f7e90d2ac5da1a0a3391df9559",
+      "bytes": 3709
+    },
+    "run-03-between-publications.json": {
+      "sha256": "067f64282d92dfcf9d65f08db55f3c299672a7f97d6760ac462ec70967f9da23",
+      "bytes": 1265
+    },
+    "run-03-discovery-after.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-03-discovery-before.json": {
+      "sha256": "094b9cbcd10f85efba4417edc9acd5d5cb5131745368a5aa72086a9e3fa4b48d",
+      "bytes": 4475
+    },
+    "run-03-files-before.json": {
+      "sha256": "8fc46d14fe1064330a71affad630c398391134c0d4ae59474371122c5f0b76bd",
+      "bytes": 17781
+    },
+    "run-03-final-validation.json": {
+      "sha256": "cd8d33792e78c92d8f2fa7f3c7ceacd1e2a9b1862af347d009d5d661cfd0e632",
+      "bytes": 561
+    },
+    "run-03-last.txt": {
+      "sha256": "7177126b596952087d4ca8628e17a9a32e67ac6f23a980f79500d6ae3f006d0e",
+      "bytes": 665
+    },
+    "run-03-preservation.json": {
+      "sha256": "be4de3bea091133be04841b9866a7079c39d9d6dad6a023327d8025bdaf1e565",
+      "bytes": 12546
+    },
+    "run-03-prompt.txt": {
+      "sha256": "772f890fcca5333face23fd74ef159b85edc103abf5bc008c70f35c3f3d23991",
+      "bytes": 1744
+    },
+    "run-03-publication.json": {
+      "sha256": "0760051fa9251a04b0b37eb97d62fa0dbe7da969fd7affb33a44cca95f792ba2",
+      "bytes": 313
+    },
+    "run-03-q2-baseline.json": {
+      "sha256": "6391645f21f2e2e155fc24ff841231791cfbc955aa4bd314dbc694c23144ad2d",
+      "bytes": 4789
+    },
+    "run-03-report.md": {
+      "sha256": "cfb5bd7d78d1baf3b37918c1fdec45d0e86ce1f8b1b06d43c2e0afb3349c6c64",
+      "bytes": 9570
+    },
+    "run-03-runtime-check.json": {
+      "sha256": "74029d4920d49e7aeb8e5139f1f3b63e5cf2c5fcfc2057c12b834d1303da7b58",
+      "bytes": 1404
+    },
+    "run-03-save.py": {
+      "sha256": "31df4dc192f277aba8aa02edee707196201cac64b7e0d28ac5dd354ffd1deb61",
+      "bytes": 17338
+    },
+    "run-03-source-access.json": {
+      "sha256": "69c7c143517851955d1c54240521b38bb50134c2347deb1221b2835e8881dbf7",
+      "bytes": 1387
+    },
+    "run-03-transcript.txt": {
+      "sha256": "74c11f9c2ca154ed35f9f2e1382b3db5c78c379612c7bfeb8038e690c37c09b0",
+      "bytes": 195396
+    },
+    "run-04-discovery.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-04-last.txt": {
+      "sha256": "04e022b9d9e43e9ba816101ee68c41f3ae21dacd4f013bfb3ee3a6975022d3c3",
+      "bytes": 617
+    },
+    "run-04-prompt.txt": {
+      "sha256": "d076a0e065bf7e81b5362e1fd1076ac1baea25c2ef8f7f9a1be6107088e9a2c1",
+      "bytes": 996
+    },
+    "run-04-report.md": {
+      "sha256": "bc76c342edac8da1749791334dddf9002fa0290149180a0c2b1e317c1ffd2bc7",
+      "bytes": 3893
+    },
+    "run-04-transcript.txt": {
+      "sha256": "a007b1e7dbf6e3bf0d51b11fb30653ae06639a8cee4d37928ad26a2188d5db07",
+      "bytes": 138496
+    },
+    "run-04-validation.json": {
+      "sha256": "2130657446e44942f4b96952cf824cce9786b0b8aeb8120bbbaaeab1c126355c",
+      "bytes": 14266
+    },
+    "run-05-cases.json": {
+      "sha256": "5ee565c333b6e128f1e59a5517c795792d2fd2112f0d78cfe150ec8a99162222",
+      "bytes": 3027
+    },
+    "run-05-clean-baseline.json": {
+      "sha256": "564d0118bec0bc1332a4519a4337e3bc61c99a0165e0e76e8ac4a7770b6e4941",
+      "bytes": 6179
+    },
+    "run-05-clean-discovery-after.json": {
+      "sha256": "7d59750a9e5de9bd746b756788db1918cc2568f51b4887fe230a75fcad007082",
+      "bytes": 3818
+    },
+    "run-05-clean-discovery-before.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-05-clean-execution.json": {
+      "sha256": "021c70af165e87a4953d2f12a4a3f7ff20bcaf654340aaf567028de4df8eee5a",
+      "bytes": 507
+    },
+    "run-05-clean-hashes.json": {
+      "sha256": "0531598be64188cff313b8064ba5602a4e82f22614ed3969b3a2a49d071b10eb",
+      "bytes": 21382
+    },
+    "run-05-clean-proposal.json": {
+      "sha256": "2d368c92b5acc5f05fe5da9d03bdc3ad552ccad1c870091e84105e100f1dc8e7",
+      "bytes": 39047
+    },
+    "run-05-clean-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "run-05-clean-stdout.txt": {
+      "sha256": "639e153ec52749a8f18803526824d0754602ecf09a5e7ed7b2c2dd03031e4d4e",
+      "bytes": 232
+    },
+    "run-05-interrupt.py": {
+      "sha256": "ed43258ef13bddeffcb1688573acff5f869873a21eb737008c284d77e6d8de2d",
+      "bytes": 10609
+    },
+    "run-05-last.txt": {
+      "sha256": "c4baddf01913020b14e14497af2f2d21f3dae8788f29ddcd41ca028e51e75918",
+      "bytes": 678
+    },
+    "run-05-main-after.json": {
+      "sha256": "09e5b3c396d1e1cf6fbf78810046dce4aa0f831e6ae86831e03cc1d9eacf3b29",
+      "bytes": 9991
+    },
+    "run-05-main-before.json": {
+      "sha256": "09e5b3c396d1e1cf6fbf78810046dce4aa0f831e6ae86831e03cc1d9eacf3b29",
+      "bytes": 9991
+    },
+    "run-05-main-discovery.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-05-package-before.json": {
+      "sha256": "ef78e25f098aac323ff19198dbadb33650c136fbe49b773b6866322c333adc21",
+      "bytes": 1537
+    },
+    "run-05-prompt.txt": {
+      "sha256": "3a9d78726d3ae68982580e833a56e02753c2d501882843e100ced3bb021fc58f",
+      "bytes": 1674
+    },
+    "run-05-report.md": {
+      "sha256": "80d35484c6c368e58ff15650f25bde07c1a005e3ee971e0634292088495622ea",
+      "bytes": 4825
+    },
+    "run-05-transcript.txt": {
+      "sha256": "03ecb00f313ff15a0ee762aceff9406d375f66fccb7c80018a28ebf16a17db35",
+      "bytes": 187934
+    },
+    "run-05-useredit-baseline.json": {
+      "sha256": "564d0118bec0bc1332a4519a4337e3bc61c99a0165e0e76e8ac4a7770b6e4941",
+      "bytes": 6179
+    },
+    "run-05-useredit-discovery-after.json": {
+      "sha256": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+      "bytes": 3830
+    },
+    "run-05-useredit-discovery-before.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-05-useredit-execution.json": {
+      "sha256": "0dbec25a3a7472848cd5e7aaa68897a3dae43d19df1dc9e0445a8644f7c278dd",
+      "bytes": 516
+    },
+    "run-05-useredit-hashes.json": {
+      "sha256": "c085d81a781d6a12571f9b3ad3537bcb09e5aeeaf756f6bc217de1eca83595cf",
+      "bytes": 21403
+    },
+    "run-05-useredit-proposal.json": {
+      "sha256": "dc9853245f0f507f0084db9fc7e17b851c85b77dc639746e297dcd4bd595e8eb",
+      "bytes": 39059
+    },
+    "run-05-useredit-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "run-05-useredit-stdout.txt": {
+      "sha256": "b719fd99c27ef503c974402815569968a1235140ec884228b318ae0941186383",
+      "bytes": 238
+    },
+    "run-05-validation.json": {
+      "sha256": "d7ab6f953970796a8f3a2b6e392381d941f98a22f22d9412171c9a4aa03d1425",
+      "bytes": 505
+    },
+    "run-06-artifact-hashes.json": {
+      "sha256": "d1939e4241768902345196dd5d2ab30bc213ab5bbf6e7714fac4d519e0b6bd42",
+      "bytes": 2049
+    },
+    "run-06-clean-discovery-after-resume.json": {
+      "sha256": "3870f12b91bddd9a3c01915158b17e3ac7e05dff9fad6f4ee9c95e338fc0ca6b",
+      "bytes": 3176
+    },
+    "run-06-clean-discovery-after-rollback.json": {
+      "sha256": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+      "bytes": 3134
+    },
+    "run-06-clean-discovery-before.json": {
+      "sha256": "7d59750a9e5de9bd746b756788db1918cc2568f51b4887fe230a75fcad007082",
+      "bytes": 3818
+    },
+    "run-06-files-before.json": {
+      "sha256": "572fdb52a0d3f514f28eb4e4c2d544a86022a8cb97aa8efc26173918b8540dc5",
+      "bytes": 40703
+    },
+    "run-06-helper-calls.json": {
+      "sha256": "7ebb5187157d04c63be5348142d5a14042eafdf3bc5ffad5b7dc425a002fb287",
+      "bytes": 3110
+    },
+    "run-06-last.txt": {
+      "sha256": "9571f3228c4314398661156d29278cac8a8bd76bf8547f2cc3677fb0959d6db3",
+      "bytes": 966
+    },
+    "run-06-preserved-file-hashes.json": {
+      "sha256": "797e65ad435f7c5a0a544af4f6814b01f731141d7566a650f417d11d2402237f",
+      "bytes": 49356
+    },
+    "run-06-prompt.txt": {
+      "sha256": "7669c3badb079a5180ac0139333198174b060f3e17bcef9aa725c189bb05ce11",
+      "bytes": 1416
+    },
+    "run-06-recover.py": {
+      "sha256": "64a7d6de2b271d928978de154333828d595113911b480ba8f0bc6467dc563751",
+      "bytes": 4604
+    },
+    "run-06-report.md": {
+      "sha256": "040e3a3a4ff0b06eee84a3f3dd91c8ed5405ae4e1aaab82260721104a2fcf86b",
+      "bytes": 6850
+    },
+    "run-06-revalidation.json": {
+      "sha256": "43ad73a5f73feefb2ec38ddaecf199f82bef8b9a2c648267a6007cfb8d6b4788",
+      "bytes": 9980
+    },
+    "run-06-transcript.txt": {
+      "sha256": "96efa26333bbb5f76182a0ac2c32e5df68fbd332989f875372bab82e0632f780",
+      "bytes": 208655
+    },
+    "run-06-user-edit.json": {
+      "sha256": "bc8e1532832312a133caa5b7e1aac9a40e49afaea6bd06e5a92a3b2f4ad35ec8",
+      "bytes": 915
+    },
+    "run-06-useredit-discovery-after-resume.json": {
+      "sha256": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+      "bytes": 3830
+    },
+    "run-06-useredit-discovery-after-rollback.json": {
+      "sha256": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+      "bytes": 3830
+    },
+    "run-06-useredit-discovery-before.json": {
+      "sha256": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+      "bytes": 3830
+    },
+    "run-06-validation.json": {
+      "sha256": "afaec5eabd24f60d90713c89349033c37baade49ccae0e32ebfc9a48d9f47830",
+      "bytes": 326
+    },
+    "run-07-last.txt": {
+      "sha256": "c8488977bdf39a5e2fb45a30c6470f8886bbf88a0231281e1bc148786d9b967d",
+      "bytes": 674
+    },
+    "run-07-prompt.txt": {
+      "sha256": "95043ce6b3189af7b4179c8ffe09b51d770fa63163a590f209b29e34d4f729e9",
+      "bytes": 2174
+    },
+    "run-07-transcript.txt": {
+      "sha256": "5b3daa559e3c5cd28a0bd7e22273905584d06e09d1d74039894b93b61737b1e7",
+      "bytes": 244061
+    },
+    "run-07-wait-diagnostic.txt": {
+      "sha256": "d7008cc680e1446622b6b4dc45ca2e5172246a6fd91fd07d648014c9a96a7a29",
+      "bytes": 414
+    },
+    "run-08-last.txt": {
+      "sha256": "58b1b5bd192eea7c15d62765e57c8ab3e2006843b5a3694c35dc314d86a0278a",
+      "bytes": 1097
+    },
+    "run-08-prompt.txt": {
+      "sha256": "72034066c959fbb8892c282f9be38c202222d743f7232b84c3d72550d257067b",
+      "bytes": 1678
+    },
+    "run-08-transcript.txt": {
+      "sha256": "8c0e2cde4e80aae17b07cf18e6bcf3267b9a0f9e4d6a67ac3f3758dbf2bcf69d",
+      "bytes": 242896
+    },
+    "runtime-source-v1.json": {
+      "sha256": "0053d0958fa799c0337f3e7dfd06a30d50c4cb7cf2b59fcc1afd5f16d3934519",
+      "bytes": 1571
+    },
+    "runtime-source-v2.json": {
+      "sha256": "775279df1f41e05a33740ae3d1af45cf64cd8dedaabc283df11254af85be7bad",
+      "bytes": 407
+    }
+  }
+}

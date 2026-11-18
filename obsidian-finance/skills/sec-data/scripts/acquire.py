@@ -2,15 +2,15 @@
 
 import argparse
 from collections import Counter, defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 import json
 import os
 from pathlib import Path
 import re
 import sys
 import tempfile
-from zoneinfo import ZoneInfo
 
+from fiscal_quarter import conflicting_publication
 from sec_client import acquire
 
 LIMITATIONS = [
@@ -36,22 +36,8 @@ def _date(value):
         return None
 
 
-def _acceptance_date(value):
-    if not isinstance(value, str):
-        return None
-    try:
-        timestamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
-        # EDGAR filing dates use Eastern time. An explicit zone permits a
-        # date comparison without making any claim of intraday eligibility.
-        if timestamp.tzinfo is None:
-            return None
-        return timestamp.astimezone(ZoneInfo('America/New_York')).date()
-    except ValueError:
-        return None
-
-
 def _source_url(cik, accession):
-    if not isinstance(accession, str) or not re.fullmatch(r'\d{10}-\d{2}-\d{6}', accession):
+    if not isinstance(accession, str) or not re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}', accession):
         return None
     return f'https://www.sec.gov/Archives/edgar/data/{cik}/{accession.replace("-", "")}/{accession}-index.html'
 
@@ -61,23 +47,25 @@ def _select(data, start, end, cutoff):
     excluded = Counter()
     filing_excluded = Counter()
     inventory = []
+    valid_filings = []
+    filing_errors = {}
     indexed = defaultdict(list)
     cik = data['company']['cik']
     for row in data['filings']:
         accession = row.get('accessionNumber')
-        if isinstance(accession, str):
-            indexed[accession].append(row)
+        if _source_url(cik, accession) is None:
+            filing_excluded['invalid_accession'] += 1
+            source = row['source_id']
+            filing_errors[source] = dict(source=source, code='INVALID_SOURCE_DATA',
+                detail='Malformed filing accession excluded from inventory')
+            continue
+        valid_filings.append(row)
+        indexed[accession].append(row)
 
     def conflicting(accession, filed):
-        for filing in indexed.get(accession, []):
-            accepted = filing.get('acceptanceDateTime')
-            if _date(filing.get('filingDate')) != filed:
-                return True
-            if accepted and _acceptance_date(accepted) != filed:
-                return True
-        return False
+        return conflicting_publication(indexed.get(accession, []), filed)
 
-    for row in data['filings']:
+    for row in valid_filings:
         accession = row.get('accessionNumber')
         if row.get('form') not in ('10-K', '10-Q', '10-K/A', '10-Q/A'):
             filing_excluded['other_form'] += 1
@@ -154,6 +142,7 @@ def _select(data, start, end, cutoff):
         span['observation_count'] += 1
     coverage = dict(eligible_fact_count=len(eligible), filing_count=len(inventory),
         excluded=dict(excluded), filing_excluded=dict(filing_excluded),
+        filing_errors=list(filing_errors.values()),
         observed_spans=list(spans.values()),
         absent_inventory_accession_count=sum(not row['accession_in_inventory'] for row in eligible),
         inventory_limitation='No matching filings acquired' if not inventory else None,
@@ -175,13 +164,26 @@ def run(argv=None, fetch=None):
     The destination root must exist, or have an existing direct parent.
     """
     parser = _Parser(description=__doc__)
-    for name in ('ticker', 'period-start', 'period-end', 'as-of', 'output-dir'):
+    for name in ('ticker', 'output-dir'):
         parser.add_argument('--' + name, required=True)
+    for name in ('period-start', 'period-end', 'as-of', 'fiscal-quarter'):
+        parser.add_argument('--' + name)
     run_path = None
     try:
         args = parser.parse_args(argv)
-        start, end, cutoff = map(_date, (args.period_start, args.period_end, args.as_of))
-        if None in (start, end, cutoff) or start > end or cutoff > date.today():
+        mode = 'historical' if args.as_of else 'retrospective'
+        if args.fiscal_quarter is not None:
+            if (not re.fullmatch(r'[0-9]{4}Q[1-4]', args.fiscal_quarter)
+                    or args.period_start is not None or args.period_end is not None):
+                raise ValueError('INVALID_INPUT: use YYYYQq without date-range selectors')
+            args.as_of = args.as_of or datetime.now(timezone.utc).date().isoformat()
+            start = end = None
+        else:
+            start, end = map(_date, (args.period_start, args.period_end))
+            if None in (start, end) or start > end or args.as_of is None:
+                raise ValueError('INVALID_INPUT: date ranges require start, end and as-of')
+        cutoff = _date(args.as_of)
+        if cutoff is None or cutoff > datetime.now(timezone.utc).date():
             raise ValueError('INVALID_INPUT: use ISO dates, start <= end and a non-future cutoff')
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', args.ticker):
             raise ValueError('INVALID_INPUT: invalid ticker')
@@ -203,7 +205,7 @@ def run(argv=None, fetch=None):
 
     try:
         print('Acquiring public SEC submissions and companyfacts', file=sys.stderr)
-        data = acquire(args.ticker, args.as_of, identity, fetch)
+        data = acquire(args.ticker, args.as_of, identity, fetch, fiscal_quarter=args.fiscal_quarter)
         sources = []
         (run_path / 'raw').mkdir()
         for source in data['sources']:
@@ -213,6 +215,8 @@ def run(argv=None, fetch=None):
             source['path'] = None
             if raw is not None:
                 filename = f'raw/{source["id"]}.json'
+                if source['id'].startswith('primary-'):
+                    filename = f'raw/{source["id"]}.html'
                 if source['id'].startswith('archive-'):
                     (run_path / 'raw/archives').mkdir(exist_ok=True)
                     filename = f'raw/archives/{source["id"]}.json'
@@ -222,8 +226,20 @@ def run(argv=None, fetch=None):
             sources.append(source)
         valid_section = any(s['status'] == 'valid' and s['id'] in ('submissions', 'companyfacts') for s in sources)
         failed = not data['company'] or not data['identity_valid'] or not valid_section
-        eligible, inventory, coverage, malformed = ([], [], {}, False) if failed else _select(data, start, end, cutoff)
         errors = list(data['errors'])
+        resolution = None
+        if args.fiscal_quarter:
+            from fiscal_quarter import resolve
+            try:
+                if failed:
+                    raise ValueError('FISCAL_PERIOD_UNRESOLVED: trustworthy issuer data unavailable')
+                resolution = resolve(data, args.fiscal_quarter, args.as_of)
+                start = end = _date(resolution['period_end'])
+            except ValueError as exc:
+                failed = True
+                errors.append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=str(exc)))
+        eligible, inventory, coverage, malformed = ([], [], {}, False) if failed else _select(data, start, end, cutoff)
+        errors.extend(coverage.get('filing_errors', []))
         if malformed:
             errors.append(dict(source='companyfacts', code='INVALID_SOURCE_DATA', detail='Malformed observation structure; invalid sections excluded'))
             if not eligible and not any(s['id'] == 'submissions' and s['status'] == 'valid' for s in sources):
@@ -233,7 +249,8 @@ def run(argv=None, fetch=None):
         manifest = dict(schema_version=1, status=status, finalized=True,
             company=data['company'], identity_valid=data['identity_valid'],
             request=dict(ticker=args.ticker.upper(), period_start=args.period_start,
-                         period_end=args.period_end, as_of=args.as_of),
+                         period_end=args.period_end, as_of=args.as_of, fiscal_quarter=args.fiscal_quarter),
+            mode=mode, effective_cutoff=args.as_of, resolution=resolution,
             sources=sources, errors=errors, raw_evidence='unfiltered', limitations=LIMITATIONS,
             files={} if failed else dict(facts='eligible-facts.json', filings='filings.json', coverage='coverage.json'),
             guidance='Verify source errors and retry into a new run; review requested dates and observed coverage.')
@@ -245,6 +262,7 @@ def run(argv=None, fetch=None):
         if not failed:
             _write_json(run_path / 'completion.json', dict(status=status, manifest='manifest.json'))
         return dict(status=status, exit_code=exit_code, run_path=str(run_path.resolve()),
+            mode=mode, effective_cutoff=args.as_of, resolution=resolution,
             manifest=str((run_path / 'manifest.json').resolve()),
             eligible_fact_count=len(eligible), filing_count=len(inventory), errors=errors,
             limitations=LIMITATIONS)

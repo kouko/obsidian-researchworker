@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "fiscal_quarter": "2007Q1",
+  "period_end": "2006-12-30",
+  "cutoff": "2007-02-02T23:59:59-05:00",
+  "original": {
+    "accession": "0001104659-07-006648",
+    "filing_date": "2007-02-02",
+    "acceptance_timestamp_from_submissions": "2007-02-02T11:23:10.000Z",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000110465907006648/a07-2749_110q.htm",
+    "unit": "USD million except EPS, weeks and explicitly labeled percentages",
+    "values": {
+      "revenue": 7115,
+      "prior_revenue": 5749,
+      "gross_profit": 2220,
+      "operating_income": 1322,
+      "net_income": 1004,
+      "cfo": 1813,
+      "cash_ppe_additions": 142,
+      "intangible_asset_payment": 115,
+      "cash_and_short_term_investments": 11869,
+      "eps_diluted_usd": 1.14,
+      "current_weeks": 13,
+      "prior_weeks": 14
+    },
+    "calculation_locator": "Statements of operations and cash flows; Note 1 fiscal calendar; Note 2 cash and investments",
+    "full_html_retained_locally": false,
+    "raw_html_sha256": null
+  },
+  "later_revision_excluded_from_historical_inputs": {
+    "accession": "0001193125-10-012096",
+    "filing_date": "2010-01-25",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000119312510012096/dex993.htm",
+    "locator": "Exhibit 99.3, Revised Quarterly Income Statement Information, Q1 2007 New Accounting and Old Accounting columns",
+    "old_accounting": {
+      "revenue": 7115,
+      "net_income": 1004,
+      "eps_diluted_usd": 1.14
+    },
+    "new_accounting": {
+      "revenue": 7123,
+      "net_income": 1011,
+      "eps_diluted_usd": 1.14
+    },
+    "role": "2026-authored vintage audit only, never a 2007 economic input"
+  },
+  "calculations": [
+    {
+      "id": "local_cfo_ppe_proxy",
+      "formula": "1813 - 142",
+      "value": 1671,
+      "unit": "USD million",
+      "caveat": "Not all-in investment or distributable cash; other investing flows excluded"
+    },
+    {
+      "id": "reported_period_revenue_growth",
+      "formula": "(7115 / 5749 - 1) * 100",
+      "value_rounded": 23.76,
+      "unit": "percent",
+      "caveat": "13 versus 14 weeks; not comparable-week growth"
+    },
+    {
+      "id": "later_revenue_difference",
+      "formula": "7123 - 7115",
+      "value": 8,
+      "unit": "USD million"
+    },
+    {
+      "id": "later_net_income_difference",
+      "formula": "1011 - 1004",
+      "value": 7,
+      "unit": "USD million"
+    }
+  ],
+  "reading_coverage": {
+    "header_and_statements": "inspected",
+    "notes_1_and_2": "selected passages inspected",
+    "notes_3_through_6": "selected passages inspected; not all notes",
+    "mda": "selected product, margin, expense and retail passages inspected",
+    "risk_factors": "selected stock-option and related risk passages inspected",
+    "legal_proceedings": "not fully reviewed",
+    "supporting_2006_10k": "Header and selected explanatory-note restatement/governance passages inspected; remainder pending",
+    "other_required_documents": "not fully inventoried"
+  },
+  "verified_full_document_reading": false,
+  "independent_research_review": "pending",
+  "period_research_complete": false,
+  "investment_rating": "insufficient_evidence",
+  "remaining": [
+    "Full required narrative/notes/legal review",
+    "Relevant supporting annual/proxy/event documents",
+    "Independent industry/competition evidence",
+    "Historical price and corporate-action convention",
+    "Valuation and calibrated operating scenarios",
+    "Independent research challenge"
+  ],
+  "supporting_annual_reading": {
+    "accession": "0001104659-06-084288",
+    "filing_date": "2006-12-29",
+    "period_end": "2006-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000110465906084288/a06-25759_210k.htm",
+    "locator": "Explanatory Note, opening restatement paragraphs, web-rendered lines 77-110",
+    "coverage": "Header and selected explanatory-note passages inspected; not entire annual report",
+    "findings": [
+      "The annual filing restates prior-year financial statements and warns against relying on affected previously filed reports",
+      "Company disclosed non-cash stock-option compensation adjustments and weaknesses in grant safeguards; internal-investigation conclusions are issuer disclosures, not independent exoneration"
+    ],
+    "historical_role": "Eligible supporting disclosure at 2007Q1 cutoff; do not substitute revised 2004/2005 numbers into their original earlier cutoffs"
+  }
+}

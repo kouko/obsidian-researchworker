@@ -1,7 +1,7 @@
 {
   "name": "obsidian-finance",
   "version": "0.1.0",
-  "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs.",
+  "description": "Optional SEC evidence acquisition and folder-grounded agent research continuation with source cutoffs and protected checkpoints.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",
   "repository": "https://github.com/kouko/obsidian-researchworker",

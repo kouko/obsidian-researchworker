@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "runtime_changed": false,
+  "actual_vault_written": false,
+  "raw_sources_verified": true,
+  "checks": [
+    {
+      "check": "raw response hashes",
+      "status": "passed",
+      "items": 15
+    },
+    {
+      "check": "separate issuer PDF hashes",
+      "status": "passed",
+      "items": 2
+    },
+    {
+      "check": "reported observations match exact raw accession, period, unit and value",
+      "status": "passed",
+      "items": 66
+    },
+    {
+      "check": "cash-flow / local FCF formulas recomputed from stored inputs",
+      "status": "passed",
+      "items": 10
+    },
+    {
+      "check": "accounting, product reconciliation, periods, growth and margin controls",
+      "status": "passed",
+      "items": 2
+    },
+    {
+      "check": "headline and cash-flow inputs cross-check separate Apple PDF representation",
+      "status": "passed",
+      "items": 20
+    },
+    {
+      "check": "historical consumed and excluded release boundaries",
+      "status": "passed",
+      "items": 2
+    },
+    {
+      "check": "negative control: cumulative CFO mislabeled as single-quarter rejected",
+      "status": "passed",
+      "items": 1
+    },
+    {
+      "check": "negative control: later AI announcement in Q2 rejected",
+      "status": "passed",
+      "items": 1
+    },
+    {
+      "check": "negative control: product sum mismatch rejected",
+      "status": "passed",
+      "items": 1
+    },
+    {
+      "check": "sample frontmatter, scope and recommendation states",
+      "status": "passed",
+      "items": 9
+    },
+    {
+      "check": "local Markdown links resolve",
+      "status": "passed",
+      "items": 50
+    }
+  ],
+  "limitations": [
+    "No actual Obsidian reading-view rendering",
+    "No independent outside-agent review",
+    "No historical market-price or target-price validation",
+    "No automated update/resume or investment-performance test"
+  ]
+}

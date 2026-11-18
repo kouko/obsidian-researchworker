@@ -30,7 +30,7 @@ def payloads():
     ]
 
 
-def execute(tmp_path, monkeypatch, data=None, extra=()):
+def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None):
     monkeypatch.setenv('SEC_USER_AGENT', 'Test Operator test@example.org')
     data = payloads() if data is None else data
     calls = []
@@ -40,8 +40,9 @@ def execute(tmp_path, monkeypatch, data=None, extra=()):
         if isinstance(item, bytes):
             return item
         return json.dumps(item).encode()
-    args = ['--ticker', 'AAPL', '--period-start', '2024-01-01', '--period-end', '2024-12-31',
-            '--as-of', '2024-12-31', '--output-dir', str(tmp_path), *extra]
+    selectors = (['--period-start', '2024-01-01', '--period-end', '2024-12-31',
+                  '--as-of', '2024-12-31'] if selectors is None else selectors)
+    args = ['--ticker', 'AAPL', *selectors, '--output-dir', str(tmp_path), *extra]
     summary = module().run(args, fetch=fetch)
     path = Path(summary['run_path']) if summary.get('run_path') else None
     return summary, path, calls
@@ -104,13 +105,25 @@ def test_status_precedence(tmp_path, monkeypatch, mode, status, code):
     assert (path / 'eligible-facts.json').exists() == (status != 'failed')
 
 
-@pytest.mark.parametrize('section', [1, 2])
-def test_unavailable_sections(tmp_path, monkeypatch, section):
+@pytest.mark.parametrize('section,bad', [
+    (1, b'bad'), (2, b'bad'),
+    ('accession', '../untrusted'), ('accession', None),
+    ('accession', []), ('accession', {}), ('accession', True),
+    ('accession', '００００３２０１９３-２４-０００００１'),
+])
+def test_unavailable_sections(tmp_path, monkeypatch, section, bad):
     data = payloads()
-    data[section] = b'bad'
+    if section == 'accession':
+        data[1]['filings']['recent']['accessionNumber'][0] = bad
+    else:
+        data[section] = bad
     summary, path, _ = execute(tmp_path, monkeypatch, data)
     assert summary['status'] == 'partial'
     assert read(path, 'manifest.json')['errors'][0]['code'] == 'INVALID_SOURCE_DATA'
+    if section == 'accession':
+        assert read(path, 'filings.json') == []
+        assert read(path, 'coverage.json')['filing_excluded']['invalid_accession'] == 1
+        assert read(path, 'eligible-facts.json')[0]['accession_in_inventory'] is False
 
 
 def test_cutoff_filter(tmp_path, monkeypatch):
@@ -131,7 +144,23 @@ def test_cutoff_filter(tmp_path, monkeypatch):
     assert len(read(path, 'raw/companyfacts.json')['facts']['us-gaap']['Revenues']['units']['USD']) == 5
 
 
-@pytest.mark.parametrize('mode', ['date', 'acceptance', 'duplicate'])
+def test_after_hours_apple_replay(tmp_path, monkeypatch):
+    data = payloads()
+    block = data[1]['filings']['recent']
+    block.update(accessionNumber=['0000320193-24-000081'], form=['10-Q'],
+        filingDate=['2024-08-02'], reportDate=['2024-06-29'],
+        acceptanceDateTime=['2024-08-01T22:03:34Z'])
+    data[2]['facts']['us-gaap']['Revenues']['units']['USD'][0].update(
+        accn='0000320193-24-000081', filed='2024-08-02', end='2024-06-29')
+    summary, path, _ = execute(tmp_path, monkeypatch, data)
+    assert summary['status'] == 'complete'
+    assert read(path, 'eligible-facts.json')[0]['accession_in_inventory']
+    filing = read(path, 'filings.json')[0]
+    assert (filing['acceptanceDateTime'], filing['filingDate']) == (
+        '2024-08-01T22:03:34Z', '2024-08-02')
+
+
+@pytest.mark.parametrize('mode', ['date', 'acceptance', 'malformed_acceptance', 'duplicate'])
 def test_amendment_conflict(tmp_path, monkeypatch, mode):
     data = payloads()
     block = data[1]['filings']['recent']
@@ -139,6 +168,8 @@ def test_amendment_conflict(tmp_path, monkeypatch, mode):
         data[2]['facts']['us-gaap']['Revenues']['units']['USD'][0]['filed'] = '2024-11-02'
     elif mode == 'acceptance':
         block['acceptanceDateTime'] = ['2025-01-01T10:00:00Z']
+    elif mode == 'malformed_acceptance':
+        block['acceptanceDateTime'] = ['not-a-timestamp']
     else:
         for key, values in block.items():
             values.append('2024-11-02' if key == 'filingDate' else values[0])
@@ -183,3 +214,63 @@ def test_invalid_identity_output(tmp_path, monkeypatch, mode):
         assert 'private identity' not in json.dumps(result)
     else:
         assert calls == []
+
+
+@pytest.mark.parametrize('quarter,focus', [('2024Q3', 'Q3'), ('2024Q4', 'FY')])
+def test_quarter_package(tmp_path, monkeypatch, quarter, focus):
+    from datetime import datetime, timezone
+    from test_fiscal_quarter import declaration, evidence
+    data = payloads()
+    sample = evidence(focus)
+    data[1]['filings']['recent'] = {k: [v] for k, v in sample['filings'][0].items()}
+    facts = data[2]['facts']['us-gaap']['Revenues']['units']['USD']
+    facts[0].update(accn='0000320193-24-000081', filed='2024-08-02', end='2024-06-29', fy=2024, fp=focus)
+    facts.extend([dict(facts[0], start='2024-03-31', val=20),
+                  dict(facts[0], end='2023-06-29', val=90)])
+    html = declaration(focus).replace('name="dei:DocumentPeriodEndDate"',
+        'name="dei:DocumentPeriodEndDate" format="ixt:date-monthname-day-year-en"').replace(
+            '2024-06-29', 'June&nbsp;29, 2024')
+    data.append(html.encode())
+    summary, path, calls = execute(tmp_path, monkeypatch, data, selectors=['--fiscal-quarter', quarter])
+    assert (summary['status'], summary['exit_code']) == ('complete', 0)
+    assert summary['mode'] == 'retrospective'
+    assert summary['effective_cutoff'] == datetime.now(timezone.utc).date().isoformat()
+    assert summary['resolution']['period_end'] == '2024-06-29'
+    rows = read(path, 'eligible-facts.json')
+    assert [row['val'] for row in rows] == [100, 20]
+    assert [row['start'] for row in rows] == ['2023-10-01', '2024-03-31']
+    manifest = read(path, 'manifest.json')
+    assert manifest['resolution'] == summary['resolution']
+    source = manifest['sources'][-1]
+    assert source['path'].endswith('.html')
+    assert (path / source['path']).read_bytes() == html.encode()
+    assert 'test@example.org' not in json.dumps(manifest)
+    assert len(calls) == 4
+
+
+@pytest.mark.parametrize('mode', ['future', 'contradictory', 'source_failure'])
+def test_quarter_unresolved(tmp_path, monkeypatch, mode):
+    from test_fiscal_quarter import declaration, evidence
+    data = payloads()
+    sample = evidence()
+    data[1]['filings']['recent'] = {k: [v] for k, v in sample['filings'][0].items()}
+    data[2]['facts'] = sample['facts']['facts']
+    html = declaration(end='2024-06-30' if mode == 'contradictory' else '2024-06-29')
+    data.append(b'bad html' if mode == 'source_failure' else html.encode())
+    summary, path, calls = execute(tmp_path, monkeypatch, data,
+        selectors=['--fiscal-quarter', '2024Q3', '--as-of', '2024-08-01' if mode == 'future' else '2024-12-31'])
+    assert (summary['status'], summary['exit_code']) == ('failed', 1)
+    assert summary['mode'] == 'historical'
+    assert any(e['code'] == 'FISCAL_PERIOD_UNRESOLVED' for e in summary['errors'])
+    assert not (path / 'eligible-facts.json').exists() and not (path / 'completion.json').exists()
+    assert (path / 'raw/companyfacts.json').exists()
+    assert len(calls) == (3 if mode == 'future' else 4)
+
+
+@pytest.mark.parametrize('selectors', [
+    ['--fiscal-quarter', '2024Q5'], ['--fiscal-quarter', '2024Q3', '--period-start', '2024-01-01'],
+    ['--period-start', '2024-01-01', '--period-end', '2024-12-31'],
+])
+def test_quarter_invalid_selectors(tmp_path, monkeypatch, selectors):
+    summary, path, calls = execute(tmp_path, monkeypatch, selectors=selectors)
+    assert summary['exit_code'] == 64 and calls == [] and path is None
