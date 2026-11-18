@@ -104,20 +104,24 @@ def read_terminal(stream):
 def _read_terminal_line(fd):
     deadline = time.monotonic() + TERMINAL_TIMEOUT
     payload = bytearray()
-    while len(payload) <= MAX_PROFILE:
+    while True:
         remaining = deadline - time.monotonic()
         if remaining <= 0 or not select.select([fd], [], [], remaining)[0]:
             raise OSError()
-        chunk = os.read(fd, min(1024, MAX_PROFILE + 1 - len(payload)))
+        chunk = os.read(fd, 1024)
         if not chunk or any(cancel in chunk for cancel in (b'\x03', b'\x04', b'\x1a')):
             raise OSError()
         line, newline, trailing = chunk.partition(b'\n')
-        payload.extend(line)
+        if payload is not None:
+            if len(payload) + len(line) <= MAX_PROFILE:
+                payload.extend(line)
+            else:
+                # Discard this frame through its newline with echo still off.
+                payload = None
         if newline:
-            if trailing:
+            if payload is None or trailing:
                 raise ValueError(INVALID)
             return bytes(payload)
-    raise ValueError(INVALID)
 
 
 @contextmanager

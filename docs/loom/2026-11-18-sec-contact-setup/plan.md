@@ -27,6 +27,11 @@ charter: 1.1
 - Test: Verify that the setup process confirms echo is off before signalling readiness, receives a separate input payload without echo, and retains no invalid or incomplete profile. Exercise cancellation/timeout and preserve ordinary piped input.
 - Risk: Agent-decided handle the terminal inside the existing setup entry point. Continue to exclude shell literals, environment values, and echoed input. The host may retain the distinct tool input. See [the Codex CLI experiment](research/01-codex-contact-input.md).
 
+**W1-05 Retain the fragmented oversized terminal regression** after: W1-04 acceptance: 3
+- Files: obsidian-finance/skills/sec-data/scripts/sec_contact.py, obsidian-finance/tests/test_oversized_terminal_contact_echo.py
+- Test: The separately delivered tail of an oversized line stays hidden through the newline, and the prior profile remains intact.
+- Risk: Agent-decided discard overflow until the line ends while retaining the existing read deadline. Keep the independent regression in normal package discovery.
+
 ## Risks
 
 The profile location is outside the workspace. Test with an isolated effective user home and distinguish filesystem denial from SEC rejection. No real contact or live SEC request is needed for offline tests. Predecessor attestations are retained in the stacked branch.
