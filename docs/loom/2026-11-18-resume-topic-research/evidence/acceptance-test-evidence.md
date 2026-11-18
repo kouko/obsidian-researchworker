@@ -1,6 +1,6 @@
 # Resume topic research — acceptance test evidence
 
-Tried on 2026-11-19, in a clean worktree at 344d299e05d2d2a104a43b428bbefd68bb62d954. The latest re-run below records fresh native Codex sessions using the installed plugin, independent byte and link comparisons, and focused helper tests.
+Tried on 2026-11-19, in a clean worktree at 397de9264f7e3136b2db45ef908f03141e97b30c. The latest re-run below records fresh native Codex sessions using the installed plugin, independent byte and link comparisons, and focused helper tests.
 
 Earlier run on 2026-11-18 at 95e1737. The acceptance agent read the shipped source skill and executed its written procedure with a disposable vault and synthetic publisher CSV. A temporary Python driver built fixtures, applied the manually chosen edits, and checked links and file bytes. The driver is test instrumentation. Native model routing was untested in this earlier run.
 
@@ -185,3 +185,26 @@ The focused checks cover the skill inventory, interruption, process contention, 
 - **13 — re-tested.** Focused checks verified interruption and recovery after a staged write and partway through a multi-file update. Unplanned edits were preserved when the helper stopped. The manual driver left active notes unchanged when the earlier judgment could not be established.
 - **14 — re-tested.** The manual driver read the corrected source and verified a zero-diff snapshot for the summary-only case.
 - **15 — carried over.** The fix changes the handling of historical links by adding exact archives before relinking. The specification defines no irreversible action.
+
+## Re-run on 2026-11-19 at 397de9264f7e3136b2db45ef908f03141e97b30c
+
+Repeated the local-source setup described by the root README and plugin guide in a fresh, isolated Codex profile. The transcripts and before snapshots are in `/tmp/obsidian-resume-native-1119-r3`. The sessions ran in separate fixture directories outside the worktree. The installed skill and transaction helper at `/tmp/obsidian-resume-profile-1119-r3/plugins/cache/obsidian-researchworker/obsidian/4.2.0` byte-matched the worktree. The write cases both read that installed skill and invoked that helper. In the explicit-folder case the first inspection repeated the vault path segment, failed with a missing directory, and was retried with the folder relative to the vault.
+
+```text
+PATH=/Users/kouko/.conda/envs/dbt-redshift/bin:$PATH pytest -q -p no:cacheprovider obsidian/tests/test_skill_inventory.py obsidian/tests/test_research_transaction.py docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py
+24 passed in 1.38s
+/Users/kouko/.conda/envs/dbt-redshift/bin/python /tmp/obsidian-resume-acceptance-manual.py obsidian/skills/obsidian-research-resume/scripts/research_transaction.py
+exit 0
+```
+
+The automated package check `python3 -m pytest obsidian/tests -q -p no:cacheprovider` runs before acceptance and blocks it on failure.
+
+- **1 — re-tested.** Both native write turns completed. Each recovered R01, the November research question and the unresolved December schedule, and matched the correction to Riverside branch, 2026-11-01 through 2026-11-30, and the scheduled days-per-week measure. The manual CSV fixture also checked branch, week, unit and field.
+- **2 — re-tested.** Both entries link to R02. Both records identify the corrected schedule as the reason for changing seven days to six and link to both dependent notes. The visits note gives Monday through Saturday for planning. The weekend note records the different Saturday and Sunday schedules.
+- **3 — re-tested.** Both archives at `history/2026-11-03-R01-original.md` are byte-identical to the before snapshots, SHA-256 `afb90717f7fbc769b8f2e45f502e8ee55fa8a9c98efb3f7816c05849bc5b5240`. In each case the old report at its original location changed only its judgment link. That link resolves to a byte-identical prior judgment that links to the unchanged initial source note and raw file. Each replacement raw file matches its input. All Markdown relative links resolved in both fixture trees, 23 in the named case and 24 in the explicit case.
+- **4 — re-tested.** The manual case qualified the existing visits note, kept the judgment, and established that the mismatched West branch observation warranted no update or new follow-up. Its exact replay changed no paths or bytes. A fresh installed turn inspected the named fixture, recognized that R02 used the exact same correction bytes, and completed without applying a plan. Independent `diff -qr replay-before correction/vault/research` returned exit 0 with no difference across 12 files.
+- **5–6 — re-tested.** Named and explicit-folder turns took the respective paths. The default named folder in the explicit run matched its before snapshot recursively. Both entry-to-round-to-dependent chains resolved.
+- **7–10 — re-tested.** See #3 and #4. The manual driver created the initially absent raw-source folder and retained an exact original. Both installed cases reused active filenames and named the R02 record with the round date 2026-11-19 and round ID, with evidence cutoff 2026-11-17 recorded separately. The manual driver detected the deliberately missing historical raw input and wrote no substitute.
+- **11–13 — re-tested.** The ambiguity turn completed after asking which of the two matching folders to use. Both matched the before snapshot. The focused subprocess tests covered interrupted staging and partial-write recovery, busy writers, unsafe paths, aliasing, cross-filesystem rejection using simulated device IDs, and intervening edits. The new test ran both `inspect` and `apply` against an empty staging directory without its ownership marker. The helper exited with `unrecognized staging contents` and preserved the empty directory and its parent contents. A direct installed-helper inspection likewise exited 1 and the staging directory still existed. The manual driver also found the fixture without a resumed round and preserved active files when the prior judgment was unavailable.
+- **14 — carried over.** Summary-only does not invoke write or recovery. This fix only changes staging ownership and uses the existing write function directly. The manual driver again reported zero diff as a cross-check.
+- **15 — carried over.** The specification defines no irreversible action. The fix stops and preserves the staging directory when it cannot establish ownership.

@@ -15,9 +15,9 @@ charter: 1.1
 ### Wave 2
 
 **W2-01 Serialize research writes and recovery** after: W1-01 acceptance: 1, 3, 4
-- Files: obsidian/skills/obsidian-research-resume/SKILL.md, obsidian/skills/obsidian-research-resume/scripts/research_transaction.py (CLI entry: main), obsidian/tests/test_research_transaction.py
+- Files: obsidian/skills/obsidian-research-resume/SKILL.md, obsidian/skills/obsidian-research-resume/scripts/research_transaction.py, obsidian/tests/test_research_transaction.py
 - Test: A1 positive: locked-inspection; negative: escaped-path. A3 positive: interrupted-recovery; boundary: concurrent-writer. A4 positive: first-apply; negative: stale-or-replay.
-- Risk: agent-decided — A process-held directory lock protects REQ-3 during recovery and writes. A prose-only instruction cannot enforce ownership. The helper handles files while the skill decides which evidence changes a judgment.
+- Risk: agent-decided — A process-held directory lock protects REQ-3 during recovery and writes. A prose-only instruction cannot enforce ownership. The helper CLI enters through `research_transaction.py:main` and handles files while the skill decides which evidence changes a judgment.
 
 ## Simplicity check
 
