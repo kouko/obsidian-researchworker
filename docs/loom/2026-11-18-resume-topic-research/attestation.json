@@ -1,0 +1,70 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-18-resume-topic-research",
+  "content_digest": "cfcc9ccae98a622fad328c554d7dc9964fb18997",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py",
+      "result": "pass",
+      "command_digest": "b290ef2c0b6c4996778e89ffab3f39747a0d3decdc3947cb852e775add14fb65"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "resume_close_one",
+      "vendor": "openai",
+      "model": "gpt-6.2-sol",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "resume_close_two",
+      "vendor": "openai",
+      "model": "gpt-6.2-sol",
+      "lens": "code",
+      "verdict": "PASS_WITH_NOTES",
+      "findings": [
+        {
+          "severity": "important",
+          "dimension": "correctness",
+          "anchor": "obsidian/skills/obsidian-research-resume/SKILL.md:126",
+          "text": "issue (non-blocking): The lock serializes helper sessions. An ordinary editor can still write between the final byte comparison and replacement.",
+          "fix": "Document that users should pause edits to the research folder during apply and recovery."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "ab7b05a",
+  "tested_commit": "5bcc33858ee253d7f7219b450825d5969ce3f26e",
+  "reviewed_commit": "593cfdf13b8ef2de194484ece7f2bc6a18fecc5b",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
