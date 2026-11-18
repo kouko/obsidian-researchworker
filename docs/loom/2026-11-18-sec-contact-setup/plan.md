@@ -22,6 +22,11 @@ charter: 1.1
 - Test: Both independent probes failed before the fix and pass after it. Move them into normal package discovery with their assertions intact.
 - Risk: Agent-decided retain both confirmed regressions in the package suite.
 
+**W1-04 Support separate non-echoing input in the Codex CLI** after: W1-01 acceptance: 1,2,3,4
+- Files: obsidian-finance/skills/sec-data/scripts/acquire.py, obsidian-finance/skills/sec-data/scripts/sec_contact.py, obsidian-finance/skills/sec-data/SKILL.md, obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/tests/test_acquire.py
+- Test: Verify that the setup process confirms echo is off before signalling readiness, receives a separate input payload without echo, and retains no invalid or incomplete profile. Exercise cancellation/timeout and preserve ordinary piped input.
+- Risk: Agent-decided handle the terminal inside the existing setup entry point. Continue to exclude shell literals, environment values, and echoed input. The host may retain the distinct tool input.
+
 ## Risks
 
 The profile location is outside the workspace. Test with an isolated effective user home and distinguish filesystem denial from SEC rejection. No real contact or live SEC request is needed for offline tests. Predecessor attestations are retained in the stacked branch.
