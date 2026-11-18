@@ -316,3 +316,80 @@ evidence while excluding the unusable observation.
 - No global installation, fresh host, private configuration, actual vault, source-project modification or publication occurred.
 - Report-only metadata update is routine: no new engineering decision or memory trailer. The composed commit message has no ambiguous private-party text; deterministic privacy scan is required before commit.
 
+## Re-run on 2026-11-19, at ead19a88ee785094d421aa66ae1d507035873591
+
+A fresh local clone was detached at the tested revision. The trial merge at
+`dca2215` changed general-note content and shared distribution metadata.
+The finance subtree is identical to the previously accepted baseline
+`08f65d9`, and the general-note subtree is identical to upstream `5d4a0dc`.
+Both comparisons returned exit 0 with no output:
+
+```sh
+git diff --exit-code 08f65d9 HEAD -- obsidian-finance
+git diff --exit-code 5d4a0dc HEAD -- obsidian
+```
+
+### Setup, registration, and independent use (1, UI-1)
+
+Read the root and finance READMEs, then used the existing Python interpreter
+in a cleared environment and an empty temporary profile. No live network,
+install, credentials, private vault, or original Monkey Skills checkout was
+used. Only `obsidian-finance` was copied into the test directory.
+
+```sh
+env -i PATH=/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile /private/tmp/finance-validation-env/bin/python -B obsidian-finance/skills/sec-data/scripts/acquire.py --ticker AAPL --fiscal-quarter 2024Q3 --output-dir "$PWD/sec-output"
+```
+
+The command returned exit 64, `SEC_IDENTITY_REQUIRED`, and
+`"run_path": null`. No output directory was created. Ran five separate
+offline checks from the same finance-only copy:
+
+```sh
+env -i PATH=/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile /private/tmp/finance-validation-env/bin/python -B -m pytest obsidian-finance/tests/test_acquire.py::test_traceable_package obsidian-finance/tests/test_acquire.py::test_quarter_package obsidian-finance/tests/test_sec_client.py::test_independent_import obsidian-finance/tests/test_sec_client.py::test_no_original_runtime -q -p no:cacheprovider
+```
+
+`5 passed in 1.41s`. Named checks exercised isolated imports and the
+complete data path with injected offline sources for both date-range and
+fiscal-quarter selectors. Parsed `.claude-plugin/marketplace.json` and
+compared each entry's local source, name, and version with its Claude and
+Codex manifests. Entries were `obsidian ./obsidian 4.2.0` and
+`obsidian-finance ./obsidian-finance 0.1.0`. Rows 1 and UI-1 remain partly
+verified because a new host did not install, select, or invoke finance.
+
+### Provenance and preserving the general-note package (6)
+
+The identical finance subtree retains `PROVENANCE.md` and the MIT license,
+including the source and its original commit. The matching general-note
+subtree above confirms that the finance merge did not alter main's general
+package. With the same empty profile, checked the shipped skill inventory
+and simulated OpenCode loading and slash command registration:
+
+```sh
+env -i PATH=/opt/homebrew/bin:/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile PYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python -m pytest obsidian/tests/test_skill_inventory.py obsidian/tests/test_opencode_loader.py -q -p no:cacheprovider
+```
+
+`5 passed in 0.19s`. The finance package ships no OpenCode loader. The
+finance README and root README identify fresh host installation/invocation
+and live SEC access as unverified.
+
+At the trial merge `dca2215`, the optional finance paragraph at
+`README.md:40` named general-note version 4.1.0 while the marketplace and
+both manifests named 4.2.0. The tested follow-up changes only that root
+README version line. The check on the clean follow-up asserted that the
+version on the line beginning “the existing general-note package remains”
+matches the marketplace and both manifests. It returned
+“the existing general-note package remains 4.2.0.”
+
+### Carried-over evidence and remaining verification
+
+Rows 2–5, UI-2 through UI-17, and Q-1 through Q-6 retain their preceding
+verdicts and limitations. The merge did not change the finance package,
+its acquisition workflows, its spec, or its test fixtures. Historical
+real-source replay and the earlier one-off network result are kept above;
+no current live operator-identity or installed-host result is inferred.
+The independent witness ran criterion-specific checks only. The closing
+station owns the complete package check:
+`python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+No workflow steps were skipped on instruction. No important finding was
+dismissed.
+
