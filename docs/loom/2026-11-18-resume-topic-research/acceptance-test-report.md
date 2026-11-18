@@ -1,8 +1,10 @@
 # 跨對話續作主題研究驗收
 
-Tried on 2026-11-19, in a clean copy of the project at 397de9264f7e3136b2db45ef908f03141e97b30c.
+Tried on 2026-11-19, in a clean copy of the project at de0472aa1e65b3d6cb2d6be44f034bd6f66b3fb7.
 
 本次用安裝在隔離環境的 Codex 外掛進行續作，並比對更新前後的檔案。操作與結果見 `docs/loom/2026-11-18-resume-topic-research/evidence/acceptance-test-evidence.md`。
+
+最終提交重驗了按名稱續作、指定資料夾優先、目標不明與重送原證據的情境。兩次更新都保留了與原檔完全相同的舊報告副本，原位置的舊報告可開啟當時的判斷和來源。兩種更新各有 25 與 22 個筆記連結，逐一確認均可開啟。指定資料夾時，預設資料夾的檔案全數相同。目標不明時，Codex 先詢問，兩個候選資料夾的檔案也全數相同。重送更正前後，12 份檔案逐一相同。
 
 ## 逐項驗收
 
