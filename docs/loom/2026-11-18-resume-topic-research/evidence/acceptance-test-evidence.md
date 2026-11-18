@@ -1,6 +1,6 @@
 # Resume topic research — acceptance test evidence
 
-Tried on 2026-11-18, in a clean worktree at 5bcc33858ee253d7f7219b450825d5969ce3f26e. The final re-run below records direct execution of the current helper and simulated cross-filesystem preflight. The most recent native Codex workspace run is at b863b6f, and isolated installed-file comparisons are at d82cc6e.
+Tried on 2026-11-19, in a clean worktree at 344d299e05d2d2a104a43b428bbefd68bb62d954. The latest re-run below records fresh native Codex sessions using the installed plugin, independent byte and link comparisons, and focused helper tests.
 
 Earlier run on 2026-11-18 at 95e1737. The acceptance agent read the shipped source skill and executed its written procedure with a disposable vault and synthetic publisher CSV. A temporary Python driver built fixtures, applied the manually chosen edits, and checked links and file bytes. The driver is test instrumentation. Native model routing was untested in this earlier run.
 
@@ -150,3 +150,38 @@ The direct fixture `python3 /tmp/obsidian-resume-acceptance-manual.py obsidian/s
 - **14–15 — carried over.** The change limits where planned writes may occur. The summary requires no write, and the specification defines no irreversible action.
 
 There was no native session at 5bcc338. Native correction ran at b863b6f using the workspace skill. Native replay and isolated install-file parity remain at d82cc6e. The latest installed plugin has yet to be exercised in a fresh session.
+
+## Installed-plugin trial on 2026-11-19 at 7336cd1
+
+Fresh native Codex sessions ran the installed copy with disposable local fixtures. See `/tmp/obsidian-resume-native-1119/{correction,precedence,ambiguity,replay}.jsonl`. The named-topic correction and the explicit-folder correction both pinned R01's judgment link. Independent comparison against each before snapshot found the source note, initial source bytes and historical judgment intact. Each relinked report differed from its baseline in the judgment link destination. Neither output contained the original report bytes under a distinct archive path. Acceptance #3 therefore missed exact report file preservation. The trial prompted the archive-before-relink instructions in 344d299.
+
+## Re-run on 2026-11-19 at 344d299e05d2d2a104a43b428bbefd68bb62d954
+
+Setup followed the root README and migration guide's local-source, isolated Codex installation with a fixture vault. The fresh sessions ran from disposable fixture directories outside the project checkout. Their transcripts show Codex reading `SKILL.md` and invoking `scripts/research_transaction.py` from `/tmp/obsidian-resume-profile-1119-r2/plugins/cache/obsidian-researchworker/obsidian/4.2.0`. Both cache files matched the clean checkout via `cmp`. The trial used no real vault. The native transcripts and before trees are in `/tmp/obsidian-resume-native-1119-r2`. For both write cases, the first inspection passed a fixture-relative folder already containing the vault segment, then the session retried with the folder relative to the vault and proceeded.
+
+Focused checks on the current worktree:
+
+```text
+PATH=/Users/kouko/.conda/envs/dbt-redshift/bin:$PATH pytest -q -p no:cacheprovider obsidian/tests/test_skill_inventory.py obsidian/tests/test_research_transaction.py docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py
+22 passed in 1.30s
+/Users/kouko/.conda/envs/dbt-redshift/bin/python /tmp/obsidian-resume-acceptance-manual.py obsidian/skills/obsidian-research-resume/scripts/research_transaction.py
+exit 0
+```
+
+The focused checks cover the skill inventory, interruption, process contention, rejected paths and aliases, simulated device IDs, no-op and stale plans, and edits or file creation between validation and writing. The manual driver exercises the shipped helper with human interpretation of scope, qualifications and missing evidence. The package check `python3 -m pytest obsidian/tests -q -p no:cacheprovider` runs before acceptance and blocks it on failure.
+
+- **1 — re-tested.** Both successful write sessions read the saved question, R01 and the December follow-up. They matched the correction to Riverside branch, 2026-11-01 through 2026-11-30, in scheduled days per week. The manual CSV fixture independently identified branch, week, unit and `scheduled_open_days`.
+- **2 — re-tested.** Both sessions changed the scheduled days from seven to six. The shared judgment credits the corrected schedule for the same branch and period. The visits note lists the days available for planning; the weekend note records Saturday open and Sunday closed. The entry links to R02, which names the changes and links both notes. The manual fixture independently updated both dependents with distinct effects.
+- **3 — re-tested.** Independent verification compared each original R01 to the new `history/2026-11-03-R01-original.md`. Both pairs were byte-identical with SHA-256 `afb90717f7fbc769b8f2e45f502e8ee55fa8a9c98efb3f7816c05849bc5b5240`. The re-linked R01 was exactly the original bytes with only the judgment destination substituted. That link opened a byte-identical copy of the earlier judgment, whose link opened the unchanged initial source note and original raw file. Both retained corrections matched their input bytes. All 24 local links in the named case and 23 in the explicit case resolved.
+- **4 — re-tested.** The manual driver qualified only the existing visit note with the distinction between scheduled and observed days and left the saved judgment unchanged. The mismatched West branch record raised no new East follow-up and left the file snapshot unchanged. The direct helper replay changed no paths or contents. A separate installed session replayed the correction in the named fixture, recognized R02 and confirmed the retained correction matched the input. `replay.jsonl` ended in `turn.completed`. Independent `diff -qr replay-before correction/vault/research` found no differences across 12 files.
+- **5 — re-tested.** The named run wrote under `vault/research/市立圖書館`. The dual-target run wrote under `vault/research/指定資料夾`, as specified. A recursive comparison against `precedence-before/市立圖書館` returned no difference.
+- **6 — re-tested.** Both entry-to-round-to-dependent chains opened as in #2.
+- **7 — re-tested.** The manual driver verified qualification, insufficient evidence, and exact replay as in #4.
+- **8 — re-tested.** The local CSV fixture began without `sources/raw/` in the explicit folder. The helper created it, wrote exact source bytes, and linked them from the source note. The two native re-link trials also retained the new announcement and kept the initial announcement and original file byte-identical. The installed replay reused the retained file.
+- **9 — re-tested.** Both native cases reused active filenames, and both R02 filenames used a round date and ID. Both records state evidence cutoff 2026-11-17 separately. The named session used 2026-11-19 and the explicit session used 2026-11-18, which were the same execution window's Asia/Taipei and UTC dates respectively. The fixture has no timezone convention and the specification does not choose a timezone. The dates do not affect the two byte comparisons in #3.
+- **10 — re-tested.** Traversal and exact file verification are in #3. The manual driver also followed the earlier report to a deliberately missing original and left the folder unchanged, with no substitute.
+- **11 — re-tested.** The ambiguity session identified both matching topics and asked which to update. Its transcript completed and a recursive comparison against `ambiguity-before` returned no difference. The focused test interrupted the writer after the judgment changed, recovered from the persisted plan and cleared the temporary record.
+- **12 — re-tested.** Focused subprocess tests rejected unsafe paths, duplicate destinations and simulated cross-filesystem writes without modifying the file snapshot. The manual driver found the empty folder had no resumable entry.
+- **13 — re-tested.** Focused checks verified interruption and recovery after a staged write and partway through a multi-file update. Unplanned edits were preserved when the helper stopped. The manual driver left active notes unchanged when the earlier judgment could not be established.
+- **14 — re-tested.** The manual driver read the corrected source and verified a zero-diff snapshot for the summary-only case.
+- **15 — carried over.** The fix changes the handling of historical links by adding exact archives before relinking. The specification defines no irreversible action.
