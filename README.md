@@ -1,7 +1,9 @@
 # Obsidian ResearchWorker
 
-Fourteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
-work. Version 4.1.0 adds personalized shared vault instructions and safe setup
+Fifteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
+work. Version 4.2.0 provides local vault search from any project through
+`obsidian-knowledge` and its bundled read-only shell script.
+Version 4.1.0 adds personalized shared vault instructions and safe setup
 re-entry. Version 4.0.0 removed the eight wiki skills and daily-news-digest;
 ordinary daily notes, topic research, Defuddle extraction and wikilinks remain.
 Extracted from Monkey Skills Obsidian 3.27.0; this version is not host-validated.
@@ -16,7 +18,8 @@ global settings or active sessions, and does not establish fresh host loading.
 
 The local marketplace is `.claude-plugin/marketplace.json`; its `obsidian` entry
 resolves to `./obsidian`. Claude and Codex manifests live in that directory.
-The OpenCode package and loader ID are `obsidian-researchworker`.
+The OpenCode package and loader ID are `obsidian`; its skills can also be
+invoked as slash commands such as `/obsidian:using-obsidian`.
 These are distribution metadata, not evidence of successful installation.
 The [verification record](docs/verification.md) documents successful isolated
 Codex local-source installation at its recorded revision; real skill execution
@@ -42,7 +45,7 @@ live SEC access are unverified. No finance OpenCode loader is shipped.
 
 ## Existing checks
 
-With Python and pytest already available, run from the repository root:
+With Python, pytest and Node.js already available, run from the repository root:
 
 ```sh
 python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider
