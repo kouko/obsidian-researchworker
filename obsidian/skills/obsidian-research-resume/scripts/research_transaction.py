@@ -201,7 +201,19 @@ def check_targets(folder, names, writes):
             raise TransactionError(f"required local target is missing: {name}")
 
 
+def check_write_devices(folder, writes):
+    device = folder.stat().st_dev
+    for path in writes:
+        parent = path.parent
+        while not parent.exists():
+            parent = parent.parent
+        if parent.stat().st_dev != device:
+            name = path.relative_to(folder)
+            raise TransactionError(f"write destination is on a different filesystem: {name}")
+
+
 def finish(folder, writes, targets):
+    check_write_devices(folder, writes)
     check_targets(folder, targets, writes)
     for path, (before, after) in writes.items():
         if file_content(path) not in (before, after):
@@ -283,6 +295,7 @@ def apply(folder, plan):
               if before != after}
     if not writes:
         return []
+    check_write_devices(folder, writes)
     paths = [path.relative_to(folder).as_posix() for path in writes]
     record = {
         "snapshot": plan["snapshot"],

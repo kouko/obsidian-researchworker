@@ -264,3 +264,32 @@ def test_unrecognized_staging_files_are_not_removed(folder):
     result = invoke(folder, "inspect")
     assert result.returncode != 0 and "unrecognized staging" in result.stderr
     assert contents(folder) == before
+
+
+@pytest.mark.parametrize("destination", ["mounted/dependent.md", "mounted/new/dependent.md"])
+def test_cross_device_plan_rejected_before_writes(folder, destination):
+    (folder / "mounted").mkdir()
+    plan = prepare(folder, **{"judgment.md": "six", destination: "six"})
+    before = contents(folder)
+    script = (
+        "import os, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = Path.stat\n"
+        "def mounted_stat(path, *args, **kwargs):\n"
+        "    result = original(path, *args, **kwargs)\n"
+        "    if path.name == 'mounted':\n"
+        "        fields = list(result)\n"
+        "        fields[2] = result.st_dev + 1\n"
+        "        return os.stat_result(fields)\n"
+        "    return result\n"
+        "Path.stat = mounted_stat\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "apply", str(folder.parent), str(folder)],
+        input=json.dumps(plan), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode != 0 and "different filesystem" in result.stderr
+    assert contents(folder) == before
+    assert not (folder / ".resume-staging").exists()

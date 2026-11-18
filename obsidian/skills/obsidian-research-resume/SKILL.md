@@ -95,7 +95,9 @@ items, or date-only edits.
 
 Use the bundled [transaction helper](scripts/research_transaction.py) for all
 resume writes and recovery. It requires Python 3.10+ and an operating-system
-lock on the local research folder. If the helper reports a busy folder,
+lock on the local research folder. Write destinations must be on the same
+filesystem as that folder. A cross-filesystem write plan is rejected before
+saving the recovery record or updating notes. If the helper reports a busy folder,
 unsupported locking, an unsafe path, or a failed check, leave the folder
 untouched. Keep the helper's recovery record if it reports a blocked recovery.
 
