@@ -54,7 +54,7 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
         raise ValueError('INVALID_INPUT: fiscal quarter must be YYYYQq')
     try:
         cutoff = date.fromisoformat(as_of)
-        if cutoff > date.today():
+        if cutoff > datetime.now(timezone.utc).date():
             raise ValueError()
     except (ValueError, TypeError):
         raise ValueError('INVALID_INPUT: as_of must be a non-future ISO date') from None

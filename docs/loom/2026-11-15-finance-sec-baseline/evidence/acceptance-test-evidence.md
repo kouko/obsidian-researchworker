@@ -316,3 +316,163 @@ evidence while excluding the unusable observation.
 - No global installation, fresh host, private configuration, actual vault, source-project modification or publication occurred.
 - Report-only metadata update is routine: no new engineering decision or memory trailer. The composed commit message has no ambiguous private-party text; deterministic privacy scan is required before commit.
 
+## Re-run on 2026-11-19, at ead19a88ee785094d421aa66ae1d507035873591
+
+A fresh local clone was detached at the tested revision. The trial merge at
+`dca2215` changed general-note content and shared distribution metadata.
+The finance subtree is identical to the previously accepted baseline
+`08f65d9`, and the general-note subtree is identical to upstream `5d4a0dc`.
+Both comparisons returned exit 0 with no output:
+
+```sh
+git diff --exit-code 08f65d9 HEAD -- obsidian-finance
+git diff --exit-code 5d4a0dc HEAD -- obsidian
+```
+
+### Setup, registration, and independent use (1, UI-1)
+
+Read the root and finance READMEs, then used the existing Python interpreter
+in a cleared environment and an empty temporary profile. No live network,
+install, credentials, private vault, or original Monkey Skills checkout was
+used. Only `obsidian-finance` was copied into the test directory.
+
+```sh
+env -i PATH=/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile /private/tmp/finance-validation-env/bin/python -B obsidian-finance/skills/sec-data/scripts/acquire.py --ticker AAPL --fiscal-quarter 2024Q3 --output-dir "$PWD/sec-output"
+```
+
+The command returned exit 64, `SEC_IDENTITY_REQUIRED`, and
+`"run_path": null`. No output directory was created. Ran five separate
+offline checks from the same finance-only copy:
+
+```sh
+env -i PATH=/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile /private/tmp/finance-validation-env/bin/python -B -m pytest obsidian-finance/tests/test_acquire.py::test_traceable_package obsidian-finance/tests/test_acquire.py::test_quarter_package obsidian-finance/tests/test_sec_client.py::test_independent_import obsidian-finance/tests/test_sec_client.py::test_no_original_runtime -q -p no:cacheprovider
+```
+
+`5 passed in 1.41s`. Named checks exercised isolated imports and the
+complete data path with injected offline sources for both date-range and
+fiscal-quarter selectors. Parsed `.claude-plugin/marketplace.json` and
+compared each entry's local source, name, and version with its Claude and
+Codex manifests. Entries were `obsidian ./obsidian 4.2.0` and
+`obsidian-finance ./obsidian-finance 0.1.0`. Rows 1 and UI-1 remain partly
+verified because a new host did not install, select, or invoke finance.
+
+### Provenance and preserving the general-note package (6)
+
+The identical finance subtree retains `PROVENANCE.md` and the MIT license,
+including the source and its original commit. The matching general-note
+subtree above confirms that the finance merge did not alter main's general
+package. With the same empty profile, checked the shipped skill inventory
+and simulated OpenCode loading and slash command registration:
+
+```sh
+env -i PATH=/opt/homebrew/bin:/usr/bin:/bin HOME=/private/tmp/finance-sync-final.dpWKvS/empty-profile PYTHONDONTWRITEBYTECODE=1 /private/tmp/finance-validation-env/bin/python -m pytest obsidian/tests/test_skill_inventory.py obsidian/tests/test_opencode_loader.py -q -p no:cacheprovider
+```
+
+`5 passed in 0.19s`. The finance package ships no OpenCode loader. The
+finance README and root README identify fresh host installation/invocation
+and live SEC access as unverified.
+
+At the trial merge `dca2215`, the optional finance paragraph at
+`README.md:40` named general-note version 4.1.0 while the marketplace and
+both manifests named 4.2.0. The tested follow-up changes only that root
+README version line. The check on the clean follow-up asserted that the
+version on the line beginning “the existing general-note package remains”
+matches the marketplace and both manifests. It returned
+“the existing general-note package remains 4.2.0.”
+
+### Carried-over evidence and remaining verification
+
+Rows 2–5, UI-2 through UI-17, and Q-1 through Q-6 retain their preceding
+verdicts and limitations. The merge did not change the finance package,
+its acquisition workflows, its spec, or its test fixtures. Historical
+real-source replay and the earlier one-off network result are kept above;
+no current live operator-identity or installed-host result is inferred.
+The independent witness ran criterion-specific checks only. The closing
+station owns the complete package check:
+`python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+No workflow steps were skipped on instruction. No important finding was
+dismissed.
+
+## Re-run on 2026-11-19, at 3708e644ec106d91380a5436e2618f5097809a8f
+
+A fresh local clone at this exact revision was exercised with an empty profile
+and no network or operator identity. Review of the preceding revision
+(`ead19a8`) found that an explicitly empty quarter cutoff selected
+retrospective mode, and the source client could reject a cutoff valid in UTC
+when its local calendar date lagged UTC. This revision distinguishes omission
+from an explicit value and uses UTC consistently. The shared registration,
+general-note subtree, license, attribution and host information were not
+changed by the cutoff fix.
+
+### Setup and focused acquisition checks
+
+From the clean checkout at `/private/tmp/finance-sync-cutoff.WX4oYw/repo`,
+the documented AAPL quarter command without identity returned exit 64,
+`SEC_IDENTITY_REQUIRED`, and did not create the destination. With
+`--as-of ''` it returned exit 64, `INVALID_INPUT`, `"run_path": null`
+and no destination. Separate direct invocations rejected future cutoffs
+in both selectors, an impossible calendar date, and a malformed ticker, all
+with exit 64 and no destination. The focused tests were run as follows:
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_quarter_publication.py obsidian-finance/tests/test_fiscal_quarter.py -q -p no:cacheprovider
+```
+
+`52 passed in 13.83s`. The explicit-empty-cutoff case in
+`test_quarter_invalid_selectors` used a valid offline-only identity, asserted
+zero fetch calls and checked that the destination was never created.
+`test_cutoff_today_uses_utc_even_when_local_day_is_earlier` supplied the
+current UTC cutoff while making the client's local date one day earlier.
+It checked the cutoff, three injected fetches, exit 0 and a completion marker.
+The focused acquisition cases also covered backwards date ranges, an
+unavailable destination, unresolved quarter evidence and preserved annual
+and year-to-date observations.
+
+### Real saved Apple source replay and failures
+
+Reused the earlier independent witness scripts with their import roots
+pointing at this clean checkout and writes directed to new temporary
+directories. Fetch was restricted to saved public bytes or synthetic
+responses. The Apple command captured stdout and stderr separately:
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B ../witness.py > ../apple-replay.out 2> ../apple-replay.err
+```
+
+| Request | Status / exit | Effective cutoff | Fetch calls | Completion |
+|---|---|---|---:|---|
+| Historical quarter | complete / 0 | 2024-08-15 | 5 | present |
+| Retrospective quarter | complete / 0 | 2026-11-18 UTC | 5 | present |
+| Pre-filing quarter | failed / 1 | 2024-08-01 | 4 | absent |
+| Historical date range | complete / 0 | 2024-08-15 | 4 | present |
+| Repeated historical quarter | complete / 0 | 2024-08-15 | 5 | present |
+
+The fixed Apple quarter again resolved to June 29, 2024. The replay checked
+official filing-date eligibility, raw source hashes, retained periods, a
+separate repeat run, and an unchanged earlier manifest and research sentinel.
+Progress printed to stderr. The retrospective date observed is the UTC date
+while the local date was already November 19. This was offline replay,
+with no new connection to SEC.
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile TMPDIR=/private/tmp/finance-sync-cutoff.WX4oYw PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B ../error-witness.py > ../error-replay.out
+```
+
+Historical-quarter offline cases returned partial / 2 for an invalid archive,
+empty / 3 for no usable observation, failed / 1 for unknown issuer, source
+identity mismatch, malformed source and a write error, and an interruption
+without a completion marker. The research sentinel was unchanged in every
+case; the focused tests separately exercised range-mode statuses.
+
+### Disposition
+
+Rows 2–5, UI-2 through UI-14, and Q-1 through Q-6 were re-tested with the
+focused tests and the acquisition replays above. Rows 1, 6 and UI-1 carry
+over because the fix did not change distribution, general-note sources,
+attribution or host scope. UI-15 through UI-17 carry over because the fix
+did not change downstream summary interpretation, unfinished-output
+recovery or offered skill capabilities. Host invocation and live acquisition
+with genuine contact identity remain unverified. The complete package
+suite remains assigned to the closing station. No steps were skipped on
+instruction and no important finding was dismissed.
+

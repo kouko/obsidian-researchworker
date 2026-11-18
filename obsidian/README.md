@@ -14,10 +14,13 @@ notes; independent Claude/Cowork compatibility remains unverified. The
 [verification record](../docs/verification.md) covers historical Codex local-source
 installation only, with real usage still unmet.
 
+The table records the independent release's verification status; the inherited
+`defuddle` limitation above is not a fresh host test.
+
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
-| `defuddle` | Blocked (URL fetch) | Works |
-| All other obsidian skills | Works | Works |
+| `defuddle` | Unverified; upstream reports URL-fetch blocking | Unverified |
+| Other obsidian skills | Unverified | See skill-specific evidence; no suite-wide verification |
 
 ## Version
 
