@@ -9,11 +9,11 @@ REPO = ROOT.parent
 LOADER = ROOT / ".opencode-plugin" / "index.js"
 
 
-def run_loader(root, expected_count):
+def run_loader(root, expected_names):
     script = r'''
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
-const [root, count] = process.argv.slice(1);
+const [root, ...names] = process.argv.slice(1);
 const {default: plugin} = await import(pathToFileURL(`${root}/.opencode-plugin/index.js`));
 assert.equal(plugin.id, "obsidian");
 let calls = [];
@@ -28,7 +28,7 @@ async function load() {
 }
 const first = await load();
 const second = await load();
-assert.equal(first.skills.length, Number(count));
+assert.deepEqual(first.skills.map(s => s.id).sort(), names.map(name => `obsidian:${name}`).sort());
 assert.deepEqual(first.skills.map(s => s.id), second.skills.map(s => s.id));
 assert.deepEqual(first.commands.map(c => c.name), first.skills.map(s => s.id));
 for (const skill of first.skills) {
@@ -46,11 +46,12 @@ for (const skill of first.skills) {
   assert.ok(sent.text.includes(skill.content));
 }
 '''
-    subprocess.run(["node", "--input-type=module", "-e", script, str(root), str(expected_count)], check=True)
+    subprocess.run(["node", "--input-type=module", "-e", script, str(root), *expected_names], check=True)
 
 
 def test_shipped_skills_and_slash_commands():
-    run_loader(ROOT, 15)
+    shipped_names = sorted(path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md"))
+    run_loader(ROOT, shipped_names)
 
 
 def test_skill_without_description_is_not_registered(tmp_path):
@@ -62,7 +63,7 @@ def test_skill_without_description_is_not_registered(tmp_path):
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text(f"---\n{frontmatter}\n---\nBody of {name}\n")
     before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
-    run_loader(tmp_path, 1)
+    run_loader(tmp_path, ["good"])
     assert before == {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
 
 

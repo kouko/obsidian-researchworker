@@ -10,19 +10,23 @@ def test_commands_rejected_entry_registers_remaining():
     script = r'''
 import assert from "node:assert/strict";
 import plugin from "./obsidian/.opencode-plugin/index.js";
+const skills = [];
 const accepted = [];
-let rejected = false;
+let rejected;
 await plugin.setup({
-  skill: {transform: async f => f({add: () => {}})},
+  skill: {transform: async f => f({add: skill => skills.push(skill.id)})},
   command: {transform: async f => f({add: command => {
-    if (!rejected) { rejected = true; throw Error("registration rejected"); }
+    if (!rejected) {
+      rejected = command.name;
+      throw Error("registration rejected");
+    }
     accepted.push(command.name);
   }})},
   session: {prompt: async () => {}},
 });
-assert.equal(rejected, true);
-assert.equal(accepted.length, 14);
-assert.ok(accepted.every(name => name.startsWith("obsidian:")));
+assert.ok(skills.length > 1);
+assert.equal(rejected, skills[0]);
+assert.deepEqual(accepted, skills.slice(1));
 '''
     subprocess.run(
         ["node", "--input-type=module", "-e", script],
