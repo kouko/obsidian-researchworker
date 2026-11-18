@@ -25,7 +25,7 @@ charter: 1.1
 **W1-04 Support separate non-echoing input in the Codex CLI** after: W1-01 acceptance: 1,2,3,4
 - Files: obsidian-finance/skills/sec-data/scripts/acquire.py, obsidian-finance/skills/sec-data/scripts/sec_contact.py, obsidian-finance/skills/sec-data/SKILL.md, obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/tests/test_acquire.py
 - Test: Verify that the setup process confirms echo is off before signalling readiness, receives a separate input payload without echo, and retains no invalid or incomplete profile. Exercise cancellation/timeout and preserve ordinary piped input.
-- Risk: Agent-decided handle the terminal inside the existing setup entry point. Continue to exclude shell literals, environment values, and echoed input. The host may retain the distinct tool input.
+- Risk: Agent-decided handle the terminal inside the existing setup entry point. Continue to exclude shell literals, environment values, and echoed input. The host may retain the distinct tool input. See [the Codex CLI experiment](research/01-codex-contact-input.md).
 
 ## Risks
 
