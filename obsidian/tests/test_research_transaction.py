@@ -293,3 +293,68 @@ def test_cross_device_plan_rejected_before_writes(folder, destination):
     assert result.returncode != 0 and "different filesystem" in result.stderr
     assert contents(folder) == before
     assert not (folder / ".resume-staging").exists()
+@pytest.mark.parametrize(
+    ("action", "changed"),
+    [
+        ("apply", "judgment.md"),
+        ("apply", "new.md"),
+        ("apply", "dependent.md"),
+        ("inspect", "judgment.md"),
+    ],
+)
+def test_edit_after_snapshot_is_not_accepted(folder, action, changed):
+    plan = prepare(folder, **{"judgment.md": "six", "new.md": "new evidence"})
+    expected = contents(folder)
+    expected[changed] = b"manual edit"
+    script = (
+        "import sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "changed = sys.argv.pop(1); "
+        "import research_transaction as transaction\n"
+        "original = transaction.snapshot_entries\n"
+        "def snapshot_then_edit(folder):\n"
+        "    entries = original(folder)\n"
+        "    transaction.snapshot_entries = original\n"
+        "    (folder / changed).write_bytes(b'manual edit')\n"
+        "    return entries\n"
+        "transaction.snapshot_entries = snapshot_then_edit\n"
+        "raise SystemExit(transaction.main())"
+    )
+    options = ("--read", changed) if action == "inspect" else ()
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), changed, action,
+         str(folder.parent), str(folder), *options],
+        input=json.dumps(plan), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 1
+    assert not result.stdout
+    assert "stale snapshot" in result.stderr
+    assert contents(folder) == expected
+    assert not (folder / JOURNAL).exists()
+
+
+def test_new_file_does_not_overwrite_late_creation(folder):
+    plan = prepare(folder, **{"new.md": "planned"})
+    expected = contents(folder)
+    expected["new.md"] = b"manual edit"
+    script = (
+        "import sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = transaction.file_content\n"
+        "def create_after_check(path):\n"
+        "    data = original(path)\n"
+        "    if path.name == 'new.md' and (path.parent / transaction.STAGING).exists():\n"
+        "        path.write_bytes(b'manual edit')\n"
+        "    return data\n"
+        "transaction.file_content = create_after_check\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "apply",
+         str(folder.parent), str(folder)],
+        input=json.dumps(plan), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 1
+    assert (folder / JOURNAL).is_file()
+    assert {k: v for k, v in contents(folder).items() if k != JOURNAL} == expected

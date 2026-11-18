@@ -100,6 +100,9 @@ filesystem as that folder. A cross-filesystem write plan is rejected before
 saving the recovery record or updating notes. If the helper reports a busy folder,
 unsupported locking, an unsafe path, or a failed check, leave the folder
 untouched. Keep the helper's recovery record if it reports a blocked recovery.
+During apply or recovery, wait until the helper exits before editing or syncing
+this folder in Obsidian. The lock coordinates helper processes. Other editors
+and sync clients can still write while a replacement is in progress.
 
 1. Run `python3 <skill-dir>/scripts/research_transaction.py inspect <vault> <folder>`.
    Use this before interpreting active notes. It will recover a pending update

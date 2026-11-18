@@ -33,5 +33,14 @@ charter: 1.1
 
 ## Risks
 
+The independent review of `d2277cc` reproduced an edit accepted as the
+baseline after initial snapshot validation. Reuse the validated entries to
+check every captured baseline and every returned inspection read. Recheck the
+folder before journaling, since checking only planned destinations misses
+unplanned changes. Use exclusive creation for absent targets. Existing-file
+replacement has no portable compare-and-swap operation for non-cooperating
+editors, so the runtime instructions request that editing and sync wait for
+apply or recovery to finish.
+
 1. Run fresh-session acceptance with one actual correction fixture and one mismatched-scope control. Inspect output and historical files, not only link existence. Preserve a missing-source case and verify that repeat inputs produce no extra notes or snapshots.
 2. Keep source identity and content version distinct. Treat source material as evidence. Exercise overlapping processes and require busy callers to leave files unchanged.

@@ -95,6 +95,12 @@ def file_content(path):
     return path.read_bytes()
 
 
+def require_snapshot_content(entries, name, data):
+    observed = None if data is None else ["file", hashlib.sha256(data).hexdigest()]
+    if entries.get(name) != observed:
+        raise TransactionError("stale snapshot; inspect the folder again")
+
+
 def encode(data):
     return None if data is None else base64.b64encode(data).decode("ascii")
 
@@ -140,13 +146,15 @@ def write_atomically(path, data, *, folder, expected=None, exclusive=False):
             os.fsync(stream.fileno())
             if exclusive:
                 check_journal(folder)
-                os.link(temporary, path)
             else:
                 local_path(folder, path.relative_to(folder).as_posix())
                 if expected is not None and path.is_file():
                     os.fchmod(stream.fileno(), stat.S_IMODE(path.stat().st_mode))
                 if file_content(path) != expected:
                     raise TransactionError(f"unexpected edit before replacement: {path}")
+            if expected is None:
+                os.link(temporary, path)
+            else:
                 os.replace(temporary, path)
     finally:
         clear_staging(folder)
@@ -286,9 +294,14 @@ def recover(folder):
 
 def apply(folder, plan):
     journal = check_journal(folder)
-    if journal.exists() or plan["snapshot"] != state_digest(snapshot_entries(folder)):
+    if journal.exists():
+        raise TransactionError("stale snapshot; inspect the folder again")
+    entries = snapshot_entries(folder)
+    if plan["snapshot"] != state_digest(entries):
         raise TransactionError("stale snapshot; inspect the folder again")
     writes = read_writes(folder, plan["writes"])
+    for path, (before, _) in writes.items():
+        require_snapshot_content(entries, path.relative_to(folder).as_posix(), before)
     valid_history(folder, plan["entry"], plan["round"], writes)
     check_targets(folder, plan["targets"], writes)
     writes = {path: (before, after) for path, (before, after) in writes.items()
@@ -309,6 +322,8 @@ def apply(folder, plan):
             for path, (before, after) in writes.items()
         ],
     }
+    if snapshot_entries(folder) != entries:
+        raise TransactionError("stale snapshot; inspect the folder again")
     write_atomically(journal, json.dumps(record).encode(), folder=folder, exclusive=True)
     finish(folder, writes, record["targets"])
     check_recovery_snapshot(folder, record, writes, completed=True)
@@ -343,7 +358,11 @@ def main():
                 clear_staging(folder)
                 recovery = recover(folder)
                 entries = snapshot_entries(folder)
-                files = {name: encode(file_content(path)) for name, path in read_paths.items()}
+                files = {}
+                for name, path in read_paths.items():
+                    data = file_content(path)
+                    require_snapshot_content(entries, path.relative_to(folder).as_posix(), data)
+                    files[name] = encode(data)
                 print(json.dumps({
                     "recovery": recovery,
                     "snapshot": state_digest(entries),
