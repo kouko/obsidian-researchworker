@@ -1,6 +1,6 @@
 # Resume topic research — acceptance test evidence
 
-Tried on 2026-11-18, in a clean worktree at d82cc6ec40cf7f37df492535a91f74900e97e629. See the dated re-run below for direct execution of its shipped helper and native Codex workspace discovery.
+Tried on 2026-11-18, in a clean worktree at b863b6fb87c1461fe807e5a8045caab25db2be40. The final re-run below records current native Codex workspace discovery and direct execution of the helper. Earlier native runs and installed-file comparisons are recorded separately at d82cc6e.
 
 Earlier run on 2026-11-18 at 95e1737. The acceptance agent read the shipped source skill and executed its written procedure with a disposable vault and synthetic publisher CSV. A temporary Python driver built fixtures, applied the manually chosen edits, and checked links and file bytes. The driver is test instrumentation. Native model routing was untested in this earlier run.
 
@@ -123,3 +123,18 @@ Focused check: `pytest -q -p no:cacheprovider obsidian/tests/test_research_trans
 - **13 — re-tested.** The test killed a live writer after the judgment update. The helper completed the remaining write, verified it before returning, and cleared the recovery record. A separate unplanned-edit test blocked recovery without modifying the existing contents, and the manual traceability case did not apply an update after discovering a missing prior judgment.
 - **14 — carried over.** The alias patch does not change the summary-only behavior. The first manual summary-only result is recorded above.
 - **15 — carried over.** The alias patch adds no such action.
+
+## Re-run on 2026-11-18 at b863b6fb87c1461fe807e5a8045caab25db2be40
+
+The direct check `python3 /tmp/obsidian-resume-acceptance-manual.py obsidian/skills/obsidian-research-resume/scripts/research_transaction.py` exited 0. With the actual current helper it updated the shared judgment and two dependent notes, followed R01 to an exact prior judgment and V1 CSV, retained V2 separately, restricted a qualification to one existing note, replayed an identical write without changes, and wrote a first retained original in a separate explicit folder. The acceptance agent made the evidence judgments and verified the resulting filesystem. The mismatched branch and summary-only cases preserved their before snapshots.
+
+`pytest -q -p no:cacheprovider obsidian/tests/test_research_transaction.py docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py` exited 0 with `13 passed in 0.96s`. The new tests paused an actual writer after synchronizing its staged file. Killing the process at that point allowed the new inspection to finish the write and clear the staging files and recovery record. Editing the destination after staging, or editing another destination between writes, stopped the writer and preserved the external edit. Unrecognized staging files remained byte-identical and blocked the operation.
+
+The fresh native correction session ran the current workspace skill in `/tmp/resume-codex-b863-yn9foqgk`. Both the skill and helper matched the checkout by `cmp`. The transcript at `/tmp/resume-codex-b863-run.jsonl` ended in `turn.completed`. The session first supplied a workspace-relative folder where the helper expects a vault-relative folder, then corrected the path and proceeded. It recovered R01 and the December follow-up and recognized the same branch and month. It used the amendment to change seven scheduled days to six, applied the two distinct dependent changes and left R01 and the original source unchanged. Independent inspection resolved all 21 local links, compared the retained correction with the original byte-for-byte, and confirmed neither the staging directory nor the recovery record remained.
+
+- **1 — re-tested.** The latest native session recovered the prior round and follow-up and reported the branch, period, and measurement basis. Tests additionally re-ran filesystem inspection and recovery with staged content.
+- **2–4 — re-tested.** The latest native correction exercised both dependent notes and the original report and source. The latest direct-helper fixture independently covered both dependents, exact prior links and bytes, the existing-note qualification, the mismatched branch, and repeated identical content. The separate native replay was on d82cc6e.
+- **5–13 — re-tested where the update path applies.** The latest fixture repeated the explicit-folder write, correction, historical traversal, no-op, and first original retention. The focused suite repeated concurrency, interruption/recovery, stale and unsafe paths, and added staged-file recovery and intervening edits. Native ambiguity clarification and precedence when naming two targets remain untested.
+- **14–15 — carried over.** The patch changes how a planned write is staged and recovered. Summary-only requests still require no write, and the specification defines no irreversible action.
+
+The isolated plugin install and matching skill/helper files were verified at d82cc6e. The native sessions loaded the workspace skill. A fresh session loading the current installed plugin remains unverified.
