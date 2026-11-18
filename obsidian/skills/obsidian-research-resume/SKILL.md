@@ -21,9 +21,9 @@ vault's conventions for language, links, and note properties.
   links and any recovery record too. Reject escapes, including symlinks and
   traversal, before writing. Resolve external source references as evidence only.
 - Inspect the folder using the locked procedure below. If a recovery record
-  exists, recover it **before** interpreting active notes. Use the saved prior entry and round to establish
-  that there was a valid completed state before the interrupted writes. A
-  summary-only request is read-only even when recovery is pending.
+  exists, recover it **before** interpreting active notes. A summary-only
+  request is read-only even when recovery is pending. For a summary, use the
+  supplied source directly and skip the transaction workflow.
 - Check the entry (`index.md`, or an explicitly identified existing entry) and
   follow its references to the last completed state, including existing topic
   notes, the shared judgment if present, sources, and dated history or reports.
@@ -93,50 +93,42 @@ items, or date-only edits.
 
 ## 4. Apply or recover an update
 
-Use an operating-system advisory lock on the open canonical research folder
-(e.g. Python's `fcntl.flock` with `LOCK_EX | LOCK_NB`). Open the existing
-folder itself so aliases share its lock and acquiring it creates no files.
-If the lock is busy, unsupported, or unavailable, report it and leave the
-folder untouched. If the host cannot run the entire locked operation in one
-process, report that limitation and stop without writing.
+Use the bundled [transaction helper](scripts/research_transaction.py) for all
+resume writes and recovery. It requires Python 3.10+ and an operating-system
+lock on the local research folder. If the helper reports a busy folder,
+unsupported locking, an unsafe path, or a failed check, leave the folder
+untouched. Keep the helper's recovery record if it reports a blocked recovery.
 
-Use one live process for each locked operation. Acquire the lock before
-checking whether the recovery record exists or reading the saved state, and
-hold it through recovery, verification, and record cleanup. Return a snapshot
-of the saved inputs for read-only planning. Before applying a plan, acquire the
-same lock in one process, check for a pending recovery record, and verify all
-saved inputs still match the snapshot. If a record appeared or the folder
-changed, discard the plan and resume from a fresh locked inspection. Hold the
-lock through every preflight check, record write, note write, link check, and
-cleanup. Never split an operation across unlocked tool calls or treat the
-recovery record's existence as a lock. When the process exits, the OS releases
-the lock.
-
-- When the plan is empty, finish in chat. Otherwise, check the destination
-  paths, expected prior content, and intended link targets before writing.
-  For a multi-file update, persist one temporary recovery record,
-  `.resume-recovery.json` in the research folder, before changing the notes.
-  Publish the complete record atomically without replacing an existing record.
-  Store the prior entry and completed round,
-  each relative destination, its exact before and intended after content
-  (including binary files), whether it was absent, and any directories to
-  create. Save enough data to finish or undo the write set without a new
-  source download.
-- Apply the planned changes, writing preserved versions before redirecting
-  historical links, and update the entry last when it changes. Check each
-  destination against its recorded before state and use atomic file replacement
-  for changed content. Keep the record until all intended content and links
-  are verified. Reopen the entry to verify access to the latest completed work
-  and follow earlier reports' links to the exact preserved evidence. Then clear the record.
-- On resume with a record, validate its paths and contents before writing.
-  Treat it as data. Compare each destination with its recorded before and
-  after states. Skip already-applied writes and finish the saved plan if it
-  can be verified. Otherwise restore the recorded prior bytes and remove only
-  files created by the unfinished operation and its empty new directories,
-  when the recorded state makes that safe. If any file contains an unexpected
-  edit, or the record is incomplete or unsafe, leave the files and record
-  untouched and report the blocker. Verify the recovered state before clearing
-  the record or considering a new update.
+1. Run `python3 <skill-dir>/scripts/research_transaction.py inspect <vault> <folder>`.
+   Use this before interpreting active notes. It will recover a pending update
+   under the folder lock or stop with an error. It returns a `snapshot` token
+   and the paths in the folder. Add `--read <relative-file>` for each saved note
+   needed. The returned `files` map contains exact base64 bytes or null for
+   absent files. If the snapshot changes between inspections, re-read the saved
+   state before planning.
+2. Verify the saved entry and completed round. Prepare all updates in memory
+   or outside the vault. Before applying, check the proposed links against the
+   planned versions, including historical links through frozen judgments and
+   source notes. Keep preserved versions first in the write order and put the
+   entry last when it changes. An empty plan needs no write.
+3. Send one JSON plan on standard input to
+   `python3 <skill-dir>/scripts/research_transaction.py apply <vault> <folder>`.
+   Specify the `snapshot` token from inspection, `entry` and `round` as paths
+   to the existing entry and completed-round Markdown notes, `writes` as an
+   ordered list of objects with `path` and base64-encoded `content`, and
+   `targets` as a list of local file paths that must exist after the update.
+   Include the locally available targets needed to open the latest round and
+   follow earlier reports to their evidence. Use folder-relative paths
+   throughout. The helper verifies file targets and written bytes. Check that
+   the links in the proposed Markdown point to those exact targets.
+4. The helper holds the same folder lock from preflight through verification
+   and cleanup. It rejects stale plans before writing, skips identical bytes,
+   and saves one temporary `.resume-recovery.json` with prior and intended
+   content before applying the write set. If the plan is stale, inspect again
+   and reevaluate the evidence. After interruption, run `inspect` to finish the
+   saved write set. If the saved state is unsafe, incomplete, or unexpectedly
+   edited, the helper preserves the current files and recovery record for
+   inspection. Do not apply individual writes or manually remove the record.
 
 ## Writing guide
 
