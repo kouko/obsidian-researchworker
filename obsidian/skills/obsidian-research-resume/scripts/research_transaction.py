@@ -5,10 +5,8 @@ import base64
 import hashlib
 import json
 import os
-import re
 import stat
 import sys
-import tempfile
 from pathlib import Path
 from unicodedata import normalize
 
@@ -19,8 +17,9 @@ except ImportError:
 
 
 JOURNAL = ".resume-recovery.json"
-TEMP_PREFIX = ".resume-write-"
-TEMP_NAME = re.compile(r"\.resume-write-[a-z0-9_]{8}")
+STAGING = ".resume-staging"
+STAGING_MARKER = ".research-transaction-v1"
+STAGING_PAYLOAD = "payload"
 
 
 class TransactionError(Exception):
@@ -52,7 +51,7 @@ def local_path(folder, name):
     target = folder
     for part in path.parts:
         spelling = spelling_key(part)
-        if spelling == JOURNAL or TEMP_NAME.fullmatch(spelling):
+        if spelling in (JOURNAL, STAGING):
             raise TransactionError(f"reserved transaction path: {name}")
         target /= part
         require_spelling(target)
@@ -78,8 +77,7 @@ def snapshot_entries(folder):
             elif path.is_dir():
                 entries[name] = ["dir"]
             elif path.is_file():
-                if not TEMP_NAME.fullmatch(filename):
-                    entries[name] = ["file", hashlib.sha256(path.read_bytes()).hexdigest()]
+                entries[name] = ["file", hashlib.sha256(path.read_bytes()).hexdigest()]
             else:
                 raise TransactionError(f"unsupported directory entry: {name}")
     return entries
@@ -107,26 +105,55 @@ def decode(data):
     return base64.b64decode(data, validate=True)
 
 
-def write_atomically(path, data, *, exclusive=False):
-    fd, temporary_name = tempfile.mkstemp(prefix=TEMP_PREFIX, dir=path.parent)
-    temporary = Path(temporary_name)
+def clear_staging(folder):
+    stage = folder / STAGING
+    require_spelling(stage)
     try:
+        info = stage.lstat()
+    except FileNotFoundError:
+        return
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise TransactionError("unsafe staging location")
+    children = {child.name: child.lstat() for child in stage.iterdir()}
+    if children:
+        marker = children.get(STAGING_MARKER)
+        if (marker is None or marker.st_size
+                or children.keys() - {STAGING_MARKER, STAGING_PAYLOAD}
+                or any(not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+                       for info in children.values())):
+            raise TransactionError("unrecognized staging contents")
+        (stage / STAGING_PAYLOAD).unlink(missing_ok=True)
+        (stage / STAGING_MARKER).unlink()
+    stage.rmdir()
+
+
+def write_atomically(path, data, *, folder, expected=None, exclusive=False):
+    stage = folder / STAGING
+    stage.mkdir(mode=0o700)
+    temporary = stage / STAGING_PAYLOAD
+    try:
+        (stage / STAGING_MARKER).touch(mode=0o600, exist_ok=False)
+        fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, "wb") as stream:
-            if path.exists():
-                os.fchmod(stream.fileno(), stat.S_IMODE(path.stat().st_mode))
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
-        if exclusive:
-            os.link(temporary, path)
-        else:
-            os.replace(temporary, path)
+            if exclusive:
+                check_journal(folder)
+                os.link(temporary, path)
+            else:
+                local_path(folder, path.relative_to(folder).as_posix())
+                if expected is not None and path.is_file():
+                    os.fchmod(stream.fileno(), stat.S_IMODE(path.stat().st_mode))
+                if file_content(path) != expected:
+                    raise TransactionError(f"unexpected edit before replacement: {path}")
+                os.replace(temporary, path)
     finally:
-        temporary.unlink(missing_ok=True)
+        clear_staging(folder)
 
 
-def replace_file(path, data):
-    write_atomically(path, data)
+def replace_file(path, data, *, folder, expected):
+    write_atomically(path, data, folder=folder, expected=expected)
 
 
 def valid_history(folder, entry, completed_round, writes):
@@ -176,18 +203,18 @@ def check_targets(folder, names, writes):
 
 def finish(folder, writes, targets):
     check_targets(folder, targets, writes)
-    states = {path: file_content(path) for path in writes}
     for path, (before, after) in writes.items():
-        if states[path] not in (before, after):
+        if file_content(path) not in (before, after):
             raise TransactionError(f"unexpected edit blocks recovery: {path}")
-    for path, (_, after) in writes.items():
-        if states[path] != after:
-            local_path(folder, path.relative_to(folder).as_posix())
-            path.parent.mkdir(parents=True, exist_ok=True)
-            replace_file(path, after)
-    for path, (_, after) in writes.items():
-        if file_content(path) != after:
-            raise TransactionError(f"write could not be verified: {path}")
+    for path, (before, after) in writes.items():
+        local_path(folder, path.relative_to(folder).as_posix())
+        current = file_content(path)
+        if current == after:
+            continue
+        if current != before:
+            raise TransactionError(f"unexpected edit before replacement: {path}")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        replace_file(path, after, folder=folder, expected=before)
     check_targets(folder, targets, {})
 
 
@@ -202,10 +229,12 @@ def missing_directories(folder, writes):
     return sorted(directories)
 
 
-def check_recovery_snapshot(folder, plan, writes):
+def check_recovery_snapshot(folder, plan, writes, *, completed=False):
     entries = snapshot_entries(folder)
-    for path, (before, _) in writes.items():
+    for path, (before, after) in writes.items():
         name = path.relative_to(folder).as_posix()
+        if completed and entries.get(name) != ["file", hashlib.sha256(after).hexdigest()]:
+            raise TransactionError(f"write could not be verified: {path}")
         if before is None:
             entries.pop(name, None)
         else:
@@ -238,6 +267,7 @@ def recover(folder):
     valid_history(folder, plan["entry"], plan["round"], writes)
     check_recovery_snapshot(folder, plan, writes)
     finish(folder, writes, plan["targets"])
+    check_recovery_snapshot(folder, plan, writes, completed=True)
     journal.unlink()
     return "completed"
 
@@ -266,8 +296,9 @@ def apply(folder, plan):
             for path, (before, after) in writes.items()
         ],
     }
-    write_atomically(journal, json.dumps(record).encode(), exclusive=True)
+    write_atomically(journal, json.dumps(record).encode(), folder=folder, exclusive=True)
     finish(folder, writes, record["targets"])
+    check_recovery_snapshot(folder, record, writes, completed=True)
     journal.unlink()
     return paths
 
@@ -296,6 +327,7 @@ def main():
                 raise TransactionError("research folder is busy") from error
             if args.action == "inspect":
                 read_paths = {name: local_path(folder, name) for name in args.read}
+                clear_staging(folder)
                 recovery = recover(folder)
                 entries = snapshot_entries(folder)
                 files = {name: encode(file_content(path)) for name, path in read_paths.items()}
@@ -306,7 +338,9 @@ def main():
                     "files": files,
                 }))
             else:
-                changed = apply(folder, json.load(sys.stdin))
+                plan = json.load(sys.stdin)
+                clear_staging(folder)
+                changed = apply(folder, plan)
                 print(json.dumps({"changed": changed}))
         finally:
             os.close(fd)

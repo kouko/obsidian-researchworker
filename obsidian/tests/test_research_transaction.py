@@ -2,6 +2,7 @@
 import base64
 import fcntl
 import json
+import signal
 import subprocess
 import sys
 from pathlib import Path
@@ -91,11 +92,12 @@ def pause_after_judgment(folder):
             "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
             "import research_transaction as transaction\n"
             "write = transaction.replace_file\n"
-            "def pause_after_judgment(path, data):\n"
-            "    write(path, data)\n"
+            "def pause_after_judgment(path, data, **kwargs):\n"
+            "    write(path, data, **kwargs)\n"
             "    if path.name == 'judgment.md':\n"
+            "        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGUSR1})\n"
             "        print('paused', flush=True)\n"
-            "        signal.pause()\n"
+            "        signal.sigwait({signal.SIGUSR1})\n"
             "transaction.replace_file = pause_after_judgment\n"
             "raise SystemExit(transaction.main())"
         )
@@ -183,3 +185,82 @@ def test_replay_does_not_write(folder):
     assert json.loads(result.stdout)["changed"] == []
     assert contents(folder) == before
     assert (folder / "judgment.md").stat().st_mtime_ns == before_mtime
+
+
+
+def test_external_edit_between_destinations_is_preserved(folder, pause_after_judgment):
+    writer, _ = pause_after_judgment()
+    dependent = folder / "topics/dependent.md"
+    dependent.parent.mkdir()
+    dependent.write_text("ordinary editor")
+    writer.send_signal(signal.SIGUSR1)
+    assert writer.wait(timeout=5) != 0
+    assert dependent.read_text() == "ordinary editor"
+    assert (folder / JOURNAL).is_file()
+
+
+@pytest.mark.parametrize("edit_after_staging", [False, True])
+def test_staged_write_checks_destination_after_pause(folder, edit_after_staging):
+    plan = prepare(folder, **{"judgment.md": "six"})
+    script = (
+        "import os, signal, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "sync = os.fsync\n"
+        "count = 0\n"
+        "def interrupt(fd):\n"
+        "    global count\n"
+        "    sync(fd)\n"
+        "    count += 1\n"
+        "    if count == 2:\n"
+        "        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGUSR1})\n"
+        "        print('staged', flush=True)\n"
+        "        signal.sigwait({signal.SIGUSR1})\n"
+        "os.fsync = interrupt\n"
+        "raise SystemExit(transaction.main())"
+    )
+    writer = subprocess.Popen(
+        [sys.executable, "-c", script, str(HELPER), "apply",
+         str(folder.parent), str(folder)],
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
+    )
+    try:
+        writer.stdin.write(json.dumps(plan))
+        writer.stdin.close()
+        assert writer.stdout.readline() == "staged\n"
+        assert (folder / JOURNAL).is_file()
+        judgment = folder / "judgment.md"
+        assert judgment.read_text() == "seven"
+        if edit_after_staging:
+            judgment.write_text("ordinary editor")
+            writer.send_signal(signal.SIGUSR1)
+            assert writer.wait(timeout=5) != 0
+            assert judgment.read_text() == "ordinary editor"
+            assert (folder / JOURNAL).is_file()
+            assert not (folder / ".resume-staging").exists()
+            return
+        writer.kill()
+        writer.wait(timeout=5)
+        result = invoke(folder, "inspect")
+        assert result.returncode == 0, result.stderr
+        assert json.loads(result.stdout)["recovery"] == "completed"
+        assert (folder / "judgment.md").read_text() == "six"
+        assert sorted(path.name for path in folder.iterdir()) == [
+            "dependent.md", "index.md", "judgment.md", "prior.md",
+        ]
+    finally:
+        if writer.poll() is None:
+            writer.kill()
+            writer.wait(timeout=5)
+
+
+
+def test_unrecognized_staging_files_are_not_removed(folder):
+    stage = folder / ".resume-staging"
+    stage.mkdir(mode=0o700)
+    personal = stage / "personal.md"
+    personal.write_text("user data")
+    before = contents(folder)
+    result = invoke(folder, "inspect")
+    assert result.returncode != 0 and "unrecognized staging" in result.stderr
+    assert contents(folder) == before
