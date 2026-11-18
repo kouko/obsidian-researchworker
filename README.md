@@ -1,8 +1,9 @@
 # Obsidian ResearchWorker
 
 Fifteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
-work. Version 4.2.0 adds local vault search from any project. Version 4.1.0
-added personalized shared vault instructions and safe setup
+work. Version 4.2.0 provides local vault search from any project through
+`obsidian-knowledge` and its bundled read-only shell script.
+Version 4.1.0 adds personalized shared vault instructions and safe setup
 re-entry. Version 4.0.0 removed the eight wiki skills and daily-news-digest;
 ordinary daily notes, topic research, Defuddle extraction and wikilinks remain.
 Extracted from Monkey Skills Obsidian 3.27.0; this version is not host-validated.
