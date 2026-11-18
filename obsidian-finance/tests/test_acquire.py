@@ -270,7 +270,32 @@ def test_quarter_unresolved(tmp_path, monkeypatch, mode):
 @pytest.mark.parametrize('selectors', [
     ['--fiscal-quarter', '2024Q5'], ['--fiscal-quarter', '2024Q3', '--period-start', '2024-01-01'],
     ['--period-start', '2024-01-01', '--period-end', '2024-12-31'],
+    ['--fiscal-quarter', '2024Q3', '--as-of', ''],
 ])
 def test_quarter_invalid_selectors(tmp_path, monkeypatch, selectors):
-    summary, path, calls = execute(tmp_path, monkeypatch, selectors=selectors)
+    destination = tmp_path / 'output'
+    summary, path, calls = execute(destination, monkeypatch, selectors=selectors)
     assert summary['exit_code'] == 64 and calls == [] and path is None
+    assert not destination.exists()
+
+
+def test_cutoff_today_uses_utc_even_when_local_day_is_earlier(tmp_path, monkeypatch):
+    from datetime import date, datetime, timedelta, timezone
+
+    import sec_client
+
+    utc_today = datetime.now(timezone.utc).date()
+
+    class LocalDate(date):
+        @classmethod
+        def today(cls):
+            return utc_today - timedelta(days=1)
+
+    monkeypatch.setattr(sec_client, 'date', LocalDate)
+    summary, path, calls = execute(tmp_path, monkeypatch, selectors=[
+        '--period-start', '2024-01-01', '--period-end', '2024-12-31',
+        '--as-of', utc_today.isoformat(),
+    ])
+    assert summary['exit_code'] == 0 and len(calls) == 3
+    assert summary['effective_cutoff'] == utc_today.isoformat()
+    assert (path / 'completion.json').exists()
