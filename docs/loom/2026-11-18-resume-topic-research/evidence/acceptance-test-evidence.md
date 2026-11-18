@@ -1,6 +1,6 @@
 # Resume topic research — acceptance test evidence
 
-Tried on 2026-11-18, in a clean worktree at b863b6fb87c1461fe807e5a8045caab25db2be40. The final re-run below records current native Codex workspace discovery and direct execution of the helper. Earlier native runs and installed-file comparisons are recorded separately at d82cc6e.
+Tried on 2026-11-18, in a clean worktree at 5bcc33858ee253d7f7219b450825d5969ce3f26e. The final re-run below records direct execution of the current helper and simulated cross-filesystem preflight. The most recent native Codex workspace run is at b863b6f, and isolated installed-file comparisons are at d82cc6e.
 
 Earlier run on 2026-11-18 at 95e1737. The acceptance agent read the shipped source skill and executed its written procedure with a disposable vault and synthetic publisher CSV. A temporary Python driver built fixtures, applied the manually chosen edits, and checked links and file bytes. The driver is test instrumentation. Native model routing was untested in this earlier run.
 
@@ -138,3 +138,15 @@ The fresh native correction session ran the current workspace skill in `/tmp/res
 - **14–15 — carried over.** The patch changes how a planned write is staged and recovered. Summary-only requests still require no write, and the specification defines no irreversible action.
 
 The isolated plugin install and matching skill/helper files were verified at d82cc6e. The native sessions loaded the workspace skill. A fresh session loading the current installed plugin remains unverified.
+
+## Re-run on 2026-11-18 at 5bcc33858ee253d7f7219b450825d5969ce3f26e
+
+`pytest -q -p no:cacheprovider obsidian/tests/test_research_transaction.py docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py` yielded `15 passed in 1.06s`. The two new cases run the actual helper in a subprocess while overriding the reported device ID of one directory. They cover a destination directly under that directory and a destination inside a missing child directory. Each plan also contains a valid same-device judgment write. Both plans were rejected with `different filesystem`, all file contents matched the preflight snapshot, and no staging directory appeared. The cases use simulated device IDs on one filesystem and do not mount an actual secondary filesystem.
+
+The direct fixture `python3 /tmp/obsidian-resume-acceptance-manual.py obsidian/skills/obsidian-research-resume/scripts/research_transaction.py` exited 0. It again used the shipped helper to apply the correction, update both dependents, link the old report to the exact prior judgment and original CSV bytes, preserve the replacement separately, update a qualification without changing the judgment, and replay identical contents without a write. It also verified first original retention in an explicit folder, and checked unchanged snapshots for mismatched evidence and the summary-only request.
+
+- **1 — carried over.** The commit changes write preflight. The last native Codex discovery and interpretation used b863b6f.
+- **2–13 — re-tested where the write preflight applies.** The current direct fixture exercised safe single-filesystem updates, and the focused suite exercised the previous safeguards plus rejection of simulated cross-filesystem plans before any managed file changed. Native clarification of ambiguous targets remains untested.
+- **14–15 — carried over.** The change limits where planned writes may occur. The summary requires no write, and the specification defines no irreversible action.
+
+There was no native session at 5bcc338. Native correction ran at b863b6f using the workspace skill. Native replay and isolated install-file parity remain at d82cc6e. The latest installed plugin has yet to be exercised in a fresh session.
