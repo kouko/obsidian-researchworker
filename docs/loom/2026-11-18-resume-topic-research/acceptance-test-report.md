@@ -1,6 +1,8 @@
 # 跨對話續作主題研究驗收
 
-2026-11-18 在乾淨副本 5bcc33858ee253d7f7219b450825d5969ce3f26e 重驗更新、中斷恢復、重送及跨檔案系統的寫入前檢查。前一版在新 Codex 對話從工作區載入技能並完成改判。從安裝的最新版外掛載入並完成續作仍待驗。操作與結果見 `docs/loom/2026-11-18-resume-topic-research/evidence/acceptance-test-evidence.md`。
+Tried on 2026-11-18, in a clean copy of the project at 5bcc33858ee253d7f7219b450825d5969ce3f26e.
+
+本次重驗更新、中斷恢復、重送及跨檔案系統的寫入前檢查。前一版在新 Codex 對話從工作區載入技能並完成改判。從安裝的最新版外掛載入並完成續作仍待驗。操作與結果見 `docs/loom/2026-11-18-resume-topic-research/evidence/acceptance-test-evidence.md`。
 
 ## 逐項驗收
 
