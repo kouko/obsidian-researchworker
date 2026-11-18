@@ -10,6 +10,7 @@ import stat
 import sys
 import tempfile
 from pathlib import Path
+from unicodedata import normalize
 
 try:
     import fcntl
@@ -26,6 +27,22 @@ class TransactionError(Exception):
     """The update cannot safely proceed."""
 
 
+def spelling_key(name):
+    return normalize("NFD", normalize("NFD", name).casefold())
+
+
+def require_spelling(path):
+    if not path.parent.is_dir():
+        return
+    names = os.listdir(path.parent)
+    if path.name in names:
+        return
+    if path.exists() or path.is_symlink() or any(
+        spelling_key(name) == spelling_key(path.name) for name in names
+    ):
+        raise TransactionError(f"path aliases an existing entry: {path}")
+
+
 def local_path(folder, name):
     if not isinstance(name, str):
         raise TransactionError("expected a relative file path")
@@ -34,9 +51,11 @@ def local_path(folder, name):
         raise TransactionError(f"unsafe relative path: {name}")
     target = folder
     for part in path.parts:
-        if part == JOURNAL or TEMP_NAME.fullmatch(part):
+        spelling = spelling_key(part)
+        if spelling == JOURNAL or TEMP_NAME.fullmatch(spelling):
             raise TransactionError(f"reserved transaction path: {name}")
         target /= part
+        require_spelling(target)
         if target.is_symlink():
             raise TransactionError(f"symlink in transaction path: {name}")
     return target
@@ -122,10 +141,17 @@ def read_writes(folder, records, *, recovery=False):
     if not isinstance(records, list):
         raise TransactionError("expected an ordered list of writes")
     writes = {}
+    spellings = {}
     for record in records:
         path = local_path(folder, record["path"])
         if path in writes:
             raise TransactionError(f"duplicate write: {record['path']}")
+        parts = path.relative_to(folder).parts
+        for length in range(1, len(parts) + 1):
+            prefix = parts[:length]
+            key = tuple(spelling_key(part) for part in prefix)
+            if spellings.setdefault(key, prefix) != prefix:
+                raise TransactionError(f"planned paths alias each other: {record['path']}")
         after = decode(record["content"])
         old = record["before"] if recovery else None
         before = (None if old is None else decode(old)) if recovery else file_content(path)
@@ -197,6 +223,7 @@ def check_recovery_snapshot(folder, plan, writes):
 
 def check_journal(folder):
     journal = folder / JOURNAL
+    require_spelling(journal)
     if journal.is_symlink() or (journal.exists() and not journal.is_file()):
         raise TransactionError("unsafe recovery record")
     return journal
