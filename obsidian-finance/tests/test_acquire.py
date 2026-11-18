@@ -1,6 +1,8 @@
 import hashlib
 import importlib.util
 import json
+import stat
+import subprocess
 from pathlib import Path
 import sys
 
@@ -31,7 +33,7 @@ def payloads():
 
 
 def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None):
-    monkeypatch.setenv('SEC_USER_AGENT', 'Test Operator test@example.org')
+    configure_contact(tmp_path, monkeypatch)
     data = payloads() if data is None else data
     calls = []
     def fetch(url, headers):
@@ -193,7 +195,7 @@ def test_repeat_preserves(tmp_path, monkeypatch):
 @pytest.mark.parametrize('mode', ['identity', 'issuer', 'dates', 'destination', 'write'])
 def test_invalid_identity_output(tmp_path, monkeypatch, mode):
     mod = module()
-    monkeypatch.setenv('SEC_USER_AGENT', '' if mode == 'identity' else 'Test test@example.org')
+    configure_contact(tmp_path, monkeypatch, saved=mode != 'identity')
     calls = []
     data = payloads()
     if mode == 'issuer':
@@ -274,3 +276,119 @@ def test_quarter_unresolved(tmp_path, monkeypatch, mode):
 def test_quarter_invalid_selectors(tmp_path, monkeypatch, selectors):
     summary, path, calls = execute(tmp_path, monkeypatch, selectors=selectors)
     assert summary['exit_code'] == 64 and calls == [] and path is None
+
+
+CONTACT = {'name': '測試 Operator', 'email': 'test@example.org'}
+
+
+def configure_contact(tmp_path, monkeypatch, *, saved=True):
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.setenv('SEC_USER_AGENT', 'Ignored old@example.org')
+    if saved:
+        import sec_contact
+        sec_contact.save(CONTACT)
+
+
+def run_cli(*args, payload=None):
+    return subprocess.run([sys.executable, *args], input=payload, text=True,
+                          capture_output=True, check=False)
+
+
+def test_setup_cli_and_later_acquisition(tmp_path, monkeypatch):
+    configure_contact(tmp_path, monkeypatch, saved=False)
+    acquire_script = str(SCRIPTS / 'acquire.py')
+    setup = run_cli(acquire_script, '--setup-contact', payload=json.dumps(CONTACT))
+    assert setup.returncode == 0, setup
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    assert stat.S_IMODE(profile.stat().st_mode) == 0o600
+    assert json.loads(profile.read_text()) == CONTACT
+    assert setup.stderr == ''
+    assert all(value not in setup.stdout for value in CONTACT.values())
+
+    # Separate Python process, real argv and stored contact, offline transport.
+    later = run_cli('-c', """
+import json
+import sys
+sys.path.insert(0, sys.argv[1])
+import acquire
+def fetch(url, headers):
+    assert headers['User-Agent'] == '測試 Operator test@example.org'
+    return b'{}'
+result = acquire.run(sys.argv[2:], fetch)
+assert result['errors'][0]['code'] == 'ISSUER_NOT_FOUND'
+print(json.dumps(result))
+""", str(SCRIPTS), '--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                    '--output-dir', str(tmp_path / 'runs'))
+    assert later.returncode == 0, later
+    assert all(value not in later.stdout + later.stderr for value in CONTACT.values())
+
+
+@pytest.mark.parametrize(('state', 'expected'), [
+    ('missing', 'SEC_CONTACT_REQUIRED'), ('corrupt', 'SEC_CONTACT_UNUSABLE'),
+    ('unsafe', 'SEC_CONTACT_UNUSABLE'),
+])
+def test_contact_preflight_ignores_old_environment(tmp_path, monkeypatch, state, expected):
+    configure_contact(tmp_path, monkeypatch, saved=state != 'missing')
+    config = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    if state == 'corrupt':
+        config.write_text(CONTACT['email'])
+    if state == 'unsafe':
+        config.chmod(0o644)
+    destination = tmp_path / 'output'
+    result = module().run(['--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                           '--output-dir', str(destination)],
+                          lambda *args: pytest.fail('Unexpected network request'))
+    assert result['error'].startswith(expected)
+    assert CONTACT['email'] not in result['error']
+    assert not destination.exists()
+
+
+@pytest.mark.parametrize('payload', [
+    {'name': '  ', 'email': 'test@example.org'},
+    {'name': 'Synthetic', 'email': 'test@example.org\r\nX-Test: dropped'},
+    {'name': 'Synthetic', 'email': 'test@example.org'},
+    {'name': 'Synthetic', 'email': 'test..operator@example.org'},
+    {'name': 'Synthetic', 'email': 'test@example.org', 'extra': 'unexpected'},
+])
+def test_invalid_setup_preserves_private_profile(tmp_path, monkeypatch, payload):
+    configure_contact(tmp_path, monkeypatch)
+    result = run_cli(str(SCRIPTS / 'acquire.py'), '--setup-contact', payload=json.dumps(payload))
+    assert result.returncode == 64
+    assert json.loads(result.stdout)['error'].startswith('SEC_CONTACT_INVALID')
+    assert all(value not in result.stdout + result.stderr for value in CONTACT.values())
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    assert json.loads(profile.read_text()) == CONTACT
+
+
+def test_denied_replace_preserves_previous_contact(tmp_path, monkeypatch, capsys):
+    import io
+    import sec_contact
+    configure_contact(tmp_path, monkeypatch)
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    old = profile.read_bytes()
+    replacement = {'name': 'Other operator', 'email': 'other@example.org'}
+
+    def deny(*args):
+        raise PermissionError(replacement['email'])
+
+    monkeypatch.setattr(sec_contact.os, 'replace', deny)
+    monkeypatch.setattr(sys, 'stdin', io.StringIO(json.dumps(replacement)))
+    assert module().main(['--setup-contact']) == 64
+    output = capsys.readouterr()
+    assert 'SEC_CONTACT_SAVE_FAILED' in output.out
+    assert replacement['email'] not in output.out + output.err
+    assert profile.read_bytes() == old
+    assert list(profile.parent.iterdir()) == [profile]
+
+
+def test_reflected_contact_not_retained(tmp_path, monkeypatch):
+    data = payloads()
+    data[1]['name'] = CONTACT['name']
+    summary, path, _ = execute(tmp_path, monkeypatch, data)
+    assert summary['status'] == 'partial'
+    source = read(path, 'manifest.json')['sources'][1]
+    assert source['path'] is None and source['sha256'] is None
+    assert any(error['code'] == 'CONTACT_REFLECTED' for error in summary['errors'])
+    for file in path.rglob('*'):
+        if file.is_file():
+            assert all(value not in file.read_text() for value in CONTACT.values())

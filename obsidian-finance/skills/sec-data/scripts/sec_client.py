@@ -6,6 +6,7 @@ uses only the standard library. Returned payloads are unfiltered evidence.
 
 from datetime import date, datetime, timezone
 import hashlib
+import html as html_entities
 import json
 import re
 import time
@@ -22,6 +23,7 @@ class _NoRedirect(HTTPRedirectHandler):
 
 
 def _fetch(url, headers):
+    headers = dict(headers, **{'User-Agent': headers['User-Agent'].encode('utf-8')})
     with build_opener(_NoRedirect()).open(Request(url, headers=headers), timeout=30) as response:
         return response.read()
 
@@ -61,6 +63,28 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
     ticker = ticker.upper()
     result = dict(company=None, identity_valid=True, sources=[], filings=[], facts=None, errors=[])
     transport = fetch or _fetch
+    name, _, email = identity.rpartition(' ')
+    # An ordinary short name can be an unrelated word in a filing.
+    name_pattern = re.compile(rf'(?<!\w){re.escape(name)}(?!\w)', re.IGNORECASE) if ' ' in name else None
+
+    folded_email = email.casefold()
+
+    def reflects_contact(text):
+        text = html_entities.unescape(text)
+        return folded_email in text.casefold() or bool(name_pattern and name_pattern.search(text))
+
+    def payload_reflects_contact(value):
+        pending = [value]
+        while pending:
+            item = pending.pop()
+            if isinstance(item, str) and reflects_contact(item):
+                return True
+            if isinstance(item, list):
+                pending.extend(item)
+            if isinstance(item, dict):
+                pending.extend(item)
+                pending.extend(item.values())
+        return False
 
     def error(source, code, detail):
         source['status'] = 'error'
@@ -78,9 +102,22 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
                 if not isinstance(raw, bytes):
                     raise ValueError('transport must return JSON bytes')
                 source['retrieved_at'] = datetime.now(timezone.utc).isoformat()
+                if reflects_contact(raw.decode('utf-8', errors='replace')):
+                    error(source, 'CONTACT_REFLECTED', 'Response withheld because it reflected operator contact')
+                    return None
+                try:
+                    payload = raw.decode('utf-8') if html else json.loads(raw)
+                except ValueError:
+                    # Preserve malformed source evidence after checking the response text.
+                    source['raw_bytes'] = raw
+                    source['sha256'] = hashlib.sha256(raw).hexdigest()
+                    raise
+                if not html and payload_reflects_contact(payload):
+                    error(source, 'CONTACT_REFLECTED', 'Response withheld because it reflected operator contact')
+                    return None
                 source['raw_bytes'] = raw
                 source['sha256'] = hashlib.sha256(raw).hexdigest()
-                source['payload'] = raw.decode('utf-8') if html else json.loads(raw)
+                source['payload'] = payload
                 validate(source['payload'])
                 source['status'] = 'valid'
                 return source['payload']

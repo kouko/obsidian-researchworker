@@ -20,10 +20,14 @@ unresolved required investment research, and scoped reuse is not global no-work.
 ## Run directly
 
 Python 3.11 or later is the only runtime requirement; all runtime imports use
-the standard library. Configure `SEC_USER_AGENT` locally with the operator's
-genuine identifying name and contact email before running. Do not reuse an
-example identity or commit contact details. Requests send this identity and
-the public issuer request to SEC; private vault content is not used.
+the standard library. Live acquisition uses the operator or organization name
+and contact email saved in the private local file
+`~/.config/obsidian-finance/sec-contact.json`. The SEC skill asks for these
+values in the current conversation on first use. The bundled script accepts
+`--setup-contact` with a separate non-echoing stdin JSON payload containing
+the `name` and `email` fields. See the [SEC skill](skills/sec-data/SKILL.md)
+for setup and failure handling. Requests send the contact and public issuer
+request to SEC. Local analysis and reuse checks do not require a contact.
 
 From the repository root:
 

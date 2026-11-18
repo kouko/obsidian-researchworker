@@ -139,3 +139,47 @@ def test_primary_document_transport(document, monkeypatch):
     else:
         assert len(calls) == 3
         assert result['errors'][-1]['code'] == 'FISCAL_PERIOD_UNRESOLVED'
+
+
+def test_utf8_user_agent_reaches_http_request(monkeypatch):
+    module = client()
+    from http.client import HTTPSConnection
+    from io import BytesIO
+    from urllib.request import HTTPSHandler, ProxyHandler
+
+    sent = []
+
+    class Connection(HTTPSConnection):
+        def connect(self):
+            pass
+
+        def send(self, data):
+            sent.append(data)
+
+        def getresponse(self):
+            class Response(BytesIO):
+                status = code = 200
+                reason = 'OK'
+                msg = {}
+
+                def info(self):
+                    return self.msg
+
+            return Response(b'{}')
+
+    handler = HTTPSHandler()
+    monkeypatch.setattr(handler, 'https_open', lambda req: handler.do_open(Connection, req))
+    build_opener = module.build_opener
+    monkeypatch.setattr(module, 'build_opener', lambda redirect: build_opener(redirect, handler, ProxyHandler({})))
+    assert module._fetch(module.TICKERS, {'User-Agent': '測試 Operator test@example.org'}) == b'{}'
+    assert 'User-Agent: 測試 Operator test@example.org\r\n'.encode() in sent[0]
+
+
+def test_ordinary_short_operator_name_does_not_reject_filing(monkeypatch):
+    module = client()
+    monkeypatch.setattr(module.time, 'sleep', lambda _: None)
+    data = responses()
+    data[1]['name'] = 'A filing'
+    result = module.acquire('AAPL', '2024-12-31', 'A test@example.org',
+                            lambda *args: json.dumps(data.pop(0)).encode())
+    assert not result['errors']

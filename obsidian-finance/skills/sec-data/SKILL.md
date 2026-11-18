@@ -21,13 +21,6 @@ The compatible alternative accepts an inclusive observation end-date range with
 `--period-start`, `--period-end` and required `--as-of`. Do not mix quarter and
 range selectors. All explicit dates are ISO dates; future cutoffs are invalid.
 
-Before making a request, check whether `SEC_USER_AGENT` is configured without
-printing its value. If absent, explain that SEC requires the operator's own
-identifying name and contact email and ask the user to configure it locally.
-Do not invent an identity, reuse an example or source default, or read private
-configuration to fill it. Public requests disclose the supplied identity and
-requested public issuer to SEC; no private notes are sent.
-
 Resolve `scripts/acquire.py` relative to this loaded skill's directory, then run
 it with Python 3.11 or later. The runtime uses only the standard library.
 Use the host-provided skill directory when available; for example,
@@ -41,10 +34,35 @@ python3 '<skill-directory>/scripts/acquire.py' \
   --output-dir /private/tmp/sec-data-sample
 ```
 
+### Configure contact on first use
+
+Run acquisition first. The script checks the private contact file before
+creating output or sending a request. When it reports `SEC_CONTACT_REQUIRED`,
+ask for the genuine operator or organization name and contact email in the
+current conversation. Explain that the script saves both locally in
+`~/.config/obsidian-finance/sec-contact.json` for later acquisitions and sends
+both to SEC in the request header. The host may retain the conversation and
+tool input. Requests identify the public issuer and do not include private
+vault data.
+
+Run the same script with only `--setup-contact`. Use a host tool that accepts a
+separate, non-echoing stdin payload and pass a JSON object with `name` and
+`email` fields through that channel. Never put the values in shell text,
+arguments, heredocs, echoed terminal input or user-facing status. If the host
+cannot supply private stdin separately from the command, report that limitation
+without echoing the values. Never invent, reuse or discover contact details on
+the user's behalf.
+
+After the script reports `configured`, continue the original acquisition.
+Later runs use the saved file automatically. On `SEC_CONTACT_INVALID`, ask
+only for the correction without repeating the prior values. On
+`SEC_CONTACT_UNUSABLE` or `SEC_CONTACT_SAVE_FAILED`, report the file repair or
+write-permission problem without asking the user to reenter the same contact.
+Do not claim setup succeeded or make a request when setup fails.
+
 Use the user's requested destination. Its direct parent must already exist;
 each invocation creates a distinct run directory and preserves previous output.
-Do not discover or write the user's vault, change global configuration or
-install packages into conda base.
+Do not discover or write the user's vault or install packages into conda base.
 
 ## Interpret the result
 
@@ -56,7 +74,7 @@ relevant limits in the conversation language:
 - `partial` / exit 2: a required source or archive failed; usable evidence may remain.
 - `empty` / exit 3: all required sources acquired but no eligible financial observations.
 - `failed` / exit 1: inspect the error; no usable completed eligible dataset.
-- exit 64: correct missing contact identity or invalid request/destination before retrying.
+- exit 64: resolve the contact, request or destination error before retrying.
 
 For quarter requests report `resolution`, `mode` and `effective_cutoff` from
 the result. `FISCAL_PERIOD_UNRESOLVED` forces failed / exit 1, retaining raw

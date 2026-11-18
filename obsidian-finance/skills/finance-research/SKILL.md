@@ -92,9 +92,10 @@ analysis, including dependent synthesis, while retaining independent valid work.
 Do not stop at printing a work list when evidence permits substantive progress.
 If an input fails, continue independent questions and keep affected ones pending.
 
-For SEC acquisition follow sibling `sec-data`, including a genuine locally
-configured `SEC_USER_AGENT` checked without printing it, actual status/manifest
-and source-declared fiscal identity. Retained HTML is available evidence, not
+For required SEC acquisition follow sibling `sec-data`, including its first-use
+conversation setup, private local contact reuse, actual status/manifest and
+source-declared fiscal identity. Local analysis and reuse checks do not require
+SEC contact setup. Retained HTML is available evidence, not
 evidence that the agent read it. Use appropriate original filing passages for
 each claimed dimension; record sections actually read, passage references and
 unread exclusions. Companyfacts and issuer releases alone do not establish a
