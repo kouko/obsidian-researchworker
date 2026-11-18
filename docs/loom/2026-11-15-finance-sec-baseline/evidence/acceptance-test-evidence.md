@@ -393,3 +393,86 @@ station owns the complete package check:
 No workflow steps were skipped on instruction. No important finding was
 dismissed.
 
+## Re-run on 2026-11-19, at 3708e644ec106d91380a5436e2618f5097809a8f
+
+A fresh local clone at this exact revision was exercised with an empty profile
+and no network or operator identity. Review of the preceding revision
+(`ead19a8`) found that an explicitly empty quarter cutoff selected
+retrospective mode, and the source client could reject a cutoff valid in UTC
+when its local calendar date lagged UTC. This revision distinguishes omission
+from an explicit value and uses UTC consistently. The shared registration,
+general-note subtree, license, attribution and host information were not
+changed by the cutoff fix.
+
+### Setup and focused acquisition checks
+
+From the clean checkout at `/private/tmp/finance-sync-cutoff.WX4oYw/repo`,
+the documented AAPL quarter command without identity returned exit 64,
+`SEC_IDENTITY_REQUIRED`, and did not create the destination. With
+`--as-of ''` it returned exit 64, `INVALID_INPUT`, `"run_path": null`
+and no destination. Separate direct invocations rejected future cutoffs
+in both selectors, an impossible calendar date, and a malformed ticker, all
+with exit 64 and no destination. The focused tests were run as follows:
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_quarter_publication.py obsidian-finance/tests/test_fiscal_quarter.py -q -p no:cacheprovider
+```
+
+`52 passed in 13.83s`. The explicit-empty-cutoff case in
+`test_quarter_invalid_selectors` used a valid offline-only identity, asserted
+zero fetch calls and checked that the destination was never created.
+`test_cutoff_today_uses_utc_even_when_local_day_is_earlier` supplied the
+current UTC cutoff while making the client's local date one day earlier.
+It checked the cutoff, three injected fetches, exit 0 and a completion marker.
+The focused acquisition cases also covered backwards date ranges, an
+unavailable destination, unresolved quarter evidence and preserved annual
+and year-to-date observations.
+
+### Real saved Apple source replay and failures
+
+Reused the earlier independent witness scripts with their import roots
+pointing at this clean checkout and writes directed to new temporary
+directories. Fetch was restricted to saved public bytes or synthetic
+responses. The Apple command captured stdout and stderr separately:
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B ../witness.py > ../apple-replay.out 2> ../apple-replay.err
+```
+
+| Request | Status / exit | Effective cutoff | Fetch calls | Completion |
+|---|---|---|---:|---|
+| Historical quarter | complete / 0 | 2024-08-15 | 5 | present |
+| Retrospective quarter | complete / 0 | 2026-11-18 UTC | 5 | present |
+| Pre-filing quarter | failed / 1 | 2024-08-01 | 4 | absent |
+| Historical date range | complete / 0 | 2024-08-15 | 4 | present |
+| Repeated historical quarter | complete / 0 | 2024-08-15 | 5 | present |
+
+The fixed Apple quarter again resolved to June 29, 2024. The replay checked
+official filing-date eligibility, raw source hashes, retained periods, a
+separate repeat run, and an unchanged earlier manifest and research sentinel.
+Progress printed to stderr. The retrospective date observed is the UTC date
+while the local date was already November 19. This was offline replay,
+with no new connection to SEC.
+
+```sh
+env -i HOME=/private/tmp/finance-sync-cutoff.WX4oYw/empty-profile TMPDIR=/private/tmp/finance-sync-cutoff.WX4oYw PATH=/usr/bin:/bin /private/tmp/finance-validation-env/bin/python -B ../error-witness.py > ../error-replay.out
+```
+
+Historical-quarter offline cases returned partial / 2 for an invalid archive,
+empty / 3 for no usable observation, failed / 1 for unknown issuer, source
+identity mismatch, malformed source and a write error, and an interruption
+without a completion marker. The research sentinel was unchanged in every
+case; the focused tests separately exercised range-mode statuses.
+
+### Disposition
+
+Rows 2–5, UI-2 through UI-14, and Q-1 through Q-6 were re-tested with the
+focused tests and the acquisition replays above. Rows 1, 6 and UI-1 carry
+over because the fix did not change distribution, general-note sources,
+attribution or host scope. UI-15 through UI-17 carry over because the fix
+did not change downstream summary interpretation, unfinished-output
+recovery or offered skill capabilities. Host invocation and live acquisition
+with genuine contact identity remain unverified. The complete package
+suite remains assigned to the closing station. No steps were skipped on
+instruction and no important finding was dismissed.
+
