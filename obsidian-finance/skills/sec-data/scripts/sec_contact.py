@@ -5,11 +5,16 @@ import json
 import os
 from pathlib import Path
 import re
+import select
+import signal
 import stat
+import time
 from secrets import token_hex
 import unicodedata
 
 MAX_PROFILE = 8192
+TERMINAL_TIMEOUT = 60
+INPUT_UNAVAILABLE = 'SEC_CONTACT_INPUT_UNAVAILABLE: supply one JSON line through private stdin'
 PROFILE = '~/.config/obsidian-finance/sec-contact.json'
 INVALID = 'SEC_CONTACT_INVALID: supply a valid operator name and contact email'
 UNUSABLE = f'SEC_CONTACT_UNUSABLE: repair the private profile at {PROFILE}'
@@ -41,6 +46,78 @@ def parse(payload):
         return validate(json.loads(payload))
     except (ValueError, RecursionError):
         raise ValueError(INVALID) from None
+
+
+def read_terminal(stream):
+    """Read one bounded line after confirming the terminal cannot echo it."""
+    try:
+        import termios
+    except ImportError:
+        raise ValueError(INPUT_UNAVAILABLE) from None
+    try:
+        if stream is None or not stream.isatty():
+            raise OSError()
+        fd = stream.fileno()
+        original = termios.tcgetattr(fd)
+        quiet = original[:]
+        quiet[6] = original[6][:]
+        quiet[0] &= ~(termios.IXON | termios.ISTRIP | termios.INLCR | termios.IGNCR)
+        quiet[0] |= termios.ICRNL
+        echo = termios.ECHO | termios.ECHONL
+        quiet[3] &= ~(echo | termios.ICANON | termios.IEXTEN | termios.ISIG)
+        quiet[6][termios.VMIN] = 1
+        quiet[6][termios.VTIME] = 0
+    except (OSError, termios.error, ValueError):
+        raise ValueError(INPUT_UNAVAILABLE) from None
+
+    previous_handlers = {}
+    cancelled = waiting = False
+
+    def cancel(signum, frame):
+        nonlocal cancelled
+        cancelled = True
+        if waiting:
+            raise InterruptedError()
+
+    try:
+        for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+            previous_handlers[signum] = signal.signal(signum, cancel)
+        try:
+            termios.tcsetattr(fd, termios.TCSAFLUSH, quiet)
+            if termios.tcgetattr(fd)[3] & (echo | termios.ICANON):
+                raise OSError()
+            waiting = True
+            if cancelled:
+                raise InterruptedError()
+            print('READY_FOR_SEPARATE_INPUT', flush=True)
+            return _read_terminal_line(fd)
+        finally:
+            waiting = False
+            termios.tcsetattr(fd, termios.TCSAFLUSH, original)
+    except (OSError, termios.error, KeyboardInterrupt):
+        raise ValueError(INPUT_UNAVAILABLE) from None
+    finally:
+        for signum, handler in previous_handlers.items():
+            signal.signal(signum, handler)
+
+
+def _read_terminal_line(fd):
+    deadline = time.monotonic() + TERMINAL_TIMEOUT
+    payload = bytearray()
+    while len(payload) <= MAX_PROFILE:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0 or not select.select([fd], [], [], remaining)[0]:
+            raise OSError()
+        chunk = os.read(fd, min(1024, MAX_PROFILE + 1 - len(payload)))
+        if not chunk or any(cancel in chunk for cancel in (b'\x03', b'\x04', b'\x1a')):
+            raise OSError()
+        line, newline, trailing = chunk.partition(b'\n')
+        payload.extend(line)
+        if newline:
+            if trailing:
+                raise ValueError(INVALID)
+            return bytes(payload)
+    raise ValueError(INVALID)
 
 
 @contextmanager

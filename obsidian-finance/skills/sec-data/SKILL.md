@@ -45,20 +45,31 @@ both to SEC in the request header. The host may retain the conversation and
 tool input. Requests identify the public issuer and do not include private
 vault data.
 
-Run the same script with only `--setup-contact`. Use a host tool that accepts a
-separate, non-echoing stdin payload and pass a JSON object with `name` and
-`email` fields through that channel. Never put the values in shell text,
-arguments, heredocs, echoed terminal input or user-facing status. If the host
-cannot supply private stdin separately from the command, report that limitation
-without echoing the values. Never invent, reuse or discover contact details on
-the user's behalf.
+Use the same script in a setup-only invocation. Pass a JSON object with
+`name` and `email` fields as a separate input payload:
+
+- If the host supports non-echoing piped stdin, invoke `--setup-contact` and
+  pass the object through that pipe.
+- In Codex with `exec_command` and `write_stdin`, start the script with
+  `--setup-contact --terminal` and `tty: true`. Wait for
+  `READY_FOR_SEPARATE_INPUT` and a session ID. That marker confirms echo is
+  disabled. In a distinct `write_stdin` call to the same session, send the
+  JSON as one line followed by a newline within 60 seconds. Codex may retain
+  the contents of that tool input.
+
+Never put the values in shell text, arguments, environment variables,
+heredocs, echoed terminal input or user-facing status. If the host cannot
+provide a supported input channel or the terminal never signals readiness,
+report the limitation without sending or echoing the values. Never invent,
+reuse or discover contact details on the user's behalf.
 
 After the script reports `configured`, continue the original acquisition.
 Later runs use the saved file automatically. On `SEC_CONTACT_INVALID`, ask
 only for the correction without repeating the prior values. On
 `SEC_CONTACT_UNUSABLE` or `SEC_CONTACT_SAVE_FAILED`, report the file repair or
 write-permission problem without asking the user to reenter the same contact.
-Do not claim setup succeeded or make a request when setup fails. The dedicated
+On `SEC_CONTACT_INPUT_UNAVAILABLE`, report the input channel problem without
+claiming the profile was saved. The dedicated
 profile directory must be a real directory at its configured location.
 
 Use the user's requested destination. Its direct parent must already exist;

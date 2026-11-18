@@ -1,10 +1,15 @@
 import hashlib
 import importlib.util
 import json
+import os
+import pty
+import select
+import signal
 import stat
 import subprocess
 from pathlib import Path
 import sys
+import termios
 
 import pytest
 
@@ -311,6 +316,10 @@ def test_setup_cli_and_later_acquisition(tmp_path, monkeypatch):
     # Separate Python process, real argv and stored contact, offline transport.
     later = run_cli('-c', """
 import json
+import os
+import pty
+import select
+import signal
 import sys
 sys.path.insert(0, sys.argv[1])
 import acquire
@@ -429,3 +438,61 @@ def test_symlinked_profile_directory_is_unusable_and_cannot_store_contact(tmp_pa
     result = module().run(acquisition, lambda *args: pytest.fail('Unexpected network request'))
     assert result['error'].startswith('SEC_CONTACT_UNUSABLE')
     assert not (tmp_path / 'output').exists()
+
+
+@pytest.mark.parametrize('mode', ['valid', 'invalid', 'interrupt', 'terminate', 'timeout', 'eof'])
+def test_separate_terminal_contact_input(tmp_path, monkeypatch, mode):
+    configure_contact(tmp_path, monkeypatch)
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    original_bytes = profile.read_bytes()
+    operator = {'name': 'PTY Test Operator', 'email': 'pty@example.org'}
+    payload = json.dumps(operator).encode()
+    master, slave = pty.openpty()
+    initial = termios.tcgetattr(slave)
+    initial[3] |= termios.ECHO | termios.ECHONL
+    termios.tcsetattr(slave, termios.TCSANOW, initial)
+    command = [sys.executable, str(SCRIPTS / 'acquire.py'), '--setup-contact', '--terminal']
+    if mode == 'timeout':
+        command = [sys.executable, '-c',
+                   'import acquire; acquire.sec_contact.TERMINAL_TIMEOUT = 0.5; '
+                   'raise SystemExit(acquire.main(["--setup-contact", "--terminal"]))']
+    process = subprocess.Popen(command, cwd=SCRIPTS, stdin=slave, stdout=slave, stderr=slave)
+    output = b''
+    try:
+        assert select.select([master], [], [], 5)[0], 'terminal did not signal readiness'
+        output += os.read(master, 8192)
+        assert output.strip() == b'READY_FOR_SEPARATE_INPUT'
+        assert not termios.tcgetattr(slave)[3] & (termios.ECHO | termios.ECHONL)
+
+        if mode == 'valid':
+            # More bytes than the usual canonical terminal limit.
+            os.write(master, payload + b' ' * 5000 + b'\n')
+        elif mode == 'invalid':
+            os.write(master, payload[:-1] + b'\n')
+        else:
+            os.write(master, payload[:-1])
+            if mode == 'interrupt':
+                process.send_signal(signal.SIGINT)
+            elif mode == 'terminate':
+                process.send_signal(signal.SIGTERM)
+            elif mode == 'eof':
+                os.write(master, b'\x04')
+
+        assert process.wait(timeout=5) == (0 if mode == 'valid' else 64)
+        while select.select([master], [], [], 0)[0]:
+            output += os.read(master, 8192)
+        assert termios.tcgetattr(slave) == initial
+        assert all(value.encode() not in output for value in operator.values())
+        summary = json.loads(output.splitlines()[1])
+        if mode == 'valid':
+            assert summary['status'] == 'configured'
+            assert json.loads(profile.read_bytes()) == operator
+        else:
+            assert summary['status'] == 'failed'
+            assert profile.read_bytes() == original_bytes
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        os.close(master)
+        os.close(slave)

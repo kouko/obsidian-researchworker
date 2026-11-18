@@ -274,15 +274,18 @@ def run(argv=None, fetch=None):
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
-    if argv == ['--setup-contact']:
+    if argv in (['--setup-contact'], ['--setup-contact', '--terminal']):
         try:
-            try:
-                if sys.stdin is None or sys.stdin.isatty():
-                    raise ValueError()
-                stream = getattr(sys.stdin, 'buffer', sys.stdin)
-                payload = stream.read(sec_contact.MAX_PROFILE + 1)
-            except (OSError, ValueError):
-                raise ValueError('SEC_CONTACT_INPUT_UNAVAILABLE: supply private stdin') from None
+            if '--terminal' in argv:
+                payload = sec_contact.read_terminal(sys.stdin)
+            else:
+                try:
+                    if sys.stdin is None or sys.stdin.isatty():
+                        raise ValueError()
+                    stream = getattr(sys.stdin, 'buffer', sys.stdin)
+                    payload = stream.read(sec_contact.MAX_PROFILE + 1)
+                except (OSError, ValueError):
+                    raise ValueError(sec_contact.INPUT_UNAVAILABLE) from None
             sec_contact.save(sec_contact.parse(payload))
             summary = dict(status='configured', exit_code=0)
         except ValueError as exc:

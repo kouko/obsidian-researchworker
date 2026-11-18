@@ -94,8 +94,9 @@ If an input fails, continue independent questions and keep affected ones pending
 
 For required SEC acquisition follow sibling `sec-data`, including its first-use
 conversation setup, private local contact reuse, actual status/manifest and
-source-declared fiscal identity. Local analysis and reuse checks do not require
-SEC contact setup. Retained HTML is available evidence, not
+source-declared fiscal identity. On Codex use the non-echoing terminal sequence
+described in that skill when setup is required. Local analysis and reuse checks
+do not require SEC contact setup. Retained HTML is available evidence, not
 evidence that the agent read it. Use appropriate original filing passages for
 each claimed dimension; record sections actually read, passage references and
 unread exclusions. Companyfacts and issuer releases alone do not establish a
