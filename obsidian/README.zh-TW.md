@@ -13,14 +13,16 @@
 獨立版本的 Claude/Cowork 相容性尚未驗證。[驗證紀錄](../docs/verification.md)
 僅記載過去 Codex 本機來源安裝成功，實際使用仍未達成。
 
+下表列出獨立版本的驗證狀態；上述 `defuddle` 限制來自上游，並非本版本的實測結果。
+
 | Skill | Cowork | Claude Code CLI |
 |---|---|---|
-| `defuddle` | 阻擋（URL 抓取） | 可運作 |
-| 其他所有 obsidian skill | 可運作 | 可運作 |
+| `defuddle` | 未驗證；上游記載 URL 抓取受阻 | 未驗證 |
+| 其他 obsidian skill | 未驗證 | 依個別 skill 證據；尚無全套驗證 |
 
 ## Version
 
-4.1.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+4.2.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
 
 初始化會預覽個人化的命名、筆記品質與現行 skill 規範，完整內容放在
 `AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
@@ -39,6 +41,7 @@
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 [驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
 但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
+4.2.0 改名為 `obsidian-knowledge`，改用隨附的唯讀 shell script 搜尋（不再需要編輯器的 Grep/Glob；skill 數仍為 15）。
 
 ## 背景
 
@@ -78,6 +81,7 @@ file processing、圖表、清理 vault）將請求 routing 至正確的 skill�
 | `obsidian-vault-setup` | 互動式 vault 首次設定 —— 從自由文字回答推測 role 與 scope |
 | `obsidian-tldr` | 把對話摘要寫入 vault，並更新 `memory.md` |
 | `obsidian-research` | 上網研究指定主題（英文＋日文，主題有特定語言時再加該語言並以它為主），在 `research/` 產出附目錄的研究筆記 |
+| `obsidian-knowledge` | 從任何 project 搜尋本機 vault（唯讀）；SessionStart hook 會告訴每個 session vault 在哪裡；不需 Grep/Glob |
 | `obsidian-file-intel` | 透過 Gemini 從 PDF / PPTX / XLSX / DOCX / CSV / JSON 萃取內容並產出 Obsidian-ready 摘要 |
 | `dashboard-design` | 依日本數位廳 dashboard 設計指引，從需求釐清引導到 layout |
 
@@ -124,6 +128,13 @@ npm install -g defuddle
 本發行版未附帶該腳本，也未提供取得或設定程序。沒有既有相容腳本時無法使用
 檔案處理；獨立版本的設定與執行仍未驗證。
 
+`obsidian-knowledge` skill 從其他 project 讀取 vault。SessionStart hook
+（`hooks/hooks.json`）在 session 開始時輸出 vault 路徑。搜尋使用隨附的 `skills/obsidian-knowledge/scripts/vault.sh`（POSIX sh；Obsidian 開著時用 CLI，否則用 BSD grep）——macOS 上不需要 Python，也不需要 Grep/Glob。若讀取 vault 跳出權限確認，
+可在 `~/.claude/settings.json` → `permissions.allow` 加一行讀取規則
+（例：`Read(~/Documents/MyVault/**)`）；skill 會顯示確切那一行，經你同意才加入。
+隱私：skill 讀到的筆記內容會傳送給模型供應商。支援範圍：Claude Code 於 macOS
+已驗證；Linux 未驗證；Windows 不支援。
+
 ## Usage
 
 開始一天：
@@ -159,9 +170,10 @@ sequence diagram type、套用 Obsidian 11.4.1 的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 4.1.0
+│   └── plugin.json              # plugin metadata，version 4.2.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
+├── hooks/                       # SessionStart vault pointer
 ├── skills/
 │   ├── README.md                # 各 skill attribution 表
 │   ├── using-obsidian/          # router（original）
@@ -169,6 +181,7 @@ obsidian/
 │   ├── obsidian-vault-setup/    # vault 設定（original）
 │   ├── obsidian-tldr/           # 對話摘要（original）
 │   ├── obsidian-research/       # 單題研究 → vault 筆記（original）
+│   ├── obsidian-knowledge/      # 唯讀 vault 搜尋（original）
 │   ├── obsidian-file-intel/     # 檔案 → Obsidian 摘要（original）
 │   ├── dashboard-design/        # dashboard 設計（original）
 │   ├── obsidian-markdown/       # 引入自 kepano

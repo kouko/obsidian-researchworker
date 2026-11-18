@@ -1,5 +1,5 @@
 // OpenCode v2 plugin loader for obsidian
-// Registers all skills in ../skills/ via ctx.skill.transform
+// Registers skills and slash commands from ../skills/.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -207,7 +207,7 @@ function extractFrontmatter(raw) {
 }
 
 export default {
-  id: "obsidian-researchworker",
+  id: "obsidian",
   async setup(ctx) {
     try {
       const skillsPath = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills");
@@ -244,28 +244,49 @@ export default {
           }
 
           skills.push({
-            id: `obsidian-researchworker:${entry.name}`,
+            id: `obsidian:${entry.name}`,
             name,
             description,
             path: skillFile,
             content: skillContent
           });
         } catch (err) {
-          console.error(`[obsidian-researchworker] Failed to load skill ${entry.name}:`, err);
+          console.error(`[obsidian] Failed to load skill ${entry.name}:`, err);
         }
       }
 
+      // https://opencode.ai/docs/build/plugins/server#skills
       await ctx.skill.transform((draft) => {
         for (const skill of skills) {
           try {
             draft.add(skill);
           } catch (err) {
-            console.error(`[obsidian-researchworker] Failed to register skill ${skill.id}:`, err);
+            console.error(`[obsidian] Failed to register skill ${skill.id}:`, err);
+          }
+        }
+      });
+      // https://opencode.ai/docs/build/plugins/server#commands
+      await ctx.command.transform((draft) => {
+        for (const skill of skills) {
+          try {
+            draft.add({
+              name: skill.id,
+              description: skill.description,
+              execute: (input) => ctx.session.prompt({
+                ...input.prompt,
+                sessionID: input.sessionID,
+                text: `/${skill.id} ${input.prompt?.text ?? ""}`.trim() +
+                  `\n\nBase directory for this skill: ${dirname(skill.path)}\n\n${skill.content}`,
+                delivery: input.delivery,
+              }),
+            });
+          } catch (err) {
+            console.error(`[obsidian] Failed to register command ${skill.id}:`, err);
           }
         }
       });
     } catch (err) {
-      console.error(`[obsidian-researchworker] Loader failed:`, err);
+      console.error(`[obsidian] Loader failed:`, err);
     }
   }
 };

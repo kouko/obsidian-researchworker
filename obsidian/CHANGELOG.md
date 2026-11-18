@@ -4,6 +4,28 @@ All notable changes to the `obsidian` plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0] — 2026-11-15 No Python, no Grep/Glob: bundled vault.sh search
+
+### Changed
+
+- `obsidian-vault-search` renamed `obsidian-knowledge`. Search and vault
+  discovery run through one bundled POSIX `sh` script
+  (`skills/obsidian-knowledge/scripts/vault.sh`): Obsidian's own CLI `search`
+  when the app is running, BSD `grep` otherwise. The editor's Grep/Glob tools
+  are no longer used — they do not exist on every host.
+- SessionStart hook rewritten as `hooks/vault_pointer.sh` (POSIX sh calling
+  `vault.sh locate`); `hooks/vault_pointer.py` and the skill's
+  `scripts/find_vaults.py` are removed, so the plugin needs no Python on macOS.
+- Blank or whitespace-only search words are ignored; the CLI branch never
+  prints an error banner as a note path; both engines exclude every hidden
+  directory, so they return the same hit set.
+
+### Notes
+
+- Linux registry discovery still falls back to `python3` (unverified);
+  Windows unsupported. On Linux, search uses the same `grep` loop.
+- Note text the skill reads is sent to the model provider; a one-time setup proposes three lines — `Read(<vault>/**)`, `Skill(obsidian:obsidian-knowledge)`, and the bundled-search Bash rule (`Bash(${CLAUDE_SKILL_DIR}/scripts/vault.sh *)`) — added to global settings only with user consent.
+
 ## [4.1.0] — 2026-11-15 Shared vault instructions
 
 ### Changed

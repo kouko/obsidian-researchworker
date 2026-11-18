@@ -1,0 +1,17 @@
+{
+  "description": "Tell each session where the local Obsidian vault is (read-only pointer).",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/vault_pointer.sh\" || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
