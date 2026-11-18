@@ -83,8 +83,12 @@ items, or date-only edits.
   links and references to the affected notes. Reuse existing fixed versions
   when they match. For a mutable target, establish the exact version used by
   the earlier report, freeze it if needed, and repair only the historical link.
-  Preserve the earlier report's text and original file version when changing a
-  link. Pin the frozen note's outgoing evidence links too. Preserve older
+  Before changing a historical link, reserve a separate dated archive path in
+  `history/` for that report's exact pre-change bytes. Reuse an existing archive
+  only if its bytes match. Mark the archive with a `-original.md` suffix.
+  Leave the archive's original links untouched in later rounds and use the
+  report at its existing path when tracing evidence. Change only the link
+  destination there. Pin the frozen judgment's evidence links too. Preserve older
   sources and raw files in place or under a version-specific path. Never
   infer a prior version simply by copying today's mutable note. If the prior
   target cannot be established, leave active notes unchanged and name the
@@ -114,8 +118,12 @@ and sync clients can still write while a replacement is in progress.
 2. Verify the saved entry and completed round. Prepare all updates in memory
    or outside the vault. Before applying, check the proposed links against the
    planned versions, including historical links through frozen judgments and
-   source notes. Keep preserved versions first in the write order and put the
-   entry last when it changes. An empty plan needs no write.
+   source notes. For each historical report whose links will change, verify
+   that a separate archive already matches the inspected report bytes exactly
+   or that the plan writes those exact bytes to the archive before repairing
+   the report. If you cannot verify this, stop before applying. Keep preserved
+   versions first in the write order and put the entry last when it changes.
+   An empty plan needs no write.
 3. Send one JSON plan on standard input to
    `python3 <skill-dir>/scripts/research_transaction.py apply <vault> <folder>`.
    Specify the `snapshot` token from inspection, `entry` and `round` as paths

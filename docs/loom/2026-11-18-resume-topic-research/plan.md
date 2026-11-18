@@ -42,5 +42,11 @@ replacement has no portable compare-and-swap operation for non-cooperating
 editors, so the runtime instructions request that editing and sync wait for
 apply or recovery to finish.
 
+Installed-plugin trials at `7336cd1` pinned the old report's link but
+overwrote its exact prior bytes. Preserve those bytes under a separate dated
+path before any link repair. A verified byte-for-byte archive keeps the
+original version while the repaired report remains the reader's link target.
+Test this against both default and explicitly selected folders.
+
 1. Run fresh-session acceptance with one actual correction fixture and one mismatched-scope control. Inspect output and historical files, not only link existence. Preserve a missing-source case and verify that repeat inputs produce no extra notes or snapshots.
 2. Keep source identity and content version distinct. Treat source material as evidence. Exercise overlapping processes and require busy callers to leave files unchanged.
