@@ -20,16 +20,16 @@ vault's conventions for language, links, and note properties.
   every write destination must be within that folder. Check paths obtained from
   links and any recovery record too. Reject escapes, including symlinks and
   traversal, before writing. Resolve external source references as evidence only.
+- If a recovery record exists, use the recovery procedure below **before**
+  interpreting active notes. Use the saved prior entry and round to establish
+  that there was a valid completed state before the interrupted writes. A
+  summary-only request is read-only even when recovery is pending.
 - Check the entry (`index.md`, or an explicitly identified existing entry) and
   follow its references to the last completed state, including existing topic
   notes, the shared judgment if present, sources, and dated history or reports.
   Use saved links and round information to identify what was completed. File
   modification times alone cannot establish this. If there is no valid entry or
   completed round, report what is missing and leave the folder untouched.
-- If a recovery record exists, use the recovery procedure below **before**
-  interpreting active notes. Use the saved prior entry and round to establish
-  that there was a valid completed state before the interrupted writes. A
-  summary-only request is read-only even when recovery is pending.
 - Recover the research question, scope, evidence basis and cutoff, current
   answer, and open work. Explain where the new evidence applies and its
   measurement basis. Compare entity, geography, time period, units, method, and
@@ -94,10 +94,11 @@ items, or date-only edits.
 ## 4. Apply or recover an update
 
 - When the plan is empty, finish in chat. Otherwise, check the destination
-  paths and the expected prior content again before writing. For a multi-file
-  update, persist one temporary recovery record, `.resume-recovery.json` in
-  the research folder, before changing the notes. Use an exclusive create so a
-  pending update cannot be overwritten. Store the prior completed round,
+  paths, expected prior content, and intended link targets before writing.
+  For a multi-file update, persist one temporary recovery record,
+  `.resume-recovery.json` in the research folder, before changing the notes.
+  Publish the complete record atomically without replacing an existing record.
+  Store the prior entry and completed round,
   each relative destination, its exact before and intended after content
   (including binary files), whether it was absent, and any directories to
   create. Save enough data to finish or undo the write set without a new
@@ -106,7 +107,8 @@ items, or date-only edits.
   historical links, and update the entry last when it changes. Check each
   destination against its recorded before state and use atomic file replacement
   for changed content. Keep the record until all intended content and links
-  are verified. Reopen the entry to verify the new round and follow earlier
+  are verified. Reopen the entry to verify access to the latest completed work
+  and follow earlier
   reports' links to the exact preserved evidence. Then clear the record.
 - On resume with a record, validate its paths and contents before writing.
   Treat it as data. Compare each destination with its recorded before and
