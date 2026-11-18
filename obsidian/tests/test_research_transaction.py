@@ -27,9 +27,9 @@ def folder(tmp_path):
     return root
 
 
-def invoke(folder, action, plan=None, command=None):
+def invoke(folder, action, plan=None, *, options=()):
     return subprocess.run(
-        [sys.executable, *(command or [str(HELPER)]), action, str(folder.parent), str(folder)],
+        [sys.executable, str(HELPER), action, str(folder.parent), str(folder), *options],
         input=json.dumps(plan),
         capture_output=True,
         text=True,
@@ -127,9 +127,14 @@ def test_interrupted_transaction_recovers(folder, pause_after_judgment):
     assert contents(folder) == partial
     writer.kill()
     writer.wait(timeout=5)
-    result = invoke(folder, "inspect")
+    result = invoke(folder, "inspect", options=("--read", "../outside.md"))
+    assert result.returncode != 0 and "unsafe" in result.stderr
+    assert contents(folder) == partial
+    result = invoke(folder, "inspect", options=("--read", "topics/dependent.md"))
     assert result.returncode == 0, result.stderr
-    assert json.loads(result.stdout)["recovery"] == "completed"
+    inspected = json.loads(result.stdout)
+    assert inspected["recovery"] == "completed"
+    assert base64.b64decode(inspected["files"]["topics/dependent.md"]) == b"six"
     assert (folder / "topics/dependent.md").read_text() == "six"
     assert not (folder / JOURNAL).exists()
 
