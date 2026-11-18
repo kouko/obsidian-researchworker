@@ -17,6 +17,11 @@ charter: 1.1
 - Test: A1 positive: conversation_setup; boundary: non_echoing_input_unavailable. A2 positive: configured_acquisition; boundary: setup_not_needed_for_local_analysis. A3 positive: sanitized_status; negative: echoed_contact. A4 positive: single_store_instructions; negative: legacy_setup_guidance.
 - Risk: Use the existing bundled entry point. Validate the actual missing and configured paths in separate isolated invocations before claiming reuse.
 
+**W1-03 Retain the two independent contact disclosure regressions** after: W1-01 acceptance: 3
+- Files: obsidian-finance/tests/test_contact_vault_symlink.py, obsidian-finance/tests/test_single_token_contact_reflection.py
+- Test: Both independent probes failed before the fix and pass after it. Move them into normal package discovery with their assertions intact.
+- Risk: Agent-decided retain both confirmed regressions in the package suite.
+
 ## Risks
 
 The profile location is outside the workspace. Test with an isolated effective user home and distinguish filesystem denial from SEC rejection. No real contact or live SEC request is needed for offline tests. Predecessor attestations are retained in the stacked branch.
