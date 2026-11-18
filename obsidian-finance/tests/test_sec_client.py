@@ -113,7 +113,7 @@ def test_no_original_runtime(monkeypatch):
     assert not any('monkey' in str(v).lower() for v in vars(module).values() if hasattr(v, '__file__'))
 
 
-@pytest.mark.parametrize('document', ['aapl.htm', '../aapl.htm', 'aapl.htm?x=1'])
+@pytest.mark.parametrize('document', ['aapl.htm', '../aapl.htm', 'aapl.htm?x=1', 'reflect.htm'])
 def test_primary_document_transport(document, monkeypatch):
     from test_fiscal_quarter import declaration, evidence
     module = client()
@@ -123,19 +123,27 @@ def test_primary_document_transport(document, monkeypatch):
     data[1]['filings']['recent'] = {k: [v] for k, v in sample['filings'][0].items()}
     data[1]['filings']['recent']['primaryDocument'] = [document]
     data[2]['facts'] = sample['facts']['facts']
-    data.append(declaration().encode())
+    filing = declaration().encode()
+    if document == 'reflect.htm':
+        filing += b'<p>Requester: OperatorAlias</p>'
+    data.append(filing)
     calls = []
     def fetch(url, headers):
         calls.append(url)
         value = data.pop(0)
         return value if isinstance(value, bytes) else json.dumps(value).encode()
-    result = module.acquire('AAPL', '2024-12-31', 'Test test@example.org', fetch,
+    result = module.acquire('AAPL', '2024-12-31', 'OperatorAlias test@example.org', fetch,
                             fiscal_quarter='2024Q3')
     if document == 'aapl.htm':
         source = result['sources'][-1]
         assert source['status'] == 'valid' and source['raw_bytes'] == declaration().encode()
         assert source['sha256'] == hashlib.sha256(source['raw_bytes']).hexdigest()
         assert calls[-1] == 'https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl.htm'
+    elif document == 'reflect.htm':
+        source = result['sources'][-1]
+        assert source['status'] == 'error'
+        assert source['raw_bytes'] is None and source['sha256'] is None
+        assert result['errors'][-1]['code'] == 'CONTACT_REFLECTED'
     else:
         assert len(calls) == 3
         assert result['errors'][-1]['code'] == 'FISCAL_PERIOD_UNRESOLVED'
@@ -175,11 +183,15 @@ def test_utf8_user_agent_reaches_http_request(monkeypatch):
     assert 'User-Agent: 測試 Operator test@example.org\r\n'.encode() in sent[0]
 
 
-def test_ordinary_short_operator_name_does_not_reject_filing(monkeypatch):
+@pytest.mark.parametrize(('name', 'text'), [
+    ('A', 'A filing'),
+    ('Ward', 'Forward filing'),
+])
+def test_ordinary_short_operator_name_does_not_reject_filing(monkeypatch, name, text):
     module = client()
     monkeypatch.setattr(module.time, 'sleep', lambda _: None)
     data = responses()
-    data[1]['name'] = 'A filing'
-    result = module.acquire('AAPL', '2024-12-31', 'A test@example.org',
+    data[1]['name'] = text
+    result = module.acquire('AAPL', '2024-12-31', f'{name} test@example.org',
                             lambda *args: json.dumps(data.pop(0)).encode())
     assert not result['errors']

@@ -32,8 +32,11 @@ def payloads():
     ]
 
 
-def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None):
-    configure_contact(tmp_path, monkeypatch)
+def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None, contact=None):
+    configure_contact(tmp_path, monkeypatch, saved=contact is None)
+    if contact is not None:
+        import sec_contact
+        sec_contact.save(contact)
     data = payloads() if data is None else data
     calls = []
     def fetch(url, headers):
@@ -368,7 +371,7 @@ def test_denied_replace_preserves_previous_contact(tmp_path, monkeypatch, capsys
     old = profile.read_bytes()
     replacement = {'name': 'Other operator', 'email': 'other@example.org'}
 
-    def deny(*args):
+    def deny(*args, **kwargs):
         raise PermissionError(replacement['email'])
 
     monkeypatch.setattr(sec_contact.os, 'replace', deny)
@@ -381,14 +384,48 @@ def test_denied_replace_preserves_previous_contact(tmp_path, monkeypatch, capsys
     assert list(profile.parent.iterdir()) == [profile]
 
 
-def test_reflected_contact_not_retained(tmp_path, monkeypatch):
+@pytest.mark.parametrize(('name', 'response_value'), [
+    (CONTACT['name'], CONTACT['name']),
+    ('SyntheticOperator', 'SyntheticOperator'),
+    ('SyntheticOperator', 'Operator: SyntheticOperator.'),
+    ('SyntheticOperator', b'{"message": "Operator: SyntheticOperator."'),
+    ('林', rb'{"name": "\u6797"'),
+    ('林', '林'),
+])
+def test_reflected_contact_not_retained(tmp_path, monkeypatch, name, response_value):
+    contact = dict(CONTACT, name=name)
     data = payloads()
-    data[1]['name'] = CONTACT['name']
-    summary, path, _ = execute(tmp_path, monkeypatch, data)
+    if isinstance(response_value, bytes):
+        data[1] = response_value
+    else:
+        data[1]['name'] = response_value
+    summary, path, _ = execute(tmp_path, monkeypatch, data, contact=contact)
     assert summary['status'] == 'partial'
     source = read(path, 'manifest.json')['sources'][1]
     assert source['path'] is None and source['sha256'] is None
     assert any(error['code'] == 'CONTACT_REFLECTED' for error in summary['errors'])
     for file in path.rglob('*'):
         if file.is_file():
-            assert all(value not in file.read_text() for value in CONTACT.values())
+            assert all(value not in file.read_text() for value in contact.values())
+
+
+def test_symlinked_profile_directory_is_unusable_and_cannot_store_contact(tmp_path, monkeypatch):
+    configure_contact(tmp_path, monkeypatch, saved=False)
+    other = tmp_path / 'managed-research'
+    other.mkdir()
+    config = tmp_path / '.config'
+    config.mkdir()
+    (config / 'obsidian-finance').symlink_to(other, target_is_directory=True)
+    acquisition = ['--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                   '--output-dir', str(tmp_path / 'output')]
+    setup = run_cli(str(SCRIPTS / 'acquire.py'), '--setup-contact', payload=json.dumps(CONTACT))
+    assert setup.returncode == 64
+    assert json.loads(setup.stdout)['error'].startswith('SEC_CONTACT_SAVE_FAILED')
+    assert list(other.iterdir()) == []
+
+    redirected_profile = other / 'sec-contact.json'
+    redirected_profile.write_text(json.dumps(CONTACT))
+    redirected_profile.chmod(0o600)
+    result = module().run(acquisition, lambda *args: pytest.fail('Unexpected network request'))
+    assert result['error'].startswith('SEC_CONTACT_UNUSABLE')
+    assert not (tmp_path / 'output').exists()

@@ -58,7 +58,8 @@ Later runs use the saved file automatically. On `SEC_CONTACT_INVALID`, ask
 only for the correction without repeating the prior values. On
 `SEC_CONTACT_UNUSABLE` or `SEC_CONTACT_SAVE_FAILED`, report the file repair or
 write-permission problem without asking the user to reenter the same contact.
-Do not claim setup succeeded or make a request when setup fails.
+Do not claim setup succeeded or make a request when setup fails. The dedicated
+profile directory must be a real directory at its configured location.
 
 Use the user's requested destination. Its direct parent must already exist;
 each invocation creates a distinct run directory and preserves previous output.
@@ -94,6 +95,10 @@ Inspect `manifest.json` and `coverage.json` for evidence and exclusions. Only
 `eligible-facts.json` and `filings.json` are filtered analytical inputs.
 `raw/` contains unfiltered latest endpoint responses, including later data;
 retain it as evidence, not as an eligible historical snapshot.
+`CONTACT_REFLECTED` means a response was withheld because it matched contact
+data. A matching short name alone does not establish why it appeared. For
+single-character names, the check matches complete values to avoid confusing
+an ordinary letter in a sentence with a name.
 Quarter requests also retain candidate primary-filing HTML. Quarter facts use
 exact resolved end-date matching; the filing inventory still includes eligible
 10-K/10-Q versions across acquired history, without a lower publication bound.

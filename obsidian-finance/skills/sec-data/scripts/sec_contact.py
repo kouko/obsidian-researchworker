@@ -1,11 +1,12 @@
 """Local SEC operator contact, separate from research data."""
 
+from contextlib import contextmanager
 import json
 import os
 from pathlib import Path
 import re
 import stat
-import tempfile
+from secrets import token_hex
 import unicodedata
 
 MAX_PROFILE = 8192
@@ -42,15 +43,26 @@ def parse(payload):
         raise ValueError(INVALID) from None
 
 
+@contextmanager
+def _profile_directory(path):
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        yield directory
+    finally:
+        os.close(directory)
+
+
 def load():
     try:
         path = Path(PROFILE).expanduser()
-        with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), 'rb') as handle:
-            info = os.fstat(handle.fileno())
-            if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid()
-                    or stat.S_IMODE(info.st_mode) != 0o600):
-                raise ValueError(UNUSABLE)
-            return parse(handle.read(MAX_PROFILE + 1))
+        with _profile_directory(path) as directory:
+            flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+            with os.fdopen(os.open(path.name, flags, dir_fd=directory), 'rb') as handle:
+                info = os.fstat(handle.fileno())
+                if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid()
+                        or stat.S_IMODE(info.st_mode) != 0o600):
+                    raise ValueError(UNUSABLE)
+                return parse(handle.read(MAX_PROFILE + 1))
     except FileNotFoundError:
         raise ValueError('SEC_CONTACT_REQUIRED: set up a local SEC contact') from None
     except (ValueError, OSError, RuntimeError):
@@ -59,24 +71,25 @@ def load():
 
 def save(contact):
     contact = validate(contact)
-    temporary = None
     try:
         path = Path(PROFILE).expanduser()
         path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', prefix='.sec-contact-',
-                                         dir=path.parent, delete=False) as handle:
-            temporary = Path(handle.name)
-            os.fchmod(handle.fileno(), 0o600)
-            json.dump(contact, handle, ensure_ascii=False)
-            handle.write('\n')
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
+        with _profile_directory(path) as directory:
+            temporary = '.sec-contact-' + token_hex(16)
+            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+            descriptor = os.open(temporary, flags, 0o600, dir_fd=directory)
+            try:
+                with os.fdopen(descriptor, 'w', encoding='utf-8') as handle:
+                    os.fchmod(handle.fileno(), 0o600)
+                    json.dump(contact, handle, ensure_ascii=False)
+                    handle.write('\n')
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temporary, path.name, src_dir_fd=directory, dst_dir_fd=directory)
+            finally:
+                try:
+                    os.unlink(temporary, dir_fd=directory)
+                except OSError:
+                    pass
     except (OSError, RuntimeError):
         raise ValueError(SAVE_FAILED) from None
-    finally:
-        if temporary is not None:
-            try:
-                temporary.unlink(missing_ok=True)
-            except OSError:
-                pass

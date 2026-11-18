@@ -7,6 +7,7 @@ uses only the standard library. Returned payloads are unfiltered evidence.
 from datetime import date, datetime, timezone
 import hashlib
 import html as html_entities
+from html.parser import HTMLParser
 import json
 import re
 import time
@@ -64,20 +65,39 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
     result = dict(company=None, identity_valid=True, sources=[], filings=[], facts=None, errors=[])
     transport = fetch or _fetch
     name, _, email = identity.rpartition(' ')
-    # An ordinary short name can be an unrelated word in a filing.
-    name_pattern = re.compile(rf'(?<!\w){re.escape(name)}(?!\w)', re.IGNORECASE) if ' ' in name else None
+    bounded_name = rf'(?<!\w){re.escape(name)}(?!\w)'
+    phrase = re.compile(bounded_name, re.IGNORECASE) if ' ' in name else None
+    token = re.compile(bounded_name) if len(name) > 1 and phrase is None else None
+    folded_name, folded_email = name.casefold(), email.casefold()
+    if len(name) == 1:
+        quoted_name = re.compile('|'.join(re.escape(json.dumps(name, ensure_ascii=ascii_only))
+                                         for ascii_only in (False, True)), re.IGNORECASE)
+    else:
+        quoted_name = None
 
-    folded_email = email.casefold()
-
-    def reflects_contact(text):
+    def reflects_contact(text, *, decoded_field=False):
         text = html_entities.unescape(text)
-        return folded_email in text.casefold() or bool(name_pattern and name_pattern.search(text))
+        folded = text.casefold()
+        return (bool(folded_email and folded_email in folded)
+                or bool(folded_name and folded.strip() == folded_name)
+                or bool(phrase and phrase.search(text))
+                or bool(decoded_field and token and token.search(text)))
+
+    class _ContactInHtml(HTMLParser):
+        found = False
+
+        def handle_data(self, data):
+            self.found = self.found or reflects_contact(data, decoded_field=True)
+
+        def handle_starttag(self, tag, attrs):
+            self.found = self.found or any(
+                value and reflects_contact(value, decoded_field=True) for _, value in attrs)
 
     def payload_reflects_contact(value):
         pending = [value]
         while pending:
             item = pending.pop()
-            if isinstance(item, str) and reflects_contact(item):
+            if isinstance(item, str) and reflects_contact(item, decoded_field=True):
                 return True
             if isinstance(item, list):
                 pending.extend(item)
@@ -102,17 +122,33 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
                 if not isinstance(raw, bytes):
                     raise ValueError('transport must return JSON bytes')
                 source['retrieved_at'] = datetime.now(timezone.utc).isoformat()
-                if reflects_contact(raw.decode('utf-8', errors='replace')):
+                raw_text = raw.decode('utf-8', errors='replace')
+                if reflects_contact(raw_text):
                     error(source, 'CONTACT_REFLECTED', 'Response withheld because it reflected operator contact')
                     return None
                 try:
                     payload = raw.decode('utf-8') if html else json.loads(raw)
                 except ValueError:
+                    if (reflects_contact(raw_text, decoded_field=True)
+                            or (quoted_name and quoted_name.search(raw_text))):
+                        error(source, 'CONTACT_REFLECTED', 'Response withheld because it reflected operator contact')
+                        return None
                     # Preserve malformed source evidence after checking the response text.
                     source['raw_bytes'] = raw
                     source['sha256'] = hashlib.sha256(raw).hexdigest()
                     raise
-                if not html and payload_reflects_contact(payload):
+                if html:
+                    scanner = _ContactInHtml()
+                    try:
+                        scanner.feed(payload)
+                        scanner.close()
+                        reflected = scanner.found
+                    except AssertionError:
+                        # HTMLParser can reject an unknown marked section.
+                        reflected = scanner.found or reflects_contact(raw_text, decoded_field=True)
+                else:
+                    reflected = payload_reflects_contact(payload)
+                if reflected:
                     error(source, 'CONTACT_REFLECTED', 'Response withheld because it reflected operator contact')
                     return None
                 source['raw_bytes'] = raw
