@@ -104,6 +104,9 @@ filesystem as that folder. A cross-filesystem write plan is rejected before
 saving the recovery record or updating notes. If the helper reports a busy folder,
 unsupported locking, an unsafe path, or a failed check, leave the folder
 untouched. Keep the helper's recovery record if it reports a blocked recovery.
+If an interruption leaves `.resume-staging` without the helper's ownership
+marker, the helper preserves the directory and stops. Report the path and
+leave it for inspection.
 During apply or recovery, wait until the helper exits before editing or syncing
 this folder in Obsidian. The lock coordinates helper processes. Other editors
 and sync clients can still write while a replacement is in progress.

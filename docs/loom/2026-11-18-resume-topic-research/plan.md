@@ -15,7 +15,7 @@ charter: 1.1
 ### Wave 2
 
 **W2-01 Serialize research writes and recovery** after: W1-01 acceptance: 1, 3, 4
-- Files: obsidian/skills/obsidian-research-resume/SKILL.md, obsidian/skills/obsidian-research-resume/scripts/research_transaction.py, obsidian/tests/test_research_transaction.py
+- Files: obsidian/skills/obsidian-research-resume/SKILL.md, obsidian/skills/obsidian-research-resume/scripts/research_transaction.py (CLI entry: main), obsidian/tests/test_research_transaction.py
 - Test: A1 positive: locked-inspection; negative: escaped-path. A3 positive: interrupted-recovery; boundary: concurrent-writer. A4 positive: first-apply; negative: stale-or-replay.
 - Risk: agent-decided — A process-held directory lock protects REQ-3 during recovery and writes. A prose-only instruction cannot enforce ownership. The helper handles files while the skill decides which evidence changes a judgment.
 
@@ -32,6 +32,11 @@ charter: 1.1
 ② — behaviour — 如果這些行為符合預期，回「確認新版行為」即可。
 
 ## Risks
+
+An empty staging directory has no ownership evidence, even when its mode and
+owner match. The transaction CLI stops and preserves it on both inspection
+and apply. Recovery can remove marked staging files. An interruption at the
+edge of marker creation or removal can require manual inspection.
 
 The independent review of `d2277cc` reproduced an edit accepted as the
 baseline after initial snapshot validation. Reuse the validated entries to

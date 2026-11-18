@@ -121,15 +121,14 @@ def clear_staging(folder):
     if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
         raise TransactionError("unsafe staging location")
     children = {child.name: child.lstat() for child in stage.iterdir()}
-    if children:
-        marker = children.get(STAGING_MARKER)
-        if (marker is None or marker.st_size
-                or children.keys() - {STAGING_MARKER, STAGING_PAYLOAD}
-                or any(not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
-                       for info in children.values())):
-            raise TransactionError("unrecognized staging contents")
-        (stage / STAGING_PAYLOAD).unlink(missing_ok=True)
-        (stage / STAGING_MARKER).unlink()
+    marker = children.get(STAGING_MARKER)
+    if (marker is None or marker.st_size
+            or children.keys() - {STAGING_MARKER, STAGING_PAYLOAD}
+            or any(not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+                   for info in children.values())):
+        raise TransactionError("unrecognized staging contents")
+    (stage / STAGING_PAYLOAD).unlink(missing_ok=True)
+    (stage / STAGING_MARKER).unlink()
     stage.rmdir()
 
 
@@ -158,10 +157,6 @@ def write_atomically(path, data, *, folder, expected=None, exclusive=False):
                 os.replace(temporary, path)
     finally:
         clear_staging(folder)
-
-
-def replace_file(path, data, *, folder, expected):
-    write_atomically(path, data, folder=folder, expected=expected)
 
 
 def valid_history(folder, entry, completed_round, writes):
@@ -234,7 +229,7 @@ def finish(folder, writes, targets):
         if current != before:
             raise TransactionError(f"unexpected edit before replacement: {path}")
         path.parent.mkdir(parents=True, exist_ok=True)
-        replace_file(path, after, folder=folder, expected=before)
+        write_atomically(path, after, folder=folder, expected=before)
     check_targets(folder, targets, {})
 
 

@@ -91,14 +91,14 @@ def pause_after_judgment(folder):
             "import signal, sys; from pathlib import Path; "
             "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
             "import research_transaction as transaction\n"
-            "write = transaction.replace_file\n"
+            "write = transaction.write_atomically\n"
             "def pause_after_judgment(path, data, **kwargs):\n"
             "    write(path, data, **kwargs)\n"
             "    if path.name == 'judgment.md':\n"
             "        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGUSR1})\n"
             "        print('paused', flush=True)\n"
             "        signal.sigwait({signal.SIGUSR1})\n"
-            "transaction.replace_file = pause_after_judgment\n"
+            "transaction.write_atomically = pause_after_judgment\n"
             "raise SystemExit(transaction.main())"
         )
         process = subprocess.Popen(
@@ -253,6 +253,20 @@ def test_staged_write_checks_destination_after_pause(folder, edit_after_staging)
             writer.kill()
             writer.wait(timeout=5)
 
+
+
+@pytest.mark.parametrize("action", ["inspect", "apply"])
+def test_unmarked_empty_staging_is_not_removed(tmp_path, action):
+    topic = tmp_path / "topic"
+    stage = topic / ".resume-staging"
+    stage.mkdir(parents=True, mode=0o700)
+
+    result = invoke(topic, action)
+
+    assert result.returncode != 0
+    assert "unrecognized staging" in result.stderr
+    assert list(topic.iterdir()) == [stage]
+    assert list(stage.iterdir()) == []
 
 
 def test_unrecognized_staging_files_are_not_removed(folder):
