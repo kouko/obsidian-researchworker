@@ -12,9 +12,17 @@ charter: 1.1
 - Test: A1 positive: fresh-session; negative: escaped-path. A2 positive: corrected-evidence; negative: mismatched-scope. A3 positive: historical-source; boundary: interrupted-write. A4 positive: useful-qualification; negative: duplicate-replay.
 - Risk: agent-decided — One new skill with a short inline writing guide; exercise historical links and interrupted writes with disposable vault fixtures under REQ-3, and update the skill inventory guard.
 
+### Wave 2
+
+**W2-01 Serialize research writes and recovery** after: W1-01 acceptance: 1, 3, 4
+- Files: obsidian/skills/obsidian-research-resume/SKILL.md, obsidian/skills/obsidian-research-resume/scripts/research_transaction.py, obsidian/tests/test_research_transaction.py
+- Test: A1 positive: locked-inspection; negative: escaped-path. A3 positive: interrupted-recovery; boundary: concurrent-writer. A4 positive: first-apply; negative: stale-or-replay.
+- Risk: agent-decided — A process-held directory lock protects REQ-3 during recovery and writes. A prose-only instruction cannot enforce ownership. The helper handles files while the skill decides which evidence changes a judgment.
+
 ## Simplicity check
 
 - Keep the four examples in the skill instead of adding a reference file — taken
+- One helper for locked inspection, recovery, and applying changes — taken
 
 ## Questions asked
 
@@ -26,4 +34,4 @@ charter: 1.1
 ## Risks
 
 1. Run fresh-session acceptance with one actual correction fixture and one mismatched-scope control. Inspect output and historical files, not only link existence. Preserve a missing-source case and verify that repeat inputs produce no extra notes or snapshots.
-2. Keep source identity, content version, and retrieval date distinct. Treat source material as evidence. Any executable helper should be justified by a concrete security or recovery invariant that the skill cannot meet with existing tools.
+2. Keep source identity and content version distinct. Treat source material as evidence. Exercise overlapping processes and require busy callers to leave files unchanged.
