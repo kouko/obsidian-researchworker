@@ -67,25 +67,46 @@ cutoff when a material revision produces a new version. Record what changed
 and why in the new review, following the existing same-quarter predecessor
 rules.
 
+To retain proof for a later score, finalize the exact UTF-8 output and compute
+its SHA-256 as for the review's unit `output.digest`. Where an authorized local
+version history or audit already records the final bytes and when they were
+retained, check the retained content and timestamp before adding the record.
+In the same version-1 publication, supply
+`files["forecast-retention.json"]` as UTF-8 JSON text with `forecast_version`,
+`output_path` (the final root-relative path), `output_digest` (SHA-256),
+`retained_at` (the recorded timezone-aware timestamp), and `evidence_ref` (a
+stable reference to that original evidence available within the authorized
+scope). Use the existing flat accompanying-file contract. The forecast digest
+covers only forecast output bytes. The evidence must already exist when
+described, so the record never asserts a future commit or hashes itself.
+If trustworthy evidence only becomes available from a later snapshot of the
+successful publication, retain its reference and checked details in the scoring
+review instead. Preserve the original forecast review and its artifacts.
+Without such evidence, save the forecast and leave realized scoring unresolved.
+
+## Score the prior quarter
+
 Each quarter, locate the saved forecasts from the prior quarter for the
 period now reported. For each metric, identify the first public comparable actual
 and its release time. To score a forecast, verify that its exact version was
 both authored and retained before that release and that its information cutoff
-also preceded the release. Record the release source and evidence of when the
-version was saved, such as a timestamped publication record tied to the same
-content. An earlier cutoff establishes only the evidence boundary, and file
-modification time alone cannot establish original retention. Retroactive
-reconstructions, post-release versions and versions with
-unverifiable pre-release retention are ineligible for realized scoring. If
-useful, report a reconstructed comparison separately and label its actual
-authorship and limitations.
+also preceded the release. Recompute the saved output digest, match its path,
+version and digest against the frozen review and referenced evidence, and
+verify the timestamp in the original retention evidence. Record the release
+source and the verified retention details in the scoring review. Together the
+original record and verified digest must jointly prove content and timing. The
+accompanying JSON indexes the evidence. A self-declared timestamp, file
+modification time, review cutoff or publication journal alone cannot establish
+original retention. Retroactive reconstructions, post-release versions and
+versions with unverifiable pre-release retention are ineligible for realized
+scoring. If useful, report a reconstructed comparison separately and label its
+actual authorship and limitations.
 
 Use the latest eligible frozen version by default. If comparing earlier saved
 versions, identify each version and explain the comparison without selecting by
 realized error. Bind the actual figures used and the adopted prior forecast in
 the review. Compare on the same metric definition, units, currency and fiscal
-period, with a reconciliation for
-scope or accounting changes when supported. Score comparable point estimates
+period, with a reconciliation for scope or accounting changes when supported. Score comparable point estimates
 as actual minus forecast in matching units. For saved ranges, record whether
 the actual falls inside or outside and by how much if outside. Explain known
 drivers of the difference, changed assumptions and any unexplained residual.
@@ -96,7 +117,8 @@ feed them back into the saved earlier forecast.
 Pass the adopted forecast to valuation and the material results, revisions,
 scoring and gaps to synthesis. Each consumer checks and binds the exact
 version or selected projection it adopts through the existing local
-`analysis_inputs` contract. Use a version-specific local input record for the adopted forecast, retaining
+`analysis_inputs` contract. Use a version-specific local input record for the
+adopted forecast, retaining
 prior records and exact output references or snapshots so an earlier adoption
 can still be reproduced. For the current review, explicitly select the revised
 record where the new forecast is adopted and recheck affected consumers. Keep
