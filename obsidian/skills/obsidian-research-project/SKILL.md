@@ -64,15 +64,17 @@ memory or outside the vault, using the writing guide below.
   the ordered `path` and base64 `content` objects, and `targets` to each
   required local linked file. All paths within the JSON are relative to the
   project. The create command does not require a snapshot.
-- The helper exclusively reserves the new folder, anchors first-round writes
-  to opened directories without following symlinks, and writes the entry
-  last. Wait for it to finish before editing or syncing the folder. If the
-  destination appeared in the meantime, preserve it and ask whether to use a
-  complete existing project or pick another location. If the save is
-  interrupted, report the incomplete
-  path and preserve it for inspection. The helper leaves a pending marker
-  when a first save stops after reservation and marking. Do not remove the
-  marker or treat that result as a completed round.
+- The helper writes the first round under a private sibling folder and
+  verifies its files before publishing the entire project at once. Publication
+  requires a filesystem with exclusive directory rename support. Wait for
+  the save to finish before editing or syncing the folder. If the destination
+  appeared in the meantime, it stays untouched. Ask whether to use a complete
+  existing project or pick another location.
+- If the save stops, report the pending location shown by the helper. It may
+  be a hidden `.research-first-round-…` folder beside the intended project or
+  the published project still marked pending. Preserve it for inspection.
+  Do not remove a pending marker or treat a pending folder as a completed
+  round.
 
 After a successful first save, report the question, evidence scope, result,
 saved links, and remaining work. On a subsequent confirmed update, continue

@@ -83,6 +83,7 @@ def test_create_first_round_then_resume(tmp_path):
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)["changed"][-1] == "index.md"
     assert set(contents(topic)) == {write["path"] for write in plan["writes"]}
+    assert list(topic.parent.iterdir()) == [topic]
 
     update = prepare(topic, **{"index.md": "Updated"})
     update["round"] = plan["round"]
@@ -141,12 +142,43 @@ def test_interrupted_first_round_is_preserved_but_cannot_resume(tmp_path):
         input=json.dumps(first_round()), capture_output=True, text=True, check=False,
     )
     assert result.returncode == 7, result.stderr
-    before = contents(topic)
+    assert not topic.exists()
+    stage, = tmp_path.glob(".research-first-round-*")
+    before = contents(stage)
     assert "sources/S1.md" in before
     assert "index.md" not in before
-    inspection = invoke(topic, "inspect")
+    inspection = invoke(stage, "inspect")
     assert inspection.returncode != 0 and "incomplete first round" in inspection.stderr
-    assert contents(topic) == before
+    assert contents(stage) == before
+
+
+def test_create_preserves_directory_that_appears_before_publication(tmp_path):
+    topic = tmp_path / "topic"
+    script = (
+        "import os, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = transaction.write_initial_file\n"
+        "def add_destination(project_fd, path, *args, **kwargs):\n"
+        "    result = original(project_fd, path, *args, **kwargs)\n"
+        "    if path.name == 'index.md':\n"
+        "        destination = Path(sys.argv[-1])\n"
+        "        destination.mkdir()\n"
+        "        print(destination.stat().st_ino, flush=True)\n"
+        "    return result\n"
+        "transaction.write_initial_file = add_destination\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "create", str(tmp_path), str(topic)],
+        input=json.dumps(first_round()), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 1 and "already exists" in result.stderr
+    assert topic.stat().st_ino == int(result.stdout)
+    assert not list(topic.iterdir())
+    stage, = tmp_path.glob(".research-first-round-*")
+    assert (stage / "index.md").is_file()
+    assert (stage / ".research-first-round-pending").is_file()
 
 
 def test_busy_transaction_preserves_files(folder):

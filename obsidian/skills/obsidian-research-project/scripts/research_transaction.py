@@ -2,12 +2,15 @@
 
 import argparse
 import base64
+import ctypes
+import errno
 import hashlib
 import json
 import os
+import secrets
 import stat
 import sys
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from unicodedata import normalize
 
@@ -22,6 +25,7 @@ STAGING = ".resume-staging"
 STAGING_MARKER = ".research-transaction-v1"
 STAGING_PAYLOAD = "payload"
 FIRST_ROUND_PENDING = ".research-first-round-pending"
+FIRST_ROUND_STAGE_PREFIX = ".research-first-round-"
 
 
 class TransactionError(Exception):
@@ -172,7 +176,7 @@ def valid_history(folder, entry, completed_round, writes, *, creating=False):
             raise TransactionError(f"missing prior entry or completed round: {name}")
 
 
-def read_writes(folder, records, *, recovery=False):
+def read_writes(folder, records, *, recovery=False, creating=False):
     if not isinstance(records, list):
         raise TransactionError("expected an ordered list of writes")
     writes = {}
@@ -189,7 +193,9 @@ def read_writes(folder, records, *, recovery=False):
                 raise TransactionError(f"planned paths alias each other: {record['path']}")
         after = decode(record["content"])
         old = record["before"] if recovery else None
-        before = (None if old is None else decode(old)) if recovery else file_content(path)
+        before = file_content(path) if not recovery and not creating else None
+        if old is not None:
+            before = decode(old)
         writes[path] = (before, after)
     for path in writes:
         for parent in path.parents:
@@ -200,12 +206,12 @@ def read_writes(folder, records, *, recovery=False):
     return writes
 
 
-def check_targets(folder, names, writes):
+def check_targets(folder, names, writes, *, creating=False):
     if not isinstance(names, list):
         raise TransactionError("expected a list of required targets")
     for name in names:
         path = local_path(folder, name)
-        if path not in writes and not path.is_file():
+        if path not in writes and (creating or not path.is_file()):
             raise TransactionError(f"required local target is missing: {name}")
 
 
@@ -338,7 +344,7 @@ def require_child_spelling(fd, name):
 
 
 @contextmanager
-def open_directories(root_fd, parts, *, create=False, exclusive=False, identities=None):
+def open_directories(root_fd, parts, *, create=False, identities=None):
     fd = os.dup(root_fd)
     try:
         for index, name in enumerate(parts):
@@ -347,8 +353,7 @@ def open_directories(root_fd, parts, *, create=False, exclusive=False, identitie
                 try:
                     os.mkdir(name, dir_fd=fd)
                 except FileExistsError:
-                    if exclusive and index == len(parts) - 1:
-                        raise
+                    pass
             expected = os.stat(name, dir_fd=fd, follow_symlinks=False)
             child_fd = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
             os.close(fd)
@@ -391,60 +396,114 @@ def verify_initial_writes(project_fd, writes, identities):
                     raise TransactionError(f"file changed during initial save: {path}")
 
 
+def exclusive_rename():
+    libc = ctypes.CDLL(None, use_errno=True)
+    if sys.platform == "darwin":
+        rename = getattr(libc, "renameatx_np", None)
+        flags = 0x00000004  # RENAME_EXCL
+    elif sys.platform.startswith("linux"):
+        rename = getattr(libc, "renameat2", None)
+        flags = 1  # RENAME_NOREPLACE
+    else:
+        rename = None
+    if rename is None:
+        raise TransactionError("exclusive directory publication is unavailable")
+    rename.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+    rename.restype = ctypes.c_int
+
+    def publish(parent_fd, source, destination):
+        if rename(parent_fd, os.fsencode(source), parent_fd, os.fsencode(destination), flags):
+            code = ctypes.get_errno()
+            if code == errno.EEXIST:
+                raise TransactionError(f"project destination already exists: {destination}")
+            if code in (errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP, errno.EINVAL):
+                raise TransactionError("exclusive directory publication is unavailable on this filesystem")
+            raise OSError(code, os.strerror(code), destination)
+
+    return publish
+
+
 def create_project(vault, destination, plan):
     folder = local_path(vault, destination.as_posix())
+    require_project_location(destination)
     if folder.exists():
         raise TransactionError(f"project destination already exists: {folder}")
-    writes = read_writes(folder, plan["writes"])
+    writes = read_writes(folder, plan["writes"], creating=True)
     entry = local_path(folder, plan["entry"])
     if entry == local_path(folder, plan["round"]):
         raise TransactionError("entry and completed round must be different files")
     valid_history(folder, plan["entry"], plan["round"], writes, creating=True)
-    check_targets(folder, plan["targets"], writes)
+    check_targets(folder, plan["targets"], writes, creating=True)
     relative_writes = {path.relative_to(folder): data for path, (_, data) in writes.items()}
     entry = entry.relative_to(folder)
-    entry_content = relative_writes.pop(entry)
-    root_fd = os.open(vault.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    try:
-        vault_ids = {}
+    relative_writes[entry] = relative_writes.pop(entry)
+    save_initial_project(vault, destination, relative_writes, entry)
+    return [path.as_posix() for path in relative_writes]
+
+
+def save_initial_project(vault, destination, writes, entry):
+    publish = exclusive_rename()
+    parent_path = vault / destination.parent
+    parents = parent_path.parts[1:]
+    identities = {}
+    before_entry = {path: data for path, data in writes.items() if path != entry}
+    with ExitStack() as handles:
+        root = os.open(vault.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        handles.callback(os.close, root)
         vault_parts = vault.parts[1:]
-        with open_directories(root_fd, vault_parts, identities=vault_ids) as vault_fd:
-            save_initial_project(root_fd, vault_fd, vault_parts, vault_ids, destination,
-                                 relative_writes, entry, entry_content)
-    finally:
-        os.close(root_fd)
-    return [path.as_posix() for path in (*relative_writes, entry)]
+        vault_fd = handles.enter_context(open_directories(root, vault_parts, identities=identities))
+        parent_fd = handles.enter_context(open_directories(vault_fd, destination.parent.parts, create=True))
+        with open_directories(root, parents, identities=identities) as located_parent:
+            same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+        staging = FIRST_ROUND_STAGE_PREFIX + secrets.token_hex(16)
+        os.mkdir(staging, mode=0o700, dir_fd=parent_fd)
+        pending_path = parent_path / staging
+        print(f"first-round staging: {pending_path}", file=sys.stderr, flush=True)
+        try:
+            with open_directories(parent_fd, (staging,)) as project_fd:
+                project = os.fstat(project_fd)
+                if project.st_uid != os.geteuid() or project.st_mode & 0o077:
+                    raise TransactionError("first-round staging is not private")
+                lock_folder(project_fd)
+                evidence_ids = {}
+                pending = Path(FIRST_ROUND_PENDING)
+                marker = write_initial_file(project_fd, pending, b"", identities=evidence_ids)
+                for path, data in before_entry.items():
+                    write_initial_file(project_fd, path, data, identities=evidence_ids)
+                verify_initial_writes(project_fd, before_entry, evidence_ids)
+                write_initial_file(project_fd, entry, writes[entry], identities=evidence_ids)
+                verify_initial_writes(project_fd, writes, evidence_ids)
+                with open_directories(root, parents, identities=identities) as located_parent:
+                    same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+                    require_child_spelling(parent_fd, destination.name)
+                    same_entry(project, os.stat(staging, dir_fd=parent_fd, follow_symlinks=False), staging)
+                    publish(parent_fd, staging, destination.name)
+                    pending_path = vault / destination
+                    same_entry(
+                        project, os.stat(destination.name, dir_fd=parent_fd, follow_symlinks=False),
+                        destination,
+                    )
+                    verify_initial_writes(project_fd, writes, evidence_ids)
+                with open_directories(root, parents, identities=identities) as located_parent:
+                    same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+                    same_entry(
+                        project, os.stat(destination.name, dir_fd=located_parent, follow_symlinks=False),
+                        destination,
+                    )
+                    same_entry(marker, os.stat(pending, dir_fd=project_fd, follow_symlinks=False), pending)
+                    os.unlink(pending, dir_fd=project_fd)
+        except (OSError, TransactionError) as error:
+            raise TransactionError(f"{error}; first round pending at {pending_path}") from error
 
 
-def save_initial_project(root_fd, vault_fd, vault_parts, vault_ids, destination,
-                         writes, entry, entry_content):
-    project_ids = {}
+def same_entry(expected, observed, name):
+    if not os.path.samestat(expected, observed):
+        raise TransactionError(f"path changed during initial save: {name}")
 
-    def verify_project_location():
-        with open_directories(root_fd, vault_parts, identities=vault_ids) as current_vault:
-            with open_directories(current_vault, destination.parts, identities=project_ids):
-                pass
 
-    try:
-        with open_directories(vault_fd, destination.parts, create=True, exclusive=True,
-                              identities=project_ids) as project_fd:
-            lock_folder(project_fd)
-            evidence_ids = {}
-            pending = Path(FIRST_ROUND_PENDING)
-            marker = write_initial_file(project_fd, pending, b"", identities=evidence_ids)
-            for path, data in writes.items():
-                write_initial_file(project_fd, path, data, identities=evidence_ids)
-            verify_initial_writes(project_fd, writes, evidence_ids)
-            verify_project_location()
-            write_initial_file(project_fd, entry, entry_content, identities=evidence_ids)
-            verify_initial_writes(project_fd, writes | {entry: entry_content}, evidence_ids)
-            verify_project_location()
-            current_marker = os.stat(pending, dir_fd=project_fd, follow_symlinks=False)
-            if not os.path.samestat(marker, current_marker):
-                raise TransactionError("pending marker changed during initial save")
-            os.unlink(pending, dir_fd=project_fd)
-    except FileExistsError as error:
-        raise TransactionError(f"project destination or file already exists: {destination}") from error
+def require_project_location(relative):
+    if any(spelling_key(part).startswith(FIRST_ROUND_STAGE_PREFIX) for part in relative.parts):
+        raise TransactionError("incomplete first round staging; preserved for inspection")
 
 
 def lock_folder(fd):
@@ -483,6 +542,7 @@ def main():
         folder = (vault / args.folder).resolve(strict=True)
         if folder == vault or not folder.is_relative_to(vault) or not folder.is_dir():
             raise TransactionError("research folder must be inside the selected vault")
+        require_project_location(folder.relative_to(vault))
         fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
             lock_folder(fd)

@@ -36,7 +36,8 @@ def test_create_concurrentedit_stayspending(tmp_path, monkeypatch):
     def write_with_sync_edit(project_fd, path, data, **kwargs):
         original_write(project_fd, path, data, **kwargs)
         if path.name == "index.md":
-            edited = topic / "history/round.md"
+            stage = next(tmp_path.glob(".research-first-round-*"), topic)
+            edited = stage / "history/round.md"
             replacement = edited.with_suffix(".tmp")
             replacement.write_text("Concurrent revision.")
             replacement.replace(edited)
@@ -46,5 +47,7 @@ def test_create_concurrentedit_stayspending(tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(plan)))
     assert transaction.main() == 1
 
-    assert (topic / transaction.FIRST_ROUND_PENDING).is_file()
-    assert (topic / "history/round.md").read_text() == "Concurrent revision."
+    assert not topic.exists()
+    stage, = tmp_path.glob(".research-first-round-*")
+    assert (stage / transaction.FIRST_ROUND_PENDING).is_file()
+    assert (stage / "history/round.md").read_text() == "Concurrent revision."
