@@ -178,6 +178,18 @@ def test_contradictory_consumed_financial_original_blocks_reuse():
     assert run(data)["reusable"] == [{"record": "q2", "work": "valuation"}]
 
 
+def test_latest_does_not_reuse_assessment_saved_after_requested_cutoff():
+    data = snapshot()
+    future = copy.deepcopy(data["records"][0])
+    future.update(id="q2-future", cutoff="2024-09-01T00:00:00+00:00")
+    data["records"].append(future)
+
+    result = run(data)
+    assert result["status"] == "partial"
+    assert result["reusable"] == [{"record": "q2", "work": "valuation"}]
+    assert any(gap["record"] == "q2-future" for gap in result["gaps"])
+
+
 def test_historical_exclusion():
     data = snapshot()
     data["sources"][0]["available_at"] = "2024-05-06"

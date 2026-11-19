@@ -107,8 +107,9 @@ def assess(snapshot, mode, cutoff):
         fiscal = item["fiscal"]
         return item["issuer"], fiscal["year"], fiscal["period"], fiscal["period_end"]
 
-    represented = {quarter_identity(record) for record in records.values()
-                   if _fiscal(record.get("fiscal"))}
+    record_cutoffs = {rid: _instant(record["cutoff"]) for rid, record in records.items()}
+    represented = {quarter_identity(record) for rid, record in records.items()
+                   if record_cutoffs[rid] <= boundary and _fiscal(record.get("fiscal"))}
     proposed = set()
     quarter_evidence = {}
     quarter_ends = {}
@@ -119,8 +120,13 @@ def assess(snapshot, mode, cutoff):
             quarter_evidence.setdefault(identity, []).append(sid)
             quarter_ends.setdefault(identity[:3], set()).add(identity[3])
     for rid, record in sorted(records.items()):
-        if mode == "historical" and _instant(record["cutoff"]) != boundary:
+        if mode == "historical" and record_cutoffs[rid] != boundary:
             raise ValueError("historical cutoff must match saved record cutoff")
+        if record_cutoffs[rid] > boundary:
+            gap(rid, rid, "Saved research cutoff is later than the requested cutoff")
+            decision(rid, "record_gap_and_continue_independent_work", None, [rid],
+                     "Evidence requires recovery", [])
+            continue
         start = len(result["decisions"])
         gaps_start = len(result["gaps"])
         for sid, reason in incomplete_candidates.items():
