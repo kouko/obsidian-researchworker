@@ -1,6 +1,6 @@
 # Start and update a research project — spec
-intent: 2026-11-19-start-and-update-research-topic@6b94db89393f5947b5308ab1c94cea6800aae6d9
-confirmed-behavior: 2026-11-19 @e849d24
+intent: 2026-11-19-start-and-update-research-topic@6f76fe3c291a49eb1080bf8e89f852a9ba2c423e
+confirmed-behavior: 2026-11-19 @ea6a3e6
 pre-build-review: required — changes a public skill entry point and adds a vault write path for first rounds
 
 ## Requirements
