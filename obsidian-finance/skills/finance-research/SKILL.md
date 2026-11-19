@@ -140,7 +140,9 @@ technical analysis. Price and volume signals can be computed independently.
 If required data, forecast evidence or a comparable valuation range is
 missing, finish supported parts and leave the affected required question
 pending. Synthesize after applicable findings have been checked or their gaps
-are known.
+are known. A realized forecast-error score requires a version demonstrably
+authored and retained before the first public comparable actual, with an
+information cutoff before that release.
 
 For a price-only revision, reassess every valuation result that used the changed
 price directly or through a model input, such as market-value capital weights.

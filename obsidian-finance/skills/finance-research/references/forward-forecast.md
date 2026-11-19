@@ -67,11 +67,24 @@ cutoff when a material revision produces a new version. Record what changed
 and why in the new review, following the existing same-quarter predecessor
 rules.
 
-Each quarter, locate the actual saved forecast from the prior quarter for the
-period now reported. Identify the version and cutoff and keep a pre-release
-forecast distinct from any reconstruction or later revision. Bind the actual
-figures used and the adopted prior forecast in the review. Compare on the same
-metric definition, units, currency and fiscal period, with a reconciliation for
+Each quarter, locate the saved forecasts from the prior quarter for the
+period now reported. For each metric, identify the first public comparable actual
+and its release time. To score a forecast, verify that its exact version was
+both authored and retained before that release and that its information cutoff
+also preceded the release. Record the release source and evidence of when the
+version was saved, such as a timestamped publication record tied to the same
+content. An earlier cutoff establishes only the evidence boundary, and file
+modification time alone cannot establish original retention. Retroactive
+reconstructions, post-release versions and versions with
+unverifiable pre-release retention are ineligible for realized scoring. If
+useful, report a reconstructed comparison separately and label its actual
+authorship and limitations.
+
+Use the latest eligible frozen version by default. If comparing earlier saved
+versions, identify each version and explain the comparison without selecting by
+realized error. Bind the actual figures used and the adopted prior forecast in
+the review. Compare on the same metric definition, units, currency and fiscal
+period, with a reconciliation for
 scope or accounting changes when supported. Score comparable point estimates
 as actual minus forecast in matching units. For saved ranges, record whether
 the actual falls inside or outside and by how much if outside. Explain known

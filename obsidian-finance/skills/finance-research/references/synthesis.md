@@ -24,8 +24,10 @@ guidance, analyst consensus and price-implied expectations.
 Test the preferred thesis against contrary evidence, unresolved drivers and
 alternative causal explanations. Explain changes across quarters and differences
 in definitions or acquired business scope. Summarize material forecast revisions
-and their reasons, the prior forecast's comparison with actuals where available,
-and which horizon judgments depend on the changed assumptions or remaining gaps.
+and their reasons, and which horizon judgments depend on changed assumptions
+or remaining gaps. Present realized forecast errors only for verified frozen
+pre-release versions that meet the forecast reference's scoring rules. Label
+any reconstructed comparisons separately.
 For disagreement among findings, show which assumptions, horizon or evidence
 quality explain the difference and which judgment is affected. A missing technical input can constrain a
 price-sensitive short-term judgment while independent operating conclusions
