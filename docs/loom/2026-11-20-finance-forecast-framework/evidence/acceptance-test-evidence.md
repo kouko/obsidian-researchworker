@@ -55,129 +55,20 @@ v1 review/output/receipt bytes preserved; historical=v1; latest=v2; selected=v2;
 missing audit, mismatched audited output, and evidence at first public release: ineligible
 ```
 
+Key logic from the executed scratch probe:
+
 ```python
-"""Publish two exact forecast versions and reconcile solely eligible content."""
+# Each audit fixture exists before publication and retains the exact text.
+put(root, audit_ref, dict(retained_at=retained, snapshot=report))
+receipt = dict(forecast_version=name, output_path=unit["output"]["path"],
+               output_digest=output_digest, retained_at=retained, evidence_ref=audit_ref)
+files["forecast-retention.json"] = json.dumps(receipt)
+result = module.publish(root, "aapl", version, files, module.publication_snapshot(root), "save-" + name)
+assert result["status"] == "complete"
+assert read((root / result["review"]).parent / "forecast-retention.json") == receipt
 
-from copy import deepcopy
-from datetime import datetime
-from hashlib import sha256
-import json
-from pathlib import Path
-from shutil import rmtree
-from tempfile import TemporaryDirectory
-
-from test_research_publication import proposal
-from test_research_store import load, put
-
-
-def read(path):
-    return json.loads(path.read_bytes())
-
-
-def digest(content):
-    return sha256(content).hexdigest()
-
-
-def test_forecast_versions_publish_and_reconcile():
-    with TemporaryDirectory(dir="/private/tmp") as tmp:
-        root = Path(tmp)
-        base, legacy_review, template = proposal(root)
-        # Reuse generic project/issuer fixture setup, but make both forecast
-        # versions fresh publications through the store rather than seed one.
-        rmtree(root / legacy_review)
-        metadata_path = base + "/asset.json"
-        metadata = read(root / metadata_path)
-        metadata["questions"] = [
-            dict(id="forecast", required_sources=["price"], depends_on=[])
-        ]
-        put(root, metadata_path, metadata)
-        module = load()
-        metric = dict(name="revenue", fiscal_period="2024Q3", unit="USD million", scope="consolidated")
-        saved_versions = []
-
-        for name, predecessor, cutoff, authored, retained, revenue in (
-            ("v1", None, "2024-05-10T16:00:00+00:00", "2024-05-10T16:04:00+00:00", "2024-05-10T16:05:00+00:00", 105),
-            ("v2", "v1", "2024-05-17T16:00:00+00:00", "2024-05-17T16:04:00+00:00", "2024-05-17T16:05:00+00:00", 108),
-        ):
-            version = deepcopy(template)
-            version.update(id=name, cutoff=cutoff)
-            version.pop("predecessor")
-            if predecessor:
-                version["predecessor"] = predecessor
-            path = f"{base}/cycles/2024Q2/{cutoff[:10]}-{name}"
-            snapshot = dict(version=name, cutoff=cutoff, authored_at=authored, metric=metric, forecast=revenue)
-            report = json.dumps(snapshot, sort_keys=True)
-            output_digest = digest(report.encode())
-            unit = version["units"].pop("valuation")
-            unit.update(output=dict(path=path + "/forecast.md", digest=output_digest),
-                        verification=path + "/check.json")
-            version["units"]["forecast"] = unit
-            files = {"forecast.md": report,
-                     "check.json": json.dumps(dict(version=1, output_digest=output_digest,
-                         checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
-                         unresolved=[]))}
-            audit_ref = f"audit/{name}.json"
-            # The fixture simulates an authorized audit of exact bytes before
-            # review publication; the dates are test input, not host timestamps.
-            put(root, audit_ref, dict(retained_at=retained, snapshot=report))
-            receipt = dict(forecast_version=name, output_path=unit["output"]["path"],
-                           output_digest=output_digest, retained_at=retained,
-                           evidence_ref=audit_ref)
-            files["forecast-retention.json"] = json.dumps(receipt)
-            result = module.publish(root, "aapl", version, files, module.publication_snapshot(root), "save-" + name)
-            assert result["status"] == "complete"
-            review = root / result["review"]
-            output = root / unit["output"]["path"]
-            assert read(review).get("predecessor") == predecessor
-            assert digest(output.read_bytes()) == output_digest
-            receipt_path = review.parent / "forecast-retention.json"
-            assert read(receipt_path) == receipt
-            saved_versions.append((review, review.read_bytes(), output, output.read_bytes(), receipt_path, receipt_path.read_bytes()))
-            print(f"{name} published status={result['status']} predecessor={predecessor} output_sha256={output_digest}")
-
-        for review, original_review, output, original_output, receipt_path, original_receipt in saved_versions:
-            assert review.read_bytes() == original_review
-            assert output.read_bytes() == original_output
-            assert receipt_path.read_bytes() == original_receipt
-        historical = module.discover(root, "historical", "2024-05-10T16:00:00+00:00")
-        latest = module.discover(root, "latest", "2024-05-18T16:00:00+00:00")
-        assert historical["reusable"] == [dict(record="aapl/2024Q2/v1", work="forecast")]
-        assert latest["reusable"] == [dict(record="aapl/2024Q2/v2", work="forecast")]
-        actual = dict(metric=metric, value=112, published_at="2024-08-02T16:05:00+00:00")
-        compare_time = datetime.fromisoformat
-        release = compare_time(actual["published_at"])
-        def check(review, output, receipt, audit):
-            forecast = read(output)
-            frozen = review["units"]["forecast"]["output"]
-            if (receipt and audit
-                    and receipt["forecast_version"] == forecast["version"] == review["id"]
-                    and receipt["output_path"] == frozen["path"] == str(output.relative_to(root))
-                    and receipt["output_digest"] == frozen["digest"]
-                    == digest(output.read_bytes()) == digest(audit["snapshot"].encode())
-                    and receipt["retained_at"] == audit["retained_at"]
-                    and forecast["metric"] == actual["metric"]
-                    and all(compare_time(t) < release for t in
-                            (forecast["cutoff"], forecast["authored_at"], audit["retained_at"]))):
-                return forecast
-            return None
-
-        matched = []
-        for review, _, output, _, receipt_path, _ in saved_versions:
-            receipt = read(receipt_path)
-            audit = read(root / receipt["evidence_ref"])
-            matched.append(check(read(review), output, receipt, audit))
-            assert matched[-1] is not None
-            assert check(read(review), output, receipt, None) is None
-            assert check(read(review), output, receipt, dict(audit, snapshot="changed bytes")) is None
-            late = actual["published_at"]
-            assert check(read(review), output, dict(receipt, retained_at=late), dict(audit, retained_at=late)) is None
-        chosen = max(matched, key=lambda row: row["cutoff"])
-        assert chosen["version"] == "v2"
-        assert actual["value"] - chosen["forecast"] == 4
-        print("v1 review/output/receipt bytes preserved; historical=v1; latest=v2; selected=v2; realized error=+4 USD million")
-        print("missing audit, mismatched audited output, and evidence at first public release: ineligible")
-
-
-if __name__ == "__main__":
-    test_forecast_versions_publish_and_reconcile()
+# Subsequently compare the receipt, frozen review, output and original audit.
+assert receipt["output_digest"] == frozen["digest"] == digest(output.read_bytes()) == digest(audit["snapshot"].encode())
+assert receipt["retained_at"] == audit["retained_at"]
+assert all(compare_time(t) < release for t in (forecast["cutoff"], forecast["authored_at"], audit["retained_at"]))
 ```
