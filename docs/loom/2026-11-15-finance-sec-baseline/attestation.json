@@ -1,0 +1,116 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-finance-sec-baseline",
+  "content_digest": "cf534e12a31b0f15e9b7111f287ffb714e47e496",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_sec_source_identity.py",
+      "artifact": "obsidian-finance/tests/test_sec_source_identity.py",
+      "result": "pass",
+      "command_digest": "fcaddb8a77c62225e6d81501a425a72d4e008a04d3846b083b3a14ff49d41b3d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_sec_filing_identifier.py",
+      "artifact": "obsidian-finance/tests/test_sec_filing_identifier.py",
+      "result": "pass",
+      "command_digest": "748d5da5cefe6124404173fa68db5d51b056e97eb7626a8d558246986cf640e0"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_quarter_publication.py",
+      "artifact": "obsidian-finance/tests/test_quarter_publication.py",
+      "result": "pass",
+      "command_digest": "107742f32fe163c8d14a27bb14b7f8054b174c6cf2f6f6f5050b8e576041088d"
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "codex",
+      "model": "inherited",
+      "verdict": "PASS",
+      "reviewed_sha": "5d4a0dc7b6c137cdcb283c4286ecec0a8f6735ba",
+      "review_target_sha": "60b3c877585047db1c38b53a195081401fea7f07",
+      "reviewer": "baseline_sync_code_review",
+      "lens": "code",
+      "findings": [],
+      "notes": [
+        "Both fatal cutoff findings fixed; 40 targeted tests passed."
+      ]
+    },
+    {
+      "vendor": "codex",
+      "model": "inherited",
+      "verdict": "PASS",
+      "reviewed_sha": "5d4a0dc7b6c137cdcb283c4286ecec0a8f6735ba",
+      "review_target_sha": "60b3c877585047db1c38b53a195081401fea7f07",
+      "reviewer": "baseline_sync_docs_review",
+      "lens": "docs",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "inconsistency",
+          "anchor": "README.md:44",
+          "text": "note (non-blocking): Unqualified wording obscures earlier bounded CLI success.",
+          "fix": "Qualify current-revision genuine-contact live execution."
+        },
+        {
+          "severity": "nit",
+          "dimension": "incorrect-fact",
+          "anchor": "docs/loom/2026-11-15-finance-sec-baseline/spec.md:70",
+          "text": "note (non-blocking): Pre-build observations use present tense.",
+          "fix": "Label observations as pre-build."
+        },
+        {
+          "severity": "nit",
+          "dimension": "incorrect-fact",
+          "anchor": "docs/loom/2026-11-15-finance-sec-baseline/acceptance-test-report.md:58",
+          "text": "chore (non-blocking): Trailing blank line.",
+          "fix": "Remove remaining blank line."
+        }
+      ],
+      "notes": [
+        "Reviewed updated acceptance and cutoff behavior."
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "183ac24edcb2513042f1b40832fbacc47d2caad2",
+  "tested_commit": "3708e644ec106d91380a5436e2618f5097809a8f",
+  "reviewed_commit": "60b3c877585047db1c38b53a195081401fea7f07",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "partly"
+    },
+    {
+      "acceptance": 2,
+      "status": "partly"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    }
+  ]
+}
