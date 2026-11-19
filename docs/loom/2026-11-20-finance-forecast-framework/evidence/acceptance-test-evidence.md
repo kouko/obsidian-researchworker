@@ -1,6 +1,6 @@
 # Forward forecast framework — acceptance test evidence
 
-Tried on 2026-11-20, in a clean copy of the project at a61d02b111b77060fb0af52082681b54aca78f7a. Cloned locally and checked exact HEAD and empty `git status --porcelain` before testing. Followed the README's folder-grounded entry by loading the checked-out skill directly and applying it to fictional excerpts. This is a source-loaded agent exercise with an offline fixture. No installed-host invocation, live vault, external source access, or real company conclusion was involved.
+Tried on 2026-11-20, in a clean copy of the project at ce7df9cfdcb51867ef65aca6e10b2d4f090bd34c. The initial four-row exercise ran on a61d02b111b77060fb0af52082681b54aca78f7a. For this re-run, cloned locally and checked exact HEAD and empty `git status --porcelain` before testing. Followed the README's folder-grounded entry by loading the checked-out skill directly and applying it to fictional excerpts. This is a source-loaded agent exercise with an offline fixture. No installed-host invocation, live vault, external source access, or real company conclusion was involved.
 
 ## 1. 前瞻預測有獨立指引，說明從前三類基本面證據選擇驅動因素、模型、期間與情境的方法，列出可核對的假設、來源與資料缺口。每季檢視樂觀、基準、悲觀三條路徑；證據足夠才量化，否則保留方向與驗證條件，或明列證據缺口。
 
@@ -33,3 +33,151 @@ PYTHONDONTWRITEBYTECODE=1 python3.12 -m pytest obsidian-finance/tests/test_resea
 ```
 
 Package-suite command documented by README: `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+## Re-run on 2026-11-20, at ce7df9cfdcb51867ef65aca6e10b2d4f090bd34c
+
+- 1: carried over. The fix adds retention instructions and does not alter the method or supported scenario rules. Compared the complete reference diff.
+- 2: re-tested. Re-applied the release, authorship, metric, driver and gap cases above. Separately ran the following reproducible harness from the clean clone to exercise the actual version-1 publication helper twice. The harness uses a distinct synthetic calendar (2024Q2 reviews target 2024Q3) matching the existing generic issuer fixture. Each synthetic audit file is written before the corresponding call and represents an authorized pre-existing audit of the exact text, with a simulated timestamp. The audit input models the evidence reviewed by the agent; it does not authenticate real historical times.
+- The first complete publication wrote v1, the second wrote v2 with v1 as predecessor, and v1 review, output and accompanying JSON remained byte-identical. Historical selection at the exact v1 cutoff returned v1 and latest selection returned v2. The acceptance harness followed the scoring guidance against a synthetic first comparable release reporting $112m, selected the $108m v2 over the $105m v1, and calculated +$4m. The equivalent reconciliation is +0.4m units at the same $10 price. Evidence available only at the first live release, evidence with different bytes and absent evidence were ineligible. The earlier-cutoff/post-release-authorship exercise remains independently ineligible. Scoring is an agent procedure in the guidance; the publication helper persists receipt bytes through its existing accompanying-file contract.
+- 3: carried over. The fix does not change the forecast consumer contract or price-only and forecast revision instructions.
+- 4: carried over. The fix does not change eligibility, expectations labeling or version-1 storage code. Repeated the focused storage command at this HEAD as well: `14 passed, 30 deselected in 0.51s`.
+
+Run the probe below from the clean checkout with:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=obsidian-finance/tests python3.12 /private/tmp/test_forecast_versions_publish_and_reconcile.py
+```
+
+```text
+v1 published status=complete predecessor=None output_sha256=535a7743f497f1db5fe54c8078b6ceca3b2e7afa957019a7b89ffa77a4d7df88
+v2 published status=complete predecessor=v1 output_sha256=5c1192a48e83a5ae665bda3ab7e98399ddd1caa4c97feddfa138cff125669afd
+v1 review/output/receipt bytes preserved; historical=v1; latest=v2; selected=v2; realized error=+4 USD million
+missing audit, mismatched audited output, and evidence at first public release: ineligible
+```
+
+```python
+"""Publish two exact forecast versions and reconcile solely eligible content."""
+
+from copy import deepcopy
+from datetime import datetime
+from hashlib import sha256
+import json
+from pathlib import Path
+from shutil import rmtree
+from tempfile import TemporaryDirectory
+
+from test_research_publication import proposal
+from test_research_store import load, put
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def digest(content):
+    return sha256(content).hexdigest()
+
+
+def test_forecast_versions_publish_and_reconcile():
+    with TemporaryDirectory(dir="/private/tmp") as tmp:
+        root = Path(tmp)
+        base, legacy_review, template = proposal(root)
+        # Reuse generic project/issuer fixture setup, but make both forecast
+        # versions fresh publications through the store rather than seed one.
+        rmtree(root / legacy_review)
+        metadata_path = base + "/asset.json"
+        metadata = read(root / metadata_path)
+        metadata["questions"] = [
+            dict(id="forecast", required_sources=["price"], depends_on=[])
+        ]
+        put(root, metadata_path, metadata)
+        module = load()
+        metric = dict(name="revenue", fiscal_period="2024Q3", unit="USD million", scope="consolidated")
+        saved_versions = []
+
+        for name, predecessor, cutoff, authored, retained, revenue in (
+            ("v1", None, "2024-05-10T16:00:00+00:00", "2024-05-10T16:04:00+00:00", "2024-05-10T16:05:00+00:00", 105),
+            ("v2", "v1", "2024-05-17T16:00:00+00:00", "2024-05-17T16:04:00+00:00", "2024-05-17T16:05:00+00:00", 108),
+        ):
+            version = deepcopy(template)
+            version.update(id=name, cutoff=cutoff)
+            version.pop("predecessor")
+            if predecessor:
+                version["predecessor"] = predecessor
+            path = f"{base}/cycles/2024Q2/{cutoff[:10]}-{name}"
+            snapshot = dict(version=name, cutoff=cutoff, authored_at=authored, metric=metric, forecast=revenue)
+            report = json.dumps(snapshot, sort_keys=True)
+            output_digest = digest(report.encode())
+            unit = version["units"].pop("valuation")
+            unit.update(output=dict(path=path + "/forecast.md", digest=output_digest),
+                        verification=path + "/check.json")
+            version["units"]["forecast"] = unit
+            files = {"forecast.md": report,
+                     "check.json": json.dumps(dict(version=1, output_digest=output_digest,
+                         checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
+                         unresolved=[]))}
+            audit_ref = f"audit/{name}.json"
+            # The fixture simulates an authorized audit of exact bytes before
+            # review publication; the dates are test input, not host timestamps.
+            put(root, audit_ref, dict(retained_at=retained, snapshot=report))
+            receipt = dict(forecast_version=name, output_path=unit["output"]["path"],
+                           output_digest=output_digest, retained_at=retained,
+                           evidence_ref=audit_ref)
+            files["forecast-retention.json"] = json.dumps(receipt)
+            result = module.publish(root, "aapl", version, files, module.publication_snapshot(root), "save-" + name)
+            assert result["status"] == "complete"
+            review = root / result["review"]
+            output = root / unit["output"]["path"]
+            assert read(review).get("predecessor") == predecessor
+            assert digest(output.read_bytes()) == output_digest
+            receipt_path = review.parent / "forecast-retention.json"
+            assert read(receipt_path) == receipt
+            saved_versions.append((review, review.read_bytes(), output, output.read_bytes(), receipt_path, receipt_path.read_bytes()))
+            print(f"{name} published status={result['status']} predecessor={predecessor} output_sha256={output_digest}")
+
+        for review, original_review, output, original_output, receipt_path, original_receipt in saved_versions:
+            assert review.read_bytes() == original_review
+            assert output.read_bytes() == original_output
+            assert receipt_path.read_bytes() == original_receipt
+        historical = module.discover(root, "historical", "2024-05-10T16:00:00+00:00")
+        latest = module.discover(root, "latest", "2024-05-18T16:00:00+00:00")
+        assert historical["reusable"] == [dict(record="aapl/2024Q2/v1", work="forecast")]
+        assert latest["reusable"] == [dict(record="aapl/2024Q2/v2", work="forecast")]
+        actual = dict(metric=metric, value=112, published_at="2024-08-02T16:05:00+00:00")
+        compare_time = datetime.fromisoformat
+        release = compare_time(actual["published_at"])
+        def check(review, output, receipt, audit):
+            forecast = read(output)
+            frozen = review["units"]["forecast"]["output"]
+            if (receipt and audit
+                    and receipt["forecast_version"] == forecast["version"] == review["id"]
+                    and receipt["output_path"] == frozen["path"] == str(output.relative_to(root))
+                    and receipt["output_digest"] == frozen["digest"]
+                    == digest(output.read_bytes()) == digest(audit["snapshot"].encode())
+                    and receipt["retained_at"] == audit["retained_at"]
+                    and forecast["metric"] == actual["metric"]
+                    and all(compare_time(t) < release for t in
+                            (forecast["cutoff"], forecast["authored_at"], audit["retained_at"]))):
+                return forecast
+            return None
+
+        matched = []
+        for review, _, output, _, receipt_path, _ in saved_versions:
+            receipt = read(receipt_path)
+            audit = read(root / receipt["evidence_ref"])
+            matched.append(check(read(review), output, receipt, audit))
+            assert matched[-1] is not None
+            assert check(read(review), output, receipt, None) is None
+            assert check(read(review), output, receipt, dict(audit, snapshot="changed bytes")) is None
+            late = actual["published_at"]
+            assert check(read(review), output, dict(receipt, retained_at=late), dict(audit, retained_at=late)) is None
+        chosen = max(matched, key=lambda row: row["cutoff"])
+        assert chosen["version"] == "v2"
+        assert actual["value"] - chosen["forecast"] == 4
+        print("v1 review/output/receipt bytes preserved; historical=v1; latest=v2; selected=v2; realized error=+4 USD million")
+        print("missing audit, mismatched audited output, and evidence at first public release: ineligible")
+
+
+if __name__ == "__main__":
+    test_forecast_versions_publish_and_reconcile()
+```
