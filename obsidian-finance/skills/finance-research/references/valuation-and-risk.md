@@ -34,7 +34,10 @@ do not yield a meaningful positive trailing P/E.
 ## Completion
 
 Document ranges, scenario assumptions, materially adverse evidence, and
-invalidation triggers. Retain independently supported intrinsic-value work on
-a price-only revision and refresh the comparison and its downstream consumers
-as needed. Without the required model evidence or eligible quote, leave the
-affected conclusion pending and identify what can still be supported.
+invalidation triggers. When market price changes, refresh every valuation
+result that consumed that price directly or through a model input, such as
+market-value capital weights. Reuse valid intrinsic-value work independent of
+the changed price. Pass revised results to affected consumers, including the
+technical price-versus-value comparison and synthesis. Without the required
+model evidence or eligible quote, leave the affected conclusion pending and
+identify what can still be supported.

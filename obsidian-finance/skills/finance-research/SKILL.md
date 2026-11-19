@@ -139,9 +139,12 @@ If data or a comparable valuation range is missing, finish supported parts
 and leave the affected required question pending. Synthesize after applicable
 findings have been checked or their gaps are known.
 
-For a price-only revision, reassess the affected technical questions, any
-valuation comparisons that consumed that price and dependent synthesis. Reuse
-independent valid financial, operating, industry and intrinsic-value work.
+For a price-only revision, reassess every valuation result that used the changed
+price directly or through a model input, such as market-value capital weights.
+Use the revised valuation for the affected price-versus-value comparison and
+update dependent synthesis. Recompute affected price and volume signals from
+eligible market data. Reuse valid financial, operating and industry results and
+intrinsic valuation that are independent of the changed price.
 When an adopted valuation range changes, refresh the technical price-versus-value
 comparison and dependent synthesis. Reuse unchanged price and volume signals.
 Apply the same dependency check to other source or method updates. Keep the existing
