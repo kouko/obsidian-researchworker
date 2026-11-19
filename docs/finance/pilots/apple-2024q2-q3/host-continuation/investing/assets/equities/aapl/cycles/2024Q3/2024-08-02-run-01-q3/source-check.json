@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "checked_at": "2026-11-16T01:57:33.068714+00:00",
+  "attempted": true,
+  "successful_selected_original_checks": true,
+  "tool": "web.run open/find",
+  "urls": [
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+    "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm"
+  ],
+  "read_coverage": {
+    "Q3": [
+      "cover lines 11-56",
+      "extracted declaration text line 0 (not raw tagged context validation)",
+      "MD&A Greater China lines 723-725",
+      "MD&A category table and drivers lines 737-769"
+    ],
+    "Q2": [
+      "MD&A Greater China lines 709-711",
+      "MD&A category table and drivers lines 723-755"
+    ]
+  },
+  "SEC_USER_AGENT_configured": false,
+  "sec_acquisition_executed": false,
+  "full_raw_html_retained": false,
+  "same_context_DEI_parser_verified": false,
+  "filing_date_independently_verified": false,
+  "fresh_inventory_or_amendments_verified": false,
+  "external_freshness": "unverified",
+  "limitations": [
+    "Tool-accessed original passages corroborate bounded questions; no new SEC acquisition dataset or raw HTML hash.",
+    "Retained transformed JSON hashes are not original HTML hashes.",
+    "Official publication dates remain retained metadata, not newly verified filing-index timestamps."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 0,
+  "eval_name": "missing",
+  "prompt": "Continue investment research in ROOT, latest mode, cutoff 2024-08-31T23:59:59+00:00. The configured questions define the scope. Work offline using only the supplied synthetic evidence; do the necessary independent work and save a meaningful partial checkpoint if required evidence is missing. Keep existing history. Explain what was read, what remains unknown, and the short, medium and long conclusions. Do not infer my holding period. Save a concise operator result to RESULT. No network, installs, external services or edits outside ROOT and RESULT. The repository README and existing helpers are available.",
+  "assertions": [
+    "Executes `research_store.discover` on ROOT and uses its decisions.",
+    "Produces actual business analysis citing supplied original sections and a helper-published checkpoint, preserving the old output byte for byte.",
+    "Missing market/valuation evidence stays pending; no buy/hold/sell, invented probabilities or benchmark returns; independent business work still proceeds.",
+    "States explicit horizon durations and conditional evidence/invalidation, distinguishes the conflicting pilot conventions without inventing preference.",
+    "Reports actual original sections read and unread exclusions; no full-filing reading claim or complete investment-case claim from a download/numeric check.",
+    "Keeps 2026 local method authorship separate from 2024 economic availability; freezes actual method/assumption inputs on the newly completed unit."
+  ]
+}

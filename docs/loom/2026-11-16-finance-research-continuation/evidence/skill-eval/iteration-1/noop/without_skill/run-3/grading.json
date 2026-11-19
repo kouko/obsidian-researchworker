@@ -1,0 +1,32 @@
+{
+  "expectations": [
+    {
+      "text": "Executes discovery, correctly reports locally reusable work and no update.",
+      "passed": true,
+      "evidence": "commands.md records executed discover returning no_analysis_update and reusable valuation. See ../../../runs/noop-baseline-3.json."
+    },
+    {
+      "text": "Leaves every ROOT file byte-identical; no duplicate report or quarter.",
+      "passed": true,
+      "evidence": "Programmatic initial/final hash comparison: zero created files and zero changed originals. See ../../../runs/noop-baseline-3.json."
+    },
+    {
+      "text": "External freshness remains unverified; no claim of current SEC/market coverage or complete substantive investment quality based on local checks.",
+      "passed": true,
+      "evidence": "Operator result explicitly bounds scope to supplied local evidence and external_freshness unverified; no investment-quality claim. See ../../../runs/noop-baseline-3.json."
+    },
+    {
+      "text": "Identifies future price revision as excluded and does not create a quarter from its price date.",
+      "passed": true,
+      "evidence": "Future 2024-09-02 price revision excluded after cutoff; no new quarter or report created. See ../../../runs/noop-baseline-3.json."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1
+  },
+  "all_criteria_passed": true,
+  "grader": "author assessment; not independent closing review"
+}

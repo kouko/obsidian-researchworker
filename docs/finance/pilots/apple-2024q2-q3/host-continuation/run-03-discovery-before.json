@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "scope": "supplied_local_evidence",
+  "external_freshness": "unverified",
+  "mode": "latest",
+  "cutoff": "2024-08-02T23:59:59+00:00",
+  "decisions": [
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "action": "invalidate_dependent_checkpoint_and_recompute",
+      "work": "growth",
+      "evidence": [
+        "aapl:filing-2024Q3"
+      ],
+      "reason": "Missing or mismatched output content or completion evidence",
+      "affected": [
+        "growth"
+      ]
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "record_gap_and_continue_independent_work",
+      "work": null,
+      "evidence": [
+        "growth",
+        "identity",
+        "investment-case"
+      ],
+      "reason": "Evidence requires recovery",
+      "affected": []
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "action": "record_gap_and_continue_independent_work",
+      "work": null,
+      "evidence": [
+        "growth",
+        "investment-case"
+      ],
+      "reason": "Evidence requires recovery",
+      "affected": []
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "growth",
+      "evidence": [
+        "growth"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "growth"
+      ]
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "identity",
+      "evidence": [
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "identity"
+      ]
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "investment-case",
+      "evidence": [
+        "growth",
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "investment-case"
+      ]
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "action": "resume_incomplete_work",
+      "work": "investment-case",
+      "evidence": [
+        "growth",
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "affected": [
+        "investment-case"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "growth",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "evidence": "growth",
+      "reason": "Missing or mismatched output content or completion evidence",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "identity",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "investment-case",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "evidence": "investment-case",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "evidence": "analysis:growth-method",
+      "reason": "Local analysis input is missing, changed or not bound to this unit",
+      "recovery": "Review the actual authored method/assumption and recompute dependent analysis; never backdate economic availability"
+    },
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "evidence": "dependencies:investment-case",
+      "reason": "Required economic inputs lack consumed identities: filing-2024Q3",
+      "recovery": "Verify the required sources and recompute this question and dependent synthesis"
+    }
+  ],
+  "excluded": [],
+  "reusable": [
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "work": "identity"
+    }
+  ],
+  "observations": [
+    {
+      "record": "aapl/2024Q3/run-02-q3",
+      "field": "last_attempt",
+      "value": "2026-11-16T01:57:33.068714+00:00"
+    }
+  ],
+  "status": "partial"
+}

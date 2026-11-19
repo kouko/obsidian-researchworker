@@ -1,0 +1,19 @@
+verdict: PASS
+lens: spec+adversarial
+reviewed_sha: 718b8df
+dimension_scores:
+  omission: PASS
+  ambiguity: PASS
+  inconsistency: PASS
+  incorrect-fact: PASS
+  missing-population: PASS
+  deletion-first: PASS
+  spec-conformance: PASS
+  design-conformance: "N/A — No DESIGN.md exists; conversation flows were reviewed directly against the confirmed intent."
+  principles-conformance: PASS
+  user-judgment-leak: PASS
+findings: []
+notes:
+  - "All six confirmed acceptance outcomes have corresponding requirements; negative flows cover unavailable sources, unsupported folders, escaping references, user edits, interruption and recovery."
+  - "Source eligibility, immutable historical judgments, transitive invalidation and analytical completion are distinguished from timestamps, hashes and mechanically successful commands."
+  - "This verdict approves the pre-build specification only. Actual fresh-host verification remains required; an unavailable facility must remain explicitly unverified and cannot establish Acceptance #6."

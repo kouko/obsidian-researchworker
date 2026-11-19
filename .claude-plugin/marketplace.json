@@ -10,6 +10,6 @@
     "name": "obsidian-finance",
     "source": "./obsidian-finance",
     "version": "0.1.0",
-    "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs."
+    "description": "Optional sec-data acquisition and finance-research continuation for managed version-1 equities folders, with evidence-bound conditional judgments; installed-plugin loading remains unverified."
   }]
 }

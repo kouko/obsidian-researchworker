@@ -1,0 +1,16 @@
+{
+  "/private/tmp/finance-host-public-20261116/run-06-clean-discovery-after-resume.json": "3870f12b91bddd9a3c01915158b17e3ac7e05dff9fad6f4ee9c95e338fc0ca6b",
+  "/private/tmp/finance-host-public-20261116/run-06-clean-discovery-after-rollback.json": "2bd7314a96117a0bd96d1861625ef4cec5e43dd1d555b9b56e247416276cb335",
+  "/private/tmp/finance-host-public-20261116/run-06-clean-discovery-before.json": "7d59750a9e5de9bd746b756788db1918cc2568f51b4887fe230a75fcad007082",
+  "/private/tmp/finance-host-public-20261116/run-06-files-before.json": "572fdb52a0d3f514f28eb4e4c2d544a86022a8cb97aa8efc26173918b8540dc5",
+  "/private/tmp/finance-host-public-20261116/run-06-helper-calls.json": "7ebb5187157d04c63be5348142d5a14042eafdf3bc5ffad5b7dc425a002fb287",
+  "/private/tmp/finance-host-public-20261116/run-06-preserved-file-hashes.json": "797e65ad435f7c5a0a544af4f6814b01f731141d7566a650f417d11d2402237f",
+  "/private/tmp/finance-host-public-20261116/run-06-recover.py": "64a7d6de2b271d928978de154333828d595113911b480ba8f0bc6467dc563751",
+  "/private/tmp/finance-host-public-20261116/run-06-report.md": "040e3a3a4ff0b06eee84a3f3dd91c8ed5405ae4e1aaab82260721104a2fcf86b",
+  "/private/tmp/finance-host-public-20261116/run-06-revalidation.json": "43ad73a5f73feefb2ec38ddaecf199f82bef8b9a2c648267a6007cfb8d6b4788",
+  "/private/tmp/finance-host-public-20261116/run-06-user-edit.json": "bc8e1532832312a133caa5b7e1aac9a40e49afaea6bd06e5a92a3b2f4ad35ec8",
+  "/private/tmp/finance-host-public-20261116/run-06-useredit-discovery-after-resume.json": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+  "/private/tmp/finance-host-public-20261116/run-06-useredit-discovery-after-rollback.json": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+  "/private/tmp/finance-host-public-20261116/run-06-useredit-discovery-before.json": "de34d58155274c24ecf864c8ef6645c746d0550ac18ed911592c80ee89061e9f",
+  "/private/tmp/finance-host-public-20261116/run-06-validation.json": "afaec5eabd24f60d90713c89349033c37baade49ccae0e32ebfc9a48d9f47830"
+}

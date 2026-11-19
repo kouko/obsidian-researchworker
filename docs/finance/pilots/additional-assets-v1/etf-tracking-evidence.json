@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "asset_class": "etf",
+  "instrument": "SPDR S&P 500 ETF Trust (SPY)",
+  "legal_vehicle": "Unit investment trust",
+  "analysis_cutoff": "2024-12-02",
+  "status": "bounded-method-case",
+  "source": {
+    "accession": "0001193125-24-266771",
+    "form": "N-30D",
+    "filed_date": "2024-11-27",
+    "report_period_end": "2024-09-30",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/884394/000119312524266771/0001193125-24-266771-index.html",
+    "url": "https://www.sec.gov/Archives/edgar/data/884394/000119312524266771/d814670dn30d.htm",
+    "locators": [
+      "Trust Overview",
+      "Financial Highlights and footnote(b)",
+      "Note1 Organization"
+    ],
+    "values": {
+      "nav_total_return_percent": "36.15",
+      "benchmark_total_return_percent": "36.35",
+      "nav_start_usd": "427.31",
+      "nav_end_usd": "574.05",
+      "net_expense_ratio_displayed_percent": "0.09"
+    },
+    "return_convention": "NAV purchase/sale with distributions reinvested at payment dates; broker commissions excluded",
+    "reading": "Selected sections and filing index inspected, not full report",
+    "raw_html_retained": false
+  },
+  "calculations": {
+    "nav_minus_benchmark_percentage_points": "-0.20",
+    "difference_basis_points": "-20.00",
+    "nav_price_change_percent": "34.34"
+  },
+  "cutoff_checks": [
+    {
+      "cutoff": "2024-09-30",
+      "source_eligible": false
+    },
+    {
+      "cutoff": "2024-12-02",
+      "source_eligible": true
+    }
+  ],
+  "model_refusals": [
+    "A one-period return difference is not tracking-error volatility",
+    "NAV return is not an investor executable market-price return",
+    "Do not equate displayed expense ratio with the entire tracking difference",
+    "Fund cash flows are not corporate free-cash-flow valuation; underlying holdings require a separate look-through method"
+  ],
+  "failure_handling": [
+    "Missing dated market-price/spread/premium data prevents an execution-cost conclusion",
+    "Do not backfill older cutoffs from current live issuer tables"
+  ],
+  "complete_investment_case": false,
+  "independent_research_review": "pending",
+  "remaining": [
+    "Full mandate/holdings/risk review",
+    "Dated liquidity and market-price inputs",
+    "Conditional horizons and independent challenge"
+  ]
+}

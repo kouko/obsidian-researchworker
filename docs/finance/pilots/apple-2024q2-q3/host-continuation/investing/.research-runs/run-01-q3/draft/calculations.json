@@ -1,0 +1,22 @@
+{
+  "unit": "USD millions",
+  "formula": "100*(current/prior-1)",
+  "Q3": {
+    "current": 85777,
+    "prior": 81797,
+    "growth_pct": 4.865704121178038
+  },
+  "Q2": {
+    "current": 90753,
+    "prior": 94836,
+    "growth_pct": -4.305327090978106
+  },
+  "growth_change_percentage_points": 9.171031212156144,
+  "category_deltas": {
+    "iphone": -373.0,
+    "mac": 169.0,
+    "ipad": 1371.0,
+    "wearables_home_and_accessories": -187.0,
+    "services": 3000.0
+  }
+}

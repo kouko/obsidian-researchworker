@@ -1,0 +1,38 @@
+{
+  "exit_codes": {
+    "before": 2,
+    "after": 2,
+    "repeat": 2
+  },
+  "checks": [
+    "original fact rows precede cutoff",
+    "prior Q4 revenue reconciles products",
+    "prior Q4 revenue exact",
+    "prior Q4 net income exact",
+    "lower revenue",
+    "lower services",
+    "lower residual",
+    "lower margin recomposition",
+    "lower after tax",
+    "middle revenue",
+    "middle services",
+    "middle residual",
+    "middle margin recomposition",
+    "middle after tax",
+    "upper revenue",
+    "upper services",
+    "upper residual",
+    "upper margin recomposition",
+    "upper after tax",
+    "note has cutoff and historical authorship",
+    "no Q4 actual inputs",
+    "before partial exit2",
+    "after partial exit2",
+    "repeat identical",
+    "operating not resumed",
+    "operating reusable",
+    "valuation pending",
+    "consensus gap retained"
+  ],
+  "scope": "Actual local subprocess; no new host session or independent semantic review"
+}

@@ -1,0 +1,10 @@
+{
+  "all_main78_managed_files_identical": true,
+  "all_bounded46_managed_files_identical": true,
+  "exact_user_edit_and_original_draft_preserved": true,
+  "runtime_source_bytes_match_recorded_manifests": true,
+  "all_retained_json_parse": true,
+  "all_retained_text_deterministic_privacy_scans_clean": true,
+  "whole_root_additions_audit": "FAILED in run08; two W3-added measurement files outside investing retained, no zero-root-addition claim",
+  "independent_review": "not performed by this check"
+}

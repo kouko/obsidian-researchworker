@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "output_digest": "e48b0e44f69f0a46a373981c2aad32341a034689778d4976814fd3df87082476",
+  "checks": {
+    "sources": true,
+    "citations": true,
+    "calculations": true,
+    "counterevidence": true
+  },
+  "unresolved": [],
+  "scope": "Author self-check of local transformed-pack growth/margin only; not independent review or external verification",
+  "calculation_evidence": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-02-q3/calculations.json"
+}

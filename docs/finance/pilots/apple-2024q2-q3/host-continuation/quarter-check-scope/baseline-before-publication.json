@@ -1,0 +1,8 @@
+{
+  "investing/assets/equities/aapl/asset.json": "0f101271a355af8fa68aee88e92291f8749a41201fc737f2d5238ae46447e749",
+  "investing/assets/equities/aapl/data/2024Q2.json": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+  "investing/assets/equities/aapl/data/analysis/growth-method.json": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+  "investing/assets/equities/aapl/data/growth-method-v3.txt": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+  "investing/assets/equities/aapl/data/sources/2024Q2.json": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+  "investing/research.json": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894"
+}

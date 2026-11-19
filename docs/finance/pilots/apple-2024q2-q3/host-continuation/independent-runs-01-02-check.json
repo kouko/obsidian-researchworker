@@ -1,0 +1,10 @@
+{
+  "verified_by": "W3 implementer independent direct read/recalculation",
+  "identity_units_exact_equal": true,
+  "predecessor_link": true,
+  "both_partial_not_complete": true,
+  "method_v1_v2_separate_authorship": true,
+  "all_unit_output_and_verification_digests_match": true,
+  "all_four_v2_decimal_calculations_match": true,
+  "last_success_absent_both": true
+}

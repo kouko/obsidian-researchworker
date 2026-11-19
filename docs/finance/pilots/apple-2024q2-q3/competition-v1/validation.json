@@ -1,0 +1,10 @@
+{
+  "verified_at": "2026-11-16",
+  "calculations_checked": 6,
+  "eligibility_exclusion_comparisons_checked": 8,
+  "local_links_checked": 1,
+  "status": "pass",
+  "correction": "Initial command printed 10 comparisons as a literal; actual enumerated count is 8, with no change to eligibility outcomes",
+  "independent_research_review": "pending",
+  "full_case_complete": false
+}

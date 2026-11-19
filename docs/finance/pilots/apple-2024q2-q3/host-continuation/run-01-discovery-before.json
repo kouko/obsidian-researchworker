@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "scope": "supplied_local_evidence",
+  "external_freshness": "unverified",
+  "mode": "latest",
+  "cutoff": "2024-08-02T23:59:59+00:00",
+  "decisions": [
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "record_gap_and_continue_independent_work",
+      "work": null,
+      "evidence": [
+        "growth",
+        "identity",
+        "investment-case"
+      ],
+      "reason": "Evidence requires recovery",
+      "affected": []
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "action": "record_gap_and_continue_independent_work",
+      "work": null,
+      "evidence": [
+        "growth",
+        "identity",
+        "investment-case"
+      ],
+      "reason": "Evidence requires recovery",
+      "affected": []
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "growth",
+      "evidence": [
+        "growth"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "growth"
+      ]
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "action": "resume_incomplete_work",
+      "work": "growth",
+      "evidence": [
+        "growth"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "affected": [
+        "growth"
+      ]
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "identity",
+      "evidence": [
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "identity"
+      ]
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "action": "resume_incomplete_work",
+      "work": "identity",
+      "evidence": [
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "affected": [
+        "identity"
+      ]
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "action": "resume_incomplete_work",
+      "work": "investment-case",
+      "evidence": [
+        "growth",
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "affected": [
+        "investment-case"
+      ]
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "action": "resume_incomplete_work",
+      "work": "investment-case",
+      "evidence": [
+        "growth",
+        "identity"
+      ],
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "affected": [
+        "investment-case"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "growth",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "evidence": "growth",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "identity",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "evidence": "identity",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q2/new",
+      "evidence": "investment-case",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q2",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    },
+    {
+      "record": "aapl/2024Q3/new",
+      "evidence": "investment-case",
+      "reason": "Missing eligible dependency or consumed identity: aapl:filing-2024Q3",
+      "recovery": "Supply or verify the identified local evidence and retry"
+    }
+  ],
+  "excluded": [],
+  "reusable": [],
+  "observations": [],
+  "status": "partial"
+}

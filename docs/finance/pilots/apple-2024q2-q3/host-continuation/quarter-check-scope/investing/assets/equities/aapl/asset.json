@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "id": "aapl",
+  "issuer": "AAPL",
+  "questions": [
+    {
+      "id": "growth",
+      "required_sources": [
+        "filing-{fiscal}"
+      ],
+      "required_analysis": [
+        "growth-method"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "identity",
+      "required_sources": [
+        "filing-{fiscal}"
+      ],
+      "depends_on": []
+    }
+  ]
+}

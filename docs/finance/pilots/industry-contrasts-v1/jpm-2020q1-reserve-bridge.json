@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "case": "JPM-2020Q1",
+  "cutoff": "2020-04-14T23:59:59-04:00",
+  "source": {
+    "url": "https://jpmorganchaseco.gcs-web.com/static-files/9dfecfe4-da07-4563-88c4-ce0fa236b046",
+    "role": "Issuer-hosted 44-page 8-K export; subsequent SEC index, cover and selected original exhibit fields independently checked",
+    "report_date": "2020-04-14",
+    "locators": [
+      "Web PDF page index13 (14th PDF page; printed supplement page1), selected income data",
+      "Web PDF page index39 (40th PDF page; printed supplement page26), allowance roll-forwards",
+      "Web PDF page index42 (43rd PDF page; printed supplement page29), CECL adoption and capital transition"
+    ],
+    "unit": "USD million unless explicitly rounded billions",
+    "values": {
+      "net_income": 2865,
+      "reported_credit_loss_provision": 8285,
+      "loan_allowance_beginning_post_adoption": 17295,
+      "loan_net_chargeoffs": 1469,
+      "loan_loss_provision": 7418,
+      "loan_allowance_ending": 23244,
+      "commitment_allowance_beginning_post_adoption": 1289,
+      "commitment_loss_provision": 858,
+      "commitment_allowance_ending": 2147,
+      "total_allowance_prior_december31": 14314,
+      "total_allowance_march31": 25391,
+      "reported_cecl_adoption_increase_rounded_billion": "4.3"
+    },
+    "reading": "Selected cover, income table, allowance roll-forward and CECL footnotes inspected; not complete filing",
+    "pdf_screenshot_attempt": "Three page screenshots returned Cache miss; no visual-table verification claimed",
+    "raw_pdf_retained": false
+  },
+  "calculations": {
+    "loan_allowance_bridge": "17295 - 1469 + 7418 = 23244",
+    "commitment_allowance_bridge": "1289 + 858 = 2147",
+    "post_adoption_beginning_total": 18584,
+    "quarter_allowance_build_after_adoption": 6807,
+    "total_change_from_prior_december": 11077,
+    "difference_between_prior_end_and_post_adoption_start": 4270,
+    "loan_and_commitment_provisions_sum": 8276,
+    "reported_provision_residual_unexplained_here": 9
+  },
+  "limits": [
+    "Do not classify the full 11077 allowance increase as current-quarter expense; CECL adoption changes the starting basis",
+    "Loan/commitment bridge is not every credit-loss category; unexplained residual9 stays unresolved",
+    "Capital transition adjustments prevent direct comparison of headline CET1 across regimes",
+    "Loss provision is not cash chargeoffs or distributable cash",
+    "Full funding/capital review and valuation remain pending; original accession binding is now verified"
+  ],
+  "stage_d_complete": false,
+  "independent_review": "pending",
+  "sec_binding": {
+    "accession": "0000019617-20-000280",
+    "filing_date": "2020-04-14",
+    "accepted_as_displayed": "2020-04-14 06:43:57",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/0000019617-20-000280-index.htm",
+    "cover_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/a1q20erf8kcover.htm",
+    "exhibit_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961720000280/a1q20erfexhibit992supp.htm",
+    "exhibit": "99.2",
+    "selected_cross_checks": [
+      "Loan allowance beginning17295 and ending23244",
+      "Commitment allowance ending2147",
+      "Reported credit-loss provision8285 and net income2865"
+    ],
+    "full_original_reading": false,
+    "raw_html_retained": false,
+    "period_of_report_event_date": "2020-04-14",
+    "date_semantics": "8-K event/report date is not the financial quarter end; exhibit identity and March31 balance/credit columns support the Q1 case"
+  },
+  "prior_probe_limits_retained": [
+    "Initial issuer-PDF probe had not independently bound the original accession; this was resolved by subsequent SEC index/cover/exhibit inspection",
+    "PDF screenshots failed with Cache miss; full visual review remains unverified"
+  ]
+}

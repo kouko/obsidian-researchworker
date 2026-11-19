@@ -1,13 +1,21 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.1.0 provides one `sec-data` skill for public SEC
-filing metadata and financial observations. It runs independently of the
-general-note `obsidian` plugin and the original Monkey Skills project.
+Optional `obsidian-finance` 0.1.0 provides `sec-data` for public SEC filing
+metadata/financial observations and `finance-research` for agent-led research
+continuation from a designated folder. It runs independently of the general-note
+`obsidian` plugin and the original Monkey Skills project.
 
 Claude and Codex manifests register this separate package in the repository's
 local marketplace. Registration is not installation or evidence of fresh-session
 skill execution. No global plugin refresh or host installation is performed;
 OpenCode support is unverified and no finance loader is shipped for that host.
+
+The [actual host-session evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
+records separate Codex CLI invocations using public isolated fixtures and the
+skill source explicitly. Observed native headers identify provider `openai`,
+model `gpt-6.1-sol`; these trials do not establish installed-plugin discovery,
+complete equity research, or support for other hosts. Partial checkpoints retain
+unresolved required investment research, and scoped reuse is not global no-work.
 
 ## Run directly
 
@@ -115,8 +123,9 @@ distinct; duration start dates preserve annual, year-to-date and shorter facts.
 Raw responses are unfiltered latest endpoint evidence, not historical
 snapshots. A day cutoff does not establish intraday trading availability.
 Observed spans do not establish complete quarterly statements, custom segment
-metrics or twenty-year analysis. No quarterly arithmetic, narrative analysis,
-investment recommendations or automatic note updates are provided.
+metrics or twenty-year analysis. The acquisition operation provides no quarterly
+arithmetic, narrative analysis, investment recommendations or automatic note
+updates.
 
 ## Development and provenance
 
@@ -135,6 +144,34 @@ attributed narrow extraction and retained source license.
 The [quarter replay evidence](../docs/loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md)
 separately records a real-payload offline replay and one live CLI acquisition.
 Neither establishes installed-host skill execution or complete financial research.
+
+## Folder-grounded agent research
+
+The [finance-research skill](skills/finance-research/SKILL.md) guides the host
+agent through scoped discovery, applicable source checks, actual affected
+analysis and append-only publication/recovery using the APIs below. It is
+separate from download-only `sec-data`; no command wrapper, scheduler or general
+workflow engine is added. The persisted asset questions define the research
+scope; the caller supplies the root, mode and assessment cutoff rather than a
+new hand-written work list each time. Unsupported old notes are preserved.
+The current saved-folder adapter manages equities; ETF, commodity and FX
+continuation have not been validated as supported asset workflows.
+
+Its [research method](skills/finance-research/references/research-method.md)
+requires source-bound reasoning, opposing evidence, explicit analysis horizons
+and actual original-section reading coverage with unread exclusions. Retaining
+filing HTML or checking selected numbers does not establish complete SEC reading
+or a full investment case. Independent completed questions can be saved in a
+managed partial checkpoint while required missing work remains pending. Generic
+methods stay in the skill; private assumptions and applied-version manifests
+remain local. Local no-work findings leave external freshness unverified.
+
+[Isolated behavioral evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/skill-eval/iteration-1/review.md)
+compares synthetic fresh-context trials and retains failures and a schema-guidance
+repair. The skill and helpers provide instructions and bounded local mechanics;
+those trials do not prove installed-host execution, live source coverage,
+calibrated returns or completion of the broader financial research program.
+Real fresh-host continuation remains a separate verification requirement.
 
 ## Read-only local work assessment (prototype v1)
 
@@ -262,3 +299,248 @@ exit 0 with `resume_incomplete_work` for forecast and unverified external
 freshness. The example supplies one relevant financial observation, not a full
 financial-analysis dataset. Existing acquisition remains the separate operation
 documented above.
+
+## Read-only saved-folder discovery (metadata v1)
+
+`scripts/research_store.py` provides `discover(root, mode, cutoff) -> dict`.
+The root is an explicitly selected local research folder containing the managed
+`investing/` subtree. Mode and timezone-aware assessment cutoff are explicit;
+the result keeps the accepted assessor's supplied-local-evidence scope and
+unverified external freshness. Discovery does not acquire sources, write notes,
+publish completion, or certify the substance of investment analysis. Existing
+`assess_work.py` and `work_assessment.py` interfaces remain unchanged.
+
+The supported layout is deliberately versioned; arbitrary older Markdown is
+preserved, never interpreted or migrated. Missing configuration, unsupported
+metadata, escaping references, symlinks and ambiguous source identities raise
+`ValueError` with recovery context. No input files change. Configure once:
+
+```text
+investing/research.json
+investing/assets/equities/{asset-id}/asset.json
+investing/assets/equities/{asset-id}/data/sources/{source-revision}.json
+investing/assets/equities/{asset-id}/data/analysis/{analysis-id}.json
+investing/assets/equities/{asset-id}/data/{original-file}
+investing/assets/equities/{asset-id}/cycles/{YYYYQn}/{cutoff}-{review}/review.json
+```
+
+Every metadata object has integer `version: 1` (booleans are rejected).
+Duplicate JSON keys and non-finite numbers are invalid. Asset, question, review
+and logical source IDs contain only ASCII letters, digits, `_` and `-`.
+Filenames do not supply fiscal identity. References are root-relative and must
+stay beneath `investing/`; all directory components and regular-file reads use
+no-follow descriptors, including root ancestors. Document instructions and
+unknown fields remain inert data. No selectors or document commands execute.
+
+- `research.json`: `{version: 1, assets: ["aapl"]}` enumerates asset scope.
+- `asset.json`: `{version: 1, id: "aapl", issuer: "AAPL", questions: [...]}`.
+  Each required question has `id`, `required_sources` (logical source IDs) and
+  optional `required_analysis` (local method/assumption IDs) and `depends_on`
+  (question IDs in this asset). These durable research
+  requirements are configuration, not per-invocation work statuses. Empty
+  requirements and unknown question dependencies are rejected. A source ID may
+  use the single literal template `{fiscal}` (for example,
+  `financial-{fiscal}` becomes `financial-2024Q2` for that record); no arbitrary
+  selectors execute and future quarter IDs need no manual question-list edit.
+  Every question's expanded required source IDs must appear in that unit's
+  frozen consumed identities. Expansion uses the saved record's fiscal quarter,
+  including for prices without financial fiscal metadata. An absent source or
+  omitted consumed identity invalidates the question and dependent synthesis,
+  including legacy reviews without frozen requirements; independent completed
+  questions remain reusable.
+- Source revision JSON: `version: 1`, stable logical `id`, matching `issuer`,
+  `kind`, economic `identity`, `available_at`, relevant typed `projection`,
+  `raw_ref`, `raw_digest` and `raw_format` (`json` or `text`). The digest is
+  SHA256 of the exact original bytes. JSON originals are strictly parsed;
+  text originals require the full decoded original in `projection.raw_text`
+  so unverifiable prose changes cannot be dismissed as formatting. Projection
+  values retain units and JSON types, including booleans. The full original
+  hash supplies provenance; semantic comparison uses identity and projection.
+  Relevant-field selection is a recorded author responsibility, not proof of
+  authenticity or relevance. Preserve each economic revision and its original
+  file instead of replacing historical metadata. Duplicate `(id, identity)`
+  pairs and tied latest publication times are rejected. The latest eligible
+  publication of each logical source is selected at cutoff; future and unknown
+  publication revisions remain visible as exclusions/gaps, never replacements
+  for an eligible original. Excluded competing revisions use an `@` plus
+  identity SHA256 suffix in result IDs. Selected source IDs are namespaced
+  `{asset-id}:{source-id}`. Missing identity/projection/availability remains
+  incomplete evidence under the accepted assessment contract.
+- Financial-original sources additionally carry source-declared
+  `fiscal: {year, period, period_end, original_accession}` as documented above.
+  A stable financial source ID binds one fiscal identity; new quarters use new
+  IDs, while revisions of the same quarter retain its ID. Cross-quarter reuse
+  of one financial source ID is rejected. Price dates never create financial
+  quarters. Shared economic studies belong among the applicable source
+  dependencies; local methods and assumptions use the separate analysis-input
+  contract below. A 2026-authored reconstruction method is not a 2024 economic
+  publication and must never acquire a fabricated historical availability date.
+- Local analysis metadata under `data/analysis/{analysis-id}.json` contains
+  `version: 1`, matching `id`, `kind: method` or `assumption`, actual
+  timezone-aware `authored_at`, method/assumption `identity`, typed `projection`,
+  `content_ref` and SHA256 `content_digest` of the exact local file bytes.
+  It must not contain `available_at`, `fiscal` or `raw_ref`; economic facts and
+  prices remain economic sources, never reclassified to bypass cutoff checks.
+  Method/assumption kinds are rejected in economic source metadata. Local
+  inputs are not screened against the economic cutoff: their actual authorship
+  remains visible in each unit's frozen identity, including a 2026 method used
+  to reconstruct a 2024 judgment. This does not permit future economic data.
+  A method's content file may be a compact applied-version manifest rather
+  than a copied generic manual. Generic methodology stays in the skill; the
+  calling research agent verifies its selected bundled method's content/version
+  before discovery and refreshes this local applied-version manifest when it
+  changes. The read-only helper checks only in-root files; it cannot detect or
+  certify changes to an external plugin skill without that refresh. Assumptions
+  and their content remain local.
+- `review.json`: `version: 1`, asset-local review `id`, fiscal identity,
+  timezone-aware saved `cutoff`, optional `predecessor` (review ID in the same
+  asset and quarter), and `units` mapping question IDs to saved results.
+  Fiscal identity must match the quarter directory. Optional `execution_state`,
+  `last_attempt` and `last_success` remain unmodified observations. Per quarter,
+  discovery selects the sole eligible leaf of the predecessor chain. Latest
+  mode includes saved cutoffs at or before the request; historical mode requires
+  an exact saved cutoff. Future children never hide eligible predecessors.
+  Missing target reviews, dangling or cyclic predecessors, conflicting fiscal
+  identities and competing leaves produce explicit review gaps. Every retained
+  quarter is considered independently; old reports remain immutable inputs.
+  Every eligible source-declared quarter without a usable saved review derives
+  its own `/new` record and configured missing questions, even when an older or
+  newer quarter is already saved. Empty, interrupted or wholly withdrawn
+  quarters cannot hide missing research; existing review/publication gaps remain
+  visible. Reviewed quarters do not receive duplicate candidates. Without an
+  eligible original the helper does not invent a fiscal quarter.
+- A unit contains `consumed: {source-id: {version, projection}}`, freezing
+  actual economic identity and relevant projection, `output: {path, digest}`,
+  and `verification` (a root-relative JSON reference). Local inputs separately
+  use `analysis_inputs: {analysis-id: {kind, version, authored_at, projection,
+  content_ref, content_digest}}`, with `version` freezing metadata `identity`.
+  Required and previously consumed local inputs are checked, so removing an
+  input from configuration cannot silently remove a saved dependency. Missing
+  files, changed content, versions, typed projections or authorship invalidate
+  the unit and its dependent synthesis transitively; independent work remains
+  reusable. Output digests use the
+  exact UTF-8 bytes decoded and re-encoded without newline normalization.
+  Missing required questions, missing outputs or verification, mismatched
+  output content, and changed dependencies prevent reuse. Question dependency
+  changes propagate through the existing assessor. Saved units cannot remove
+  required questions or introduce unknown questions.
+- Verification JSON contains `version: 1`, the same `output_digest`,
+  `checks: {sources: true, citations: true, calculations: true,
+  counterevidence: true}` and `unresolved: []`. These are recorded author
+  self-checks tied to the output, not independent review or proof of analytical
+  truth. A required unresolved question stays pending. Existence, nonempty text
+  and hashes alone cannot establish completion.
+
+Repeated unchanged discovery is deterministic and read-only. JSON whitespace
+and file modification times alone do not trigger analytical work. A no-work
+decision applies only to the locally checked scope; it establishes neither
+current external coverage nor advisory sufficiency. Folder mechanics and
+recorded checks do not replace the agent's substantive research and review.
+
+## Protected local publication and recovery
+
+The same module exposes Python APIs only; it has no publication CLI. These
+operations are for an explicitly authorized managed subtree or isolated copy.
+They do not acquire evidence, perform analysis, certify investment quality or
+establish external freshness. Persist acquired evidence as immutable inputs,
+then capture the preconditions **before** analysis/publication:
+
+```python
+expected = research_store.publication_snapshot(root)
+result = research_store.publish(
+    root, "aapl", review, files, expected, "unique-run-id", complete=True,
+)
+# Revalidate an interrupted recorded run, or restore its predecessor view:
+result = research_store.recover(root, "unique-run-id", action="resume")
+result = research_store.recover(root, "unique-run-id", action="rollback")
+```
+
+`publication_snapshot(root) -> dict[path, sha256]` captures exact regular-file
+bytes beneath `investing/`, excluding the helper's `.research-runs/` journals.
+The returned map is mandatory and must remain the original pre-analysis map;
+refreshing it to suppress a conflict defeats user-edit protection. Changed,
+added or missing managed files cause a conflict. Publication and recovery check
+these preconditions before work and immediately before the commit point. This
+is conservative: even an unrelated managed edit requires reassessment. All
+directory traversal and writes use anchored no-follow descriptors; new files
+use exclusive creation. Existing files are never overwritten or deleted.
+If source acquisition adds files after initial discovery, first verify every
+previously captured discovery path still has its original digest; then capture
+the publication baseline including only those known new evidence files. An
+unexpected edit or addition requires inspection, not an automatic refresh.
+
+`publish(root, asset, review, files, expected, run_id, *, complete=True) -> dict`
+accepts the saved-review contract above. `asset` must be configured; `run_id`
+is a new stable ASCII ID. The review directory is derived as
+`investing/assets/equities/{asset}/cycles/{YYYYQn}/{cutoff-date}-{review-id}`.
+An existing quarter requires the current eligible leaf as `predecessor`;
+a first review has no predecessor. `files` maps plain filenames ending in
+`.md` or `.json` to UTF-8 text, without subdirectories or reserved marker names.
+New unit output and verification references use their final root-relative
+paths in that directory. An unchanged unit may retain its predecessor's
+output/check references and complete frozen dependency identity. Changing its
+dependencies or verification while keeping that output is rejected; changed
+economic evidence, methods, assumptions or required question dependencies need
+recomputation, including dependent synthesis. Legacy reviews without frozen
+question requirements retain the existing discovery contract; new publications
+freeze all question definitions under `requirements` for subsequent checking.
+
+Each proposed review also supplies `research` with `method` (nonempty applied
+method description/version string), `assumptions` (list), `changes` (nonempty
+cross-quarter or review change string, not a list), `gaps` (list), and `horizons`.
+The latter has exactly `short`, `medium` and `long`, each containing `judgment`,
+`evidence` (reference list) and
+`invalidation_triggers` (list). Record `insufficient_evidence` honestly where
+appropriate; the research agent supplies the actual horizon durations and
+conditional reasoning. Structural checks do not judge that reasoning. The
+publisher embeds source/local-analysis metadata under `provenance`, retaining
+original references/hashes, fiscal identities, economic publication times and
+separate actual method/assumption authorship. Original evidence files remain
+immutable. The recorded semantic author self-checks remain distinct from an
+independent review of research quality.
+
+With `complete=True`, every configured question must be reusable under the
+existing discovery/assessment rules and declared research gaps must be empty.
+Use `complete=False` to commit a meaningful partial checkpoint: verified units
+remain reusable and missing or unresolved required questions remain pending.
+Saving review metadata never itself establishes analytical completeness. The
+local helper preserves the predecessor's `last_success`; it rejects advancing
+the last successful external verification from a local publication. An actual
+external attempt can be recorded separately as `last_attempt`, while external
+freshness remains unverified by these APIs.
+
+The immutable request, its integrity journal, drafts and staged completion live
+under `investing/.research-runs/{run_id}/`. Outputs and a hash-bound
+`pending.json` precede `review.json`. The commit point creates a no-overwrite,
+same-filesystem hard link to the fully flushed staged completion file;
+unsupported filesystem behavior fails without replacing research. A digest
+mismatch or incomplete metadata is a named conflict, not a completed review.
+Discovery reports unfinished journals/publications even when an older review is
+still usable. A review or rollback marker resolves only its matching immutable
+run, with journal and published-byte validation. A different run targeting the
+same review cannot conceal an earlier failed attempt; recovery of that earlier
+run reports a conflict and preserves the other run and both drafts.
+It does not present an interrupted attempt as an unchanged no-work
+result without that gap. No mutable overview/latest pointer is maintained:
+the eligible predecessor-chain leaf defines the saved view.
+
+`recover(root, run_id, *, action="resume") -> dict` rechecks the original
+preconditions, journal integrity, saved draft/output bytes and current source,
+method and assumption dependencies before adopting unfinished work. Repeating
+a successful resume returns the same saved result if its files and original
+preconditions still match. `action="rollback"` appends a validated
+`withdrawn.json` for a committed review, or `abandoned.json` for unfinished
+publication; the prior eligible view becomes visible while all reports,
+drafts and failure evidence stay on disk. Rollback refuses edits, unexpected
+files or later dependent reviews rather than hiding or deleting them. Altered
+withdrawal metadata also produces a conflict. Historical discovery still obeys
+the requested exact cutoff; withdrawal never fabricates a predecessor at a
+different cutoff. Rollback is limited to this recorded run, not arbitrary files.
+
+Results contain `status` (`complete`, `checkpoint` or `rolled_back`), `review`
+(root-relative metadata path) and `run`. Validation/conflict errors raise
+`ValueError`; filesystem interruption can raise `OSError`. Preserve the named
+files and draft, inspect the conflict and reassess before starting a new run.
+Do not edit run journals or completion files to force a success. These are
+local mechanics; actual agent continuation and fresh-host research behavior
+require separate verification.

@@ -1,0 +1,9 @@
+{
+  "recorded_at": "2026-11-16T02:24:59.073284+00:00",
+  "new_files": {
+    "investing/assets/equities/aapl/data/2024Q3.json": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+    "investing/assets/equities/aapl/data/sources/2024Q3.json": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9"
+  },
+  "preexisting_baseline_unchanged": true,
+  "meaning": "controlled real-original-source arrival in historical isolated fixture, not newly published 2026 filing"
+}

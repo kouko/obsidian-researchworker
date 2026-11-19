@@ -1,0 +1,15 @@
+verdict: PASS
+lens: plan
+reviewed_sha: docs/loom/2026-11-16-finance-research-continuation/plan.md
+dimension_scores:
+  deletion-first: PASS
+findings:
+  - severity: nit
+    dimension: deletion-first
+    anchor: "docs/loom/2026-11-16-finance-research-continuation/plan.md:39"
+    text: "suggestion (non-blocking): W3-02 can be folded into W3-01. It reconciles descriptions and acceptance evidence against the immediately preceding host observations, without introducing a separate implementation boundary."
+    fix: "Remove standalone task W3-02 and add its manifest, documentation and acceptance-evidence updates to W3-01 after host observations are recorded. Retain every reconciliation check, including unmet acceptance, installation limits and unfinished program stages."
+notes:
+  - "The smaller shape has five tasks and preserves all six acceptance outcomes, including genuine fresh-host research, incremental writes, recovery and honest reporting when execution is unavailable."
+  - "Keep discovery/publication implementation, agent instructions, integrated mechanics and actual host verification distinguishable: unit tests cannot replace research quality or fresh-session evidence."
+  - "No additional concrete file or mechanism deletion is established by this draft; bounded persisted records and protected publication directly support folder discovery, reuse and user-edit protection."

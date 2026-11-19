@@ -1,0 +1,210 @@
+{
+  "reported_inputs": {
+    "unit": "USD million unless row specifies USD",
+    "selected_original_fact_rows": [
+      {
+        "id": "fy23.revenue",
+        "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-09-30",
+        "val": 383285000000,
+        "accn": "0000320193-23-000106",
+        "fy": 2023,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2023-11-03"
+      },
+      {
+        "id": "fy23.net_income",
+        "concept": "NetIncomeLoss",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-09-30",
+        "val": 96995000000,
+        "accn": "0000320193-23-000106",
+        "fy": 2023,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2023-11-03"
+      },
+      {
+        "id": "fy23.opex",
+        "concept": "OperatingExpenses",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-09-30",
+        "val": 54847000000,
+        "accn": "0000320193-23-000106",
+        "fy": 2023,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2023-11-03"
+      },
+      {
+        "id": "nine23.revenue",
+        "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-07-01",
+        "val": 293787000000,
+        "accn": "0000320193-23-000077",
+        "fy": 2023,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2023-08-04"
+      },
+      {
+        "id": "nine23.net_income",
+        "concept": "NetIncomeLoss",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-07-01",
+        "val": 74039000000,
+        "accn": "0000320193-23-000077",
+        "fy": 2023,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2023-08-04"
+      },
+      {
+        "id": "nine23.opex",
+        "concept": "OperatingExpenses",
+        "unit": "USD",
+        "start": "2022-09-25",
+        "end": "2023-07-01",
+        "val": 41389000000,
+        "accn": "0000320193-23-000077",
+        "fy": 2023,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2023-08-04"
+      },
+      {
+        "id": "q3.revenue",
+        "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "unit": "USD",
+        "start": "2024-03-31",
+        "end": "2024-06-29",
+        "val": 85777000000,
+        "accn": "0000320193-24-000081",
+        "fy": 2024,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2024-08-02"
+      },
+      {
+        "id": "q3.net_income",
+        "concept": "NetIncomeLoss",
+        "unit": "USD",
+        "start": "2024-03-31",
+        "end": "2024-06-29",
+        "val": 21448000000,
+        "accn": "0000320193-24-000081",
+        "fy": 2024,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2024-08-02"
+      },
+      {
+        "id": "q3.opex",
+        "concept": "OperatingExpenses",
+        "unit": "USD",
+        "start": "2024-03-31",
+        "end": "2024-06-29",
+        "val": 14326000000,
+        "accn": "0000320193-24-000081",
+        "fy": 2024,
+        "fp": "Q3",
+        "form": "10-Q",
+        "filed": "2024-08-02"
+      }
+    ],
+    "product_annual_and_nine_months_2023": {
+      "iPhone": [
+        200583,
+        156778
+      ],
+      "Mac": [
+        29357,
+        21743
+      ],
+      "iPad": [
+        28300,
+        21857
+      ],
+      "Wearables": [
+        39845,
+        30523
+      ],
+      "Services": [
+        85200,
+        62886
+      ]
+    },
+    "product_source_ids": [
+      "fy23-original",
+      "nine23-original"
+    ],
+    "q3_services_ytd_2024": 71197,
+    "q3_services_ytd_2023": 62886,
+    "q3_service_margin_reported": "0.740",
+    "q3_services": 24213,
+    "q3_services_prior": 21213
+  },
+  "dated_sources": [
+    {
+      "id": "fy23-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000106/aapl-20230930.htm",
+      "available_at": "2023-11-03",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-23-000106"
+    },
+    {
+      "id": "nine23-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000077/aapl-20230701.htm",
+      "available_at": "2023-08-04",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-23-000077"
+    },
+    {
+      "id": "q3-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+      "available_at": "2024-08-02",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-24-000081"
+    },
+    {
+      "id": "q3-call-secondary",
+      "url": "https://www.macrumors.com/2024/08/01/apple-3q-2024-earnings/",
+      "available_at": "2024-08-01",
+      "kind": "secondary_call_live_notes",
+      "locator": "2:23 pm; outlook for September quarter",
+      "outlook": {
+        "revenue": "growth similar to June",
+        "services": "double digit growth similar to first nine months",
+        "gross_margin": [
+          "0.455",
+          "0.465"
+        ],
+        "opex_usd_million": [
+          14200,
+          14400
+        ],
+        "tax_rate": "0.165"
+      },
+      "limitations": "Not an issuer transcript; current navigation/sidebar excluded"
+    },
+    {
+      "id": "rakuten-june14",
+      "url": "https://media.rakuten-sec.net/articles/-/45520",
+      "available_at": "2024-06-14",
+      "kind": "single_analyst_original",
+      "forecast": {
+        "june_revenue_usd_million": 84000,
+        "june_operating_income_usd_million": 24200
+      },
+      "limitations": "Stale individual analyst estimate, not market consensus; not eligible for Q2 cutoff"
+    }
+  ]
+}

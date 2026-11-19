@@ -1,0 +1,65 @@
+{
+  "retrieved_at": "2026-11-16",
+  "assessment_cutoff": "2024-08-02T23:59:59-04:00",
+  "sources": [
+    {
+      "id": "fy23-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000106/aapl-20230930.htm",
+      "available_at": "2023-11-03",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-23-000106"
+    },
+    {
+      "id": "nine23-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000077/aapl-20230701.htm",
+      "available_at": "2023-08-04",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-23-000077"
+    },
+    {
+      "id": "q3-original",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+      "available_at": "2024-08-02",
+      "kind": "issuer_original",
+      "original_accession": "0000320193-24-000081"
+    },
+    {
+      "id": "q3-call-secondary",
+      "url": "https://www.macrumors.com/2024/08/01/apple-3q-2024-earnings/",
+      "available_at": "2024-08-01",
+      "kind": "secondary_call_live_notes",
+      "locator": "2:23 pm; outlook for September quarter",
+      "outlook": {
+        "revenue": "growth similar to June",
+        "services": "double digit growth similar to first nine months",
+        "gross_margin": [
+          "0.455",
+          "0.465"
+        ],
+        "opex_usd_million": [
+          14200,
+          14400
+        ],
+        "tax_rate": "0.165"
+      },
+      "limitations": "Not an issuer transcript; current navigation/sidebar excluded"
+    },
+    {
+      "id": "rakuten-june14",
+      "url": "https://media.rakuten-sec.net/articles/-/45520",
+      "available_at": "2024-06-14",
+      "kind": "single_analyst_original",
+      "forecast": {
+        "june_revenue_usd_million": 84000,
+        "june_operating_income_usd_million": 24200
+      },
+      "limitations": "Stale individual analyst estimate, not market consensus; not eligible for Q2 cutoff"
+    }
+  ],
+  "excluded": [
+    "2024Q4 actual results",
+    "later comparative financial rows",
+    "current web sidebars",
+    "post-cutoff consensus revisions"
+  ]
+}

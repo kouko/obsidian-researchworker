@@ -1,0 +1,547 @@
+{
+  "review": {
+    "cutoff": "2024-08-02T23:59:59+00:00",
+    "fiscal": {
+      "original_accession": "0000320193-24-000081",
+      "period": "Q3",
+      "period_end": "2024-06-29",
+      "year": 2024
+    },
+    "id": "run-05-useredit-q3",
+    "last_attempt": "2026-11-16T01:57:33.068714+00:00",
+    "predecessor": "run-03-q3",
+    "research": {
+      "assumptions": [
+        "Retained official publication dates accepted; independent index/amendment check pending",
+        "Retained transformed packs accepted for bounded questions; no later economic supplements used",
+        "Pilot horizons retained, not a user-confirmed holding preference"
+      ],
+      "changes": "Bounded unfinished MD&A concentration/counterevidence progress added; completed growth and identity reused verbatim. Full investment-case remains pending.",
+      "gaps": [
+        "investment-case required and pending",
+        "Full narrative, notes, governance, competition, forecasts, dated price and valuation pending",
+        "Raw HTML/context validation and filing-index/amendment coverage unverified"
+      ],
+      "horizons": {
+        "long": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (12,60] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "medium": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (3,12] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "short": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (0,3] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        }
+      },
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected; actual local revision 2026-11-16T02:08:46.931664+00:00",
+      "progress_note": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md"
+    },
+    "units": {
+      "growth": {
+        "analysis_inputs": {
+          "growth-method": {
+            "authored_at": "2026-11-16T02:08:46.931664+00:00",
+            "content_digest": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+            "content_ref": "investing/assets/equities/aapl/data/growth-method-v3.txt",
+            "kind": "method",
+            "projection": {
+              "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected"
+            },
+            "version": "v3-authorship-corrected"
+          }
+        },
+        "consumed": {
+          "filing-2024Q3": {
+            "projection": {
+              "cutoff": "2024-08-02",
+              "end": "2024-06-29",
+              "metrics": {
+                "assets": 331612000000,
+                "buybacks_discrete": 26522000000,
+                "buybacks_ytd": 69866000000,
+                "capex_discrete": 2151000000,
+                "capex_ytd": 6539000000,
+                "cash": 25565000000,
+                "cfo_discrete": 28858000000,
+                "cfo_to_net_income": 1.3454867586721373,
+                "cfo_ytd": 91443000000,
+                "diluted_shares": 15348175000,
+                "diluted_shares_prior_year": 15775021000,
+                "dividends_discrete": 3895000000,
+                "dividends_ytd": 11430000000,
+                "eps_diluted": 1.4,
+                "eps_diluted_prior_year": 1.26,
+                "eps_diluted_yoy_pct": 11.111111111111093,
+                "equity": 66708000000,
+                "fcf_proxy_discrete": 26707000000,
+                "greater_china": 14728000000,
+                "greater_china_prior_year": 15758000000,
+                "greater_china_yoy_pct": -6.536362482548553,
+                "gross_margin_pct": 46.2571551814589,
+                "gross_margin_prior_year_pct": 44.5163025538834,
+                "gross_profit": 39678000000,
+                "gross_profit_prior_year": 36413000000,
+                "ipad": 7162000000,
+                "ipad_prior_year": 5791000000,
+                "ipad_yoy_pct": 23.674667587635987,
+                "iphone": 39296000000,
+                "iphone_prior_year": 39669000000,
+                "iphone_yoy_pct": -0.9402808238170857,
+                "liabilities": 264904000000,
+                "mac": 7009000000,
+                "mac_prior_year": 6840000000,
+                "net_income": 21448000000,
+                "net_income_prior_year": 19881000000,
+                "net_income_yoy_pct": 7.881897288868767,
+                "operating_income": 25352000000,
+                "operating_income_prior_year": 22998000000,
+                "operating_margin_pct": 29.555708406682445,
+                "rd": 8006000000,
+                "rd_prior_year": 7442000000,
+                "revenue": 85777000000,
+                "revenue_prior_year": 81797000000,
+                "revenue_yoy_pct": 4.865704121178038,
+                "services": 24213000000,
+                "services_prior_year": 21213000000,
+                "services_share_pct": 28.227846625552306,
+                "services_yoy_pct": 14.142271248762551,
+                "wearables_home_and_accessories": 8097000000,
+                "wearables_home_and_accessories_prior_year": 8284000000
+              },
+              "original_accession": "0000320193-24-000081",
+              "quarter": "2024Q3",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+              "start": "2024-03-31",
+              "table_rows": [
+                {
+                  "cells": [
+                    "iPhone",
+                    "$",
+                    "39,296",
+                    "",
+                    "",
+                    "$",
+                    "39,669",
+                    "",
+                    "",
+                    "(1)",
+                    "%",
+                    "",
+                    "$",
+                    "154,961",
+                    "",
+                    "",
+                    "$",
+                    "156,778",
+                    "",
+                    "",
+                    "(1)",
+                    "%"
+                  ],
+                  "label": "iPhone",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Mac",
+                    "7,009",
+                    "",
+                    "",
+                    "6,840",
+                    "",
+                    "",
+                    "2",
+                    "%",
+                    "",
+                    "22,240",
+                    "",
+                    "",
+                    "21,743",
+                    "",
+                    "",
+                    "2",
+                    "%"
+                  ],
+                  "label": "Mac",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "iPad",
+                    "7,162",
+                    "",
+                    "",
+                    "5,791",
+                    "",
+                    "",
+                    "24",
+                    "%",
+                    "",
+                    "19,744",
+                    "",
+                    "",
+                    "21,857",
+                    "",
+                    "",
+                    "(10)",
+                    "%"
+                  ],
+                  "label": "iPad",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Wearables, Home and Accessories",
+                    "8,097",
+                    "",
+                    "",
+                    "8,284",
+                    "",
+                    "",
+                    "(2)",
+                    "%",
+                    "",
+                    "27,963",
+                    "",
+                    "",
+                    "30,523",
+                    "",
+                    "",
+                    "(8)",
+                    "%"
+                  ],
+                  "label": "Wearables, Home and Accessories",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Services",
+                    "24,213",
+                    "",
+                    "",
+                    "21,213",
+                    "",
+                    "",
+                    "14",
+                    "%",
+                    "",
+                    "71,197",
+                    "",
+                    "",
+                    "62,886",
+                    "",
+                    "",
+                    "13",
+                    "%"
+                  ],
+                  "label": "Services",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Greater China",
+                    "14,728",
+                    "",
+                    "",
+                    "15,758",
+                    "",
+                    "",
+                    "(7)",
+                    "%",
+                    "",
+                    "51,919",
+                    "",
+                    "",
+                    "57,475",
+                    "",
+                    "",
+                    "(10)",
+                    "%"
+                  ],
+                  "label": "Greater China",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                }
+              ]
+            },
+            "version": "0000320193-24-000081"
+          }
+        },
+        "output": {
+          "digest": "691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2",
+          "path": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md"
+        },
+        "verification": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json"
+      },
+      "identity": {
+        "consumed": {
+          "filing-2024Q3": {
+            "projection": {
+              "cutoff": "2024-08-02",
+              "end": "2024-06-29",
+              "metrics": {
+                "assets": 331612000000,
+                "buybacks_discrete": 26522000000,
+                "buybacks_ytd": 69866000000,
+                "capex_discrete": 2151000000,
+                "capex_ytd": 6539000000,
+                "cash": 25565000000,
+                "cfo_discrete": 28858000000,
+                "cfo_to_net_income": 1.3454867586721373,
+                "cfo_ytd": 91443000000,
+                "diluted_shares": 15348175000,
+                "diluted_shares_prior_year": 15775021000,
+                "dividends_discrete": 3895000000,
+                "dividends_ytd": 11430000000,
+                "eps_diluted": 1.4,
+                "eps_diluted_prior_year": 1.26,
+                "eps_diluted_yoy_pct": 11.111111111111093,
+                "equity": 66708000000,
+                "fcf_proxy_discrete": 26707000000,
+                "greater_china": 14728000000,
+                "greater_china_prior_year": 15758000000,
+                "greater_china_yoy_pct": -6.536362482548553,
+                "gross_margin_pct": 46.2571551814589,
+                "gross_margin_prior_year_pct": 44.5163025538834,
+                "gross_profit": 39678000000,
+                "gross_profit_prior_year": 36413000000,
+                "ipad": 7162000000,
+                "ipad_prior_year": 5791000000,
+                "ipad_yoy_pct": 23.674667587635987,
+                "iphone": 39296000000,
+                "iphone_prior_year": 39669000000,
+                "iphone_yoy_pct": -0.9402808238170857,
+                "liabilities": 264904000000,
+                "mac": 7009000000,
+                "mac_prior_year": 6840000000,
+                "net_income": 21448000000,
+                "net_income_prior_year": 19881000000,
+                "net_income_yoy_pct": 7.881897288868767,
+                "operating_income": 25352000000,
+                "operating_income_prior_year": 22998000000,
+                "operating_margin_pct": 29.555708406682445,
+                "rd": 8006000000,
+                "rd_prior_year": 7442000000,
+                "revenue": 85777000000,
+                "revenue_prior_year": 81797000000,
+                "revenue_yoy_pct": 4.865704121178038,
+                "services": 24213000000,
+                "services_prior_year": 21213000000,
+                "services_share_pct": 28.227846625552306,
+                "services_yoy_pct": 14.142271248762551,
+                "wearables_home_and_accessories": 8097000000,
+                "wearables_home_and_accessories_prior_year": 8284000000
+              },
+              "original_accession": "0000320193-24-000081",
+              "quarter": "2024Q3",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+              "start": "2024-03-31",
+              "table_rows": [
+                {
+                  "cells": [
+                    "iPhone",
+                    "$",
+                    "39,296",
+                    "",
+                    "",
+                    "$",
+                    "39,669",
+                    "",
+                    "",
+                    "(1)",
+                    "%",
+                    "",
+                    "$",
+                    "154,961",
+                    "",
+                    "",
+                    "$",
+                    "156,778",
+                    "",
+                    "",
+                    "(1)",
+                    "%"
+                  ],
+                  "label": "iPhone",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Mac",
+                    "7,009",
+                    "",
+                    "",
+                    "6,840",
+                    "",
+                    "",
+                    "2",
+                    "%",
+                    "",
+                    "22,240",
+                    "",
+                    "",
+                    "21,743",
+                    "",
+                    "",
+                    "2",
+                    "%"
+                  ],
+                  "label": "Mac",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "iPad",
+                    "7,162",
+                    "",
+                    "",
+                    "5,791",
+                    "",
+                    "",
+                    "24",
+                    "%",
+                    "",
+                    "19,744",
+                    "",
+                    "",
+                    "21,857",
+                    "",
+                    "",
+                    "(10)",
+                    "%"
+                  ],
+                  "label": "iPad",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Wearables, Home and Accessories",
+                    "8,097",
+                    "",
+                    "",
+                    "8,284",
+                    "",
+                    "",
+                    "(2)",
+                    "%",
+                    "",
+                    "27,963",
+                    "",
+                    "",
+                    "30,523",
+                    "",
+                    "",
+                    "(8)",
+                    "%"
+                  ],
+                  "label": "Wearables, Home and Accessories",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Services",
+                    "24,213",
+                    "",
+                    "",
+                    "21,213",
+                    "",
+                    "",
+                    "14",
+                    "%",
+                    "",
+                    "71,197",
+                    "",
+                    "",
+                    "62,886",
+                    "",
+                    "",
+                    "13",
+                    "%"
+                  ],
+                  "label": "Services",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                },
+                {
+                  "cells": [
+                    "Greater China",
+                    "14,728",
+                    "",
+                    "",
+                    "15,758",
+                    "",
+                    "",
+                    "(7)",
+                    "%",
+                    "",
+                    "51,919",
+                    "",
+                    "",
+                    "57,475",
+                    "",
+                    "",
+                    "(10)",
+                    "%"
+                  ],
+                  "label": "Greater China",
+                  "source_section": "MD&A net sales tables",
+                  "unit": "USD millions; percent columns separately labeled"
+                }
+              ]
+            },
+            "version": "0000320193-24-000081"
+          }
+        },
+        "output": {
+          "digest": "75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa",
+          "path": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+        },
+        "verification": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json"
+      }
+    },
+    "version": 1
+  },
+  "files": {
+    "investment-case-progress.md": "# AAPL Q3 unfinished investment-case progress\n\nStatus: bounded unfinished progress; investment-case is NOT a completed unit. Assessment cutoff 2024-08-02T23:59:59+00:00; fiscal Q3 ending 2024-06-29, original accession 0000320193-24-000081, retained official publication 2024-08-02. This is a 2026 reconstruction with no new external request, not a contemporaneous forecast.\n\nQuestion tested: does the observed revenue recovery support a broad-based, durable demand thesis? Retained selected original MD&A net-sales table rows (iPhone, Mac, iPad, Wearables/Home/Accessories, Services, Greater China) support a narrower conclusion. In USD millions, Services 24,213 versus 21,213 contributes +3,000 and iPad 7,162 versus 5,791 contributes +1,371. Against that, iPhone 39,296 versus 39,669 contributes -373 and Wearables 8,097 versus 8,284 contributes -187. Mac 7,009 versus 6,840 contributes +169. The bridge is 3,000+1,371-373-187+169=3,980, matching consolidated revenue 85,777-81,797. Services accounts for 75.38% of the net increment (3,000/3,980), a contribution ratio rather than a segment growth rate or forecast. Greater China 14,728 versus 15,758 falls 1,030; geography overlaps the product totals and is not added to this bridge.\n\nWorking implication: consolidated recovery is compatible with concentrated offsets, rather than evidence that every major device category or geography has recovered. Strong Services and iPad are positive operating evidence; iPhone, Wearables and China are counterevidence. Launch timing, comparison base, currency, pricing and mix remain alternative explanations, not established causal estimates. Revenue does not establish unit demand, share gains, recurring-customer retention or durable competitive advantage. Higher consolidated margin in the preserved growth unit cannot isolate any of those drivers. No forecast or security-return conclusion follows from the bridge.\n\nNext bounded research need: obtain cutoff-eligible original narrative on the product/geographic drivers and reconcile it with volumes/pricing/mix where available; inspect accounting/segment notes, liquidity and commitments, risks, governance/capital allocation and competition before synthesis. Obtain a dated eligible price and suitable valuation/scenario inputs before investment judgment. No probabilities, target price or investment rating are assigned. Full investment-case remains pending, with no verification record declaring it complete.\n\nCoverage actually read: retained transformed quarter pack metadata, metrics and six selected MD&A table rows, plus predecessor growth reasoning. Original reference: https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm. Local evidence: investing/assets/equities/aapl/data/2024Q3.json, SHA256 73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27. This is retained extraction, not retained HTML or a new original-page reading. Complete original narrative, notes, risk factors and proxy/governance have not been read here; raw inline context, amendment inventory and independent official-date validation remain unverified. Later-authored forecast/valuation supplements are not used as historical economic evidence.\n\nGrowth and identity units, including exact output/check references, frozen economic dependencies and growth's local v3 dependency, remain unchanged from run-03-q3. Local v3 revision 2026-11-16T02:08:46.931664+00:00 is separate from economic publication; its content digest is c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36. Earlier erroneous author-time records remain historical and are not recertified. Generic method: source-invoked finance-research references/research-method.md, with unchanged applied v3 manifest.\n\nShort (0,3], medium (3,12], long (12,60] months anchored at 2024-08-02T23:59:59+00:00: investment-return judgment remains insufficient_evidence for every window. Short-term operating recovery is uneven; medium-term persistence and long-term durability lack evidence and valuation linkage. These pilot windows are not the user's holding preference and differ from later one-quarter/1–3-year/5+-year conventions. Corrections to source identity, weakening Services, continued product/geographic weakness, or eligible evidence quantifying temporary effects would change this working thesis. Dated price/valuation and horizon-specific drivers are required before investment advice.\n",
+    "progress-coverage.json": "{\"status\": \"unfinished\", \"completed_question\": false, \"source\": {\"version\": 1, \"id\": \"filing-2024Q3\", \"issuer\": \"AAPL\", \"kind\": \"financial_original\", \"identity\": \"0000320193-24-000081\", \"available_at\": \"2024-08-02\", \"fiscal\": {\"year\": 2024, \"period\": \"Q3\", \"period_end\": \"2024-06-29\", \"original_accession\": \"0000320193-24-000081\"}, \"projection\": {\"quarter\": \"2024Q3\", \"start\": \"2024-03-31\", \"end\": \"2024-06-29\", \"cutoff\": \"2024-08-02\", \"original_accession\": \"0000320193-24-000081\", \"source_url\": \"https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm\", \"metrics\": {\"revenue\": 85777000000, \"revenue_prior_year\": 81797000000, \"gross_profit\": 39678000000, \"gross_profit_prior_year\": 36413000000, \"operating_income\": 25352000000, \"operating_income_prior_year\": 22998000000, \"net_income\": 21448000000, \"net_income_prior_year\": 19881000000, \"eps_diluted\": 1.4, \"eps_diluted_prior_year\": 1.26, \"diluted_shares\": 15348175000, \"diluted_shares_prior_year\": 15775021000, \"rd\": 8006000000, \"rd_prior_year\": 7442000000, \"cfo_ytd\": 91443000000, \"capex_ytd\": 6539000000, \"buybacks_ytd\": 69866000000, \"dividends_ytd\": 11430000000, \"assets\": 331612000000, \"liabilities\": 264904000000, \"equity\": 66708000000, \"cash\": 25565000000, \"iphone\": 39296000000, \"iphone_prior_year\": 39669000000, \"mac\": 7009000000, \"mac_prior_year\": 6840000000, \"ipad\": 7162000000, \"ipad_prior_year\": 5791000000, \"wearables_home_and_accessories\": 8097000000, \"wearables_home_and_accessories_prior_year\": 8284000000, \"services\": 24213000000, \"services_prior_year\": 21213000000, \"greater_china\": 14728000000, \"greater_china_prior_year\": 15758000000, \"revenue_yoy_pct\": 4.865704121178038, \"net_income_yoy_pct\": 7.881897288868767, \"eps_diluted_yoy_pct\": 11.111111111111093, \"iphone_yoy_pct\": -0.9402808238170857, \"services_yoy_pct\": 14.142271248762551, \"ipad_yoy_pct\": 23.674667587635987, \"greater_china_yoy_pct\": -6.536362482548553, \"gross_margin_pct\": 46.2571551814589, \"gross_margin_prior_year_pct\": 44.5163025538834, \"operating_margin_pct\": 29.555708406682445, \"services_share_pct\": 28.227846625552306, \"cfo_discrete\": 28858000000, \"capex_discrete\": 2151000000, \"buybacks_discrete\": 26522000000, \"dividends_discrete\": 3895000000, \"fcf_proxy_discrete\": 26707000000, \"cfo_to_net_income\": 1.3454867586721373}, \"table_rows\": [{\"label\": \"iPhone\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"iPhone\", \"$\", \"39,296\", \"\", \"\", \"$\", \"39,669\", \"\", \"\", \"(1)\", \"%\", \"\", \"$\", \"154,961\", \"\", \"\", \"$\", \"156,778\", \"\", \"\", \"(1)\", \"%\"]}, {\"label\": \"Mac\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"Mac\", \"7,009\", \"\", \"\", \"6,840\", \"\", \"\", \"2\", \"%\", \"\", \"22,240\", \"\", \"\", \"21,743\", \"\", \"\", \"2\", \"%\"]}, {\"label\": \"iPad\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"iPad\", \"7,162\", \"\", \"\", \"5,791\", \"\", \"\", \"24\", \"%\", \"\", \"19,744\", \"\", \"\", \"21,857\", \"\", \"\", \"(10)\", \"%\"]}, {\"label\": \"Wearables, Home and Accessories\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"Wearables, Home and Accessories\", \"8,097\", \"\", \"\", \"8,284\", \"\", \"\", \"(2)\", \"%\", \"\", \"27,963\", \"\", \"\", \"30,523\", \"\", \"\", \"(8)\", \"%\"]}, {\"label\": \"Services\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"Services\", \"24,213\", \"\", \"\", \"21,213\", \"\", \"\", \"14\", \"%\", \"\", \"71,197\", \"\", \"\", \"62,886\", \"\", \"\", \"13\", \"%\"]}, {\"label\": \"Greater China\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\", \"cells\": [\"Greater China\", \"14,728\", \"\", \"\", \"15,758\", \"\", \"\", \"(7)\", \"%\", \"\", \"51,919\", \"\", \"\", \"57,475\", \"\", \"\", \"(10)\", \"%\"]}]}, \"raw_ref\": \"investing/assets/equities/aapl/data/2024Q3.json\", \"raw_digest\": \"73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27\", \"raw_format\": \"json\"}, \"reading\": \"retained selected MD&A table rows only; no new original HTML reading\", \"arithmetic\": \"3980 million bridge and 75.38% Services net contribution checked\", \"predecessor\": \"run-03-q3\", \"units_preserved\": {\"growth\": {\"analysis_inputs\": {\"growth-method\": {\"authored_at\": \"2026-11-16T02:08:46.931664+00:00\", \"content_digest\": \"c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36\", \"content_ref\": \"investing/assets/equities/aapl/data/growth-method-v3.txt\", \"kind\": \"method\", \"projection\": {\"method\": \"revenue-yoy-and-gross-margin-v3-authorship-corrected\"}, \"version\": \"v3-authorship-corrected\"}}, \"consumed\": {\"filing-2024Q3\": {\"projection\": {\"cutoff\": \"2024-08-02\", \"end\": \"2024-06-29\", \"metrics\": {\"assets\": 331612000000, \"buybacks_discrete\": 26522000000, \"buybacks_ytd\": 69866000000, \"capex_discrete\": 2151000000, \"capex_ytd\": 6539000000, \"cash\": 25565000000, \"cfo_discrete\": 28858000000, \"cfo_to_net_income\": 1.3454867586721373, \"cfo_ytd\": 91443000000, \"diluted_shares\": 15348175000, \"diluted_shares_prior_year\": 15775021000, \"dividends_discrete\": 3895000000, \"dividends_ytd\": 11430000000, \"eps_diluted\": 1.4, \"eps_diluted_prior_year\": 1.26, \"eps_diluted_yoy_pct\": 11.111111111111093, \"equity\": 66708000000, \"fcf_proxy_discrete\": 26707000000, \"greater_china\": 14728000000, \"greater_china_prior_year\": 15758000000, \"greater_china_yoy_pct\": -6.536362482548553, \"gross_margin_pct\": 46.2571551814589, \"gross_margin_prior_year_pct\": 44.5163025538834, \"gross_profit\": 39678000000, \"gross_profit_prior_year\": 36413000000, \"ipad\": 7162000000, \"ipad_prior_year\": 5791000000, \"ipad_yoy_pct\": 23.674667587635987, \"iphone\": 39296000000, \"iphone_prior_year\": 39669000000, \"iphone_yoy_pct\": -0.9402808238170857, \"liabilities\": 264904000000, \"mac\": 7009000000, \"mac_prior_year\": 6840000000, \"net_income\": 21448000000, \"net_income_prior_year\": 19881000000, \"net_income_yoy_pct\": 7.881897288868767, \"operating_income\": 25352000000, \"operating_income_prior_year\": 22998000000, \"operating_margin_pct\": 29.555708406682445, \"rd\": 8006000000, \"rd_prior_year\": 7442000000, \"revenue\": 85777000000, \"revenue_prior_year\": 81797000000, \"revenue_yoy_pct\": 4.865704121178038, \"services\": 24213000000, \"services_prior_year\": 21213000000, \"services_share_pct\": 28.227846625552306, \"services_yoy_pct\": 14.142271248762551, \"wearables_home_and_accessories\": 8097000000, \"wearables_home_and_accessories_prior_year\": 8284000000}, \"original_accession\": \"0000320193-24-000081\", \"quarter\": \"2024Q3\", \"source_url\": \"https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm\", \"start\": \"2024-03-31\", \"table_rows\": [{\"cells\": [\"iPhone\", \"$\", \"39,296\", \"\", \"\", \"$\", \"39,669\", \"\", \"\", \"(1)\", \"%\", \"\", \"$\", \"154,961\", \"\", \"\", \"$\", \"156,778\", \"\", \"\", \"(1)\", \"%\"], \"label\": \"iPhone\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Mac\", \"7,009\", \"\", \"\", \"6,840\", \"\", \"\", \"2\", \"%\", \"\", \"22,240\", \"\", \"\", \"21,743\", \"\", \"\", \"2\", \"%\"], \"label\": \"Mac\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"iPad\", \"7,162\", \"\", \"\", \"5,791\", \"\", \"\", \"24\", \"%\", \"\", \"19,744\", \"\", \"\", \"21,857\", \"\", \"\", \"(10)\", \"%\"], \"label\": \"iPad\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Wearables, Home and Accessories\", \"8,097\", \"\", \"\", \"8,284\", \"\", \"\", \"(2)\", \"%\", \"\", \"27,963\", \"\", \"\", \"30,523\", \"\", \"\", \"(8)\", \"%\"], \"label\": \"Wearables, Home and Accessories\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Services\", \"24,213\", \"\", \"\", \"21,213\", \"\", \"\", \"14\", \"%\", \"\", \"71,197\", \"\", \"\", \"62,886\", \"\", \"\", \"13\", \"%\"], \"label\": \"Services\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Greater China\", \"14,728\", \"\", \"\", \"15,758\", \"\", \"\", \"(7)\", \"%\", \"\", \"51,919\", \"\", \"\", \"57,475\", \"\", \"\", \"(10)\", \"%\"], \"label\": \"Greater China\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}]}, \"version\": \"0000320193-24-000081\"}}, \"output\": {\"digest\": \"691cb068d3237a1811d8e93a654d2cd5292ebce2168fab119b23209a360ce2d2\", \"path\": \"investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md\"}, \"verification\": \"investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth-check.json\"}, \"identity\": {\"consumed\": {\"filing-2024Q3\": {\"projection\": {\"cutoff\": \"2024-08-02\", \"end\": \"2024-06-29\", \"metrics\": {\"assets\": 331612000000, \"buybacks_discrete\": 26522000000, \"buybacks_ytd\": 69866000000, \"capex_discrete\": 2151000000, \"capex_ytd\": 6539000000, \"cash\": 25565000000, \"cfo_discrete\": 28858000000, \"cfo_to_net_income\": 1.3454867586721373, \"cfo_ytd\": 91443000000, \"diluted_shares\": 15348175000, \"diluted_shares_prior_year\": 15775021000, \"dividends_discrete\": 3895000000, \"dividends_ytd\": 11430000000, \"eps_diluted\": 1.4, \"eps_diluted_prior_year\": 1.26, \"eps_diluted_yoy_pct\": 11.111111111111093, \"equity\": 66708000000, \"fcf_proxy_discrete\": 26707000000, \"greater_china\": 14728000000, \"greater_china_prior_year\": 15758000000, \"greater_china_yoy_pct\": -6.536362482548553, \"gross_margin_pct\": 46.2571551814589, \"gross_margin_prior_year_pct\": 44.5163025538834, \"gross_profit\": 39678000000, \"gross_profit_prior_year\": 36413000000, \"ipad\": 7162000000, \"ipad_prior_year\": 5791000000, \"ipad_yoy_pct\": 23.674667587635987, \"iphone\": 39296000000, \"iphone_prior_year\": 39669000000, \"iphone_yoy_pct\": -0.9402808238170857, \"liabilities\": 264904000000, \"mac\": 7009000000, \"mac_prior_year\": 6840000000, \"net_income\": 21448000000, \"net_income_prior_year\": 19881000000, \"net_income_yoy_pct\": 7.881897288868767, \"operating_income\": 25352000000, \"operating_income_prior_year\": 22998000000, \"operating_margin_pct\": 29.555708406682445, \"rd\": 8006000000, \"rd_prior_year\": 7442000000, \"revenue\": 85777000000, \"revenue_prior_year\": 81797000000, \"revenue_yoy_pct\": 4.865704121178038, \"services\": 24213000000, \"services_prior_year\": 21213000000, \"services_share_pct\": 28.227846625552306, \"services_yoy_pct\": 14.142271248762551, \"wearables_home_and_accessories\": 8097000000, \"wearables_home_and_accessories_prior_year\": 8284000000}, \"original_accession\": \"0000320193-24-000081\", \"quarter\": \"2024Q3\", \"source_url\": \"https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm\", \"start\": \"2024-03-31\", \"table_rows\": [{\"cells\": [\"iPhone\", \"$\", \"39,296\", \"\", \"\", \"$\", \"39,669\", \"\", \"\", \"(1)\", \"%\", \"\", \"$\", \"154,961\", \"\", \"\", \"$\", \"156,778\", \"\", \"\", \"(1)\", \"%\"], \"label\": \"iPhone\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Mac\", \"7,009\", \"\", \"\", \"6,840\", \"\", \"\", \"2\", \"%\", \"\", \"22,240\", \"\", \"\", \"21,743\", \"\", \"\", \"2\", \"%\"], \"label\": \"Mac\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"iPad\", \"7,162\", \"\", \"\", \"5,791\", \"\", \"\", \"24\", \"%\", \"\", \"19,744\", \"\", \"\", \"21,857\", \"\", \"\", \"(10)\", \"%\"], \"label\": \"iPad\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Wearables, Home and Accessories\", \"8,097\", \"\", \"\", \"8,284\", \"\", \"\", \"(2)\", \"%\", \"\", \"27,963\", \"\", \"\", \"30,523\", \"\", \"\", \"(8)\", \"%\"], \"label\": \"Wearables, Home and Accessories\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Services\", \"24,213\", \"\", \"\", \"21,213\", \"\", \"\", \"14\", \"%\", \"\", \"71,197\", \"\", \"\", \"62,886\", \"\", \"\", \"13\", \"%\"], \"label\": \"Services\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}, {\"cells\": [\"Greater China\", \"14,728\", \"\", \"\", \"15,758\", \"\", \"\", \"(7)\", \"%\", \"\", \"51,919\", \"\", \"\", \"57,475\", \"\", \"\", \"(10)\", \"%\"], \"label\": \"Greater China\", \"source_section\": \"MD&A net sales tables\", \"unit\": \"USD millions; percent columns separately labeled\"}]}, \"version\": \"0000320193-24-000081\"}}, \"output\": {\"digest\": \"75a9bcdf75a5600ead172f1640031bfe8861e7f19d686edc83bd938e026c11fa\", \"path\": \"investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md\"}, \"verification\": \"investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity-check.json\"}}, \"horizons\": \"all investment returns insufficient_evidence\"}"
+  },
+  "run": "run-05-useredit-interrupt",
+  "target": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3",
+  "complete": false
+}

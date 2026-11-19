@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "scope": "supplied_local_evidence",
+  "external_freshness": "unverified",
+  "mode": "latest",
+  "cutoff": "2024-05-03T23:59:59-04:00",
+  "decisions": [
+    {
+      "record": "aapl/2024Q2/fullcase-v1",
+      "action": "append_revision_same_quarter",
+      "work": "investment-case",
+      "evidence": [
+        "aapl:annual2023-debt-lease",
+        "aapl:annual2023-risk",
+        "aapl:annual2023-tax",
+        "aapl:berkshire-amendment",
+        "aapl:bls-2024Q2",
+        "aapl:doj-original-complaint",
+        "aapl:expectations-2024Q2",
+        "aapl:fed-2024Q2",
+        "aapl:filing-2024Q2",
+        "aapl:idc-2024Q1",
+        "aapl:original2023Q3-operating",
+        "aapl:proxy-2024",
+        "aapl:samsung-2024Q1",
+        "aapl:vanguard-amendment",
+        "aapl:vote-8k",
+        "growth",
+        "identity"
+      ],
+      "reason": "Relevant consumed inputs changed",
+      "affected": [
+        "investment-case"
+      ]
+    }
+  ],
+  "gaps": [],
+  "excluded": [
+    {
+      "evidence": "aapl:bls-2024Q3",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:ec-original-release",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:expectations-2024Q3",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:fed-2024Q3",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:filing-2024Q3",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:idc-2024Q2",
+      "reason": "after_cutoff"
+    },
+    {
+      "evidence": "aapl:samsung-2024Q2",
+      "reason": "after_cutoff"
+    }
+  ],
+  "reusable": [
+    {
+      "record": "aapl/2024Q2/fullcase-v1",
+      "work": "growth"
+    },
+    {
+      "record": "aapl/2024Q2/fullcase-v1",
+      "work": "identity"
+    }
+  ],
+  "observations": [],
+  "status": "complete"
+}

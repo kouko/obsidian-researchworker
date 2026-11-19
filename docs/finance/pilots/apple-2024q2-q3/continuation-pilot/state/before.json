@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "aapl-q3-financials",
+      "issuer": "AAPL",
+      "kind": "financial_original",
+      "version": "0000320193-24-000081",
+      "available_at": "2024-08-02",
+      "fiscal": {
+        "year": 2024,
+        "period": "Q3",
+        "period_end": "2024-06-29",
+        "original_accession": "0000320193-24-000081"
+      },
+      "projection_ref": "docs/finance/pilots/apple-2024q2-q3/continuation-pilot/state/q3-facts.json",
+      "consumers": [
+        "operating-supplement",
+        "valuation-evidence"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": "aapl-2024q3-continuation",
+      "issuer": "AAPL",
+      "fiscal": {
+        "year": 2024,
+        "period": "Q3",
+        "period_end": "2024-06-29",
+        "original_accession": "0000320193-24-000081"
+      },
+      "cutoff": "2024-08-02T23:59:59-04:00",
+      "required_sources": [
+        "aapl-q3-financials",
+        "independent-consensus"
+      ],
+      "work": [
+        {
+          "id": "operating-supplement",
+          "status": "missing",
+          "depends_on": [],
+          "consumed": {
+            "aapl-q3-financials": {
+              "version": "0000320193-24-000081",
+              "projection": {
+                "original_accession": "0000320193-24-000081",
+                "period_start": "2024-03-31",
+                "period_end": "2024-06-29",
+                "unit": "USD except labeled per-share/ratio metrics",
+                "metrics": {
+                  "revenue": 85777000000,
+                  "revenue_prior_year": 81797000000,
+                  "gross_profit": 39678000000,
+                  "gross_profit_prior_year": 36413000000,
+                  "operating_income": 25352000000,
+                  "operating_income_prior_year": 22998000000,
+                  "net_income": 21448000000,
+                  "net_income_prior_year": 19881000000,
+                  "eps_diluted": 1.4,
+                  "eps_diluted_prior_year": 1.26,
+                  "diluted_shares": 15348175000,
+                  "diluted_shares_prior_year": 15775021000,
+                  "rd": 8006000000,
+                  "rd_prior_year": 7442000000,
+                  "cfo_ytd": 91443000000,
+                  "capex_ytd": 6539000000,
+                  "buybacks_ytd": 69866000000,
+                  "dividends_ytd": 11430000000,
+                  "assets": 331612000000,
+                  "liabilities": 264904000000,
+                  "equity": 66708000000,
+                  "cash": 25565000000,
+                  "iphone": 39296000000,
+                  "iphone_prior_year": 39669000000,
+                  "mac": 7009000000,
+                  "mac_prior_year": 6840000000,
+                  "ipad": 7162000000,
+                  "ipad_prior_year": 5791000000,
+                  "wearables_home_and_accessories": 8097000000,
+                  "wearables_home_and_accessories_prior_year": 8284000000,
+                  "services": 24213000000,
+                  "services_prior_year": 21213000000,
+                  "greater_china": 14728000000,
+                  "greater_china_prior_year": 15758000000,
+                  "revenue_yoy_pct": 4.865704121178038,
+                  "net_income_yoy_pct": 7.881897288868767,
+                  "eps_diluted_yoy_pct": 11.111111111111093,
+                  "iphone_yoy_pct": -0.9402808238170857,
+                  "services_yoy_pct": 14.142271248762551,
+                  "ipad_yoy_pct": 23.674667587635987,
+                  "greater_china_yoy_pct": -6.536362482548553,
+                  "gross_margin_pct": 46.2571551814589,
+                  "gross_margin_prior_year_pct": 44.5163025538834,
+                  "operating_margin_pct": 29.555708406682445,
+                  "services_share_pct": 28.227846625552306,
+                  "cfo_discrete": 28858000000,
+                  "capex_discrete": 2151000000,
+                  "buybacks_discrete": 26522000000,
+                  "dividends_discrete": 3895000000,
+                  "fcf_proxy_discrete": 26707000000,
+                  "cfo_to_net_income": 1.3454867586721373
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "valuation-evidence",
+          "status": "missing",
+          "depends_on": [
+            "operating-supplement"
+          ],
+          "consumed": {
+            "aapl-q3-financials": {
+              "version": "0000320193-24-000081",
+              "projection": {
+                "original_accession": "0000320193-24-000081",
+                "period_start": "2024-03-31",
+                "period_end": "2024-06-29",
+                "unit": "USD except labeled per-share/ratio metrics",
+                "metrics": {
+                  "revenue": 85777000000,
+                  "revenue_prior_year": 81797000000,
+                  "gross_profit": 39678000000,
+                  "gross_profit_prior_year": 36413000000,
+                  "operating_income": 25352000000,
+                  "operating_income_prior_year": 22998000000,
+                  "net_income": 21448000000,
+                  "net_income_prior_year": 19881000000,
+                  "eps_diluted": 1.4,
+                  "eps_diluted_prior_year": 1.26,
+                  "diluted_shares": 15348175000,
+                  "diluted_shares_prior_year": 15775021000,
+                  "rd": 8006000000,
+                  "rd_prior_year": 7442000000,
+                  "cfo_ytd": 91443000000,
+                  "capex_ytd": 6539000000,
+                  "buybacks_ytd": 69866000000,
+                  "dividends_ytd": 11430000000,
+                  "assets": 331612000000,
+                  "liabilities": 264904000000,
+                  "equity": 66708000000,
+                  "cash": 25565000000,
+                  "iphone": 39296000000,
+                  "iphone_prior_year": 39669000000,
+                  "mac": 7009000000,
+                  "mac_prior_year": 6840000000,
+                  "ipad": 7162000000,
+                  "ipad_prior_year": 5791000000,
+                  "wearables_home_and_accessories": 8097000000,
+                  "wearables_home_and_accessories_prior_year": 8284000000,
+                  "services": 24213000000,
+                  "services_prior_year": 21213000000,
+                  "greater_china": 14728000000,
+                  "greater_china_prior_year": 15758000000,
+                  "revenue_yoy_pct": 4.865704121178038,
+                  "net_income_yoy_pct": 7.881897288868767,
+                  "eps_diluted_yoy_pct": 11.111111111111093,
+                  "iphone_yoy_pct": -0.9402808238170857,
+                  "services_yoy_pct": 14.142271248762551,
+                  "ipad_yoy_pct": 23.674667587635987,
+                  "greater_china_yoy_pct": -6.536362482548553,
+                  "gross_margin_pct": 46.2571551814589,
+                  "gross_margin_prior_year_pct": 44.5163025538834,
+                  "operating_margin_pct": 29.555708406682445,
+                  "services_share_pct": 28.227846625552306,
+                  "cfo_discrete": 28858000000,
+                  "capex_discrete": 2151000000,
+                  "buybacks_discrete": 26522000000,
+                  "dividends_discrete": 3895000000,
+                  "fcf_proxy_discrete": 26707000000,
+                  "cfo_to_net_income": 1.3454867586721373
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "clean": {
+      "exit75": true,
+      "unfinished_discovered": true,
+      "four_reusable_units": true,
+      "final_review_absent": true,
+      "no_recovery_marker": true
+    },
+    "useredit": {
+      "exit75": true,
+      "unfinished_discovered": true,
+      "four_reusable_units": true,
+      "final_review_absent": true,
+      "no_recovery_marker": true
+    }
+  },
+  "main_unchanged": true,
+  "script_sha256": "ed43258ef13bddeffcb1688573acff5f869873a21eb737008c284d77e6d8de2d"
+}

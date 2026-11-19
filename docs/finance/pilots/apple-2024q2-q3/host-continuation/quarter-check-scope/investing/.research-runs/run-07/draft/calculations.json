@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "units": "USD; percentage results in percent; margin change in percentage points",
+  "inputs": {
+    "revenue": 85777000000,
+    "revenue_prior_year": 81797000000,
+    "gross_profit": 39678000000,
+    "gross_profit_prior_year": 36413000000
+  },
+  "formulas": {
+    "growth": "(revenue/revenue_prior_year-1)*100",
+    "margin": "gross_profit/revenue*100",
+    "prior_margin": "gross_profit_prior_year/revenue_prior_year*100",
+    "change": "margin-prior_margin"
+  },
+  "results": {
+    "growth_pct": "4.865704121178038314363607467266525667200",
+    "margin_pct": "46.25715518145889923872366718351073131492",
+    "prior_margin_pct": "44.51630255388339425651307505165226108537",
+    "change_pp": "1.74085262757550498221059213185847022955"
+  },
+  "category_dollar_changes": {
+    "iphone": -373000000,
+    "mac": 169000000,
+    "ipad": 1371000000,
+    "wearables_home_and_accessories": -187000000,
+    "services": 3000000000
+  },
+  "checks": {
+    "category_totals_reconcile": true,
+    "sales_less_original_cost_of_sales_reconciles": true,
+    "alternative_growth_formula_agrees": true
+  },
+  "source": "Original Q3 statements of operations and MD&A three-month columns; no YTD subtraction; stored derived percentages not used"
+}

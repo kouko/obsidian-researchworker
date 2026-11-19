@@ -1,0 +1,212 @@
+{
+  "clean": {
+    "journal_request_digest": "b2ba0a45f8f85227117b992cc3423e83beda295b3ba1bd2ea67070a6c0d3af0b",
+    "original_preconditions_match": true,
+    "provenance_and_raw_method_digests_match": true,
+    "original_drafts_match_request": true,
+    "reused_outputs_and_units_match": true,
+    "scope": {
+      "version": 1,
+      "assets": [
+        "aapl"
+      ]
+    },
+    "questions": {
+      "version": 1,
+      "id": "aapl",
+      "issuer": "AAPL",
+      "questions": [
+        {
+          "id": "growth",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "required_analysis": [
+            "growth-method"
+          ],
+          "depends_on": []
+        },
+        {
+          "id": "identity",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "depends_on": []
+        },
+        {
+          "id": "investment-case",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "depends_on": [
+            "growth",
+            "identity"
+          ]
+        }
+      ]
+    },
+    "research": {
+      "assumptions": [
+        "Retained official publication dates accepted; independent index/amendment check pending",
+        "Retained transformed packs accepted for bounded questions; no later economic supplements used",
+        "Pilot horizons retained, not a user-confirmed holding preference"
+      ],
+      "changes": "Bounded unfinished MD&A concentration/counterevidence progress added; completed growth and identity reused verbatim. Full investment-case remains pending.",
+      "gaps": [
+        "investment-case required and pending",
+        "Full narrative, notes, governance, competition, forecasts, dated price and valuation pending",
+        "Raw HTML/context validation and filing-index/amendment coverage unverified"
+      ],
+      "horizons": {
+        "long": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (12,60] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "medium": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (3,12] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "short": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (0,3] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        }
+      },
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected; actual local revision 2026-11-16T02:08:46.931664+00:00",
+      "progress_note": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/investment-case-progress.md"
+    },
+    "last_attempt": "2026-11-16T01:57:33.068714+00:00",
+    "last_success": null
+  },
+  "useredit": {
+    "journal_request_digest": "faf50bda2422c14104b965e9721ad1df038847e378d1cfe5952fcb624146e74d",
+    "original_preconditions_match": true,
+    "provenance_and_raw_method_digests_match": true,
+    "original_drafts_match_request": true,
+    "reused_outputs_and_units_match": true,
+    "scope": {
+      "version": 1,
+      "assets": [
+        "aapl"
+      ]
+    },
+    "questions": {
+      "version": 1,
+      "id": "aapl",
+      "issuer": "AAPL",
+      "questions": [
+        {
+          "id": "growth",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "required_analysis": [
+            "growth-method"
+          ],
+          "depends_on": []
+        },
+        {
+          "id": "identity",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "depends_on": []
+        },
+        {
+          "id": "investment-case",
+          "required_sources": [
+            "filing-{fiscal}"
+          ],
+          "depends_on": [
+            "growth",
+            "identity"
+          ]
+        }
+      ]
+    },
+    "research": {
+      "assumptions": [
+        "Retained official publication dates accepted; independent index/amendment check pending",
+        "Retained transformed packs accepted for bounded questions; no later economic supplements used",
+        "Pilot horizons retained, not a user-confirmed holding preference"
+      ],
+      "changes": "Bounded unfinished MD&A concentration/counterevidence progress added; completed growth and identity reused verbatim. Full investment-case remains pending.",
+      "gaps": [
+        "investment-case required and pending",
+        "Full narrative, notes, governance, competition, forecasts, dated price and valuation pending",
+        "Raw HTML/context validation and filing-index/amendment coverage unverified"
+      ],
+      "horizons": {
+        "long": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (12,60] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "medium": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (3,12] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        },
+        "short": {
+          "evidence": [
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/growth.md",
+            "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/identity.md"
+          ],
+          "invalidation_triggers": [
+            "Correction of original inputs or period identity",
+            "Services weakness or persistent product/geographic weakness",
+            "Obtain dated price, appropriate valuation and horizon-specific driver evidence before investment judgment"
+          ],
+          "judgment": "insufficient_evidence for investment return; (0,3] months anchored at 2024-08-02T23:59:59+00:00. Revenue and margin expansion are uneven across products and geography. No price/valuation bridge; convention differs from later one-quarter/1–3-year/5+-year approach."
+        }
+      },
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected; actual local revision 2026-11-16T02:08:46.931664+00:00",
+      "progress_note": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md"
+    },
+    "last_attempt": "2026-11-16T01:57:33.068714+00:00",
+    "last_success": null,
+    "user_edit": {
+      "path": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md",
+      "sha256": "70ad6a336f4c1cf311ccdf058ab06492135bd7a6ce27f6f77d853adf84d29fb1",
+      "original_draft_sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+      "exact_appended_bytes_match": true
+    }
+  }
+}

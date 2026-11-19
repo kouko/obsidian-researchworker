@@ -84,3 +84,26 @@ and draft update-decision examples. It preserves all earlier research versions:
 The management outlook is attributed to secondary reporting; numeric scenario
 points and carry-forward assumptions are explicitly local. No calibrated
 five-year forecast, investment rating or automatic update runtime is complete.
+
+## Q3 continuation pilot, 2026-11-16
+
+The locally accepted read-only work assessor now exists at base 0462b01; older
+references above to unimplemented runtime describe the Stage A snapshot.
+General vault discovery, research execution and real fresh-host behavior remain
+unimplemented or unverified. This continuation adds actual local subprocess
+assessment around newly authored research without replacing earlier versions:
+
+- [Work order and limits](continuation-pilot/RUN.md)
+- [Q3 next-quarter operating supplement](continuation-pilot/2024Q3-營運預測補充.md)
+- [Original inputs](continuation-pilot/reported-inputs.json)
+- [Dated source register](continuation-pilot/sources.json)
+- [Assumptions](continuation-pilot/assumptions.json)
+- [Calculations](continuation-pilot/calculations.json)
+- [Self-check scope and gaps](continuation-pilot/AUTHORING-EVIDENCE.md)
+- [Actual before/after/repeat execution checks](continuation-pilot/state/execution-evidence.json)
+
+The three assessments exit 2 honestly: valuation work and the independent
+consensus gap remain. The after-assessment reuses the completed authoring slice
+and does not resume it again. This is supplied-file checkpoint reuse, not proof
+of an agent automatically performing the research or discovering every file.
+Independent semantic review and new host-session evidence remain pending.
