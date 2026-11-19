@@ -1,3 +1,42 @@
+# Independent acceptance re-test at 3766bc72b8f0ec08f86eada9a0f2fda44685a664
+
+## Clean setup and commands
+
+Extracted the exact committed tree with git archive, into a fresh isolated directory. Followed the README's Python 3.11+ standard-library source path and loaded the saved-folder helper directly. Python 3.12 was available in a project-compatible environment. No package installation, vault access or network request occurred.
+
+```sh
+git -C /private/tmp/finance-continuation-sync-trial archive 3766bc72b8f0ec08f86eada9a0f2fda44685a664 | tar xf - -C /private/tmp/continuation-post-main-acceptance/checkout
+cd /private/tmp/continuation-post-main-acceptance/checkout
+PYTHONDONTWRITEBYTECODE=1 /Users/kouko/.conda/envs/dbt-redshift/bin/python3 -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py obsidian-finance/tests/test_future_history_validation.py obsidian-finance/tests/test_work_assessment.py -q -p no:cacheprovider
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-post-main-acceptance/witness.py
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-post-main-acceptance/arrival.py
+```
+
+Focused result: **95 passed**, exit 0. The automated test suite, which runs before the change is accepted and blocks it on failure, remains `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider` and belongs to finalize-review. The parent observed 292 passing tests on this synchronized tree.
+
+## Current source results
+
+| Case | Status | Reused | Gaps | Existing files verified | Exact prior output match |
+| --- | --- | --- | --- | --- | --- |
+| full-case | complete | 6 | 0 | 466 | None |
+| no-work | complete | 4 | 0 | 46 | True |
+| before-arrival | partial | 4 | 4 | 56 | True |
+| after-incremental-arrival | partial | 6 | 6 | 89 | True |
+| after-method-change | complete | 4 | 0 | 71 | True |
+
+- **Acceptance 1, 3, UI-1, UI-7, UI-14**: Current source identified both Q2 and Q3 from saved records, including all six full-case units and both completed syntheses. It returned two no-work decisions with absent gaps. The bounded fixture reproduced its exact four-unit result. Byte inventories were compared before and after on both. Focused cases cover timestamps, formatting and repeat invocations.
+- **Acceptance 2, UI-3–6, UI-9**: Copied the prior research folder, then added only the 13 SHA-256-verified sources listed in the retained arrival inventory. No Q4 checkpoint existed in this copy. Current discovery exactly matched the captured source-arrival result. Only one Q4 identity was proposed with growth, identity and investment-case pending, while all 56 old files remained exact. On the later separately saved case growth and identity became reusable and the investment case remained pending. The retained method-change output invalidated two growth units and retained the two identity units, then arrived at a four-unit no-work state after both saves. Current source reproduced the end-state result exactly. Focused cases exercise selective amendment, prerequisite invalidation and multi-issuer independence.
+- **Acceptance 4, UI-15**: Inspected the two completed investment-case artifacts selected by current full-case discovery and the retained full-case review result. These cover saved cutoffs, earlier versions, original-source references, assumptions, opposing evidence and qualified short/medium/long judgments. The middle and long horizons stay conditional and insufficient evidence does not become a price prediction. No new investment work was authored in this witness.
+- **Acceptance 5, UI-2, UI-10–13, UI-16**: Local reads returned external freshness unverified. The focused tests cover missing/invalid roots, source validity, output integrity, path/symlink guards, and transaction interruption. In a newly copied interrupted case the current source returned checkpoint then rolled_back, adding only review.json and withdrawn.json respectively. At both boundaries all original 86 files matched SHA-256. Resume and rollback each rejected the copied edited case with the expected user-edited error, and all 483 files were preserved.
+- **UI-8**: The focused future-history and work-assessment cases checked saved exact historical cutoff, exclusion of future material, previously unreviewed periods, and quarantining a future saved assessment.
+- **Acceptance 6**: Retained prior executable evidence remains below. Additionally, separately inspected all three saved fresh Codex transcripts in the installed-dialogue trial. Each has thread.started and turn.completed and records invocation of the cache path. Verified 491 SHA-256 entries in the Stage F witness inventory. Current package research_store.py, assess_work.py and generic research method are byte-identical to the prior installed runtime fingerprint. The installed SKILL.md, README and work_assessment.py hashes differ. The current-version results in this report are an offline source replay, not a new host installation. The combined evidence covers actual earlier host behavior and current changed dependency regressions. A current-version installed host and external freshness were not tested by this re-test.
+
+Witness sources and full machine output are retained under /private/tmp/continuation-post-main-acceptance as witness.py, witness.jsonl, arrival.py, arrival.json and focused-output.txt. Installed transcript and fixture identity are from /private/tmp/finance-installed-dialogue.sNxxXO. No rewrite or normalization was applied to the retained evidence.
+
+---
+
+## Earlier independent acceptance evidence (historical, retained)
+
 # Folder-grounded investment research continuation — acceptance test evidence
 
 Tried on 2026-11-17, in a clean copy of the project at 3547b843036ab74bd3e7c0d3f5ff62d6da2b2f9d.
