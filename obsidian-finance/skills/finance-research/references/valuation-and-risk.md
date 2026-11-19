@@ -12,13 +12,18 @@ result, its timing or the security holder's ability to realize the outcome?
 Use eligible, verified financial, operating and industry results wherever they
 support material assumptions. Retain dated market price, shares, currency,
 rates, benchmarks and other valuation inputs when consumed. Trace any adopted
-forecast or model to its actual applied input identity and check its current
-content.
+model to its actual applied input identity and check its current content. For
+forward assumptions, use the [forward forecast](forward-forecast.md). Record
+and bind the exact forecast version, cutoff, target periods, scenarios and
+selected outputs actually adopted. Check the bound content before reuse and
+carry material limits and gaps into valuation.
 
 ## Analysis
 
 Name the model, its suitability and its limits. Separate operating forecasts,
-intrinsic valuation and comparisons against the observed market price. Show
+intrinsic valuation and comparisons against the observed market price.
+If deriving price-implied expectations, state the assumed valuation inputs
+and compare the result with the independent operating forecast. Show
 reproducible calculations and sensitivity to key assumptions. A next-quarter
 earnings bridge needs independent support before it can inform terminal growth,
 a valuation multiple or a benchmark return.
