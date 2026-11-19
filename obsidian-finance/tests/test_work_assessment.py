@@ -169,7 +169,7 @@ def test_contradictory_consumed_financial_original_blocks_reuse():
         year=2024, period="Q2", period_end="2024-06-30", original_accession="q2"))
     result = run(data)
     assert not result["reusable"]
-    assert "resume_incomplete_work" in actions(result)
+    assert "invalidate_dependent_checkpoint_and_recompute" in actions(result)
     assert any(gap["evidence"] == "price" for gap in result["gaps"])
 
     source["fiscal"]["period_end"] = "2024-03-29"
