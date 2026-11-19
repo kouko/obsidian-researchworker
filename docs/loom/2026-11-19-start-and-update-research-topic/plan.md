@@ -1,6 +1,6 @@
 # Start and update a research project — plan
-intent: 2026-11-19-start-and-update-research-topic@a9a12a7
-spec: docs/loom/2026-11-19-start-and-update-research-topic/spec.md@09caba3
+intent: 2026-11-19-start-and-update-research-topic@6b94db8
+spec: docs/loom/2026-11-19-start-and-update-research-topic/spec.md@0da8ede
 charter: 1.1
 
 ## Task DAG
@@ -26,6 +26,13 @@ charter: 1.1
 - Test: A3 positive: verified-first-save; negative: edited-report-during-entry-write.
 - Risk: agent-decided — Retain the observed RED case in the regular package suite. Keep the probe's scenario and concern intact.
 
+### Wave 4
+
+**W4-01 Identify projects created by this skill** after: W3-01 acceptance: 2, 3
+- Files: obsidian/skills/obsidian-research-project/SKILL.md, obsidian/skills/obsidian-research-project/scripts/research_transaction.py, obsidian/tests/test_research_transaction.py, obsidian/tests/test_first_round_integrity.py, README.md, obsidian/README.md
+- Test: A2 positive: update-new-project; negative: legacy-folder-not-selected. A3 positive: completed-project-choice; negative: legacy-collision-unchanged.
+- Risk: agent-decided — Use one stable creation marker to distinguish supported projects without guessing from names. Preserve no-replace publication and avoid a vault migration.
+
 ## Simplicity check
 
 - Reuse one skill and one transaction helper for both project operations — taken
@@ -37,11 +44,14 @@ charter: 1.1
 ① — what — 請確認這四項就是你要的結果。
 ② — behaviour — 請確認這些操作結果符合你的預期，確認後我會進入實作。
 ② — behaviour — 請確認上表的操作結果，確認後我會送修訂版重審，再進入實作。
+① — what — 請確認這個範圍。
+② — behaviour — 請確認這是你預期的操作結果。
 
 ## Risks
 
 1. An initial destination can appear while research runs. Require exclusive reservation and never reuse an existing directory as a blank project. Make a failed initial save safe to inspect without presenting it as a completed round.
-2. Existing topic folders and unfinished updates remain readable without migration. Preserve existing transaction ownership, recovery, and path checks. A new confirmation gate must precede recovery that could write.
+2. Preserve transaction ownership, recovery, and path checks for projects created by this version. A confirmation gate must precede recovery that could write. Existing collision targets stay intact.
 3. Depth is a recommendation signal, with planned later rounds or saved research state as the distinguishing outcome. Require fresh agreement for each new project operation, and retain that agreement for follow-ups within the same round.
 4. Closing review found that the first-save lock and pathname writes could refer to different directories. Use no-follow directory descriptors for first-save operations and check path identity before completion. Exercise regressions through the CLI entry point.
 5. Directory creation returns no identity. Prepare a complete first round under a private sibling directory and publish it with an atomic no-replace rename. Require all first-round targets in the plan. A platform without that operation stops safely.
+6. The renewed intent excludes legacy compatibility. A2 now tests only new-version projects. Prior confirmation, standalone, and collision evidence guide regressions. Re-run first save and subsequent update because the supported project identity changes.
