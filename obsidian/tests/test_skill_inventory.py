@@ -9,7 +9,7 @@ RETAINED = {
     "dashboard-design", "defuddle", "obsidian-bases", "obsidian-canvas",
     "obsidian-cli", "obsidian-daily", "obsidian-excalidraw-diagram",
     "obsidian-file-intel", "obsidian-knowledge", "obsidian-markdown", "obsidian-mermaid-visualizer",
-    "obsidian-research", "obsidian-research-resume", "obsidian-tldr", "obsidian-vault-setup", "using-obsidian",
+    "obsidian-research", "obsidian-research-project", "obsidian-tldr", "obsidian-vault-setup", "using-obsidian",
 }
 REMOVED = {
     "wiki-setup", "wiki-ingest", "wiki-query", "wiki-cross-linker",
@@ -33,4 +33,4 @@ def test_retained_skills_have_no_retired_dependencies():
             if path.name.startswith("README"):
                 continue  # Release-facing descriptions are verified with the release docs.
             text = path.read_text()
-            assert not any(removed in text for removed in REMOVED), path
+            assert not any(removed in text for removed in REMOVED | {"obsidian-research-resume"}), path
