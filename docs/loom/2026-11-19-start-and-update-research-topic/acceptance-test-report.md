@@ -1,6 +1,6 @@
 # 從第一輪開始並持續更新研究主題
 
-Tried on 2026-11-19, in a clean copy of the project at cc32114dac027a55e4a18d3741d59d8489599280.
+Tried on 2026-11-19, in a clean copy of the project at 18136e9531691e5b0fdd439a0bb4bea71d7462ff.
 
 操作與結果見 `docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md`。
 
@@ -17,7 +17,7 @@ Tried on 2026-11-19, in a clean copy of the project at cc32114dac027a55e4a18d374
 | 5 | 助理主動提議建立研究專案 | works | 助理確認了 vault 的位置、提出保存與接續方案，等候同意才會讀取來源。 | re-tested |
 | 6 | 明確指定開始第一輪 | works | 助理先確認位置、範圍和成果，收到下一則同意才研究並儲存。 | re-tested |
 | 7 | 缺少目標 | works | 助理詢問研究主題，等待回覆時只檢查位置。 | carried over — 提案時補問目標的規則未改。 |
-| 8 | 同名位置已存在 | works | 遇到舊版資料夾時提議換位置，若為完整新版專案則提供換位置或接續兩種選擇，原檔皆保持原樣。 | re-tested |
+| 8 | 同名位置已存在 | works | 遇到舊版資料夾時提議換位置，若為完整新版專案則提供換位置或接續兩種選擇，原檔皆保持原樣。 | carried over — 完整新版專案的提案規則未改，舊版同名情境已重驗。 |
 | 9 | 新對話更新研究專案 | partly | 助理取得下一則回覆的同意後更正結論並連回舊證據，同一輪臨時追加資料的情境尚未實測。 | re-tested |
 | 10 | 找不到已完成的上一輪 | partly | 助理指出缺少首輪報告及新版識別檔並停止更新，已有新版識別檔但缺報告的情境尚未在對話中重驗。 | re-tested |
 | 11 | 第一次儲存中斷 | partly | 自動測試確認中斷後保留暫存成果，指定位置尚未發布，實際對話尚未重現。 | re-tested |
@@ -25,7 +25,7 @@ Tried on 2026-11-19, in a clean copy of the project at cc32114dac027a55e4a18d374
 | 13 | 位置超出 vault | works | 助理指出指定位置在 vault 外，改提議內部位置並等待回覆。 | carried over — 提案時的路徑檢查規則未改，儲存層也通過越界測試。 |
 | 14 | 重送同一份證據 | works | 助理回報已收錄該證據，重送前後的檔案清單和內容一致。 | re-tested |
 | 15 | 指定單篇研究 | works | 助理直接儲存並連到指定 vault 裡的一篇獨立筆記。 | re-tested |
-| 16 | 請求更新未辨識的既有資料夾 | partly | 助理保留原檔並拒絕更新，提出另存單篇筆記，尚缺選擇新版專案或另建的提示。 | re-tested |
+| 16 | 請求更新未辨識的既有資料夾 | works | 助理保留原檔，說明無法更新，並提供接續另一個已完成的專案或在別處新建兩種選擇。 | re-tested |
 
 ## 對你既有的資料做了什麼
 
