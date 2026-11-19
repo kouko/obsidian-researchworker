@@ -43,3 +43,4 @@ charter: 1.1
 1. An initial destination can appear while research runs. Require exclusive reservation and never reuse an existing directory as a blank project. Make a failed initial save safe to inspect without presenting it as a completed round.
 2. Existing topic folders and unfinished updates remain readable without migration. Preserve existing transaction ownership, recovery, and path checks. A new confirmation gate must precede recovery that could write.
 3. Depth is a recommendation signal, with planned later rounds or saved research state as the distinguishing outcome. Require fresh agreement for each new project operation, and retain that agreement for follow-ups within the same round.
+4. Closing review found that the first-save lock and pathname writes could refer to different directories. Use no-follow directory descriptors for first-save operations and check path identity before completion. Exercise regressions through the CLI entry point.

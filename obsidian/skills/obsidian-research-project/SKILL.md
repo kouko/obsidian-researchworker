@@ -42,6 +42,10 @@ language, links, and note properties.
 - Confirm once for each new start or update round. Additional input within an
   already confirmed round needs no repeat confirmation.
 
+Pass the verified vault and project folder as absolute paths to each
+transaction command. A folder relative to the vault also works, with no
+repeated vault prefix.
+
 ## Start a new project
 
 Research the confirmed question and scope. Read supplied evidence and seek
@@ -60,10 +64,12 @@ memory or outside the vault, using the writing guide below.
   the ordered `path` and base64 `content` objects, and `targets` to each
   required local linked file. All paths within the JSON are relative to the
   project. The create command does not require a snapshot.
-- The helper exclusively reserves the new folder, verifies the round and its
-  files, and writes the entry last. If the destination appeared in the
-  meantime, preserve it and ask whether to use a complete existing project or
-  pick another location. If the save is interrupted, report the incomplete
+- The helper exclusively reserves the new folder, anchors first-round writes
+  to opened directories without following symlinks, and writes the entry
+  last. Wait for it to finish before editing or syncing the folder. If the
+  destination appeared in the meantime, preserve it and ask whether to use a
+  complete existing project or pick another location. If the save is
+  interrupted, report the incomplete
   path and preserve it for inspection. The helper leaves a pending marker
   when a first save stops after reservation and marking. Do not remove the
   marker or treat that result as a completed round.

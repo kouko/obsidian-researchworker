@@ -1,10 +1,10 @@
 # concern: Evidence replaced during first-round publication is accepted as verified.
 import base64
 import importlib.util
+import io
+import json
+import sys
 from pathlib import Path
-
-import pytest
-
 
 HELPER = (
     Path(__file__).resolve().parents[1]
@@ -30,20 +30,21 @@ def test_create_concurrentedit_stayspending(tmp_path, monkeypatch):
         ],
         "targets": ["history/round.md"],
     }
-    original_write = transaction.write_atomically
+    topic = tmp_path / "topic"
+    original_write = transaction.write_initial_file
 
-    def write_with_sync_edit(path, data, *, folder, **kwargs):
-        original_write(path, data, folder=folder, **kwargs)
+    def write_with_sync_edit(project_fd, path, data, **kwargs):
+        original_write(project_fd, path, data, **kwargs)
         if path.name == "index.md":
-            edited = folder / "history/round.md"
+            edited = topic / "history/round.md"
             replacement = edited.with_suffix(".tmp")
             replacement.write_text("Concurrent revision.")
             replacement.replace(edited)
 
-    monkeypatch.setattr(transaction, "write_atomically", write_with_sync_edit)
-    with pytest.raises(transaction.TransactionError):
-        transaction.create_project(tmp_path, Path("topic"), plan)
+    monkeypatch.setattr(transaction, "write_initial_file", write_with_sync_edit)
+    monkeypatch.setattr(sys, "argv", [str(HELPER), "create", str(tmp_path), "topic"])
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(plan)))
+    assert transaction.main() == 1
 
-    topic = tmp_path / "topic"
     assert (topic / transaction.FIRST_ROUND_PENDING).is_file()
     assert (topic / "history/round.md").read_text() == "Concurrent revision."

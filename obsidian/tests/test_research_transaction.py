@@ -128,12 +128,12 @@ def test_interrupted_first_round_is_preserved_but_cannot_resume(tmp_path):
         "import os, sys; from pathlib import Path; "
         "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
         "import research_transaction as transaction\n"
-        "original = transaction.write_atomically\n"
-        "def stop_before_entry(path, *args, **kwargs):\n"
+        "original = transaction.write_initial_file\n"
+        "def stop_before_entry(project_fd, path, *args, **kwargs):\n"
         "    if path.name == 'index.md':\n"
         "        os._exit(7)\n"
-        "    original(path, *args, **kwargs)\n"
-        "transaction.write_atomically = stop_before_entry\n"
+        "    original(project_fd, path, *args, **kwargs)\n"
+        "transaction.write_initial_file = stop_before_entry\n"
         "raise SystemExit(transaction.main())"
     )
     result = subprocess.run(

@@ -7,6 +7,7 @@ import json
 import os
 import stat
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from unicodedata import normalize
 
@@ -330,10 +331,64 @@ def apply(folder, plan):
     return paths
 
 
-def verify_initial_writes(vault, writes):
-    for path, (_, expected) in writes.items():
-        if file_content(local_path(vault, path.relative_to(vault).as_posix())) != expected:
-            raise TransactionError(f"initial write could not be verified: {path}")
+def require_child_spelling(fd, name):
+    key = spelling_key(name)
+    if any(child != name and spelling_key(child) == key for child in os.listdir(fd)):
+        raise TransactionError(f"path aliases an existing entry: {name}")
+
+
+@contextmanager
+def open_directories(root_fd, parts, *, create=False, exclusive=False, identities=None):
+    fd = os.dup(root_fd)
+    try:
+        for index, name in enumerate(parts):
+            require_child_spelling(fd, name)
+            if create:
+                try:
+                    os.mkdir(name, dir_fd=fd)
+                except FileExistsError:
+                    if exclusive and index == len(parts) - 1:
+                        raise
+            expected = os.stat(name, dir_fd=fd, follow_symlinks=False)
+            child_fd = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+            os.close(fd)
+            fd = child_fd
+            observed = os.fstat(fd)
+            if not os.path.samestat(expected, observed):
+                raise TransactionError(f"directory changed during initial save: {name}")
+            if identities is not None:
+                path = parts[:index + 1]
+                if not os.path.samestat(identities.setdefault(path, observed), observed):
+                    raise TransactionError(f"directory changed during initial save: {name}")
+        yield fd
+    finally:
+        os.close(fd)
+
+
+def write_initial_file(project_fd, path, data, *, identities):
+    with open_directories(project_fd, path.parent.parts, create=True, identities=identities) as fd:
+        if os.fstat(fd).st_dev != os.fstat(project_fd).st_dev:
+            raise TransactionError(f"write destination is on a different filesystem: {path}")
+        require_child_spelling(fd, path.name)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+        with os.fdopen(os.open(path.name, flags, mode=0o600, dir_fd=fd), "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+            return os.fstat(stream.fileno())
+
+
+def verify_initial_writes(project_fd, writes, identities):
+    for path, expected in writes.items():
+        with open_directories(project_fd, path.parent.parts, identities=identities) as fd:
+            require_child_spelling(fd, path.name)
+            flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+            with os.fdopen(os.open(path.name, flags, dir_fd=fd), "rb") as stream:
+                opened = os.fstat(stream.fileno())
+                if not stat.S_ISREG(opened.st_mode) or stream.read() != expected:
+                    raise TransactionError(f"initial write could not be verified: {path}")
+                if not os.path.samestat(opened, os.stat(path.name, dir_fd=fd, follow_symlinks=False)):
+                    raise TransactionError(f"file changed during initial save: {path}")
 
 
 def create_project(vault, destination, plan):
@@ -346,37 +401,50 @@ def create_project(vault, destination, plan):
         raise TransactionError("entry and completed round must be different files")
     valid_history(folder, plan["entry"], plan["round"], writes, creating=True)
     check_targets(folder, plan["targets"], writes)
-    before, entry_content = writes.pop(entry)
-    for parent in reversed(destination.parents):
-        if parent != Path("."):
-            local_path(vault, parent.as_posix()).mkdir(exist_ok=True)
+    relative_writes = {path.relative_to(folder): data for path, (_, data) in writes.items()}
+    entry = entry.relative_to(folder)
+    entry_content = relative_writes.pop(entry)
+    root_fd = os.open(vault.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
-        local_path(vault, destination.as_posix()).mkdir()
-    except FileExistsError as error:
-        raise TransactionError(f"project destination already exists: {folder}") from error
-
-    fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    try:
-        lock_folder(fd)
-        pending = folder / FIRST_ROUND_PENDING
-        pending.touch(mode=0o600, exist_ok=False)
-        check_write_devices(folder, writes | {entry: (before, entry_content)})
-        for path, (_, data) in writes.items():
-            local_path(vault, path.relative_to(vault).as_posix()).parent.mkdir(
-                parents=True, exist_ok=True,
-            )
-            write_atomically(path, data, folder=folder)
-        verify_initial_writes(vault, writes)
-        local_path(vault, entry.relative_to(vault).as_posix()).parent.mkdir(
-            parents=True, exist_ok=True,
-        )
-        write_atomically(entry, entry_content, folder=folder)
-        check_targets(folder, plan["targets"], {})
-        verify_initial_writes(vault, writes | {entry: (before, entry_content)})
-        pending.unlink()
+        vault_ids = {}
+        vault_parts = vault.parts[1:]
+        with open_directories(root_fd, vault_parts, identities=vault_ids) as vault_fd:
+            save_initial_project(root_fd, vault_fd, vault_parts, vault_ids, destination,
+                                 relative_writes, entry, entry_content)
     finally:
-        os.close(fd)
-    return [path.relative_to(folder).as_posix() for path in (*writes, entry)]
+        os.close(root_fd)
+    return [path.as_posix() for path in (*relative_writes, entry)]
+
+
+def save_initial_project(root_fd, vault_fd, vault_parts, vault_ids, destination,
+                         writes, entry, entry_content):
+    project_ids = {}
+
+    def verify_project_location():
+        with open_directories(root_fd, vault_parts, identities=vault_ids) as current_vault:
+            with open_directories(current_vault, destination.parts, identities=project_ids):
+                pass
+
+    try:
+        with open_directories(vault_fd, destination.parts, create=True, exclusive=True,
+                              identities=project_ids) as project_fd:
+            lock_folder(project_fd)
+            evidence_ids = {}
+            pending = Path(FIRST_ROUND_PENDING)
+            marker = write_initial_file(project_fd, pending, b"", identities=evidence_ids)
+            for path, data in writes.items():
+                write_initial_file(project_fd, path, data, identities=evidence_ids)
+            verify_initial_writes(project_fd, writes, evidence_ids)
+            verify_project_location()
+            write_initial_file(project_fd, entry, entry_content, identities=evidence_ids)
+            verify_initial_writes(project_fd, writes | {entry: entry_content}, evidence_ids)
+            verify_project_location()
+            current_marker = os.stat(pending, dir_fd=project_fd, follow_symlinks=False)
+            if not os.path.samestat(marker, current_marker):
+                raise TransactionError("pending marker changed during initial save")
+            os.unlink(pending, dir_fd=project_fd)
+    except FileExistsError as error:
+        raise TransactionError(f"project destination or file already exists: {destination}") from error
 
 
 def lock_folder(fd):
