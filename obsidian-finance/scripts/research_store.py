@@ -288,6 +288,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
     assets = [_id(asset) for asset in config["assets"]]
     _require(len(set(assets)) == len(assets), "duplicate asset identity")
     sources, records, gaps = [], [], []
+    quarantined = set()
     for asset in assets:
         records_start = len(records)
         base = "investing/assets/equities/" + asset
@@ -339,6 +340,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
         if proposed is not None and proposed[0] == asset:
             quarters = sorted(set(quarters) | {proposed[1]})
         initial = {}
+        initial_sources = {}
         ambiguous_initial = set()
         for source in selected_sources:
             available = _available(source.get("available_at"), cutoff)
@@ -347,16 +349,20 @@ def _snapshot(root, cutoff, mode, proposed=None):
                     and available is not None and available <= cutoff
                     and fiscal["period_end"] <= source["available_at"][:10]):
                 quarter = f"{fiscal['year']}{fiscal['period']}"
+                initial_sources.setdefault(quarter, []).append(source["id"])
                 if initial.setdefault(quarter, fiscal) != fiscal:
                     ambiguous_initial.add(quarter)
         for quarter in sorted(set(quarters) | initial.keys()):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
+            _require(candidate is None or quarter not in ambiguous_initial, "ambiguous original filing identity")
             reviews = _reviews(root, base, quarter, cutoff, mode, gaps, candidate) if quarter in quarters else []
             if not reviews and quarter in ambiguous_initial:
-                gaps.append(dict(record=asset + "/" + quarter + "/new", evidence="fiscal",
-                    reason="Ambiguous initial fiscal identity",
-                    recovery="Reconcile the conflicting original filing identities before starting this quarter"))
+                quarantined.update(initial_sources[quarter])
+                for sid in initial_sources[quarter]:
+                    gaps.append(dict(record=asset + "/" + quarter + "/new", evidence=sid,
+                        reason="Ambiguous initial fiscal identity",
+                        recovery="Reconcile the conflicting original filing identities before starting this quarter"))
             elif not reviews and quarter in initial:
                 records.append(dict(id=asset + "/" + quarter + "/new", issuer=issuer, fiscal=initial[quarter],
                     cutoff=cutoff.isoformat(), required_sources=_required_all(questions, asset, quarter),
@@ -418,7 +424,8 @@ def _snapshot(root, cutoff, mode, proposed=None):
                     **{k: saved[k] for k in ("execution_state", "last_attempt", "last_success") if k in saved}))
         if not initial and len(records) == records_start:
             gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
-    return dict(version=1, sources=sources, records=records), gaps
+    return dict(version=1, sources=[s for s in sources if s["id"] not in quarantined],
+                records=records), gaps
 
 
 def _mkdir(root, reference, *, exclusive=False):

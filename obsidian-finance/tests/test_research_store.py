@@ -116,9 +116,10 @@ def test_new_quarter_and_changed_source(tmp_path, future):
         assert result["excluded"] == [dict(evidence="aapl:q3", reason="after_cutoff")]
 
 
-def test_ambiguous_initial_quarter_preserves_unrelated_reuse(tmp_path):
+@pytest.mark.parametrize("first_end", ["2024-06-28", "2024-06-29"])
+def test_ambiguous_initial_quarter_preserves_unrelated_reuse(tmp_path, first_end):
     base, source, _ = sample(tmp_path)
-    for sid, end in (("first", "2024-06-28"), ("second", "2024-06-29")):
+    for sid, end in (("first", first_end), ("second", "2024-06-29")):
         filing = dict(source, id=sid, kind="financial_original", identity=sid,
                       available_at="2024-08-02",
                       fiscal=dict(year=2024, period="Q3", period_end=end, original_accession=sid))
