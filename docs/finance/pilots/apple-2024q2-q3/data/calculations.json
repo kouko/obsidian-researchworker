@@ -1,0 +1,150 @@
+[
+  {
+    "id": "2024Q2.cfo_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 22690000000,
+    "formula": "2024Q2.cfo_ytd - 2024Q1.cfo_ytd",
+    "inputs": [
+      "2024Q2.cfo_ytd",
+      "2024Q1.cfo_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q2.capex_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 1996000000,
+    "formula": "2024Q2.capex_ytd - 2024Q1.capex_ytd",
+    "inputs": [
+      "2024Q2.capex_ytd",
+      "2024Q1.capex_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q2.buybacks_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 23205000000,
+    "formula": "2024Q2.buybacks_ytd - 2024Q1.buybacks_ytd",
+    "inputs": [
+      "2024Q2.buybacks_ytd",
+      "2024Q1.buybacks_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q2.dividends_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 3710000000,
+    "formula": "2024Q2.dividends_ytd - 2024Q1.dividends_ytd",
+    "inputs": [
+      "2024Q2.dividends_ytd",
+      "2024Q1.dividends_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q2.fcf_proxy_discrete",
+    "kind": "derived_local_definition",
+    "unit": "USD",
+    "value": 20694000000,
+    "formula": "2024Q2.cfo_discrete - 2024Q2.capex_discrete",
+    "inputs": [
+      "2024Q2.cfo_discrete",
+      "2024Q2.capex_discrete"
+    ],
+    "assumptions": [
+      "CFO less PP&E cash purchases; not an issuer-reported or universal FCF definition"
+    ]
+  },
+  {
+    "id": "2024Q3.cfo_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 28858000000,
+    "formula": "2024Q3.cfo_ytd - 2024Q2.cfo_ytd",
+    "inputs": [
+      "2024Q3.cfo_ytd",
+      "2024Q2.cfo_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q3.capex_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 2151000000,
+    "formula": "2024Q3.capex_ytd - 2024Q2.capex_ytd",
+    "inputs": [
+      "2024Q3.capex_ytd",
+      "2024Q2.capex_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q3.buybacks_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 26522000000,
+    "formula": "2024Q3.buybacks_ytd - 2024Q2.buybacks_ytd",
+    "inputs": [
+      "2024Q3.buybacks_ytd",
+      "2024Q2.buybacks_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q3.dividends_discrete",
+    "kind": "derived_cross_filing",
+    "unit": "USD",
+    "value": 3895000000,
+    "formula": "2024Q3.dividends_ytd - 2024Q2.dividends_ytd",
+    "inputs": [
+      "2024Q3.dividends_ytd",
+      "2024Q2.dividends_ytd"
+    ],
+    "assumptions": [
+      "same issuer, consolidated USD, fiscal start 2023-10-01",
+      "original filing vintages, not a general restatement-safe normalization engine"
+    ]
+  },
+  {
+    "id": "2024Q3.fcf_proxy_discrete",
+    "kind": "derived_local_definition",
+    "unit": "USD",
+    "value": 26707000000,
+    "formula": "2024Q3.cfo_discrete - 2024Q3.capex_discrete",
+    "inputs": [
+      "2024Q3.cfo_discrete",
+      "2024Q3.capex_discrete"
+    ],
+    "assumptions": [
+      "CFO less PP&E cash purchases; not an issuer-reported or universal FCF definition"
+    ]
+  }
+]

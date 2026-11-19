@@ -1,0 +1,35 @@
+[
+  {
+    "quarter": "2024Q2",
+    "cutoff": "2024-05-03",
+    "consumed": [
+      "2024Q1-SEC",
+      "2024Q2-SEC",
+      "Q2-RELEASE",
+      "FED-MAY",
+      "DOJ-COMPLAINT",
+      "2024Q2-ISSUER-PDF"
+    ],
+    "excluded_after_cutoff": [
+      "AI-ANNOUNCEMENT",
+      "FED-JULY",
+      "Q3-RELEASE",
+      "2024Q3-SEC"
+    ]
+  },
+  {
+    "quarter": "2024Q3",
+    "cutoff": "2024-08-02",
+    "consumed": [
+      "2024Q1-SEC",
+      "2024Q2-SEC",
+      "2024Q3-SEC",
+      "Q3-RELEASE",
+      "FED-JULY",
+      "AI-ANNOUNCEMENT",
+      "DOJ-COMPLAINT",
+      "2024Q3-ISSUER-PDF"
+    ],
+    "excluded_after_cutoff": []
+  }
+]

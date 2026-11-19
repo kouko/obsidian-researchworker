@@ -135,3 +135,130 @@ attributed narrow extraction and retained source license.
 The [quarter replay evidence](../docs/loom/2026-11-15-finance-sec-baseline/evidence/quarter-replay.md)
 separately records a real-payload offline replay and one live CLI acquisition.
 Neither establishes installed-host skill execution or complete financial research.
+
+## Read-only local work assessment (prototype v1)
+
+This separate operation explains research work from explicitly supplied local
+evidence. It does not acquire sources, execute research, resume an agent,
+automatically recover work, or maintain notes in an installed host. External
+freshness is always `unverified`; even `no_analysis_update` applies only to the
+supplied evidence. It never scans a vault or parses the draft pilot
+`research-state.json` directly. Adapt those records explicitly first.
+
+```sh
+python3 obsidian-finance/scripts/assess_work.py \
+  --root /private/tmp/finance-assessment-example \
+  --snapshot snapshot.json --mode historical \
+  --cutoff 2024-05-03T23:59:59-04:00
+```
+
+All four arguments are required. `--mode` is `historical` or `latest`;
+`--cutoff` is an ISO timestamp with timezone. Historical cutoff must match
+every supplied saved record cutoff. Latest uses the requested cutoff without
+changing saved records. stdout contains one JSON result on success; diagnostics
+and recovery instructions use stderr. Exit 0 means a completed local assessment
+(possibly listing unfinished research), 2 means partial/uncertain evidence,
+1 means invalid/unreadable snapshot, and 64 means invalid invocation. An
+interrupted process has no persisted job; retry revalidates all inputs.
+
+The Python entry is `run(root, snapshot, mode, cutoff, *, stdout=None,
+stderr=None) -> int`; streams default to the process streams. `main(argv=None)`
+implements the CLI. Neither entry writes files. The pure core
+`work_assessment.assess(snapshot, mode, cutoff)` consumes normalized data rather
+than reading paths; the adapter supplies file content to that core.
+
+The exact adapter input is a JSON object with integer `version: 1`, `sources`
+and `records` arrays (empty arrays produce evidence gaps). Duplicate JSON keys,
+duplicate IDs, non-finite numbers and invalid field types are rejected.
+
+- Each source has nonempty `id`, `issuer`, `kind`; `version` and `available_at`
+  are strings or absent/null when unknown. `available_at` is a date or an ISO
+  timestamp with timezone; dates become end of day in the assessment timezone.
+  Missing/unverified availability is excluded and reported. Supply relevant
+  values including units in `projection`, or use `projection_ref` to a JSON
+  file; these two fields cannot coexist. Optional `consumers` lists work IDs.
+  Financial originals use `kind: financial_original` and source-declared
+  `fiscal: {year, period, period_end, original_accession}`; `year` is an integer,
+  `period` is Q1–Q4 and `period_end` is an ISO date. Missing fiscal evidence
+  produces a gap rather than an inferred quarter.
+- Each record has unique `id`, `issuer`, saved timezone-aware `cutoff`,
+  `required_sources` (source IDs), `work` array and its saved `fiscal` identity.
+  Optional `execution_state`, `last_attempt`, `last_success` remain observations;
+  assessment never advances or clears them.
+- Each work item has unique `id`, `status` (`complete` or `missing`), optional
+  `depends_on` work IDs and `consumed` mapping from source ID to exactly
+  `{version, projection}`. Completed work requires `output: {path, digest}`
+  and `completion_evidence`, a path to nonempty local verification text.
+  `digest` is SHA256 of the output's decoded UTF-8 text encoded as UTF-8
+  (universal newline normalization applies). Output text is read and its digest
+  checked; a filename or inline `content` never proves completion. Missing or
+  mismatched completion evidence prevents reuse. Referenced unreadable files
+  invalidate the input; absent completion fields instead produce work gaps.
+
+Use stable logical source IDs across updates, such as `aapl-price`. Change
+the source's `version`, `available_at` and relevant `projection` when evidence
+changes, retaining the old identity/projection under saved `consumed`. A fresh
+source ID alone does not express replacement of an old consumed dependency.
+Projection comparison is structured equality; no arbitrary selectors run.
+File mtime and unrelated metadata do not establish analytical change. A version
+is supplied identity, not a raw-file hash or proof of external authenticity.
+
+`--snapshot`, `projection_ref`, output `path` and `completion_evidence` are
+relative to the explicit root. Absolute paths, `..`, and all symlinks (including
+in-root symlinks) are rejected before reading targets. Only regular UTF-8 local
+files are read. URLs, commands and note instructions remain inert data; unknown
+metadata is ignored, never interpreted as a file reference or executable code.
+Root-relative reads also use no-follow file descriptors to prevent a swapped
+symlink from escaping the boundary.
+
+Result v1 contains `scope: supplied_local_evidence`, `external_freshness:
+unverified`, mode, cutoff, status, and stable arrays `decisions`, `gaps`,
+`excluded`, `reusable`, `observations`. Decisions identify record, action, work,
+evidence, reason and affected dimensions; gaps identify evidence and recovery.
+Repeated unchanged inputs return the same result. No live source-discovery or
+investment-completion claim follows from this result.
+
+### Isolated Apple example
+
+Run this from the repository root to create a new isolated sample using the
+committed Apple Q2 reported evidence. This explicit adaptation retains the
+source data and declares forecast work missing; it makes no claim that the
+existing pilot's saved dependencies or outputs have been independently verified.
+The setup writes only its new temporary directory; the assessor reads it.
+
+```sh
+python3 - <<'PY'
+import json
+from pathlib import Path
+import tempfile
+
+pilot = Path("docs/finance/pilots/apple-2024q2-q3/forecast-v1")
+root = Path(tempfile.mkdtemp(prefix="finance-assessment-", dir="/private/tmp"))
+reported = json.loads((pilot / "reported-inputs.json").read_text())
+row = next(row for row in reported["fact_rows"] if row["id"] == "q2.opex")
+projection = {"concept": row["concept"], "value": row["val"], "unit": row["unit"],
+              "start": row["start"], "end": row["end"]}
+(root / "projection.json").write_text(json.dumps(projection))
+fiscal = dict(year=row["fy"], period=row["fp"], period_end=row["end"],
+              original_accession=row["accn"])
+source = dict(id="q2-opex", issuer="AAPL", kind="financial_original",
+              version=row["accn"], available_at=row["filed"], fiscal=fiscal,
+              projection_ref="projection.json", consumers=["forecast"])
+record = dict(id="aapl-2024q2", issuer="AAPL", fiscal=fiscal,
+              cutoff=reported["known_as_of"], required_sources=["q2-opex"],
+              work=[dict(id="forecast", status="missing", depends_on=[],
+                  consumed={"q2-opex": dict(version=row["accn"], projection=projection)})])
+(root / "snapshot.json").write_text(json.dumps(dict(version=1, sources=[source], records=[record])))
+print(root)
+PY
+# Use the printed directory as ROOT, then:
+python3 obsidian-finance/scripts/assess_work.py \
+  --root "$ROOT" --snapshot snapshot.json --mode historical \
+  --cutoff 2024-05-03T23:59:59-04:00
+```
+
+Set `ROOT` to the printed path before the second command. Expected result:
+exit 0 with `resume_incomplete_work` for forecast and unverified external
+freshness. The example supplies one relevant financial observation, not a full
+financial-analysis dataset. Existing acquisition remains the separate operation
+documented above.

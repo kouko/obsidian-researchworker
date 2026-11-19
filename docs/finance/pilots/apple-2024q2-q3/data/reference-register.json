@@ -1,0 +1,228 @@
+[
+  {
+    "id": "2024Q1-SEC",
+    "title": "Apple 2024Q1 original 10-Q",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000006/aapl-20231230.htm",
+    "publication_date": "2024-02-02",
+    "role": "financial-input",
+    "historical_eligible_from": "2024-02-02",
+    "sha256": "c47bc01786e4b9db3075b0c17d255972d8d8202ff6d1884393eae9935f432619",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "2024Q2-SEC",
+    "title": "Apple 2024Q2 original 10-Q",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm",
+    "publication_date": "2024-05-03",
+    "role": "financial-input",
+    "historical_eligible_from": "2024-05-03",
+    "sha256": "7a327c99c4a2c29341682d2ab5bb2465cb4e899341374ddaf565012e0d480991",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "2024Q3-SEC",
+    "title": "Apple 2024Q3 original 10-Q",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm",
+    "publication_date": "2024-08-02",
+    "role": "financial-input",
+    "historical_eligible_from": "2024-08-02",
+    "sha256": "953b1e0d484cabbcb8308b0f362bb0304c14f06b3604b7770f7f0f9ea1f0e931",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "Q2-RELEASE",
+    "title": "Apple Q2 earnings release",
+    "url": "https://www.apple.com/newsroom/2024/05/apple-reports-second-quarter-results/",
+    "publication_date": "2024-05-02",
+    "role": "availability-evidence",
+    "historical_eligible_from": "2024-05-02",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "Q3-RELEASE",
+    "title": "Apple Q3 earnings release",
+    "url": "https://www.apple.com/newsroom/2024/08/apple-reports-third-quarter-results/",
+    "publication_date": "2024-08-01",
+    "role": "availability-evidence",
+    "historical_eligible_from": "2024-08-01",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "FED-MAY",
+    "title": "FOMC May statement",
+    "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm",
+    "publication_date": "2024-05-01",
+    "role": "market-input",
+    "historical_eligible_from": "2024-05-01",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "FED-JULY",
+    "title": "FOMC July statement",
+    "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm",
+    "publication_date": "2024-07-31",
+    "role": "market-input",
+    "historical_eligible_from": "2024-07-31",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "AI-ANNOUNCEMENT",
+    "title": "Apple Intelligence announcement",
+    "url": "https://www.apple.com/newsroom/2024/06/introducing-apple-intelligence-for-iphone-ipad-and-mac/",
+    "publication_date": "2024-06-10",
+    "role": "event-input",
+    "historical_eligible_from": "2024-06-10",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "DOJ-COMPLAINT",
+    "title": "DOJ Apple civil complaint announcement",
+    "url": "https://www.justice.gov/archives/opa/pr/justice-department-sues-apple-monopolizing-smartphone-markets",
+    "publication_date": "2024-03-21",
+    "role": "risk-input",
+    "historical_eligible_from": "2024-03-21",
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "CFA-FRAMEWORK",
+    "title": "CFA financial analysis framework",
+    "url": "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/integration-financial-statement-analysis-techniques",
+    "publication_date": null,
+    "role": "method-reference",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "CFA-REPORT",
+    "title": "CFA Research Challenge report guidance",
+    "url": "https://www.cfainstitute.org/sites/default/files/-/media/documents/support/research-challenge/challenge/rc-written-report-guidelines.pdf",
+    "publication_date": null,
+    "role": "method-reference",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "SEC-GUIDE",
+    "title": "SEC financial statement guide",
+    "url": "https://www.sec.gov/about/reports-publications/beginners-guide-financial-statements",
+    "publication_date": "2014-01-12",
+    "role": "method-reference",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "FINRA-2241",
+    "title": "FINRA 2241 report ratings guidance",
+    "url": "https://www.finra.org/rules-guidance/rulebooks/finra-rules/2241",
+    "publication_date": null,
+    "role": "method-reference",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "N8N-REPORT",
+    "title": "n8n report workflow listing",
+    "url": "https://n8n.io/workflows/2209-ai-powered-automated-stock-analysis/",
+    "publication_date": null,
+    "role": "prior-art-docs-only",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "N8N-QA",
+    "title": "n8n retrieval workflow listing",
+    "url": "https://n8n.io/workflows/2183-ai-crew-to-automate-fundamental-stock-analysis-qanda-workflow/",
+    "publication_date": null,
+    "role": "prior-art-docs-only",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "FINROBOT-DOCS",
+    "title": "FinRobot Equity README",
+    "url": "https://github.com/AI4Finance-Foundation/FinRobot/blob/master/finrobot_equity/README.md",
+    "publication_date": null,
+    "role": "prior-art-docs-only",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "FINROBOT-EXAMPLE",
+    "title": "FinRobot public report example",
+    "url": "https://ai4finance-foundation.github.io/FinRobot/finrobot_equity/core/output/NVDA_Equity_Research_Report.html",
+    "publication_date": null,
+    "role": "prior-art-example-only",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "JPM-CONTRAST",
+    "title": "JPM original 2024 annual report",
+    "url": "https://www.sec.gov/Archives/edgar/data/19617/000001961725000270/jpm-20241231.htm",
+    "publication_date": null,
+    "role": "industry-method-reconnaissance",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "XOM-CONTRAST",
+    "title": "Exxon original 2024 annual report",
+    "url": "https://www.sec.gov/Archives/edgar/data/34088/000003408825000010/xom-20241231.htm",
+    "publication_date": "2025-02-19",
+    "role": "industry-method-reconnaissance",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15T13:15:32.719162+00:00"
+  },
+  {
+    "id": "2024Q2-ISSUER-PDF",
+    "title": "Apple 2024Q2 financial statements PDF",
+    "url": "https://www.apple.com/newsroom/pdfs/fy2024-q2/FY24_Q2_Consolidated_Financial_Statements.pdf",
+    "publication_date": "2024-05-02",
+    "role": "financial-cross-check",
+    "historical_eligible_from": "2024-05-02",
+    "sha256": "19fe6ef8359aa55b7f0609dbbc772f1d4a572b045cd2510413cfcb7384cbd21e",
+    "raw_local": "/private/tmp/apple-stage-a-q2-issuer-statements.pdf",
+    "verification": "PDF text extraction checked separately from SEC companyfacts"
+  },
+  {
+    "id": "2024Q3-ISSUER-PDF",
+    "title": "Apple 2024Q3 financial statements PDF",
+    "url": "https://www.apple.com/newsroom/pdfs/fy2024-q3/FY24_Q3_Consolidated_Financial_Statements.pdf",
+    "publication_date": "2024-08-01",
+    "role": "financial-cross-check",
+    "historical_eligible_from": "2024-08-01",
+    "sha256": "e435ff39122eab86559349cc7795f91d81b2a0fda8e920e258a7803be8d4573b",
+    "raw_local": "/private/tmp/apple-stage-a-q3-issuer-statements.pdf",
+    "verification": "PDF text extraction checked separately from SEC companyfacts"
+  },
+  {
+    "id": "MORNINGSTAR-SAMPLE",
+    "title": "2014 Morningstar guide with Apple analyst sample",
+    "url": "https://www.schwab.wallst.com/client/Content/Documents/MstarEquityAnalystReportGuide.pdf",
+    "publication_date": null,
+    "sample_report_date": "2014-07-22",
+    "role": "professional-report-format-reference",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15",
+    "scope": "structure only; no redistribution or current-policy inference"
+  },
+  {
+    "id": "MORNINGSTAR-JP",
+    "title": "Japanese provider equity research page",
+    "url": "https://ibbotson.co.jp/information-products/research/equity-research/",
+    "publication_date": null,
+    "role": "provider-context",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15"
+  },
+  {
+    "id": "FINROBOT-RENDERER",
+    "title": "FinRobot renderer bounded static inspection",
+    "url": "https://raw.githubusercontent.com/AI4Finance-Foundation/FinRobot/master/finrobot_equity/core/src/create_equity_report.py",
+    "publication_date": null,
+    "role": "prior-art-bounded-static-source",
+    "historical_eligible_from": null,
+    "checked_at": "2026-11-15",
+    "scope": "generate_major_takeaways only; mutable master; not executed or copied"
+  }
+]

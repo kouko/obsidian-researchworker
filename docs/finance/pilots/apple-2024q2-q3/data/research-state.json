@@ -1,0 +1,82 @@
+[
+  {
+    "asset_id": "sec-cik-0000320193",
+    "fiscal_quarter": "2024Q2",
+    "method_version": "stage-a-pilot-1",
+    "analysis_cutoff": "2024-05-03T23:59:59-04:00",
+    "financial_original_accession": "0000320193-24-000069",
+    "note_status": "draft",
+    "analysis_complete": false,
+    "pilot_example_authored": true,
+    "horizons": [
+      {
+        "name": "short",
+        "months": "(0,3]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      },
+      {
+        "name": "medium",
+        "months": "(3,12]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      },
+      {
+        "name": "long",
+        "months": "(12,60]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      }
+    ],
+    "remaining_questions": [
+      "verified_historical_price_and_adjustments",
+      "forecast_and_valuation",
+      "independent_competitive_evidence",
+      "material_esg_coverage"
+    ],
+    "automation_verified": false
+  },
+  {
+    "asset_id": "sec-cik-0000320193",
+    "fiscal_quarter": "2024Q3",
+    "method_version": "stage-a-pilot-1",
+    "analysis_cutoff": "2024-08-02T23:59:59-04:00",
+    "financial_original_accession": "0000320193-24-000081",
+    "note_status": "draft",
+    "analysis_complete": false,
+    "pilot_example_authored": true,
+    "horizons": [
+      {
+        "name": "short",
+        "months": "(0,3]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      },
+      {
+        "name": "medium",
+        "months": "(3,12]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      },
+      {
+        "name": "long",
+        "months": "(12,60]",
+        "status": "insufficient_evidence",
+        "price_target": null,
+        "position_size": null
+      }
+    ],
+    "remaining_questions": [
+      "verified_historical_price_and_adjustments",
+      "forecast_and_valuation",
+      "independent_competitive_evidence",
+      "material_esg_coverage"
+    ],
+    "automation_verified": false
+  }
+]

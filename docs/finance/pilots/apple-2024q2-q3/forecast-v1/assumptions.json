@@ -1,0 +1,42 @@
+{
+  "id": "q2-to-june-conditional-v1",
+  "origin": "agent-decided in 2026; not a blind 2024 forecast",
+  "forecast_for": "2024Q3, June quarter",
+  "assessment_quarter": "2024Q2",
+  "cutoff": "2024-05-03T23:59:59-04:00",
+  "probabilities": null,
+  "consensus_forecast": null,
+  "opex_rule": "hold Q2 reported 14371 USD million constant; NOT management guidance",
+  "tax_rule": "carry Q2 reported effective rate 4422/28058; NOT normalized tax forecast or guidance",
+  "other_income_usd_million": 0,
+  "service_gross_margin": 0.746,
+  "share_forecast": null,
+  "eps_forecast": null,
+  "scenario_interpretation": "Selected stress coordinates; 2/3/4% is NOT the numeric definition or full range of low single digits; no probability ranking",
+  "cases": [
+    {
+      "id": "lower_coordinate",
+      "total_growth": 0.02,
+      "service_growth": 0.1,
+      "ipad_growth": 0.1,
+      "total_gross_margin": 0.455,
+      "greater_china_growth": -0.1
+    },
+    {
+      "id": "middle_coordinate",
+      "total_growth": 0.03,
+      "service_growth": 0.14,
+      "ipad_growth": 0.15,
+      "total_gross_margin": 0.46,
+      "greater_china_growth": -0.05
+    },
+    {
+      "id": "upper_coordinate",
+      "total_growth": 0.04,
+      "service_growth": 0.18,
+      "ipad_growth": 0.25,
+      "total_gross_margin": 0.465,
+      "greater_china_growth": 0
+    }
+  ]
+}

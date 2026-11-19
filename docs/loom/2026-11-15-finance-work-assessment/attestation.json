@@ -1,0 +1,83 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-15-finance-work-assessment",
+  "content_digest": "4d9f418d6ab4f2ea6ca7740685b46ba002f20718",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_projection_type.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_projection_type.py",
+      "result": "pass",
+      "command_digest": "f1a7efc66766c2db0dfa934e29290c695259fb360d1491b4e9c426333fe9ccdf"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_fiscal_provenance.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_fiscal_provenance.py",
+      "result": "pass",
+      "command_digest": "3e6f5208fc1654464ff895157ba3f764788667504fa95c5ae47a032342430e52"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "assessment_post_main_code",
+      "vendor": "codex",
+      "model": "inherited/unverified",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "f1a18c3c7a90a078d4f3d456ca81973f32e69314"
+    },
+    {
+      "reviewer": "assessment_post_main_prose",
+      "vendor": "codex",
+      "model": "inherited/unverified",
+      "lens": "prose",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "f1a18c3c7a90a078d4f3d456ca81973f32e69314"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "6772056f97128741b7105a37f5bb62a1cc70ea69",
+  "tested_commit": "0565c65",
+  "reviewed_commit": "f1a18c3c7a90a078d4f3d456ca81973f32e69314",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    },
+    {
+      "acceptance": 7,
+      "status": "works"
+    }
+  ]
+}
