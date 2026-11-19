@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-15-finance-work-assessment",
-  "content_digest": "4e5fa51f90831dee4325bcc939fc7ee5482237b6",
+  "content_digest": "4d9f418d6ab4f2ea6ca7740685b46ba002f20718",
   "executions": [
     {
       "kind": "package-tests",
@@ -12,78 +12,44 @@
     },
     {
       "kind": "adversarial",
-      "command": "/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_projection_type.py -q -p no:cacheprovider",
+      "command": "python3 -m pytest obsidian-finance/tests/test_projection_type.py -q -p no:cacheprovider",
       "artifact": "obsidian-finance/tests/test_projection_type.py",
       "result": "pass",
-      "command_digest": "f887fd3b4c63887d2e0310e60061bfebf6325223cff9c3a82e033b4433b4df35"
+      "command_digest": "f1a7efc66766c2db0dfa934e29290c695259fb360d1491b4e9c426333fe9ccdf"
     },
     {
       "kind": "adversarial",
-      "command": "/private/tmp/finance-validation-env/bin/python -m pytest obsidian-finance/tests/test_fiscal_provenance.py -q -p no:cacheprovider",
+      "command": "python3 -m pytest obsidian-finance/tests/test_fiscal_provenance.py -q -p no:cacheprovider",
       "artifact": "obsidian-finance/tests/test_fiscal_provenance.py",
       "result": "pass",
-      "command_digest": "48aa66a7d7344b8102235dd89d680f317f10eea63d58125f66e3eb416c6b19c1"
+      "command_digest": "3e6f5208fc1654464ff895157ba3f764788667504fa95c5ae47a032342430e52"
     }
   ],
   "verdicts": [
     {
-      "reviewer": "work_closing_code",
+      "reviewer": "assessment_post_main_code",
       "vendor": "codex",
       "model": "inherited/unverified",
       "lens": "code",
-      "reviewed_sha": "2042edda4198a8c28ac4bde3cb22c5f7acf860dd",
-      "review_target_sha": "6b49df574b98c729ab4be4359ebb6e89086f41d2",
       "verdict": "PASS",
-      "dimension_scores": {
-        "security": "PASS",
-        "architecture": "PASS",
-        "correctness": "PASS",
-        "naming": "PASS",
-        "tests": "PASS",
-        "refactoring": "PASS",
-        "cross-task-coherence": "PASS",
-        "external-surface-grounding": "PASS",
-        "principles-conformance": "PASS",
-        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md exists.",
-        "deliberate-simplification": "PASS",
-        "deletion-first": "PASS"
-      },
       "findings": [],
-      "notes": [
-        "Verified terminal metadata delta 662e257..6b49df5: only acceptance report/evidence changed. Acceptance 1–7 remain unchanged; former scenario rows 8–24 consistently map to UI-1–UI-17 without changing results or tested SHA.",
-        "Round 1 correctness finding remains fixed. Scripts and tests are byte-identical to Round 2, whose four focused test files passed all 22 tests; no runtime retest, full suite, adversarial execution or repository edits performed in this metadata-only round.",
-        "No residual findings. Native concrete model identity is unobservable; model and effort overrides are null, effective settings inherited."
-      ]
+      "reviewed_sha": "f1a18c3c7a90a078d4f3d456ca81973f32e69314"
     },
     {
-      "reviewer": "/root/work_closing_docs",
+      "reviewer": "assessment_post_main_prose",
       "vendor": "codex",
       "model": "inherited/unverified",
-      "lens": "docs",
-      "reviewed_sha": "2042edda4198a8c28ac4bde3cb22c5f7acf860dd",
-      "review_target_sha": "6b49df574b98c729ab4be4359ebb6e89086f41d2",
+      "lens": "prose",
       "verdict": "PASS",
-      "dimension_scores": {
-        "omission": "PASS",
-        "ambiguity": "PASS",
-        "inconsistency": "PASS",
-        "incorrect-fact": "PASS",
-        "missing-population": "PASS",
-        "deletion-first": "PASS"
-      },
       "findings": [],
-      "notes": [
-        "Terminal Round 3 checked only metadata delta 662e257..6b49df5. Exactly two documentation files changed; scripts and tests remain unchanged.",
-        "Seven numeric acceptance rows remain unchanged. All seventeen scenarios retain their results and retest status under UI-1 through UI-17, consistently mapped to evidence headings and rerun references.",
-        "Tested SHA, dates, prior evidence and bounded verification claims remain intact. No edits, full-suite runs or adversarial-program runs were performed."
-      ]
+      "reviewed_sha": "f1a18c3c7a90a078d4f3d456ca81973f32e69314"
     }
   ],
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "6772056f97128741b7105a37f5bb62a1cc70ea69",
-  "tested_commit": "471886a",
-  "reviewed_commit": "6b49df574b98c729ab4be4359ebb6e89086f41d2",
+  "tested_commit": "0565c65",
+  "reviewed_commit": "f1a18c3c7a90a078d4f3d456ca81973f32e69314",
   "acceptance_status": [
     {
       "acceptance": 1,
