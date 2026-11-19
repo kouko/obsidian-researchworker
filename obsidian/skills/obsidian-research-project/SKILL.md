@@ -27,14 +27,23 @@ language, links, and note properties.
   contains `.obsidian/` and name that vault in the proposal. Prefer an explicit
   project folder within it, otherwise use `<vault-root>/research/{topic}`.
   Ask when the vault, destination, or requested operation is unclear. If a
-  start would use an existing location, offer to use a completed project
-  there or choose another location. Never reuse that folder as a blank project.
+  start would use an existing location, offer another location. Offer an
+  update there only after the read-only identification check below. Never
+  reuse an existing folder as a blank project.
+- Identify a project created by this skill before proposing an update. Check
+  that `.obsidian-research-project` is a regular file containing exactly
+  `obsidian-research-project-v1` and one trailing newline, with no pending
+  first-round marker. Read only this control metadata. Verify that a regular
+  entry and dated report exist without opening note bodies. Do not follow
+  symlinks for those checks. For a folder with missing or invalid metadata,
+  report why it is unsupported, preserve it, and offer another location or
+  a different supported project. Do not add markers to existing folders.
 - Use the first response to state the proposed create or update operation,
   destination, scope, and expected outputs. Ask whether to proceed and end
   the turn. An explicit instruction to start or update, including a test
   request, does not confirm a proposal the user has yet to see.
-- Before a later user reply agrees to that proposal, use only read-only
-  path, existence, and file metadata checks needed to identify the target.
+- Before a later user reply agrees to that proposal, use only the read-only
+  target and project metadata checks above.
   This applies from the first tool call. Do not open evidence or note
   bodies, including local files the user supplied. Do not start research,
   write files, recover state, or run the helper's `inspect`, which can recover
@@ -66,10 +75,12 @@ memory or outside the vault, using the writing guide below.
   project. The create command does not require a snapshot.
 - The helper writes the first round under a private sibling folder and
   verifies its files before publishing the entire project at once. Publication
-  requires a filesystem with exclusive directory rename support. Wait for
-  the save to finish before editing or syncing the folder. If the destination
-  appeared in the meantime, it stays untouched. Ask whether to use a complete
-  existing project or pick another location.
+  requires a filesystem with exclusive directory rename support. The helper
+  records the completion marker after verifying the published project. Wait
+  for the save to finish before editing or syncing the folder. If the
+  destination appeared in the meantime, it stays untouched. Offer another
+  location, with an update option only after the read-only identification
+  check confirms a supported completed project.
 - If the save stops, report the pending location shown by the helper. It may
   be a hidden `.research-first-round-…` folder beside the intended project or
   the published project still marked pending. Preserve it for inspection.
@@ -83,6 +94,9 @@ with the saved-state procedure below.
 ## 1. Find the last completed state
 
 - Use the vault and project folder identified in the confirmed proposal.
+- Check that the target remains a supported project before reading evidence
+  or starting recovery. If the completion marker is missing or invalid, or
+  a first-round save is pending, preserve the folder and report the state.
 - Resolve the vault, folder, and candidate paths, including symlink targets and
   existing parents of paths that do not yet exist. Use canonical path component
   containment checks. The research folder must be within the selected vault and

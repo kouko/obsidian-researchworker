@@ -1,6 +1,7 @@
 """Exercise the resume transaction against disposable research folders."""
 import base64
 import fcntl
+import hashlib
 import json
 import signal
 import subprocess
@@ -15,16 +16,28 @@ HELPER = (
     / "skills/obsidian-research-project/scripts/research_transaction.py"
 )
 JOURNAL = ".resume-recovery.json"
+PROJECT_MARKER = ".obsidian-research-project"
+PROJECT_MARKER_CONTENT = b"obsidian-research-project-v1\n"
 
 
 @pytest.fixture
 def folder(tmp_path):
     root = tmp_path / "topic"
-    root.mkdir()
-    (root / "index.md").write_text("See [prior](prior.md).")
-    (root / "prior.md").write_text("Previously completed")
-    (root / "judgment.md").write_text("seven")
-    (root / "dependent.md").write_text("seven")
+    notes = {
+        "index.md": "See [prior](prior.md).",
+        "prior.md": "Previously completed",
+        "judgment.md": "seven",
+        "dependent.md": "seven",
+    }
+    plan = {
+        "entry": "index.md",
+        "round": "prior.md",
+        "writes": [{"path": path, "content": base64.b64encode(data.encode()).decode()}
+                   for path, data in notes.items()],
+        "targets": ["prior.md"],
+    }
+    result = invoke(root, "create", plan)
+    assert result.returncode == 0, result.stderr
     return root
 
 
@@ -82,7 +95,8 @@ def test_create_first_round_then_resume(tmp_path):
     result = invoke(topic, "create", plan, vault=tmp_path)
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)["changed"][-1] == "index.md"
-    assert set(contents(topic)) == {write["path"] for write in plan["writes"]}
+    assert set(contents(topic)) == {PROJECT_MARKER, *(write["path"] for write in plan["writes"])}
+    assert (topic / PROJECT_MARKER).read_bytes() == PROJECT_MARKER_CONTENT
     assert list(topic.parent.iterdir()) == [topic]
 
     update = prepare(topic, **{"index.md": "Updated"})
@@ -90,6 +104,32 @@ def test_create_first_round_then_resume(tmp_path):
     update["targets"] = plan["targets"]
     assert invoke(topic, "apply", update).returncode == 0
     assert (topic / "index.md").read_text() == "Updated"
+    assert (topic / PROJECT_MARKER).read_bytes() == PROJECT_MARKER_CONTENT
+
+
+@pytest.mark.parametrize("action", ["inspect", "apply"])
+def test_legacy_folder_with_valid_recovery_record_is_preserved(tmp_path, action):
+    topic = tmp_path / "legacy"
+    topic.mkdir()
+    (topic / "index.md").write_bytes(b"See [prior](prior.md).")
+    (topic / "prior.md").write_bytes(b"Earlier research.")
+    hashes = {name: ["file", hashlib.sha256(data).hexdigest()]
+              for name, data in contents(topic).items()}
+    journal = {
+        "snapshot": hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest(),
+        "directories": [],
+        "entry": "index.md",
+        "round": "prior.md",
+        "writes": [{"path": "new.md", "before": None, "content": "bmV3IGV2aWRlbmNl"}],
+        "targets": ["prior.md"],
+    }
+    (topic / JOURNAL).write_text(json.dumps(journal))
+    before = contents(topic)
+
+    result = invoke(topic, action, journal)
+
+    assert contents(topic) == before
+    assert result.returncode == 1 and "unsupported research project" in result.stderr
 
 
 @pytest.mark.parametrize(
@@ -367,7 +407,7 @@ def test_staged_write_checks_destination_after_pause(folder, edit_after_staging)
         assert json.loads(result.stdout)["recovery"] == "completed"
         assert (folder / "judgment.md").read_text() == "six"
         assert sorted(path.name for path in folder.iterdir()) == [
-            "dependent.md", "index.md", "judgment.md", "prior.md",
+            PROJECT_MARKER, "dependent.md", "index.md", "judgment.md", "prior.md",
         ]
     finally:
         if writer.poll() is None:
@@ -377,16 +417,16 @@ def test_staged_write_checks_destination_after_pause(folder, edit_after_staging)
 
 
 @pytest.mark.parametrize("action", ["inspect", "apply"])
-def test_unmarked_empty_staging_is_not_removed(tmp_path, action):
-    topic = tmp_path / "topic"
-    stage = topic / ".resume-staging"
-    stage.mkdir(parents=True, mode=0o700)
+def test_unmarked_empty_staging_is_not_removed(folder, action):
+    stage = folder / ".resume-staging"
+    stage.mkdir(mode=0o700)
+    before = list(folder.iterdir())
 
-    result = invoke(topic, action)
+    result = invoke(folder, action)
 
     assert result.returncode != 0
     assert "unrecognized staging" in result.stderr
-    assert list(topic.iterdir()) == [stage]
+    assert list(folder.iterdir()) == before
     assert list(stage.iterdir()) == []
 
 

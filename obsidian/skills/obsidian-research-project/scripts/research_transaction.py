@@ -7,6 +7,7 @@ import errno
 import hashlib
 import json
 import os
+import re
 import secrets
 import stat
 import sys
@@ -26,6 +27,9 @@ STAGING_MARKER = ".research-transaction-v1"
 STAGING_PAYLOAD = "payload"
 FIRST_ROUND_PENDING = ".research-first-round-pending"
 FIRST_ROUND_STAGE_PREFIX = ".research-first-round-"
+FIRST_ROUND_STAGE_NAME = re.compile(re.escape(FIRST_ROUND_STAGE_PREFIX) + r"[0-9a-f]{32}")
+PROJECT_MARKER = ".obsidian-research-project"
+PROJECT_MARKER_CONTENT = b"obsidian-research-project-v1\n"
 
 
 class TransactionError(Exception):
@@ -57,7 +61,7 @@ def local_path(folder, name):
     target = folder
     for part in path.parts:
         spelling = spelling_key(part)
-        if spelling in (JOURNAL, STAGING, FIRST_ROUND_PENDING):
+        if spelling in (JOURNAL, STAGING, FIRST_ROUND_PENDING, PROJECT_MARKER):
             raise TransactionError(f"reserved transaction path: {name}")
         target /= part
         require_spelling(target)
@@ -400,10 +404,10 @@ def exclusive_rename():
     libc = ctypes.CDLL(None, use_errno=True)
     if sys.platform == "darwin":
         rename = getattr(libc, "renameatx_np", None)
-        flags = 0x00000004  # RENAME_EXCL
+        flags = 0x00000004  # RENAME_EXCL in the macOS SDK's sys/stdio.h
     elif sys.platform.startswith("linux"):
         rename = getattr(libc, "renameat2", None)
-        flags = 1  # RENAME_NOREPLACE
+        flags = 1  # RENAME_NOREPLACE in Linux include/uapi/linux/fs.h
     else:
         rename = None
     if rename is None:
@@ -467,7 +471,9 @@ def save_initial_project(vault, destination, writes, entry):
                 lock_folder(project_fd)
                 evidence_ids = {}
                 pending = Path(FIRST_ROUND_PENDING)
-                marker = write_initial_file(project_fd, pending, b"", identities=evidence_ids)
+                marker = write_initial_file(
+                    project_fd, pending, PROJECT_MARKER_CONTENT, identities=evidence_ids,
+                )
                 for path, data in before_entry.items():
                     write_initial_file(project_fd, path, data, identities=evidence_ids)
                 verify_initial_writes(project_fd, before_entry, evidence_ids)
@@ -491,7 +497,9 @@ def save_initial_project(vault, destination, writes, entry):
                         destination,
                     )
                     same_entry(marker, os.stat(pending, dir_fd=project_fd, follow_symlinks=False), pending)
-                    os.unlink(pending, dir_fd=project_fd)
+                    verify_initial_writes(project_fd, {pending: PROJECT_MARKER_CONTENT}, evidence_ids)
+                    require_child_spelling(project_fd, PROJECT_MARKER)
+                    publish(project_fd, pending, PROJECT_MARKER)
         except (OSError, TransactionError) as error:
             raise TransactionError(f"{error}; first round pending at {pending_path}") from error
 
@@ -502,8 +510,29 @@ def same_entry(expected, observed, name):
 
 
 def require_project_location(relative):
-    if any(spelling_key(part).startswith(FIRST_ROUND_STAGE_PREFIX) for part in relative.parts):
+    if any(FIRST_ROUND_STAGE_NAME.fullmatch(spelling_key(part)) for part in relative.parts):
         raise TransactionError("incomplete first round staging; preserved for inspection")
+
+
+def require_supported_project(fd, folder):
+    require_child_spelling(fd, FIRST_ROUND_PENDING)
+    try:
+        os.stat(FIRST_ROUND_PENDING, dir_fd=fd, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise TransactionError(f"incomplete first round; preserved for inspection: {folder}")
+    try:
+        require_child_spelling(fd, PROJECT_MARKER)
+        flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+        with os.fdopen(os.open(PROJECT_MARKER, flags, dir_fd=fd), "rb") as marker:
+            opened = os.fstat(marker.fileno())
+            if (not stat.S_ISREG(opened.st_mode)
+                    or marker.read(len(PROJECT_MARKER_CONTENT) + 1) != PROJECT_MARKER_CONTENT):
+                raise TransactionError("invalid completion marker")
+            same_entry(opened, os.stat(PROJECT_MARKER, dir_fd=fd, follow_symlinks=False), PROJECT_MARKER)
+    except (OSError, TransactionError) as error:
+        raise TransactionError(f"unsupported research project; preserved without changes: {folder}") from error
 
 
 def lock_folder(fd):
@@ -546,10 +575,7 @@ def main():
         fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
             lock_folder(fd)
-            pending = folder / FIRST_ROUND_PENDING
-            require_spelling(pending)
-            if pending.exists() or pending.is_symlink():
-                raise TransactionError(f"incomplete first round; preserved for inspection: {folder}")
+            require_supported_project(fd, folder)
             if args.action == "inspect":
                 read_paths = {name: local_path(folder, name) for name in args.read}
                 clear_staging(folder)

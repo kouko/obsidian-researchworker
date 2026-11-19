@@ -36,8 +36,10 @@ Use [`obsidian-research-project`](obsidian/skills/obsidian-research-project/SKIL
 to start or update research saved across rounds in `research/{topic}` or a
 specified folder in the selected vault. Confirm the destination, scope, and
 expected outputs before each new round. An update uses the saved question and
-open work and preserves the evidence used by earlier reports. For a single
-research note, use [`obsidian-research`](obsidian/skills/obsidian-research/SKILL.md).
+open work and preserves the evidence used by earlier reports. Updates require
+a completed project created by this skill. It preserves folders from the
+former resume skill without migrating them. For a single research note, use
+[`obsidian-research`](obsidian/skills/obsidian-research/SKILL.md).
 
 ## Optional finance data package
 

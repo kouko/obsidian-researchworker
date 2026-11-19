@@ -102,8 +102,10 @@ to `research/{topic}`. Confirm the operation, destination, scope, and expected
 outputs before each new round. A first round saves an entry and a completed
 report, with additional notes only as needed. An update reads the saved entry,
 checks how incoming evidence applies, and keeps earlier reports linked to the
-judgment and source versions they used. Use `obsidian-research` for a single
-research note, including a detailed one-off comparison.
+judgment and source versions they used. Updates require a completed project
+created by this skill. Older or unrecognized folders are preserved and can
+remain in the vault. Use `obsidian-research` for a single research note,
+including a detailed one-off comparison.
 
 ### Imported from kepano (Steph Ango)
 
