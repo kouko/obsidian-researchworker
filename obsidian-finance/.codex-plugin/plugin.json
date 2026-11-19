@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "obsidian-finance",
     "shortDescription": "SEC evidence and folder-grounded equities research",
-    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research for agent-led continuation in managed version-1 equities folders, preserving reports and edits. Python 3.11+ and the standard library suffice; genuine SEC_USER_AGENT is required only for live SEC acquisition, not local reuse. Judgments are conditional or insufficient when evidence is missing. Source-invoked Codex sessions are observed; installed-plugin loading remains unverified and full investment research remains incomplete. No daemon, trading or global installation.",
+    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research to continue work in managed version-1 equities folders while preserving reports and edits. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
