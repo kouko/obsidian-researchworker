@@ -19,6 +19,13 @@ charter: 1.1
 - Test: A1 positive: confirmed-start; negative: no-consent. A2 positive: fresh-session-correction; boundary: replay. A3 positive: minimal-folder; negative: existing-folder. A4 positive: single-note; negative: research-project-assessment.
 - Risk: agent-decided — Verify confirmation in native conversations using disposable vaults. Constrain normal research to its existing output. Leave historical documents referring to the old skill name as recorded.
 
+### Wave 3
+
+**W3-01 Promote the first-round integrity regression** after: W2-01 acceptance: 3
+- Files: docs/loom/2026-11-19-start-and-update-research-topic/evidence/probes/test_first_round_integrity.py, obsidian/tests/test_first_round_integrity.py
+- Test: A3 positive: verified-first-save; negative: edited-report-during-entry-write.
+- Risk: agent-decided — Retain the observed RED case in the regular package suite. Keep the probe's scenario and concern intact.
+
 ## Simplicity check
 
 - Reuse one skill and one transaction helper for both project operations — taken
