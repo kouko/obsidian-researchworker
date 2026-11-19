@@ -115,7 +115,7 @@ and gaps resolved; structural validation cannot make that decision for the agent
 Retain original source hashes, exact relevant projections, fiscal coverage,
 cutoff, actual method/assumption authorship, horizon convention, changes,
 predecessor link and unresolved gaps in the review. Keep generic methodology in
-this reference; an applied-method manifest needs a content/version identity and
+the bundled references; an applied-method manifest needs a content/version identity and
 selected conventions, not a copied manual. Preserve all reports and user edits.
 Source-cache audits, successful helpers and industry examples leave their stated
 runtime and research limitations intact. Installed-host continuation, actual

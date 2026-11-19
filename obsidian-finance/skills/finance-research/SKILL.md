@@ -126,7 +126,7 @@ Preserve prior identities and use the existing version-1 input contract.
 | What changed in the business and capital allocation? | [Operating analysis](references/operating-analysis.md) | Eligible operating and governance evidence. |
 | What changed in the industry and competitive position? | [Industry and competition](references/industry-and-competition.md) | Comparable industry, peer and issuer evidence. |
 | What value ranges and risks follow from the evidence? | [Valuation and risk](references/valuation-and-risk.md) | Verified financial, operating and industry inputs where material to assumptions, and dated market inputs where used. |
-| What do the observed trading data show? | [Technical analysis](references/technical-analysis.md) | Eligible price and volume for market signals, and an eligible valuation range for comparing price with estimated value. |
+| What do the observed trading data show? | [Technical analysis](references/technical-analysis.md) | Eligible prices and any volume data needed for market signals, and an eligible valuation range for comparing price with estimated value. |
 | What conclusions are supported for each horizon? | [Synthesis](references/synthesis.md) | Applicable verified analyses and a record of gaps or conflicting results. |
 
 For a full quarterly review, start with financial, operating and industry

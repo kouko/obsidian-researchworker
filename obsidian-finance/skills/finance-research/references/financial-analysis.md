@@ -20,7 +20,7 @@ restated versions.
 
 Reconcile earnings, cash flow and balance-sheet changes. Compare equivalent
 fiscal periods and distinguish quarterly, year-to-date and annual values. A Q4
-acquisition may select an annual FY endpoint. Derive standalone Q4 only for
+acquisition selects an annual FY endpoint. Derive standalone Q4 only for
 additive flows from compatible periods, with both source operands and an
 explicit reconciliation. Never subtract EPS or average shares.
 
