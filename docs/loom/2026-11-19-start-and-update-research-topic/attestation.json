@@ -1,0 +1,62 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-19-start-and-update-research-topic",
+  "content_digest": "e65934191c57c34f70cc8ade8e926261c7264ebf",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian/tests/test_first_round_integrity.py -q -p no:cacheprovider",
+      "artifact": "obsidian/tests/test_first_round_integrity.py",
+      "result": "pass",
+      "command_digest": "445018b0fce238668ce6ca0d875b24ab2e2912e9517ce35d58958220bb8c1286"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "supported_project_review_a",
+      "vendor": "openai",
+      "model": "unobserved",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "supported_project_review_b",
+      "vendor": "openai",
+      "model": "unobserved",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "a7adf0d",
+  "tested_commit": "18136e9531691e5b0fdd439a0bb4bea71d7462ff",
+  "reviewed_commit": "5e2464cb49ffbe8244154434721d55c145a8313a",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

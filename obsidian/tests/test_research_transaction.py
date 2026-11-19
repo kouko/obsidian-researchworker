@@ -1,6 +1,7 @@
 """Exercise the resume transaction against disposable research folders."""
 import base64
 import fcntl
+import hashlib
 import json
 import signal
 import subprocess
@@ -12,25 +13,37 @@ import pytest
 
 HELPER = (
     Path(__file__).resolve().parents[1]
-    / "skills/obsidian-research-resume/scripts/research_transaction.py"
+    / "skills/obsidian-research-project/scripts/research_transaction.py"
 )
 JOURNAL = ".resume-recovery.json"
+PROJECT_MARKER = ".obsidian-research-project"
+PROJECT_MARKER_CONTENT = b"obsidian-research-project-v1\n"
 
 
 @pytest.fixture
 def folder(tmp_path):
     root = tmp_path / "topic"
-    root.mkdir()
-    (root / "index.md").write_text("See [prior](prior.md).")
-    (root / "prior.md").write_text("Previously completed")
-    (root / "judgment.md").write_text("seven")
-    (root / "dependent.md").write_text("seven")
+    notes = {
+        "index.md": "See [prior](prior.md).",
+        "prior.md": "Previously completed",
+        "judgment.md": "seven",
+        "dependent.md": "seven",
+    }
+    plan = {
+        "entry": "index.md",
+        "round": "prior.md",
+        "writes": [{"path": path, "content": base64.b64encode(data.encode()).decode()}
+                   for path, data in notes.items()],
+        "targets": ["prior.md"],
+    }
+    result = invoke(root, "create", plan)
+    assert result.returncode == 0, result.stderr
     return root
 
 
-def invoke(folder, action, plan=None, *, options=()):
+def invoke(folder, action, plan=None, *, options=(), vault=None):
     return subprocess.run(
-        [sys.executable, str(HELPER), action, str(folder.parent), str(folder), *options],
+        [sys.executable, str(HELPER), action, str(vault or folder.parent), str(folder), *options],
         input=json.dumps(plan),
         capture_output=True,
         text=True,
@@ -58,6 +71,154 @@ def prepare(folder, **writes):
         ],
         "targets": ["prior.md"],
     }
+
+
+def first_round():
+    return {
+        "entry": "index.md",
+        "round": "history/2026-11-19-R01.md",
+        "writes": [
+            {"path": path, "content": base64.b64encode(note.encode()).decode()}
+            for path, note in {
+                "index.md": "See [first round](history/2026-11-19-R01.md).",
+                "history/2026-11-19-R01.md": "See [evidence](../sources/S1.md).",
+                "sources/S1.md": "First source.",
+            }.items()
+        ],
+        "targets": ["history/2026-11-19-R01.md", "sources/S1.md"],
+    }
+
+
+def test_create_first_round_then_resume(tmp_path):
+    topic = tmp_path / "research" / "topic"
+    plan = first_round()
+    result = invoke(topic, "create", plan, vault=tmp_path)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["changed"][-1] == "index.md"
+    assert set(contents(topic)) == {PROJECT_MARKER, *(write["path"] for write in plan["writes"])}
+    assert (topic / PROJECT_MARKER).read_bytes() == PROJECT_MARKER_CONTENT
+    assert list(topic.parent.iterdir()) == [topic]
+
+    update = prepare(topic, **{"index.md": "Updated"})
+    update["round"] = plan["round"]
+    update["targets"] = plan["targets"]
+    assert invoke(topic, "apply", update).returncode == 0
+    assert (topic / "index.md").read_text() == "Updated"
+    assert (topic / PROJECT_MARKER).read_bytes() == PROJECT_MARKER_CONTENT
+
+
+@pytest.mark.parametrize("action", ["inspect", "apply"])
+def test_legacy_folder_with_valid_recovery_record_is_preserved(tmp_path, action):
+    topic = tmp_path / "legacy"
+    topic.mkdir()
+    (topic / "index.md").write_bytes(b"See [prior](prior.md).")
+    (topic / "prior.md").write_bytes(b"Earlier research.")
+    hashes = {name: ["file", hashlib.sha256(data).hexdigest()]
+              for name, data in contents(topic).items()}
+    journal = {
+        "snapshot": hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest(),
+        "directories": [],
+        "entry": "index.md",
+        "round": "prior.md",
+        "writes": [{"path": "new.md", "before": None, "content": "bmV3IGV2aWRlbmNl"}],
+        "targets": ["prior.md"],
+    }
+    (topic / JOURNAL).write_text(json.dumps(journal))
+    before = contents(topic)
+
+    result = invoke(topic, action, journal)
+
+    assert contents(topic) == before
+    assert result.returncode == 1 and "unsupported research project" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("obstacle", "diagnostic"),
+    [
+        ("existing", "already exists"),
+        ("symlink", "symlink"),
+        ("traversal", "unsafe relative path"),
+        ("missing-evidence", "required local target is missing"),
+    ],
+)
+def test_create_rejects_unsafe_target_without_changes(tmp_path, obstacle, diagnostic):
+    topic = tmp_path / "research" / "topic"
+    plan = first_round()
+    if obstacle == "existing":
+        topic.mkdir(parents=True)
+        (topic / "personal.md").write_text("Keep this.")
+    elif obstacle == "symlink":
+        (tmp_path / "research").symlink_to(tmp_path, target_is_directory=True)
+    elif obstacle == "traversal":
+        topic = tmp_path / "research" / ".." / "topic"
+    else:
+        plan["writes"].pop()
+    before = sorted(tmp_path.rglob("*"))
+
+    result = invoke(topic, "create", plan, vault=tmp_path)
+
+    assert result.returncode != 0 and diagnostic in result.stderr
+    assert sorted(tmp_path.rglob("*")) == before
+    if obstacle == "existing":
+        assert (topic / "personal.md").read_text() == "Keep this."
+
+
+def test_interrupted_first_round_is_preserved_but_cannot_resume(tmp_path):
+    topic = tmp_path / "topic"
+    script = (
+        "import os, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = transaction.write_initial_file\n"
+        "def stop_before_entry(project_fd, path, *args, **kwargs):\n"
+        "    if path.name == 'index.md':\n"
+        "        os._exit(7)\n"
+        "    original(project_fd, path, *args, **kwargs)\n"
+        "transaction.write_initial_file = stop_before_entry\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "create", str(tmp_path), str(topic)],
+        input=json.dumps(first_round()), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 7, result.stderr
+    assert not topic.exists()
+    stage, = tmp_path.glob(".research-first-round-*")
+    before = contents(stage)
+    assert "sources/S1.md" in before
+    assert "index.md" not in before
+    inspection = invoke(stage, "inspect")
+    assert inspection.returncode != 0 and "incomplete first round" in inspection.stderr
+    assert contents(stage) == before
+
+
+def test_create_preserves_directory_that_appears_before_publication(tmp_path):
+    topic = tmp_path / "topic"
+    script = (
+        "import os, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = transaction.write_initial_file\n"
+        "def add_destination(project_fd, path, *args, **kwargs):\n"
+        "    result = original(project_fd, path, *args, **kwargs)\n"
+        "    if path.name == 'index.md':\n"
+        "        destination = Path(sys.argv[-1])\n"
+        "        destination.mkdir()\n"
+        "        print(destination.stat().st_ino, flush=True)\n"
+        "    return result\n"
+        "transaction.write_initial_file = add_destination\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "create", str(tmp_path), str(topic)],
+        input=json.dumps(first_round()), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 1 and "already exists" in result.stderr
+    assert topic.stat().st_ino == int(result.stdout)
+    assert not list(topic.iterdir())
+    stage, = tmp_path.glob(".research-first-round-*")
+    assert (stage / "index.md").is_file()
+    assert (stage / ".research-first-round-pending").is_file()
 
 
 def test_busy_transaction_preserves_files(folder):
@@ -246,7 +407,7 @@ def test_staged_write_checks_destination_after_pause(folder, edit_after_staging)
         assert json.loads(result.stdout)["recovery"] == "completed"
         assert (folder / "judgment.md").read_text() == "six"
         assert sorted(path.name for path in folder.iterdir()) == [
-            "dependent.md", "index.md", "judgment.md", "prior.md",
+            PROJECT_MARKER, "dependent.md", "index.md", "judgment.md", "prior.md",
         ]
     finally:
         if writer.poll() is None:
@@ -256,16 +417,16 @@ def test_staged_write_checks_destination_after_pause(folder, edit_after_staging)
 
 
 @pytest.mark.parametrize("action", ["inspect", "apply"])
-def test_unmarked_empty_staging_is_not_removed(tmp_path, action):
-    topic = tmp_path / "topic"
-    stage = topic / ".resume-staging"
-    stage.mkdir(parents=True, mode=0o700)
+def test_unmarked_empty_staging_is_not_removed(folder, action):
+    stage = folder / ".resume-staging"
+    stage.mkdir(mode=0o700)
+    before = list(folder.iterdir())
 
-    result = invoke(topic, action)
+    result = invoke(folder, action)
 
     assert result.returncode != 0
     assert "unrecognized staging" in result.stderr
-    assert list(topic.iterdir()) == [stage]
+    assert list(folder.iterdir()) == before
     assert list(stage.iterdir()) == []
 
 

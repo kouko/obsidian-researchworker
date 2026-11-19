@@ -91,16 +91,21 @@ edits — and asks before reorganizing when the destination is ambiguous.
 | `obsidian-vault-setup` | Interactive first-time vault configurator — infers role and scope from free-text answers. |
 | `obsidian-tldr` | Save a conversation summary to the vault and update `memory.md`. |
 | `obsidian-research` | Research a topic on the web (English + Japanese, plus the topic's own language) and write a readable research note with a TOC to `research/`. |
-| `obsidian-research-resume` | Continue an existing investigation across conversations, incorporate new evidence, and preserve earlier judgments and source versions. |
+| `obsidian-research-project` | Start or update a saved research project across rounds. Confirm each round and preserve earlier judgments and source versions. |
 | `obsidian-knowledge` | Search the local vault from any project, read-only; no Grep/Glob needed. A SessionStart hook tells each session where the vault is. |
 | `obsidian-file-intel` | Extract content from PDF / PPTX / XLSX / DOCX / CSV / JSON via Gemini and produce Obsidian-ready summaries. |
 | `dashboard-design` | Guide dashboard design from requirements to layout, grounded in Japan Digital Agency dashboard guidelines. |
 
-To continue saved research, invoke `obsidian-research-resume` with the topic or
-an explicit folder within the selected vault. A named topic defaults to
-`research/{topic}`. The skill starts from the entry note, checks the scope and
-measurement basis of incoming evidence, and keeps earlier reports linked to
-the judgment and source versions they used.
+To start or update a saved project, invoke `obsidian-research-project` with the
+topic or an explicit folder within the selected vault. A named topic defaults
+to `research/{topic}`. Confirm the operation, destination, scope, and expected
+outputs before each new round. A first round saves an entry and a completed
+report, with additional notes only as needed. An update reads the saved entry,
+checks how incoming evidence applies, and keeps earlier reports linked to the
+judgment and source versions they used. Updates require a completed project
+created by this skill. Older or unrecognized folders are preserved and can
+remain in the vault. Use `obsidian-research` for a single research note,
+including a detailed one-off comparison.
 
 ### Imported from kepano (Steph Ango)
 
@@ -204,7 +209,7 @@ obsidian/
 │   ├── obsidian-vault-setup/    # vault configurator (original)
 │   ├── obsidian-tldr/           # conversation summary (original)
 │   ├── obsidian-research/       # web research → vault note (original)
-│   ├── obsidian-research-resume/ # continue saved research (original)
+│   ├── obsidian-research-project/ # start and update saved research (original)
 │   ├── obsidian-knowledge/      # read-only vault search (original)
 │   ├── obsidian-file-intel/     # file → Obsidian summaries (original)
 │   ├── dashboard-design/        # dashboard design (original)
