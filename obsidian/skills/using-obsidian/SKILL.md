@@ -13,7 +13,7 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - Setting up a new Obsidian vault
 - Saving conversation summaries to vault
 - Processing files into Obsidian-ready notes
-- Starting standalone research or continuing a saved research folder
+- Saving standalone research or starting or updating a saved research project
 - Creating diagrams (Mermaid, Excalidraw, Canvas)
 - Vault cleanup and organization
 
@@ -28,7 +28,7 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 | `obsidian-tldr` | Save conversation summary to vault |
 | `obsidian-file-intel` | Extract content from files into Obsidian notes |
 | `obsidian-research` | Research a standalone topic on the web (EN + JA + the topic's own language) and write a research note to `research/` |
-| `obsidian-research-resume` | Continue or update an existing research folder using its saved state |
+| `obsidian-research-project` | Start a research project or update its saved state across rounds after user confirmation |
 | `obsidian-knowledge` | Search the local vault from any project (read-only); works without Grep/Glob |
 
 ### Authoring & visualization
@@ -55,4 +55,5 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - Morning routine: invoke `obsidian-daily`
 - End of session: invoke `obsidian-tldr`
 - New vault: invoke `obsidian-vault-setup`
-- Continue saved research: invoke `obsidian-research-resume`
+- Start or update a saved research project: invoke `obsidian-research-project`
+- One-off research, including a detailed comparison in one note: invoke `obsidian-research`

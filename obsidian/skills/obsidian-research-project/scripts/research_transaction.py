@@ -1,4 +1,4 @@
-"""Lock, apply, and recover a preflighted research update on a local vault."""
+"""Create, inspect, or apply a research project transaction in a local vault."""
 
 import argparse
 import base64
@@ -20,6 +20,7 @@ JOURNAL = ".resume-recovery.json"
 STAGING = ".resume-staging"
 STAGING_MARKER = ".research-transaction-v1"
 STAGING_PAYLOAD = "payload"
+FIRST_ROUND_PENDING = ".research-first-round-pending"
 
 
 class TransactionError(Exception):
@@ -51,7 +52,7 @@ def local_path(folder, name):
     target = folder
     for part in path.parts:
         spelling = spelling_key(part)
-        if spelling in (JOURNAL, STAGING):
+        if spelling in (JOURNAL, STAGING, FIRST_ROUND_PENDING):
             raise TransactionError(f"reserved transaction path: {name}")
         target /= part
         require_spelling(target)
@@ -159,10 +160,13 @@ def write_atomically(path, data, *, folder, expected=None, exclusive=False):
         clear_staging(folder)
 
 
-def valid_history(folder, entry, completed_round, writes):
+def valid_history(folder, entry, completed_round, writes, *, creating=False):
     for name in (entry, completed_round):
         path = local_path(folder, name)
-        data = writes[path][0] if path in writes else file_content(path)
+        if creating:
+            data = writes[path][1] if path in writes else None
+        else:
+            data = writes[path][0] if path in writes else file_content(path)
         if path.suffix != ".md" or not data or not data.strip():
             raise TransactionError(f"missing prior entry or completed round: {name}")
 
@@ -326,28 +330,95 @@ def apply(folder, plan):
     return paths
 
 
+def create_project(vault, destination, plan):
+    folder = local_path(vault, destination.as_posix())
+    if folder.exists():
+        raise TransactionError(f"project destination already exists: {folder}")
+    writes = read_writes(folder, plan["writes"])
+    entry = local_path(folder, plan["entry"])
+    if entry == local_path(folder, plan["round"]):
+        raise TransactionError("entry and completed round must be different files")
+    valid_history(folder, plan["entry"], plan["round"], writes, creating=True)
+    check_targets(folder, plan["targets"], writes)
+    before, entry_content = writes.pop(entry)
+    for parent in reversed(destination.parents):
+        if parent != Path("."):
+            local_path(vault, parent.as_posix()).mkdir(exist_ok=True)
+    try:
+        local_path(vault, destination.as_posix()).mkdir()
+    except FileExistsError as error:
+        raise TransactionError(f"project destination already exists: {folder}") from error
+
+    fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        lock_folder(fd)
+        pending = folder / FIRST_ROUND_PENDING
+        pending.touch(mode=0o600, exist_ok=False)
+        check_write_devices(folder, writes | {entry: (before, entry_content)})
+        for path, (_, data) in writes.items():
+            local_path(vault, path.relative_to(vault).as_posix()).parent.mkdir(
+                parents=True, exist_ok=True,
+            )
+            write_atomically(path, data, folder=folder)
+        for path, (_, expected) in writes.items():
+            if file_content(local_path(vault, path.relative_to(vault).as_posix())) != expected:
+                raise TransactionError(f"initial write could not be verified: {path}")
+        local_path(vault, entry.relative_to(vault).as_posix()).parent.mkdir(
+            parents=True, exist_ok=True,
+        )
+        write_atomically(entry, entry_content, folder=folder)
+        check_targets(folder, plan["targets"], {})
+        if file_content(entry) != entry_content:
+            raise TransactionError(f"project entry could not be verified: {entry}")
+        pending.unlink()
+    finally:
+        os.close(fd)
+    return [path.relative_to(folder).as_posix() for path in (*writes, entry)]
+
+
+def lock_folder(fd):
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as error:
+        raise TransactionError("research folder is busy") from error
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("inspect", "apply"))
+    parser.add_argument("action", choices=("inspect", "apply", "create"))
     parser.add_argument("vault", type=Path)
     parser.add_argument("folder", type=Path)
     parser.add_argument("--read", action="append", default=[], metavar="RELATIVE_FILE")
     args = parser.parse_args()
-    if args.action == "apply" and args.read:
+    if args.action != "inspect" and args.read:
         parser.error("--read is only available with inspect")
     try:
         if fcntl is None:
             raise TransactionError("directory locking is unavailable")
         vault = args.vault.resolve(strict=True)
+        if args.action == "create":
+            destination = args.folder
+            if destination.is_absolute():
+                supplied_vault = args.vault.absolute()
+                if destination.is_relative_to(supplied_vault):
+                    destination = destination.relative_to(supplied_vault)
+                elif destination.is_relative_to(vault):
+                    destination = destination.relative_to(vault)
+                else:
+                    raise TransactionError("research folder must be inside the selected vault")
+            changed = create_project(vault, destination, json.load(sys.stdin))
+            print(json.dumps({"changed": changed}))
+            return 0
         folder = (vault / args.folder).resolve(strict=True)
         if folder == vault or not folder.is_relative_to(vault) or not folder.is_dir():
             raise TransactionError("research folder must be inside the selected vault")
         fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
-            try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError as error:
-                raise TransactionError("research folder is busy") from error
+            lock_folder(fd)
+            pending = folder / FIRST_ROUND_PENDING
+            require_spelling(pending)
+            if pending.exists() or pending.is_symlink():
+                raise TransactionError(f"incomplete first round; preserved for inspection: {folder}")
             if args.action == "inspect":
                 read_paths = {name: local_path(folder, name) for name in args.read}
                 clear_staging(folder)

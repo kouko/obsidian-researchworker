@@ -12,7 +12,7 @@ import pytest
 
 HELPER = (
     Path(__file__).resolve().parents[1]
-    / "skills/obsidian-research-resume/scripts/research_transaction.py"
+    / "skills/obsidian-research-project/scripts/research_transaction.py"
 )
 JOURNAL = ".resume-recovery.json"
 
@@ -28,9 +28,9 @@ def folder(tmp_path):
     return root
 
 
-def invoke(folder, action, plan=None, *, options=()):
+def invoke(folder, action, plan=None, *, options=(), vault=None):
     return subprocess.run(
-        [sys.executable, str(HELPER), action, str(folder.parent), str(folder), *options],
+        [sys.executable, str(HELPER), action, str(vault or folder.parent), str(folder), *options],
         input=json.dumps(plan),
         capture_output=True,
         text=True,
@@ -58,6 +58,95 @@ def prepare(folder, **writes):
         ],
         "targets": ["prior.md"],
     }
+
+
+def first_round():
+    return {
+        "entry": "index.md",
+        "round": "history/2026-11-19-R01.md",
+        "writes": [
+            {"path": path, "content": base64.b64encode(note.encode()).decode()}
+            for path, note in {
+                "index.md": "See [first round](history/2026-11-19-R01.md).",
+                "history/2026-11-19-R01.md": "See [evidence](../sources/S1.md).",
+                "sources/S1.md": "First source.",
+            }.items()
+        ],
+        "targets": ["history/2026-11-19-R01.md", "sources/S1.md"],
+    }
+
+
+def test_create_first_round_then_resume(tmp_path):
+    topic = tmp_path / "research" / "topic"
+    plan = first_round()
+    result = invoke(topic, "create", plan, vault=tmp_path)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["changed"][-1] == "index.md"
+    assert set(contents(topic)) == {write["path"] for write in plan["writes"]}
+
+    update = prepare(topic, **{"index.md": "Updated"})
+    update["round"] = plan["round"]
+    update["targets"] = plan["targets"]
+    assert invoke(topic, "apply", update).returncode == 0
+    assert (topic / "index.md").read_text() == "Updated"
+
+
+@pytest.mark.parametrize(
+    ("obstacle", "diagnostic"),
+    [
+        ("existing", "already exists"),
+        ("symlink", "symlink"),
+        ("traversal", "unsafe relative path"),
+        ("missing-evidence", "required local target is missing"),
+    ],
+)
+def test_create_rejects_unsafe_target_without_changes(tmp_path, obstacle, diagnostic):
+    topic = tmp_path / "research" / "topic"
+    plan = first_round()
+    if obstacle == "existing":
+        topic.mkdir(parents=True)
+        (topic / "personal.md").write_text("Keep this.")
+    elif obstacle == "symlink":
+        (tmp_path / "research").symlink_to(tmp_path, target_is_directory=True)
+    elif obstacle == "traversal":
+        topic = tmp_path / "research" / ".." / "topic"
+    else:
+        plan["writes"].pop()
+    before = sorted(tmp_path.rglob("*"))
+
+    result = invoke(topic, "create", plan, vault=tmp_path)
+
+    assert result.returncode != 0 and diagnostic in result.stderr
+    assert sorted(tmp_path.rglob("*")) == before
+    if obstacle == "existing":
+        assert (topic / "personal.md").read_text() == "Keep this."
+
+
+def test_interrupted_first_round_is_preserved_but_cannot_resume(tmp_path):
+    topic = tmp_path / "topic"
+    script = (
+        "import os, sys; from pathlib import Path; "
+        "sys.path.insert(0, str(Path(sys.argv.pop(1)).parent)); "
+        "import research_transaction as transaction\n"
+        "original = transaction.write_atomically\n"
+        "def stop_before_entry(path, *args, **kwargs):\n"
+        "    if path.name == 'index.md':\n"
+        "        os._exit(7)\n"
+        "    original(path, *args, **kwargs)\n"
+        "transaction.write_atomically = stop_before_entry\n"
+        "raise SystemExit(transaction.main())"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(HELPER), "create", str(tmp_path), str(topic)],
+        input=json.dumps(first_round()), capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 7, result.stderr
+    before = contents(topic)
+    assert "sources/S1.md" in before
+    assert "index.md" not in before
+    inspection = invoke(topic, "inspect")
+    assert inspection.returncode != 0 and "incomplete first round" in inspection.stderr
+    assert contents(topic) == before
 
 
 def test_busy_transaction_preserves_files(folder):

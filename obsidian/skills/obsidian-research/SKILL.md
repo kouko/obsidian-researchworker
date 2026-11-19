@@ -1,6 +1,6 @@
 ---
 name: obsidian-research
-description: Research a topic on the web (English + Japanese, plus the topic's own language when it has one) from several angles, verify key claims, check every citation, and save a human-readable research note with a TOC into the Obsidian vault's research/ folder. Use for "research X into a note" / 「研究一下 X 寫成筆記」/「X を調べてノートにまとめて」. Inside an Obsidian vault, use it for standalone requests to research a topic on the web (「研究一下 X」「X を調べて」"research X") even without the word note. Use obsidian-research-resume to continue or update an existing saved research folder. Do NOT use when the user wants a chat-only answer or no note, for debugging or code work, for a quick factual question, or outside a vault for a report not meant as a note. 研究ノート・調査。研究筆記・調查。
+description: Research a topic on the web (English + Japanese, plus the topic's own language when it has one) from several angles, verify key claims, check every citation, and save a human-readable research note with a TOC into the Obsidian vault's research/ folder. Use for "research X into a note" / 「研究一下 X 寫成筆記」/「X を調べてノートにまとめて」. Inside an Obsidian vault, use it for standalone requests to research a topic on the web (「研究一下 X」「X を調べて」"research X") even without the word note. Use obsidian-research-project for starting or updating a saved project across rounds. Do NOT use when the user wants a chat-only answer or no note, for debugging or code work, for a quick factual question, or outside a vault for a report not meant as a note. 研究ノート・調査。研究筆記・調查。
 ---
 
 # Obsidian Research
@@ -20,8 +20,9 @@ Frameworks are used at four layers; [references/frameworks.md](references/framew
 
 ## Pre-flight
 
-Requests to continue or update an existing saved research folder belong to
-`obsidian-research-resume`. Invoke that skill for those requests.
+Requests to start a saved project for ongoing rounds or to update an existing
+project belong to `obsidian-research-project`. A detailed one-off comparison
+or deep investigation still belongs here.
 
 1. **Vault root** = the nearest directory containing `.obsidian/`, starting from the current directory and walking up. If none is found, ask the user for the vault path.
 2. **Web tools**: check that the host's web search tool (`WebSearch` in Claude Code) is in this session's tool list.
