@@ -7,8 +7,8 @@ import pytest
 
 
 HELPER = (
-    Path(__file__).resolve().parents[5]
-    / "obsidian/skills/obsidian-research-project/scripts/research_transaction.py"
+    Path(__file__).resolve().parents[1]
+    / "skills/obsidian-research-project/scripts/research_transaction.py"
 )
 SPEC = importlib.util.spec_from_file_location("research_transaction", HELPER)
 transaction = importlib.util.module_from_spec(SPEC)
