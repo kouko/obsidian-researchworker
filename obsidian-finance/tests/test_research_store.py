@@ -116,6 +116,20 @@ def test_new_quarter_and_changed_source(tmp_path, future):
         assert result["excluded"] == [dict(evidence="aapl:q3", reason="after_cutoff")]
 
 
+def test_ambiguous_initial_quarter_preserves_unrelated_reuse(tmp_path):
+    base, source, _ = sample(tmp_path)
+    for sid, end in (("first", "2024-06-28"), ("second", "2024-06-29")):
+        filing = dict(source, id=sid, kind="financial_original", identity=sid,
+                      available_at="2024-08-02",
+                      fiscal=dict(year=2024, period="Q3", period_end=end, original_accession=sid))
+        put(tmp_path, base + "/data/sources/" + sid + ".json", filing)
+    result = load().discover(tmp_path, "latest", CUTOFF)
+    assert result["status"] == "partial"
+    assert result["reusable"] == [dict(record="aapl/2024Q2/r1", work="valuation")]
+    assert not any(d["action"] == "create_next_quarter_analysis" for d in result["decisions"])
+    assert any(g["record"] == "aapl/2024Q3/new" for g in result["gaps"])
+
+
 @pytest.mark.parametrize("format_only", [False, True])
 def test_unchanged_no_work(tmp_path, format_only):
     base, source, _ = sample(tmp_path)
