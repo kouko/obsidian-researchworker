@@ -1,6 +1,6 @@
 # 季度研究下一步判斷 — 驗收結果
 
-Tried on 2026-11-19, in a clean copy of the project at 09599da. How I tried each line and what came back: `docs/loom/2026-11-15-finance-work-assessment/evidence/acceptance-test-evidence.md`.
+Tried on 2026-11-19, in a clean copy of the project at 0565c65. How I tried each line and what came back: `docs/loom/2026-11-15-finance-work-assessment/evidence/acceptance-test-evidence.md`.
 
 ## 逐項驗收
 
@@ -9,7 +9,7 @@ Tried on 2026-11-19, in a clean copy of the project at 09599da. How I tried each
 | 1 | 根據隔離範例，可產生不需更新、補資料、同季修訂、新增一期及接續未完成工作等必要判斷，結果附有對應資料依據與原因。 | works | 五種判斷均附理由與資料依據；候選新財季的日期互相矛盾時會列出缺口，獨立工作仍可判斷。 | re-tested |
 | 2 | 判斷能區分檔案修改時間、實際研究輸入變動及既有研究的完成狀態，不把只有修改時間改變視為需要重做研究的證據。 | works | 只改檔案時間不改判斷；研究輸入及資料型別變動會取消沿用。 | re-tested |
 | 3 | 固定歷史截止日與追蹤最新狀況的判斷有清楚區別，不把晚於截止日的資訊當成歷史分析當時已知，也不把新價格視為新財季。 | works | 晚於截止日的來源會排除，先前儲存但使用較晚截止日的工作也不會被沿用。價格變更只安排同季修訂。 | re-tested |
-| 4 | 對已保存但尚未完成的工作，可指出仍需處理的部分；依賴或輸出無法核對時，不將既有檔案宣稱為可有效沿用的已完成成果。 | works | 未完成部分會列為待辦；申報期別、輸出或完成證據無法核對時會阻止沿用受影響成果。 | re-tested |
+| 4 | 對已保存但尚未完成的工作，可指出仍需處理的部分；依賴或輸出無法核對時，不將既有檔案宣稱為可有效沿用的已完成成果。 | works | 未完成部分會列為待辦；過往季度的申報日期互相矛盾時，會阻止沿用引用該資料的分析，其他已核對成果仍可沿用。 | re-tested |
 | 5 | 缺資料、資料無效或來源新鮮度無法確認時有明確結果，不捏造完成狀態、來源或投資建議，也不誤報研究已是最新。 | works | 缺口及無效資料都有明確結果；補充候選資料缺版本或內容時返回部分結果，不誤報無需更新。 | re-tested |
 | 6 | 相同已知輸入可重複得到一致的待辦判斷，執行不修改輸入研究資料，不建立重複研究期別或執行所列研究工作。 | works | 重跑結果一致且輸入逐位元組不變；沒有執行待辦或新增研究期別。 | re-tested |
 | 7 | 既有一般筆記與金融資料取得能力保留，原型已驗證與未驗證的執行範圍清楚揭露。 | works | 一般筆記與金融取得的代表流程通過，首頁只保留一份金融套件說明，並載明離線及宿主未驗證限制。 | re-tested |
@@ -25,7 +25,7 @@ Tried on 2026-11-19, in a clean copy of the project at 09599da. How I tried each
 | UI-5 | 操作情境：新價格 | works | 要求同季估值修訂，沒有憑空新增財季。 | re-tested |
 | UI-6 | 操作情境：新財季 | works | 單一可信期末日會提出新增研究，期末日互相矛盾時會列明缺口。 | re-tested |
 | UI-7 | 操作情境：未完成研究 | works | 列出剩餘工作及可沿用部分，沒有宣稱已執行。 | re-tested |
-| UI-8 | 操作情境：前置資料改變 | works | 若申報期末日與已保存季度矛盾，會取消沿用受影響成果並列出重算。 | re-tested |
+| UI-8 | 操作情境：前置資料改變 | works | 申報期末日互相矛盾時，即使來源屬較早季度，也會將引用該來源的成果列為待重算。 | re-tested |
 | UI-9 | 操作情境：缺少必要證據 | works | 列出缺口及補救方式，返回部分結果。 | re-tested |
 | UI-10 | 操作情境：新鮮度未知 | works | 明示未確認外部新鮮度，沒有捏造成功檢查時間。 | re-tested |
 | UI-11 | 操作情境：沒有研究紀錄 | works | 返回部分結果並要求提供研究紀錄。 | re-tested |
