@@ -1,12 +1,17 @@
-"""Lock, apply, and recover a preflighted research update on a local vault."""
+"""Create, inspect, or apply a research project transaction in a local vault."""
 
 import argparse
 import base64
+import ctypes
+import errno
 import hashlib
 import json
 import os
+import re
+import secrets
 import stat
 import sys
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from unicodedata import normalize
 
@@ -20,6 +25,11 @@ JOURNAL = ".resume-recovery.json"
 STAGING = ".resume-staging"
 STAGING_MARKER = ".research-transaction-v1"
 STAGING_PAYLOAD = "payload"
+FIRST_ROUND_PENDING = ".research-first-round-pending"
+FIRST_ROUND_STAGE_PREFIX = ".research-first-round-"
+FIRST_ROUND_STAGE_NAME = re.compile(re.escape(FIRST_ROUND_STAGE_PREFIX) + r"[0-9a-f]{32}")
+PROJECT_MARKER = ".obsidian-research-project"
+PROJECT_MARKER_CONTENT = b"obsidian-research-project-v1\n"
 
 
 class TransactionError(Exception):
@@ -51,7 +61,7 @@ def local_path(folder, name):
     target = folder
     for part in path.parts:
         spelling = spelling_key(part)
-        if spelling in (JOURNAL, STAGING):
+        if spelling in (JOURNAL, STAGING, FIRST_ROUND_PENDING, PROJECT_MARKER):
             raise TransactionError(f"reserved transaction path: {name}")
         target /= part
         require_spelling(target)
@@ -159,15 +169,18 @@ def write_atomically(path, data, *, folder, expected=None, exclusive=False):
         clear_staging(folder)
 
 
-def valid_history(folder, entry, completed_round, writes):
+def valid_history(folder, entry, completed_round, writes, *, creating=False):
     for name in (entry, completed_round):
         path = local_path(folder, name)
-        data = writes[path][0] if path in writes else file_content(path)
+        if creating:
+            data = writes[path][1] if path in writes else None
+        else:
+            data = writes[path][0] if path in writes else file_content(path)
         if path.suffix != ".md" or not data or not data.strip():
             raise TransactionError(f"missing prior entry or completed round: {name}")
 
 
-def read_writes(folder, records, *, recovery=False):
+def read_writes(folder, records, *, recovery=False, creating=False):
     if not isinstance(records, list):
         raise TransactionError("expected an ordered list of writes")
     writes = {}
@@ -184,7 +197,9 @@ def read_writes(folder, records, *, recovery=False):
                 raise TransactionError(f"planned paths alias each other: {record['path']}")
         after = decode(record["content"])
         old = record["before"] if recovery else None
-        before = (None if old is None else decode(old)) if recovery else file_content(path)
+        before = file_content(path) if not recovery and not creating else None
+        if old is not None:
+            before = decode(old)
         writes[path] = (before, after)
     for path in writes:
         for parent in path.parents:
@@ -195,12 +210,12 @@ def read_writes(folder, records, *, recovery=False):
     return writes
 
 
-def check_targets(folder, names, writes):
+def check_targets(folder, names, writes, *, creating=False):
     if not isinstance(names, list):
         raise TransactionError("expected a list of required targets")
     for name in names:
         path = local_path(folder, name)
-        if path not in writes and not path.is_file():
+        if path not in writes and (creating or not path.is_file()):
             raise TransactionError(f"required local target is missing: {name}")
 
 
@@ -326,28 +341,241 @@ def apply(folder, plan):
     return paths
 
 
+def require_child_spelling(fd, name):
+    key = spelling_key(name)
+    if any(child != name and spelling_key(child) == key for child in os.listdir(fd)):
+        raise TransactionError(f"path aliases an existing entry: {name}")
+
+
+@contextmanager
+def open_directories(root_fd, parts, *, create=False, identities=None):
+    fd = os.dup(root_fd)
+    try:
+        for index, name in enumerate(parts):
+            require_child_spelling(fd, name)
+            if create:
+                try:
+                    os.mkdir(name, dir_fd=fd)
+                except FileExistsError:
+                    pass
+            expected = os.stat(name, dir_fd=fd, follow_symlinks=False)
+            child_fd = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+            os.close(fd)
+            fd = child_fd
+            observed = os.fstat(fd)
+            if not os.path.samestat(expected, observed):
+                raise TransactionError(f"directory changed during initial save: {name}")
+            if identities is not None:
+                path = parts[:index + 1]
+                if not os.path.samestat(identities.setdefault(path, observed), observed):
+                    raise TransactionError(f"directory changed during initial save: {name}")
+        yield fd
+    finally:
+        os.close(fd)
+
+
+def write_initial_file(project_fd, path, data, *, identities):
+    with open_directories(project_fd, path.parent.parts, create=True, identities=identities) as fd:
+        if os.fstat(fd).st_dev != os.fstat(project_fd).st_dev:
+            raise TransactionError(f"write destination is on a different filesystem: {path}")
+        require_child_spelling(fd, path.name)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+        with os.fdopen(os.open(path.name, flags, mode=0o600, dir_fd=fd), "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+            return os.fstat(stream.fileno())
+
+
+def verify_initial_writes(project_fd, writes, identities):
+    for path, expected in writes.items():
+        with open_directories(project_fd, path.parent.parts, identities=identities) as fd:
+            require_child_spelling(fd, path.name)
+            flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+            with os.fdopen(os.open(path.name, flags, dir_fd=fd), "rb") as stream:
+                opened = os.fstat(stream.fileno())
+                if not stat.S_ISREG(opened.st_mode) or stream.read() != expected:
+                    raise TransactionError(f"initial write could not be verified: {path}")
+                if not os.path.samestat(opened, os.stat(path.name, dir_fd=fd, follow_symlinks=False)):
+                    raise TransactionError(f"file changed during initial save: {path}")
+
+
+def exclusive_rename():
+    libc = ctypes.CDLL(None, use_errno=True)
+    if sys.platform == "darwin":
+        rename = getattr(libc, "renameatx_np", None)
+        flags = 0x00000004  # RENAME_EXCL in the macOS SDK's sys/stdio.h
+    elif sys.platform.startswith("linux"):
+        rename = getattr(libc, "renameat2", None)
+        flags = 1  # RENAME_NOREPLACE in Linux include/uapi/linux/fs.h
+    else:
+        rename = None
+    if rename is None:
+        raise TransactionError("exclusive directory publication is unavailable")
+    rename.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+    rename.restype = ctypes.c_int
+
+    def publish(parent_fd, source, destination):
+        if rename(parent_fd, os.fsencode(source), parent_fd, os.fsencode(destination), flags):
+            code = ctypes.get_errno()
+            if code == errno.EEXIST:
+                raise TransactionError(f"project destination already exists: {destination}")
+            if code in (errno.ENOSYS, errno.ENOTSUP, errno.EOPNOTSUPP, errno.EINVAL):
+                raise TransactionError("exclusive directory publication is unavailable on this filesystem")
+            raise OSError(code, os.strerror(code), destination)
+
+    return publish
+
+
+def create_project(vault, destination, plan):
+    folder = local_path(vault, destination.as_posix())
+    require_project_location(destination)
+    if folder.exists():
+        raise TransactionError(f"project destination already exists: {folder}")
+    writes = read_writes(folder, plan["writes"], creating=True)
+    entry = local_path(folder, plan["entry"])
+    if entry == local_path(folder, plan["round"]):
+        raise TransactionError("entry and completed round must be different files")
+    valid_history(folder, plan["entry"], plan["round"], writes, creating=True)
+    check_targets(folder, plan["targets"], writes, creating=True)
+    relative_writes = {path.relative_to(folder): data for path, (_, data) in writes.items()}
+    entry = entry.relative_to(folder)
+    relative_writes[entry] = relative_writes.pop(entry)
+    save_initial_project(vault, destination, relative_writes, entry)
+    return [path.as_posix() for path in relative_writes]
+
+
+def save_initial_project(vault, destination, writes, entry):
+    publish = exclusive_rename()
+    parent_path = vault / destination.parent
+    parents = parent_path.parts[1:]
+    identities = {}
+    before_entry = {path: data for path, data in writes.items() if path != entry}
+    with ExitStack() as handles:
+        root = os.open(vault.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        handles.callback(os.close, root)
+        vault_parts = vault.parts[1:]
+        vault_fd = handles.enter_context(open_directories(root, vault_parts, identities=identities))
+        parent_fd = handles.enter_context(open_directories(vault_fd, destination.parent.parts, create=True))
+        with open_directories(root, parents, identities=identities) as located_parent:
+            same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+        staging = FIRST_ROUND_STAGE_PREFIX + secrets.token_hex(16)
+        os.mkdir(staging, mode=0o700, dir_fd=parent_fd)
+        pending_path = parent_path / staging
+        print(f"first-round staging: {pending_path}", file=sys.stderr, flush=True)
+        try:
+            with open_directories(parent_fd, (staging,)) as project_fd:
+                project = os.fstat(project_fd)
+                if project.st_uid != os.geteuid() or project.st_mode & 0o077:
+                    raise TransactionError("first-round staging is not private")
+                lock_folder(project_fd)
+                evidence_ids = {}
+                pending = Path(FIRST_ROUND_PENDING)
+                marker = write_initial_file(
+                    project_fd, pending, PROJECT_MARKER_CONTENT, identities=evidence_ids,
+                )
+                for path, data in before_entry.items():
+                    write_initial_file(project_fd, path, data, identities=evidence_ids)
+                verify_initial_writes(project_fd, before_entry, evidence_ids)
+                write_initial_file(project_fd, entry, writes[entry], identities=evidence_ids)
+                verify_initial_writes(project_fd, writes, evidence_ids)
+                with open_directories(root, parents, identities=identities) as located_parent:
+                    same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+                    require_child_spelling(parent_fd, destination.name)
+                    same_entry(project, os.stat(staging, dir_fd=parent_fd, follow_symlinks=False), staging)
+                    publish(parent_fd, staging, destination.name)
+                    pending_path = vault / destination
+                    same_entry(
+                        project, os.stat(destination.name, dir_fd=parent_fd, follow_symlinks=False),
+                        destination,
+                    )
+                    verify_initial_writes(project_fd, writes, evidence_ids)
+                with open_directories(root, parents, identities=identities) as located_parent:
+                    same_entry(os.fstat(parent_fd), os.fstat(located_parent), parent_path)
+                    same_entry(
+                        project, os.stat(destination.name, dir_fd=located_parent, follow_symlinks=False),
+                        destination,
+                    )
+                    same_entry(marker, os.stat(pending, dir_fd=project_fd, follow_symlinks=False), pending)
+                    verify_initial_writes(project_fd, {pending: PROJECT_MARKER_CONTENT}, evidence_ids)
+                    require_child_spelling(project_fd, PROJECT_MARKER)
+                    publish(project_fd, pending, PROJECT_MARKER)
+        except (OSError, TransactionError) as error:
+            raise TransactionError(f"{error}; first round pending at {pending_path}") from error
+
+
+def same_entry(expected, observed, name):
+    if not os.path.samestat(expected, observed):
+        raise TransactionError(f"path changed during initial save: {name}")
+
+
+def require_project_location(relative):
+    if any(FIRST_ROUND_STAGE_NAME.fullmatch(spelling_key(part)) for part in relative.parts):
+        raise TransactionError("incomplete first round staging; preserved for inspection")
+
+
+def require_supported_project(fd, folder):
+    require_child_spelling(fd, FIRST_ROUND_PENDING)
+    try:
+        os.stat(FIRST_ROUND_PENDING, dir_fd=fd, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise TransactionError(f"incomplete first round; preserved for inspection: {folder}")
+    try:
+        require_child_spelling(fd, PROJECT_MARKER)
+        flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+        with os.fdopen(os.open(PROJECT_MARKER, flags, dir_fd=fd), "rb") as marker:
+            opened = os.fstat(marker.fileno())
+            if (not stat.S_ISREG(opened.st_mode)
+                    or marker.read(len(PROJECT_MARKER_CONTENT) + 1) != PROJECT_MARKER_CONTENT):
+                raise TransactionError("invalid completion marker")
+            same_entry(opened, os.stat(PROJECT_MARKER, dir_fd=fd, follow_symlinks=False), PROJECT_MARKER)
+    except (OSError, TransactionError) as error:
+        raise TransactionError(f"unsupported research project; preserved without changes: {folder}") from error
+
+
+def lock_folder(fd):
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as error:
+        raise TransactionError("research folder is busy") from error
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("inspect", "apply"))
+    parser.add_argument("action", choices=("inspect", "apply", "create"))
     parser.add_argument("vault", type=Path)
     parser.add_argument("folder", type=Path)
     parser.add_argument("--read", action="append", default=[], metavar="RELATIVE_FILE")
     args = parser.parse_args()
-    if args.action == "apply" and args.read:
+    if args.action != "inspect" and args.read:
         parser.error("--read is only available with inspect")
     try:
         if fcntl is None:
             raise TransactionError("directory locking is unavailable")
         vault = args.vault.resolve(strict=True)
+        if args.action == "create":
+            destination = args.folder
+            if destination.is_absolute():
+                supplied_vault = args.vault.absolute()
+                if destination.is_relative_to(supplied_vault):
+                    destination = destination.relative_to(supplied_vault)
+                elif destination.is_relative_to(vault):
+                    destination = destination.relative_to(vault)
+                else:
+                    raise TransactionError("research folder must be inside the selected vault")
+            changed = create_project(vault, destination, json.load(sys.stdin))
+            print(json.dumps({"changed": changed}))
+            return 0
         folder = (vault / args.folder).resolve(strict=True)
         if folder == vault or not folder.is_relative_to(vault) or not folder.is_dir():
             raise TransactionError("research folder must be inside the selected vault")
+        require_project_location(folder.relative_to(vault))
         fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
-            try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError as error:
-                raise TransactionError("research folder is busy") from error
+            lock_folder(fd)
+            require_supported_project(fd, folder)
             if args.action == "inspect":
                 read_paths = {name: local_path(folder, name) for name in args.read}
                 clear_staging(folder)
