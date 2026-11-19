@@ -1,3 +1,32 @@
+# Independent acceptance at 449358e1f95b41f6d9398e32397246ffbe20f4f1
+
+## Setup and commands
+
+Extracted exactly 449358e into a clean isolated archive under /private/tmp/continuation-449-acceptance/checkout. Used the README source setup with Python 3.12 and the standard-library helper. No networking, Git mutations or private vault access.
+
+```sh
+git -C /private/tmp/finance-continuation-sync-trial archive 449358e | tar xf - -C /private/tmp/continuation-449-acceptance/checkout
+cd /private/tmp/continuation-449-acceptance/checkout
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py obsidian-finance/tests/test_future_history_validation.py -q -p no:cacheprovider
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B -m pytest -vv obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_research_publication.py -k 'ambiguous_initial_quarter or interrupted_publication_recovers' -p no:cacheprovider
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-449-acceptance/witness.py
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-449-acceptance/arrival.py
+```
+
+Focused run: 86 passed in 3.07s. The four correction probes passed independently in 0.43s. The complete suite command remains `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`. It runs before final acceptance and blocks on failure. The parent observed 294 passing tests at the same commit.
+
+## Current results
+
+- Acceptance 1–4 and UI-1, UI-3–5, UI-7, UI-9–10, UI-14–15: current archive source reproduced two complete no-update quarters and six reusable full-case units with 466 original paths unchanged. Copied prior source-arrival case discovered a single Q4 with three pending work items after adding 13 digest-verified files, preserving all 56 originals. Saved incremental checkpoints gave two reusable Q4 components, while investment-case remained pending. The method-change and no-work states reproduced the earlier results. The added ambiguous-quarter test kept Q2 valuation reusable, reported the Q3 gap and suppressed a duplicate/unsupported quarter decision.
+- Acceptance 5 and UI-2, UI-6, UI-8, UI-11–13, UI-16: current archive replay of a retained late interruption resumed and rolled back with one new review and one withdrawal marker, preserving all 86 pre-existing files. On a copy of the retained edited case both operations returned the user-edited conflict and 483 files remained unchanged. To specifically re-test the repair, the targeted interruption test raised an OSError before pending.json and then asserted successful resume, idempotence and selection of the completed new result. Tests also passed for late resume and late rollback. Existing focused tests cover missing or unsupported roots, invalid dependencies, path protection and future periods. All direct replays left external freshness unverified.
+- Acceptance 6: independently read the exact-version host trace at /private/tmp/continuation-449-installed/run.jsonl after observing thread.started and turn.completed. Compared installed research_store.py, assess_work.py, work_assessment.py, SKILL.md, research-method.md and both relevant installed test files byte-for-byte with the exact archived candidate. The installed fresh Codex dialogue called discovery across the full case, before/after arrivals and no-work inputs. The witness driver and expanded invocation are under /private/tmp/continuation-449-installed/work/acceptance-witness. Verified 657 before/after file hashes were identical and all 51 local reference comparisons matched. The host invoked four pytest fixture probes and reported 4 passed in 0.28s. These writes occurred in isolated pytest fixtures. The supplied Apple cases received read-only discovery; full agent-authored new-quarter, method-change and recovery writes remain supported by the earlier installed host evidence, retained below. External acquisition and fresh end-to-end model authoring on this exact build were not exercised in this witness.
+
+Exact replay outputs and correction result names are in witness.jsonl, arrival.json, focused.txt and corrections.txt under /private/tmp/continuation-449-acceptance.
+
+---
+
+## Earlier acceptance evidence (historical, retained)
+
 # Independent acceptance re-test at 3766bc72b8f0ec08f86eada9a0f2fda44685a664
 
 ## Clean setup and commands
