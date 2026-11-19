@@ -1,6 +1,6 @@
 # 六份個股分析指引的驗收結果
 
-2026-11-20 在乾淨副本驗證，版本為 `36ff45ed842949b1fe37d008db09d2a957f4ea08`。操作與結果見 `docs/loom/2026-11-20-finance-analysis-frameworks/evidence/acceptance-test-evidence.md`。
+Tried on 2026-11-20, in a clean copy of the project at 36ff45ed842949b1fe37d008db09d2a957f4ea08. 操作與結果見 `docs/loom/2026-11-20-finance-analysis-frameworks/evidence/acceptance-test-evidence.md`。
 
 ## 逐項驗收
 
