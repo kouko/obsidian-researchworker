@@ -111,10 +111,52 @@ metadata with actual authorship and content digest, separately from economic
 sources. Generic methods remain here; local files contain private assumptions
 and compact applied-version manifests, not a duplicate policy manual.
 
-Write actual source-grounded reasoning, counterevidence, calculation checks,
-cross-review changes and conditional short/medium/long judgments using the
-method reference. Missing required research remains pending; `insufficient_evidence`
-does not mean hold, zero return or successful completion of a missing question.
+### Select the analysis framework
+
+Open only the references needed for affected questions. For eligible saved
+analyses, verify and reuse the actual results and their bound inputs. Review
+the upstream reference only when its analysis needs reassessment or its method
+identity needs checking. Record the shared method and the relevant framework
+content/version in each applied-method manifest when using those instructions.
+Preserve prior identities and use the existing version-1 input contract.
+
+| Question | Framework | Dependencies |
+| --- | --- | --- |
+| How did financial condition and results change? | [Financial analysis](references/financial-analysis.md) | Eligible financial statements and notes. |
+| What changed in the business and capital allocation? | [Operating analysis](references/operating-analysis.md) | Eligible operating and governance evidence. |
+| What changed in the industry and competitive position? | [Industry and competition](references/industry-and-competition.md) | Comparable industry, peer and issuer evidence. |
+| What value ranges and risks follow from the evidence? | [Valuation and risk](references/valuation-and-risk.md) | Verified financial, operating and industry inputs where material to assumptions, and dated market inputs where used. |
+| What do the observed trading data show? | [Technical analysis](references/technical-analysis.md) | Eligible prices and any volume data needed for market signals, and an eligible valuation range for comparing price with estimated value. |
+| What conclusions are supported for each horizon? | [Synthesis](references/synthesis.md) | Applicable verified analyses and a record of gaps or conflicting results. |
+
+For a full quarterly review, start with financial, operating and industry
+work in parallel where possible, cross-check the findings, then do valuation
+and risk, technical analysis and finally synthesis. Track risk evidence as it
+emerges. Build valuation from the verified inputs relevant to the model, and
+use an eligible valuation range for the price-versus-value comparison within
+technical analysis. Price and volume signals can be computed independently.
+If data or a comparable valuation range is missing, finish supported parts
+and leave the affected required question pending. Synthesize after applicable
+findings have been checked or their gaps are known.
+
+For a price-only revision, reassess every valuation result that used the changed
+price directly or through a model input, such as market-value capital weights.
+Refresh the technical price-versus-value comparison with the updated
+eligible quote and the applicable valuation range, whether refreshed or reused.
+Recompute affected price and volume signals from eligible market data and update
+dependent synthesis. Reuse valid financial, operating and industry results and
+intrinsic valuation that are independent of the changed price.
+For a valuation-only revision, refresh the technical comparison using the
+still-eligible quote and update dependent synthesis. Preserve unchanged price
+and volume signals.
+Apply the same dependency check to other source or method updates. Keep the existing
+quarterly output and review contracts. Combine or separate analysis in notes as
+the actual scope warrants.
+
+Write source-grounded reasoning, counterevidence and calculation checks.
+For conditional short/medium/long judgments use the synthesis reference. Missing
+required research remains pending. Record `insufficient_evidence` when the
+evidence cannot support a judgment.
 
 ## 4. Save resumable work safely
 

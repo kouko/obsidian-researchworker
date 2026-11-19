@@ -82,71 +82,18 @@ A self-contained adopted snapshot is another option when the analysis genuinely
 uses that bound snapshot rather than live references. Neither option requires
 recursive certification of every source behind an already accepted finite study.
 
-Cover the applicable dimensions without duplicating prose across files:
+Apply the appropriate framework for each affected question. Keep broad coverage
+where the configured question needs it and avoid duplicating evidence across
+notes. The same note may cover several questions, and a question may draw on
+several frameworks. Use the frameworks as guidance for the actual question
+scope, with output paths and coverage governed by the existing review contract.
 
-- Business/competition: distinguish demand, volumes, price, mix, currency,
-  customer concentration, distribution and competitive durability. Name which
-  drivers are observed and which are hypotheses; missing segment weights prevent
-  combining unlike growth percentages.
-- Financial condition: reconcile income, balance sheet and cash flows; inspect
-  accruals, working capital, financing, debt/liquidity and relevant note disclosures.
-  Preserve reported definitions, units, duration starts, annual/YTD versus quarter
-  values and reported/restated versions. Q4 acquisition selects an annual FY
-  endpoint, not automatically a standalone Q4 statement. Never subtract EPS or
-  average shares; only derive additive flows with compatible original periods and
-  explicit reconciliation, showing the calculation and its limits.
-- Capital allocation/governance: inspect investment, distributions, dilution,
-  incentives, control and related-party issues where relevant. A buyback total
-  alone cannot establish value creation or management alignment.
-- Valuation/scenarios: name the model and why it suits the asset, retain dated
-  price/share/FX inputs and distinguish operating forecasts from security returns.
-  Show reproducible calculations and sensitivity to material assumptions. A next
-  quarter earnings bridge cannot justify a multi-year terminal growth rate,
-  valuation multiple or benchmark return without separate evidence.
-- Risks/synthesis: test the preferred thesis against opposing evidence, unresolved
-  drivers and alternative causal explanations. Explain changes from the predecessor
-  and across quarters, including changed definitions or acquired business scope.
-
-Refuse unsuitable model transfer. Bank funding, credit losses and regulatory
-capital call for different metrics from industrial debt/enterprise-value or
-CFO-minus-capex shortcuts; equity/dividend/excess-return approaches are candidates
-only with adequate inputs. Energy requires volumes, realizations, cycle and
-maintenance-investment distinctions; a profitable quarter is not mid-cycle
-earnings and negative earnings do not yield a meaningful positive trailing P/E.
-Cloud/subscription and membership retail require their own segment, renewal,
-investment and unit-economic definitions. Deposit protection or a bank asset
-transfer does not establish recovery for listed-parent shareholders. The
-repository's `docs/finance/pilots/industry-contrasts-v1` supplies method contrasts,
-not accepted full company research, calibrated models or expected excess returns.
-ETF, commodity and FX judgments need their own applicable methods and evidence;
-do not relabel an equity framework as verified support for those assets.
-
-## Conditional horizons
-
-Separate analysis windows from the user's unknown holding preference. Preserve
-an established method's durations and state their anchor date and boundaries.
-The initial pilot's short 0–3, medium 3–12 and long 12–60 months differs from
-the later exploratory one-quarter / 1–3-year / 5+-year convention. Name the
-selected convention and this difference explicitly; never silently merge the
-two, use one quarter to support a five-year forecast or present either as a
-user-confirmed holding period. A changed convention is an authored method
-change with affected comparisons, not a cosmetic label edit. Where no window
-is established, identify the proposed analysis windows and any decision-relevant
-ambiguity rather than inventing the user's preference.
-
-For each of `short`, `medium`, `long`, record:
-
-- Explicit duration/anchor; a conditional judgment or `insufficient_evidence`.
-- The relevant eligible evidence and counterevidence; distinguish business
-  direction from price/return implications and identify unsupported links.
-- Material assumptions and observable invalidation triggers, with the next
-  evidence needed to test them.
-
-Do not invent scenario probabilities, benchmark returns, price targets or
-precision. Without dated price, suitable valuation inputs or sufficient driver
-evidence, refrain from an investment rating. `insufficient_evidence` is not hold,
-neutrality or expected zero return. A horizon can have useful conditional
-operating reasoning while its investment conclusion remains insufficient.
+The bundled frameworks cover individual companies. ETF, commodity and FX
+judgments need their own applicable methods and evidence. For an industry
+contrast, consult the repository's `docs/finance/pilots/industry-contrasts-v1`
+when available. Those examples illustrate how methods differ by industry.
+They do not establish accepted company research, calibrated models or expected
+excess returns.
 
 ## Completion and continuation
 
@@ -168,7 +115,7 @@ and gaps resolved; structural validation cannot make that decision for the agent
 Retain original source hashes, exact relevant projections, fiscal coverage,
 cutoff, actual method/assumption authorship, horizon convention, changes,
 predecessor link and unresolved gaps in the review. Keep generic methodology in
-this reference; an applied-method manifest needs a content/version identity and
+the bundled references; an applied-method manifest needs a content/version identity and
 selected conventions, not a copied manual. Preserve all reports and user edits.
 Source-cache audits, successful helpers and industry examples leave their stated
 runtime and research limitations intact. Installed-host continuation, actual
