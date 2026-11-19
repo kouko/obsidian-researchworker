@@ -1,0 +1,59 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-20-finance-forecast-framework",
+  "content_digest": "0f11fb1803fbf14ab2203916f1e8454381928843",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Prose-only skill workflow; existing executable tests exercise storage and eligibility, and no deterministic executor chooses or scores forecast vintages."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "forecast_review_skill",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "forecast_review_docs",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "docs",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "69fecd6",
+  "tested_commit": "ce7df9cfdcb51867ef65aca6e10b2d4f090bd34c",
+  "reviewed_commit": "f20fe56c2a408ec334e349d79db9d277480f54ff",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
