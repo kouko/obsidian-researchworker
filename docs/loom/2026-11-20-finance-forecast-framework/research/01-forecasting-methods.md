@@ -23,6 +23,10 @@ Which methods complement published bull, base and bear cases in a cutoff-bound q
 | External expectations | Management guidance, point-in-time analyst consensus, and price-implied expectations are different references. Compare on matching periods and definitions. Price-implied expectations are conditional on valuation inputs and belong downstream, never a prerequisite that makes a valuation consume its own output. [CFA Forecasting](https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/company-analysis-forecasting) and [Counterpoint Global on Growth Opportunities](https://www.morganstanley.com/im/publication/insights/articles/article_opportunitiesandexpectations_ltr.pdf). |
 | Uncertainty methods | A sensitivity isolates inputs; a scenario changes a coherent path; a decision tree fits staged events; simulation requires defensible input distributions and dependence. Morgan Stanley shows a listed-equity report with a main DCF and alternative cases. [Damodaran](https://pages.stern.nyu.edu/~adamodar/pdfiles/acf3E/ch5.pdf) and [Morgan Stanley equity research, p. 20](https://www.morganstanley.com/content/dam/msdotcom/ideas/USEQUITY_20200914_0000.pdf#page=21). |
 
+## Local applicability
+
+The [Apple forecast pilot](../../../../docs/finance/pilots/apple-2024q2-q3/forecast-v1/METHOD-AND-VALIDATION.md) uses the prior fiscal-year quarter as a seasonal anchor, management outlook as attributed evidence, and analyst-selected coordinates as explicit assumptions. It does not calibrate a long-term forecast or provide probabilities. This supports keeping forecast scope and data limitations visible.
+
 ## Decision impact
 
 Adopt the simplest supported operating model and a second view where it can materially challenge the result. Match the forecast horizon to evidence and the valuation consumer. Keep three scenario paths assessable, with explicit gaps in unsupported quantification. Compare subsequent actuals with the saved pre-release forecast on a matched basis. Separate changes in realized inputs, assumptions and accounting or scope. No mandatory time-series engine, probability model or external data subscription.
