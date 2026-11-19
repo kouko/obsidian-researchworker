@@ -330,6 +330,12 @@ def apply(folder, plan):
     return paths
 
 
+def verify_initial_writes(vault, writes):
+    for path, (_, expected) in writes.items():
+        if file_content(local_path(vault, path.relative_to(vault).as_posix())) != expected:
+            raise TransactionError(f"initial write could not be verified: {path}")
+
+
 def create_project(vault, destination, plan):
     folder = local_path(vault, destination.as_posix())
     if folder.exists():
@@ -360,16 +366,13 @@ def create_project(vault, destination, plan):
                 parents=True, exist_ok=True,
             )
             write_atomically(path, data, folder=folder)
-        for path, (_, expected) in writes.items():
-            if file_content(local_path(vault, path.relative_to(vault).as_posix())) != expected:
-                raise TransactionError(f"initial write could not be verified: {path}")
+        verify_initial_writes(vault, writes)
         local_path(vault, entry.relative_to(vault).as_posix()).parent.mkdir(
             parents=True, exist_ok=True,
         )
         write_atomically(entry, entry_content, folder=folder)
         check_targets(folder, plan["targets"], {})
-        if file_content(entry) != entry_content:
-            raise TransactionError(f"project entry could not be verified: {entry}")
+        verify_initial_writes(vault, writes | {entry: (before, entry_content)})
         pending.unlink()
     finally:
         os.close(fd)

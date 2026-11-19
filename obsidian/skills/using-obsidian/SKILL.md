@@ -56,4 +56,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - End of session: invoke `obsidian-tldr`
 - New vault: invoke `obsidian-vault-setup`
 - Start or update a saved research project: invoke `obsidian-research-project`
+  to propose the round, then wait for a separate user reply confirming it
+  before doing project work
 - One-off research, including a detailed comparison in one note: invoke `obsidian-research`
