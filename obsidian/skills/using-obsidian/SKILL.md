@@ -59,4 +59,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
   by itself, without opening any evidence. Use the user's wording to propose
   the round and wait for a separate confirmation before reading evidence or
   doing project work
-- One-off research, including a detailed comparison in one note: invoke `obsidian-research`
+- One-off research, including a detailed report based on supplied local
+  sources: invoke `obsidian-research` and verify the requested vault before
+  saving. Use `obsidian-knowledge` when the user asks to look up existing notes.

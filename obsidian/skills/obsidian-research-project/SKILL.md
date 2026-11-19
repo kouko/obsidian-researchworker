@@ -21,11 +21,14 @@ language, links, and note properties.
   or updates to saved research. Detailed analysis or a one-off comparison
   alone follows the ordinary research path. A request to evaluate whether a
   workflow is worthwhile does not start a project.
-- Identify the vault and destination. Prefer an explicit folder, otherwise use
-  `<vault-root>/research/{topic}` with the topic as one folder name. Ask when
-  the vault, destination, or requested operation is unclear. If a start would
-  use an existing location, offer to use a completed project there or choose
-  another location. Never reuse that folder as a blank project.
+- Resolve a vault named by the user before relying on the working directory or
+  other vault context. If it is described as under the current directory,
+  check immediate children for `.obsidian/`. Verify that the selected vault
+  contains `.obsidian/` and name that vault in the proposal. Prefer an explicit
+  project folder within it, otherwise use `<vault-root>/research/{topic}`.
+  Ask when the vault, destination, or requested operation is unclear. If a
+  start would use an existing location, offer to use a completed project
+  there or choose another location. Never reuse that folder as a blank project.
 - Use the first response to state the proposed create or update operation,
   destination, scope, and expected outputs. Ask whether to proceed and end
   the turn. An explicit instruction to start or update, including a test
@@ -71,9 +74,7 @@ with the saved-state procedure below.
 
 ## 1. Find the last completed state
 
-- Identify the vault from the request or vault context. Use an explicit
-  research folder when supplied. Otherwise, use `<vault-root>/research/{topic}`,
-  with the topic as one folder name. Ask which vault or folder to use if ambiguous.
+- Use the vault and project folder identified in the confirmed proposal.
 - Resolve the vault, folder, and candidate paths, including symlink targets and
   existing parents of paths that do not yet exist. Use canonical path component
   containment checks. The research folder must be within the selected vault and

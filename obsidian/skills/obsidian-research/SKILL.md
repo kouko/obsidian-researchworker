@@ -1,6 +1,6 @@
 ---
 name: obsidian-research
-description: Research a topic on the web (English + Japanese, plus the topic's own language when it has one) from several angles, verify key claims, check every citation, and save a human-readable research note with a TOC into the Obsidian vault's research/ folder. Use for "research X into a note" / 「研究一下 X 寫成筆記」/「X を調べてノートにまとめて」. Inside an Obsidian vault, use it for standalone requests to research a topic on the web (「研究一下 X」「X を調べて」"research X") even without the word note. Use obsidian-research-project for starting or updating a saved project across rounds. Do NOT use when the user wants a chat-only answer or no note, for debugging or code work, for a quick factual question, or outside a vault for a report not meant as a note. 研究ノート・調査。研究筆記・調查。
+description: Write one Obsidian research note with checked claims, citations, and a TOC. Use for "research X into a note", 「研究一下 X 寫成筆記」, or 「X を調べてノートにまとめて」, including a detailed report based on supplied local sources. Inside a vault, use for standalone web research even without the word note. Resolve the requested vault before saving to its research/ folder. Use obsidian-research-project for saved work across rounds, and obsidian-knowledge for requests to look up existing notes. Chat-only answers, quick facts, debugging, and reports not meant for the vault use their usual paths.
 ---
 
 # Obsidian Research
@@ -24,11 +24,11 @@ Requests to start a saved project for ongoing rounds or to update an existing
 project belong to `obsidian-research-project`. A detailed one-off comparison
 or deep investigation still belongs here.
 
-1. **Vault root** = the nearest directory containing `.obsidian/`, starting from the current directory and walking up. If none is found, ask the user for the vault path.
-2. **Web tools**: check that the host's web search tool (`WebSearch` in Claude Code) is in this session's tool list.
+1. **Vault root**: resolve the location named by the user before using the current directory. For a vault described as under the current directory, check its immediate children for a directory containing `.obsidian/`. Without a user-specified location, walk up from the current directory to find the nearest directory containing `.obsidian/`. Verify the selected vault itself contains `.obsidian/` before creating files. If the requested location is unclear, invalid, or matches multiple vaults, ask for the vault path.
+2. **Web tools**: when web research is in scope, check that the host's web search tool (`WebSearch` in Claude Code) is in this session's tool list. For an explicitly local-only request, use only the supplied local material.
    - Missing and the user gave material → continue with that material only; say so in the chat reply and in the note's limitations.
    - Missing and no material → stop: "obsidian-research needs the WebSearch tool, which this session does not have (e.g. a Cowork sandbox). Run it from Claude Code CLI, or give me the sources to work from."
-3. `mkdir -p <vault-root>/research`.
+3. Create `research/` under the verified vault root. Use that same root for the final save.
 
 ## Step 1 — Scope and structure
 
