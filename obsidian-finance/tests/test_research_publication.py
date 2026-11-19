@@ -100,8 +100,10 @@ def test_incomplete_envelope_rejected(tmp_path, missing):
         assert any(g["evidence"] == "publication:run1" for g in module.discover(tmp_path, "latest", CUTOFF)["gaps"])
 
 
-@pytest.mark.parametrize("finish", ["resume", "rollback"])
-def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish):
+@pytest.mark.parametrize("finish, interruption_file", [
+    ("resume", "pending.json"), ("resume", "review.json"), ("rollback", "review.json"),
+])
+def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish, interruption_file):
     _, old, saved = proposal(tmp_path)
     module = load()
     target = "investing/assets/equities/aapl/cycles/2024Q2/2024-08-31-r2"
@@ -112,7 +114,7 @@ def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish):
         checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")}, unresolved=[]))}
     original = module._write_new
     def interrupt(root, path, data):
-        if path == target + "/review.json":
+        if path == target + "/" + interruption_file:
             raise OSError("simulated interruption before completion")
         return original(root, path, data)
     monkeypatch.setattr(module, "_write_new", interrupt)

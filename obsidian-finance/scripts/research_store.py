@@ -288,6 +288,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
     assets = [_id(asset) for asset in config["assets"]]
     _require(len(set(assets)) == len(assets), "duplicate asset identity")
     sources, records, gaps = [], [], []
+    quarantined = set()
     for asset in assets:
         records_start = len(records)
         base = "investing/assets/equities/" + asset
@@ -339,6 +340,8 @@ def _snapshot(root, cutoff, mode, proposed=None):
         if proposed is not None and proposed[0] == asset:
             quarters = sorted(set(quarters) | {proposed[1]})
         initial = {}
+        initial_sources = {}
+        ambiguous_initial = set()
         for source in selected_sources:
             available = _available(source.get("available_at"), cutoff)
             fiscal = source.get("fiscal")
@@ -346,13 +349,21 @@ def _snapshot(root, cutoff, mode, proposed=None):
                     and available is not None and available <= cutoff
                     and fiscal["period_end"] <= source["available_at"][:10]):
                 quarter = f"{fiscal['year']}{fiscal['period']}"
-                _require(quarter not in initial or initial[quarter] == fiscal, "ambiguous initial fiscal identity")
-                initial[quarter] = fiscal
+                initial_sources.setdefault(quarter, []).append(source["id"])
+                if initial.setdefault(quarter, fiscal) != fiscal:
+                    ambiguous_initial.add(quarter)
         for quarter in sorted(set(quarters) | initial.keys()):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
+            _require(candidate is None or quarter not in ambiguous_initial, "ambiguous original filing identity")
             reviews = _reviews(root, base, quarter, cutoff, mode, gaps, candidate) if quarter in quarters else []
-            if not reviews and quarter in initial:
+            if not reviews and quarter in ambiguous_initial:
+                quarantined.update(initial_sources[quarter])
+                for sid in initial_sources[quarter]:
+                    gaps.append(dict(record=asset + "/" + quarter + "/new", evidence=sid,
+                        reason="Ambiguous initial fiscal identity",
+                        recovery="Reconcile the conflicting original filing identities before starting this quarter"))
+            elif not reviews and quarter in initial:
                 records.append(dict(id=asset + "/" + quarter + "/new", issuer=issuer, fiscal=initial[quarter],
                     cutoff=cutoff.isoformat(), required_sources=_required_all(questions, asset, quarter),
                     work=[dict(id=qid, status="missing", depends_on=q.get("depends_on", []), consumed={}) for qid, q in questions.items()]))
@@ -413,7 +424,8 @@ def _snapshot(root, cutoff, mode, proposed=None):
                     **{k: saved[k] for k in ("execution_state", "last_attempt", "last_success") if k in saved}))
         if not initial and len(records) == records_start:
             gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
-    return dict(version=1, sources=sources, records=records), gaps
+    return dict(version=1, sources=[s for s in sources if s["id"] not in quarantined],
+                records=records), gaps
 
 
 def _mkdir(root, reference, *, exclusive=False):
@@ -625,11 +637,15 @@ def publish(root, asset, review, files, expected, run_id, *, complete=True):
     content = _encoded(request)
     _write_new(root, run + "/request.json", content)
     _write_new(root, run + "/journal.json", _encoded(dict(version=1, request_digest=sha256(content).hexdigest())))
-    return recover(root, run_id)
+    return _recover(root, run_id, action="resume", new_target=True)
 
 
 def recover(root, run_id, *, action="resume"):
     """Revalidate/resume or safely withdraw only this recorded isolated run."""
+    return _recover(root, run_id, action=action, new_target=False)
+
+
+def _recover(root, run_id, *, action, new_target):
     _id(run_id)
     _require(action in ("resume", "rollback"), "recovery action")
     run = "investing/.research-runs/" + run_id
@@ -652,8 +668,12 @@ def recover(root, run_id, *, action="resume"):
                 _require(existing == content.encode("utf-8"), "Publication conflict: saved draft edited: " + reference)
         try:
             present = set(_names(root, target))
+            target_exists = True
         except FileNotFoundError:
             present = set()
+            target_exists = False
+        _require(not new_target or not target_exists,
+                 "Publication conflict: directory appeared concurrently: " + target)
         marker = "withdrawn.json" if "withdrawn.json" in present else "abandoned.json" if "abandoned.json" in present else None
         allowed = set(request["files"]) | {"pending.json", "review.json"} | ({marker} if marker else set())
         _require(present <= allowed, "Publication conflict: unexpected files in proposed review")
@@ -687,7 +707,10 @@ def recover(root, run_id, *, action="resume"):
         if "review.json" in present:
             return dict(status="complete" if request["complete"] else "checkpoint", review=target + "/review.json", run=run_id)
         _validate_proposal(root, request, staged)
-        _mkdir(root, target, exclusive=not present)
+        # Explicit recovery may find an empty directory left before pending.json.
+        # The first exclusive write claims it for this run without replacing files.
+        if not target_exists:
+            _mkdir(root, target, exclusive=True)
         for reference, content in encoded.items():
             if reference.endswith("/review.json"):
                 continue
