@@ -107,17 +107,26 @@ def assess(snapshot, mode, cutoff):
         fiscal = item["fiscal"]
         return item["issuer"], fiscal["year"], fiscal["period"], fiscal["period_end"]
 
-    represented = {quarter_identity(record) for record in records.values()
-                   if _fiscal(record.get("fiscal"))}
+    record_cutoffs = {rid: _instant(record["cutoff"]) for rid, record in records.items()}
+    represented = {quarter_identity(record) for rid, record in records.items()
+                   if record_cutoffs[rid] <= boundary and _fiscal(record.get("fiscal"))}
     proposed = set()
     quarter_evidence = {}
+    quarter_ends = {}
     for sid, source in sorted(eligible.items()):
         if (source.get("kind") == "financial_original" and _fiscal(source.get("fiscal"))
                 and source["fiscal"]["period_end"] <= source["available_at"][:10]):
-            quarter_evidence.setdefault(quarter_identity(source), []).append(sid)
+            identity = quarter_identity(source)
+            quarter_evidence.setdefault(identity, []).append(sid)
+            quarter_ends.setdefault(identity[:3], set()).add(identity[3])
     for rid, record in sorted(records.items()):
-        if mode == "historical" and _instant(record["cutoff"]) != boundary:
+        if mode == "historical" and record_cutoffs[rid] != boundary:
             raise ValueError("historical cutoff must match saved record cutoff")
+        if record_cutoffs[rid] > boundary:
+            gap(rid, rid, "Saved research cutoff is later than the requested cutoff")
+            decision(rid, "record_gap_and_continue_independent_work", None, [rid],
+                     "Evidence requires recovery", [])
+            continue
         start = len(result["decisions"])
         gaps_start = len(result["gaps"])
         for sid, reason in incomplete_candidates.items():
@@ -137,17 +146,24 @@ def assess(snapshot, mode, cutoff):
                 gap(rid, sid, "Required source missing, inconsistent or ineligible")
         if not _fiscal(record.get("fiscal")):
             gap(rid, "fiscal", "Saved source-declared fiscal identity is incomplete")
+        invalid_financial_sources = set()
         for sid, source in sorted(eligible.items()):
             if source.get("issuer") != record["issuer"] or source.get("kind") != "financial_original":
                 continue
             fiscal = source.get("fiscal")
             if not _fiscal(fiscal):
+                invalid_financial_sources.add(sid)
                 gap(rid, sid, "Source-declared fiscal identity is incomplete")
             elif fiscal["period_end"] > source["available_at"][:10]:
+                invalid_financial_sources.add(sid)
                 gap(rid, sid, "Fiscal period ends after declared publication")
+            elif len(quarter_ends[quarter_identity(source)[:3]]) > 1:
+                invalid_financial_sources.add(sid)
+                gap(rid, sid, "Contradictory source-declared period ends for fiscal quarter")
             elif (_fiscal(record.get("fiscal")) and
                   (fiscal["year"], fiscal["period"]) == (record["fiscal"]["year"], record["fiscal"]["period"]) and
                   fiscal["period_end"] != record["fiscal"]["period_end"]):
+                invalid_financial_sources.add(sid)
                 gap(rid, sid, "Contradictory fiscal period end for saved quarter")
             elif _fiscal(record.get("fiscal")) and (fiscal["year"], fiscal["period"]) > (record["fiscal"]["year"], record["fiscal"]["period"]):
                 target = quarter_identity(source)
@@ -168,7 +184,8 @@ def assess(snapshot, mode, cutoff):
             reasons[wid] = []
             for sid in sorted(expected):
                 current = eligible.get(sid)
-                if not current or current.get("issuer") != record["issuer"] or sid not in consumed:
+                if (not current or current.get("issuer") != record["issuer"] or sid not in consumed
+                        or sid in invalid_financial_sources):
                     reasons[wid].append("Missing eligible dependency or consumed identity: " + sid)
                 elif not _same_json(consumed[sid], {k: current[k] for k in ("version", "projection")}):
                     changed[wid].append(sid)
