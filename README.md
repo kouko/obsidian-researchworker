@@ -52,11 +52,13 @@ checkpoints; horizon judgments remain conditional or insufficient when evidence
 is missing. Select its marketplace entry independently of `obsidian`; the
 existing general-note package is 4.2.0.
 
-Runtime uses Python 3.11+ and the standard library. A genuine operator-supplied
-`SEC_USER_AGENT` is required for live SEC acquisition, not local research/reuse
-checks. [Actual host evidence](docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
-records source-invoked Codex sessions; installed-plugin loading and global
-refresh remain unverified, while full investment research remains incomplete.
+Runtime uses Python 3.11+ and the standard library. For live SEC acquisition,
+the SEC skill asks for an operator or organization name and contact email on
+first use, then reuses the private local record at
+`~/.config/obsidian-finance/sec-contact.json`. Local research and reuse checks
+need no SEC contact. [Acceptance evidence](docs/loom/2026-11-18-sec-contact-setup/evidence/acceptance-test-evidence.md)
+records isolated Codex installation and contact setup in fresh conversations.
+Global plugin refresh and broader host coverage remain unverified.
 No daemon, trading or global installation is performed, and no finance OpenCode
 loader is shipped.
 

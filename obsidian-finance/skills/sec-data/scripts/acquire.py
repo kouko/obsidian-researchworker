@@ -4,12 +4,12 @@ import argparse
 from collections import Counter, defaultdict
 from datetime import date, datetime, timezone
 import json
-import os
 from pathlib import Path
 import re
 import sys
 import tempfile
 
+import sec_contact
 from fiscal_quarter import conflicting_publication
 from sec_client import acquire
 
@@ -188,9 +188,8 @@ def run(argv=None, fetch=None):
             raise ValueError('INVALID_INPUT: use ISO dates, start <= end and a non-future cutoff')
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', args.ticker):
             raise ValueError('INVALID_INPUT: invalid ticker')
-        identity = os.environ.get('SEC_USER_AGENT', '')
-        if not re.search(r'\S+@[^\s@]+\.[^\s@]+', identity) or any(c in identity for c in '\r\n'):
-            raise ValueError('SEC_IDENTITY_REQUIRED: set SEC_USER_AGENT to your identifying name and contact email')
+        contact = sec_contact.load()
+        identity = f'{contact["name"]} {contact["email"]}'
         root = Path(args.output_dir).expanduser()
         if root.is_symlink() or not root.parent.is_dir():
             raise ValueError('OUTPUT_UNAVAILABLE: choose a directory with an existing parent')
@@ -275,7 +274,25 @@ def run(argv=None, fetch=None):
 
 
 def main(argv=None):
-    summary = run(argv)
+    argv = sys.argv[1:] if argv is None else argv
+    if argv in (['--setup-contact'], ['--setup-contact', '--terminal']):
+        try:
+            if '--terminal' in argv:
+                payload = sec_contact.read_terminal(sys.stdin)
+            else:
+                try:
+                    if sys.stdin is None or sys.stdin.isatty():
+                        raise ValueError()
+                    stream = getattr(sys.stdin, 'buffer', sys.stdin)
+                    payload = stream.read(sec_contact.MAX_PROFILE + 1)
+                except (OSError, ValueError):
+                    raise ValueError(sec_contact.INPUT_UNAVAILABLE) from None
+            sec_contact.save(sec_contact.parse(payload))
+            summary = dict(status='configured', exit_code=0)
+        except ValueError as exc:
+            summary = dict(status='failed', exit_code=64, error=str(exc))
+    else:
+        summary = run(argv)
     print(json.dumps(summary, ensure_ascii=False))
     return summary['exit_code']
 

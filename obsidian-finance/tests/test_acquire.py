@@ -1,8 +1,15 @@
 import hashlib
 import importlib.util
 import json
+import os
+import pty
+import select
+import signal
+import stat
+import subprocess
 from pathlib import Path
 import sys
+import termios
 
 import pytest
 
@@ -30,8 +37,11 @@ def payloads():
     ]
 
 
-def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None):
-    monkeypatch.setenv('SEC_USER_AGENT', 'Test Operator test@example.org')
+def execute(tmp_path, monkeypatch, data=None, extra=(), selectors=None, contact=None):
+    configure_contact(tmp_path, monkeypatch, saved=contact is None)
+    if contact is not None:
+        import sec_contact
+        sec_contact.save(contact)
     data = payloads() if data is None else data
     calls = []
     def fetch(url, headers):
@@ -193,7 +203,7 @@ def test_repeat_preserves(tmp_path, monkeypatch):
 @pytest.mark.parametrize('mode', ['identity', 'issuer', 'dates', 'destination', 'write'])
 def test_invalid_identity_output(tmp_path, monkeypatch, mode):
     mod = module()
-    monkeypatch.setenv('SEC_USER_AGENT', '' if mode == 'identity' else 'Test test@example.org')
+    configure_contact(tmp_path, monkeypatch, saved=mode != 'identity')
     calls = []
     data = payloads()
     if mode == 'issuer':
@@ -274,8 +284,11 @@ def test_quarter_unresolved(tmp_path, monkeypatch, mode):
 ])
 def test_quarter_invalid_selectors(tmp_path, monkeypatch, selectors):
     destination = tmp_path / 'output'
-    summary, path, calls = execute(destination, monkeypatch, selectors=selectors)
-    assert summary['exit_code'] == 64 and calls == [] and path is None
+    configure_contact(tmp_path, monkeypatch)
+    calls = []
+    summary = module().run(['--ticker', 'AAPL', '--output-dir', str(destination), *selectors],
+                           fetch=lambda *args: calls.append(args))
+    assert summary['exit_code'] == 64 and calls == [] and summary['run_path'] is None
     assert not destination.exists()
 
 
@@ -299,3 +312,215 @@ def test_cutoff_today_uses_utc_even_when_local_day_is_earlier(tmp_path, monkeypa
     assert summary['exit_code'] == 0 and len(calls) == 3
     assert summary['effective_cutoff'] == utc_today.isoformat()
     assert (path / 'completion.json').exists()
+
+
+CONTACT = {'name': '測試 Operator', 'email': 'test@example.org'}
+
+
+def configure_contact(tmp_path, monkeypatch, *, saved=True):
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.setenv('SEC_USER_AGENT', 'Ignored old@example.org')
+    if saved:
+        import sec_contact
+        sec_contact.save(CONTACT)
+
+
+def run_cli(*args, payload=None):
+    return subprocess.run([sys.executable, *args], input=payload, text=True,
+                          capture_output=True, check=False)
+
+
+def test_setup_cli_and_later_acquisition(tmp_path, monkeypatch):
+    configure_contact(tmp_path, monkeypatch, saved=False)
+    acquire_script = str(SCRIPTS / 'acquire.py')
+    setup = run_cli(acquire_script, '--setup-contact', payload=json.dumps(CONTACT))
+    assert setup.returncode == 0, setup
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    assert stat.S_IMODE(profile.stat().st_mode) == 0o600
+    assert json.loads(profile.read_text()) == CONTACT
+    assert setup.stderr == ''
+    assert all(value not in setup.stdout for value in CONTACT.values())
+
+    # Separate Python process, real argv and stored contact, offline transport.
+    later = run_cli('-c', """
+import json
+import os
+import pty
+import select
+import signal
+import sys
+sys.path.insert(0, sys.argv[1])
+import acquire
+def fetch(url, headers):
+    assert headers['User-Agent'] == '測試 Operator test@example.org'
+    return b'{}'
+result = acquire.run(sys.argv[2:], fetch)
+assert result['errors'][0]['code'] == 'ISSUER_NOT_FOUND'
+print(json.dumps(result))
+""", str(SCRIPTS), '--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                    '--output-dir', str(tmp_path / 'runs'))
+    assert later.returncode == 0, later
+    assert all(value not in later.stdout + later.stderr for value in CONTACT.values())
+
+
+@pytest.mark.parametrize(('state', 'expected'), [
+    ('missing', 'SEC_CONTACT_REQUIRED'), ('corrupt', 'SEC_CONTACT_UNUSABLE'),
+    ('unsafe', 'SEC_CONTACT_UNUSABLE'),
+])
+def test_contact_preflight_ignores_old_environment(tmp_path, monkeypatch, state, expected):
+    configure_contact(tmp_path, monkeypatch, saved=state != 'missing')
+    config = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    if state == 'corrupt':
+        config.write_text(CONTACT['email'])
+    if state == 'unsafe':
+        config.chmod(0o644)
+    destination = tmp_path / 'output'
+    result = module().run(['--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                           '--output-dir', str(destination)],
+                          lambda *args: pytest.fail('Unexpected network request'))
+    assert result['error'].startswith(expected)
+    assert CONTACT['email'] not in result['error']
+    assert not destination.exists()
+
+
+@pytest.mark.parametrize('payload', [
+    {'name': '  ', 'email': 'test@example.org'},
+    {'name': 'Synthetic', 'email': 'test@example.org\r\nX-Test: dropped'},
+    {'name': 'Synthetic', 'email': 'test@example.org'},
+    {'name': 'Synthetic', 'email': 'test..operator@example.org'},
+    {'name': 'Synthetic', 'email': 'test@example.org', 'extra': 'unexpected'},
+])
+def test_invalid_setup_preserves_private_profile(tmp_path, monkeypatch, payload):
+    configure_contact(tmp_path, monkeypatch)
+    result = run_cli(str(SCRIPTS / 'acquire.py'), '--setup-contact', payload=json.dumps(payload))
+    assert result.returncode == 64
+    assert json.loads(result.stdout)['error'].startswith('SEC_CONTACT_INVALID')
+    assert all(value not in result.stdout + result.stderr for value in CONTACT.values())
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    assert json.loads(profile.read_text()) == CONTACT
+
+
+def test_denied_replace_preserves_previous_contact(tmp_path, monkeypatch, capsys):
+    import io
+    import sec_contact
+    configure_contact(tmp_path, monkeypatch)
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    old = profile.read_bytes()
+    replacement = {'name': 'Other operator', 'email': 'other@example.org'}
+
+    def deny(*args, **kwargs):
+        raise PermissionError(replacement['email'])
+
+    monkeypatch.setattr(sec_contact.os, 'replace', deny)
+    monkeypatch.setattr(sys, 'stdin', io.StringIO(json.dumps(replacement)))
+    assert module().main(['--setup-contact']) == 64
+    output = capsys.readouterr()
+    assert 'SEC_CONTACT_SAVE_FAILED' in output.out
+    assert replacement['email'] not in output.out + output.err
+    assert profile.read_bytes() == old
+    assert list(profile.parent.iterdir()) == [profile]
+
+
+@pytest.mark.parametrize(('name', 'response_value'), [
+    (CONTACT['name'], CONTACT['name']),
+    ('SyntheticOperator', 'SyntheticOperator'),
+    ('SyntheticOperator', 'Operator: SyntheticOperator.'),
+    ('SyntheticOperator', b'{"message": "Operator: SyntheticOperator."'),
+    ('林', rb'{"name": "\u6797"'),
+    ('林', '林'),
+])
+def test_reflected_contact_not_retained(tmp_path, monkeypatch, name, response_value):
+    contact = dict(CONTACT, name=name)
+    data = payloads()
+    if isinstance(response_value, bytes):
+        data[1] = response_value
+    else:
+        data[1]['name'] = response_value
+    summary, path, _ = execute(tmp_path, monkeypatch, data, contact=contact)
+    assert summary['status'] == 'partial'
+    source = read(path, 'manifest.json')['sources'][1]
+    assert source['path'] is None and source['sha256'] is None
+    assert any(error['code'] == 'CONTACT_REFLECTED' for error in summary['errors'])
+    for file in path.rglob('*'):
+        if file.is_file():
+            assert all(value not in file.read_text() for value in contact.values())
+
+
+def test_symlinked_profile_directory_is_unusable_and_cannot_store_contact(tmp_path, monkeypatch):
+    configure_contact(tmp_path, monkeypatch, saved=False)
+    other = tmp_path / 'managed-research'
+    other.mkdir()
+    config = tmp_path / '.config'
+    config.mkdir()
+    (config / 'obsidian-finance').symlink_to(other, target_is_directory=True)
+    acquisition = ['--ticker', 'AAPL', '--fiscal-quarter', '2024Q3',
+                   '--output-dir', str(tmp_path / 'output')]
+    setup = run_cli(str(SCRIPTS / 'acquire.py'), '--setup-contact', payload=json.dumps(CONTACT))
+    assert setup.returncode == 64
+    assert json.loads(setup.stdout)['error'].startswith('SEC_CONTACT_SAVE_FAILED')
+    assert list(other.iterdir()) == []
+
+    redirected_profile = other / 'sec-contact.json'
+    redirected_profile.write_text(json.dumps(CONTACT))
+    redirected_profile.chmod(0o600)
+    result = module().run(acquisition, lambda *args: pytest.fail('Unexpected network request'))
+    assert result['error'].startswith('SEC_CONTACT_UNUSABLE')
+    assert not (tmp_path / 'output').exists()
+
+
+@pytest.mark.parametrize('mode', ['valid', 'invalid', 'interrupt', 'terminate', 'timeout', 'eof'])
+def test_separate_terminal_contact_input(tmp_path, monkeypatch, mode):
+    configure_contact(tmp_path, monkeypatch)
+    profile = tmp_path / '.config/obsidian-finance/sec-contact.json'
+    original_bytes = profile.read_bytes()
+    operator = {'name': 'PTY Test Operator', 'email': 'pty@example.org'}
+    payload = json.dumps(operator).encode()
+    master, slave = pty.openpty()
+    initial = termios.tcgetattr(slave)
+    initial[3] |= termios.ECHO | termios.ECHONL
+    termios.tcsetattr(slave, termios.TCSANOW, initial)
+    command = [sys.executable, str(SCRIPTS / 'acquire.py'), '--setup-contact', '--terminal']
+    if mode == 'timeout':
+        command = [sys.executable, '-c',
+                   'import acquire; acquire.sec_contact.TERMINAL_TIMEOUT = 0.5; '
+                   'raise SystemExit(acquire.main(["--setup-contact", "--terminal"]))']
+    process = subprocess.Popen(command, cwd=SCRIPTS, stdin=slave, stdout=slave, stderr=slave)
+    output = b''
+    try:
+        assert select.select([master], [], [], 5)[0], 'terminal did not signal readiness'
+        output += os.read(master, 8192)
+        assert output.strip() == b'READY_FOR_SEPARATE_INPUT'
+        assert not termios.tcgetattr(slave)[3] & (termios.ECHO | termios.ECHONL)
+
+        if mode == 'valid':
+            # More bytes than the usual canonical terminal limit.
+            os.write(master, payload + b' ' * 5000 + b'\n')
+        elif mode == 'invalid':
+            os.write(master, payload[:-1] + b'\n')
+        else:
+            os.write(master, payload[:-1])
+            if mode == 'interrupt':
+                process.send_signal(signal.SIGINT)
+            elif mode == 'terminate':
+                process.send_signal(signal.SIGTERM)
+            elif mode == 'eof':
+                os.write(master, b'\x04')
+
+        assert process.wait(timeout=5) == (0 if mode == 'valid' else 64)
+        while select.select([master], [], [], 0)[0]:
+            output += os.read(master, 8192)
+        assert termios.tcgetattr(slave) == initial
+        assert all(value.encode() not in output for value in operator.values())
+        summary = json.loads(output.splitlines()[1])
+        if mode == 'valid':
+            assert summary['status'] == 'configured'
+            assert json.loads(profile.read_bytes()) == operator
+        else:
+            assert summary['status'] == 'failed'
+            assert profile.read_bytes() == original_bytes
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        os.close(master)
+        os.close(slave)

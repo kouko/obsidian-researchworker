@@ -10,6 +10,6 @@
     "name": "obsidian-finance",
     "source": "./obsidian-finance",
     "version": "0.1.0",
-    "description": "Optional sec-data acquisition and finance-research continuation for managed version-1 equities folders, with evidence-bound conditional judgments; installed-plugin loading remains unverified."
+    "description": "Optional SEC data acquisition with reusable local contact setup and finance-research continuation for managed equities folders."
   }]
 }
