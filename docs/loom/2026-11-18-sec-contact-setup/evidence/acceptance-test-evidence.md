@@ -1,57 +1,27 @@
-# SEC contact setup — acceptance test evidence
+# SEC contact setup acceptance evidence
 
-Tried on 2026-11-18 at `f9b8deedfa95a2d3c5405d236dab00cd396daced` in fresh local clones made with `git clone --no-local` and `git checkout --detach f9b8dee`. The README's Python entry point loaded in the clone without a separate application install. Each run used an isolated HOME, synthetic contact, and either preflight without network or an injected fixture transport. No live SEC request or host conversation took place.
+Tried on 2026-11-19 at exact f0af26037c42cd61f1383b5a8fedcf9eb08f43ec. The independent offline checks used the clean Git archive at `/private/tmp/contact-f0af-acceptance/checkout`. Independently compared installed `SKILL.md`, `scripts/acquire.py`, `scripts/sec_contact.py`, and `scripts/sec_client.py` against archive bytes. All four matched. No private settings or contact-profile bytes were opened for the comparison.
 
-## 1. 缺少聯絡資料時，助理在當前對話詢問操作者或組織名稱與聯絡 email，並先說明本機保存及 SEC 用途。提供有效資料後，同一次工作可接著擷取。
+## Real Codex dialogue with synthetic contact and offline data
 
-- How I tried it: Ran the README command `python obsidian-finance/skills/sec-data/scripts/acquire.py --ticker AAPL --fiscal-quarter 2024Q3 --output-dir "$HOME/output"` with a missing profile. A separate offline probe invoked the same script with `--setup-contact`, using `subprocess.run(input=json.dumps(payload), ...)`, then invoked the quarter operation in a separate Python process with the committed fixtures `test_acquire.payloads`, `test_fiscal_quarter.evidence("Q3")` and `test_fiscal_quarter.declaration("Q3")` supplying all four responses.
-- What came back: `SEC_CONTACT_REQUIRED` / exit 64 without creating output. The valid setup gave `setup=configured exit=0`, profile mode `0600`, and immediate replay gave `{"status": "complete", "exit": 0, "calls": 4}`.
-- Evidence: Both `test_setup_cli_and_later_acquisition` and `test_quarter_package` passed. The explanation and prompt are specified in `obsidian-finance/skills/sec-data/SKILL.md` under “Configure contact on first use”; this is source evidence only.
+- `/private/tmp/contact-f0af-host/same-first.jsonl` ended in `turn.completed`. The actual host ran the installed skill's acquisition through the fixture wrapper, saw missing contact (exit 64, zero fixture calls, no run path), and explained local retention and SEC-header disclosure before asking for the values.
+- `same-resumed.jsonl` starts the exact same thread and also ends in `turn.completed`. The setup command used `--setup-contact --terminal`; the captured output contains only the readiness marker and configured status (exit 0). The resumed dialogue continued the Apple FY2024Q3 request using four injected responses, cutoff 2024-08-03, one eligible observation and one filing (exit 0). The run is `/private/tmp/contact-f0af-host/work/offline-same/sec-run-wee0w10x`. This is one actual conversation spanning two turns, with no SEC network request.
+- `later-run.jsonl` starts a distinct thread and ends in `turn.completed`. Its initial Python command could not import the fixture dependency. The retried command with the fixture interpreter completed without a setup command, using four injected responses, one eligible observation and one filing (exit 0). The run and completion marker are at `/private/tmp/contact-f0af-host/work/offline-later/sec-run-5mnefqfm`.
+- `invalid-run.jsonl` ends in `turn.completed`. The terminal gives readiness and then `SEC_CONTACT_INVALID` (exit 64); the final reply asks for only the corrected email, echoes no input value and reports no acquisition. Coordinator separately checked the established fixture profile digest stayed equal. The independent transcript check used no profile bytes.
+- The sanitized coordinator scan at `/private/tmp/contact-f0af-host/host-output-scan.json` records nine files per offline run and zero occurrences of either synthetic contact value. The acceptance tester independently enumerated 18 files across the two run roots.
 
-## 2. 後續工作階段可讀取本機設定，無須重問、另裝指令或手動設定環境變數。
+## Additional installed host cases
 
-- How I tried it: Spawned a new acquisition process using the same isolated HOME and identical user arguments, with no second setup payload; the fixture transport asserted that all four requests used the saved contact.
-- What came back: `later-process {"status": "complete", "exit": 0, "calls": 4}`.
-- Evidence: `test_setup_cli_and_later_acquisition` passed. The probe creates distinct run directories; it verifies process-to-process persistence and does not establish behavior in a new host conversation.
+- `/private/tmp/contact-f0af-host/legacy-run.jsonl` is a new thread with terminal `turn.completed`. With only the obsolete variable set, the command exited 64 with `SEC_CONTACT_REQUIRED` and zero local fixture calls. The sanitized final reply states no run directory or data package was created, asks for operator or organization name and contact email, and explains local storage, SEC disclosure and possible host retention.
+- `save-failure-run.jsonl` is a separate terminal-completed thread. The setup command used the separate terminal channel and acknowledged readiness. Its only setup result was the actionable path error `SEC_CONTACT_SAVE_FAILED: allow writing the private profile at ~/.config/obsidian-finance/sec-contact.json` with exit 64. The final reply identified the unwritable test path and reported that execution stopped without a network request or acquisition. The transcript includes an earlier failed fixture-preparation command. That command's exit 1 is distinct from the observed setup exit 64. Existing focused tests additionally assert prior bytes survive a refused replacement.
+- `research-note-run.jsonl` is a third terminal-completed thread. It generated the bounded note `/private/tmp/contact-f0af-host/work/fixture-financial-note.md` from the fixture output. The acceptance tester independently recomputed its SHA-256 as `7ee54fbfcc54e7bfdd906400ca1f3c226d7f7551d341d492cc703876c778ebad` and confirmed all three relative data links resolve. Three external links were identified as HTTP(S) source links and were not opened. The sanitized coordinator readback `/private/tmp/contact-f0af-host/additional-host-results.json` records zero contact matches in the note and that the test used offline data. The note and test profiles live outside the Git repository. The witness performed no Git writes.
 
-## 3. 無效輸入會明確回報。實際聯絡資料不進入擷取輸出、研究筆記或 Git。
+## Independent offline boundary checks
 
-- How I tried it: Exercised invalid setup first and captured its output, then scanned both completed runs, captured output, and tracked files for both synthetic values. Simulated denied replacement, configuration-directory redirection and reflected response bodies with the targeted pytest cases.
-- What came back: `setup=SEC_CONTACT_INVALID exit=64` with neither value echoed or saved. The independent probe reported `contact absent from 18 generated files and tracked files; clean checkout`. The save-denial test observed `SEC_CONTACT_SAVE_FAILED`, original profile bytes preserved, and no temporary file left. Tests confirmed responses matching tested synthetic values were withheld and the configuration path could not be redirected into a test vault. No host-generated research note was produced.
-- Evidence: `test_invalid_setup_preserves_private_profile`, `test_denied_replace_preserves_previous_contact`, `test_reflected_contact_not_retained`, `test_config_directory_symlink_does_not_store_contact_in_vault`, and `test_single_token_contact_reflection_is_withheld` passed.
+- Exact process commands and sanitized observations retained at `/private/tmp/contact-f0af-acceptance/witness.py` and `witness.jsonl`. Ran the archived README Python entry point with an isolated HOME, Apple FY2024Q3 and a legacy-only environment value. It requested setup (exit 64) and produced no output. With an installed profile, two independent Python processes completed the offline acquisition and the wrapper verified that the local profile, not the legacy variable, supplied each outbound header.
+- Separate stdin setup yielded mode 0600 and no echo. Invalid setup preserved file bytes. The offline verifier scanned all 18 output files with both fixture values and found zero matches. The source accepts an injected transport for these test runs. No SEC network calls were made in this independent check.
+- Ran `python3 -B -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_sec_client.py obsidian-finance/tests/test_contact_vault_symlink.py obsidian-finance/tests/test_oversized_terminal_contact_echo.py obsidian-finance/tests/test_single_token_contact_reflection.py -q -p no:cacheprovider` using the existing isolated test interpreter. 93 passed. Covered terminal readiness and restoration of echo settings, invalid/timeout/termination cases, refused storage, obsolete environment variable, reflected contact, and symlinked vault. Full two-package suite reserved for finalization.
 
-## 4. 本機設定是唯一的聯絡資料來源。只有舊環境變數時，助理會走首次設定。
+## Direct live request reference
 
-- How I tried it: Reused the README command with synthetic `SEC_USER_AGENT` and no saved profile, then left that different legacy value set during both fixture-backed acquisitions.
-- What came back: With only the variable, `{"status":"failed","exit_code":64,"error":"SEC_CONTACT_REQUIRED: set up a local SEC contact","run_path":null}` (whitespace normalized) and output was absent. With the profile present, the fixture verified the locally saved header on every call.
-- Evidence: `test_contact_preflight_ignores_old_environment` independently asserted no requests and no output for missing, corrupt or unsafe profiles despite the legacy variable.
-
-## 5. First-time prompt and continue flow
-
-- How I tried it: Walked the preflight → setup → same-work replay sequence in row 1.
-- What came back: The three observed codes were 64, 0, and 0. Host wording and same-conversation continuation were unobserved.
-- Evidence: Row 1 commands and output.
-
-## 6. Later-request flow
-
-- How I tried it: Invoked the same request in a new process with the saved settings as in row 2.
-- What came back: Successful offline acquisition with no further setup. Host prompting was unobserved.
-- Evidence: Row 2 captured replay.
-
-## 7. Invalid input or refused save flow
-
-- How I tried it: Followed row 3 and checked the denial and unsafe-path tests.
-- What came back: Invalid and failed-save paths were reported separately. A failed save preserved existing contact. The unsafe path prevented both storage in the target research folder and starting acquisition. Host explanation was unobserved.
-- Evidence: Row 3 targeted cases and `test_symlinked_profile_directory_is_unusable_and_cannot_store_contact`.
-
-## 8. Legacy-only first-time flow
-
-- How I tried it: Ran row 4 with only the legacy variable.
-- What came back: The entry point requested first-time setup. The following host prompt was unobserved.
-- Evidence: Row 4 captured preflight and targeted tests.
-
-## Targeted and package checks
-
-- Targeted command: `python -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_sec_client.py obsidian-finance/tests/test_contact_vault_symlink.py obsidian-finance/tests/test_single_token_contact_reflection.py -q -p no:cacheprovider -k 'contact or invalid_setup or traceable_package or utf8_user_agent or quarter_package'`.
-- Captured result: `22 passed, 62 deselected in 4.44s`.
-- README package command: `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`. The full suite is for the automated pre-acceptance check that blocks on failure. It was not run by this acceptance tester, and formal finalization is pending.
+The sanitized readback `/private/tmp/aapl-fy2024q4-review-vf6f4ecw/contact-f0af-live-readback.json` binds the f0af260 live SEC acquisition to the original filing digest `9c0c3074b8ed65c250aa7dd80ed68caf9413985056366e6933d0181d8755b2a6`. It records a complete result, ten output files scanned and zero matches for the configured email. This is a direct acquisition with a legitimate previously configured profile. The synthetic dialogues used offline data and the test of research-note generation used that data. These results establish the isolated candidate only. No claim is made about a subsequent main-synchronized commit, every possible operator name, or the same conversation sending a live SEC request.
