@@ -1,6 +1,6 @@
 # Start and update a research project — plan
-intent: 2026-11-19-start-and-update-research-topic@6b94db8
-spec: docs/loom/2026-11-19-start-and-update-research-topic/spec.md@0da8ede
+intent: 2026-11-19-start-and-update-research-topic@6f76fe3
+spec: docs/loom/2026-11-19-start-and-update-research-topic/spec.md@78e33c7
 charter: 1.1
 
 ## Task DAG
