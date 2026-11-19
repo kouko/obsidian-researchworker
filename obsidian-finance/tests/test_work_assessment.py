@@ -157,6 +157,16 @@ def test_conflicting_period_ends_do_not_propose_duplicate_new_quarter():
     assert "create_next_quarter_analysis" not in actions(result)
     assert {gap["evidence"] for gap in result["gaps"]} == {"q3-first", "q3-second"}
 
+    record = data["records"][0]
+    record["fiscal"] = dict(year=2024, period="Q4", period_end="2024-08-20",
+                            original_accession="q4")
+    item = record["work"][0]
+    first = data["sources"][-2]
+    item["consumed"][first["id"]] = {key: first[key] for key in ("version", "projection")}
+    assert not run(data)["reusable"]
+    del item["consumed"][first["id"]]
+    record["fiscal"] = snapshot()["records"][0]["fiscal"]
+
     data["sources"][-1]["available_at"] = "2024-09-01"
     proposals = [d for d in run(data)["decisions"] if d["action"] == "create_next_quarter_analysis"]
     assert [d["evidence"] for d in proposals] == [["q3-first"]]

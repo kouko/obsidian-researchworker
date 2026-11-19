@@ -157,6 +157,9 @@ def assess(snapshot, mode, cutoff):
             elif fiscal["period_end"] > source["available_at"][:10]:
                 invalid_financial_sources.add(sid)
                 gap(rid, sid, "Fiscal period ends after declared publication")
+            elif len(quarter_ends[quarter_identity(source)[:3]]) > 1:
+                invalid_financial_sources.add(sid)
+                gap(rid, sid, "Contradictory source-declared period ends for fiscal quarter")
             elif (_fiscal(record.get("fiscal")) and
                   (fiscal["year"], fiscal["period"]) == (record["fiscal"]["year"], record["fiscal"]["period"]) and
                   fiscal["period_end"] != record["fiscal"]["period_end"]):
@@ -164,10 +167,7 @@ def assess(snapshot, mode, cutoff):
                 gap(rid, sid, "Contradictory fiscal period end for saved quarter")
             elif _fiscal(record.get("fiscal")) and (fiscal["year"], fiscal["period"]) > (record["fiscal"]["year"], record["fiscal"]["period"]):
                 target = quarter_identity(source)
-                if len(quarter_ends[target[:3]]) > 1:
-                    invalid_financial_sources.add(sid)
-                    gap(rid, sid, "Contradictory source-declared period ends for later fiscal quarter")
-                elif target not in represented and target not in proposed:
+                if target not in represented and target not in proposed:
                     proposed.add(target)
                     decision(rid, "create_next_quarter_analysis", None, quarter_evidence[target],
                              "Eligible source declares an unrepresented later fiscal quarter", ["financial-analysis", "business-analysis", "forecast", "valuation", "synthesis"])
