@@ -111,10 +111,47 @@ metadata with actual authorship and content digest, separately from economic
 sources. Generic methods remain here; local files contain private assumptions
 and compact applied-version manifests, not a duplicate policy manual.
 
-Write actual source-grounded reasoning, counterevidence, calculation checks,
-cross-review changes and conditional short/medium/long judgments using the
-method reference. Missing required research remains pending; `insufficient_evidence`
-does not mean hold, zero return or successful completion of a missing question.
+### Select the analysis framework
+
+Open only the references needed for affected questions. For eligible saved
+analyses, verify and reuse the actual results and their bound inputs. Review
+the upstream reference only when its analysis needs reassessment or its method
+identity needs checking. Record the shared method and the relevant framework
+content/version in each applied-method manifest when using those instructions.
+Preserve prior identities and use the existing version-1 input contract.
+
+| Question | Framework | Dependencies |
+| --- | --- | --- |
+| How did financial condition and results change? | [Financial analysis](references/financial-analysis.md) | Eligible financial statements and notes. |
+| What changed in the business and capital allocation? | [Operating analysis](references/operating-analysis.md) | Eligible operating and governance evidence. |
+| What changed in the industry and competitive position? | [Industry and competition](references/industry-and-competition.md) | Comparable industry, peer and issuer evidence. |
+| What value ranges and risks follow from the evidence? | [Valuation and risk](references/valuation-and-risk.md) | Verified financial, operating and industry inputs where material to assumptions, and dated market inputs where used. |
+| What do the observed trading data show? | [Technical analysis](references/technical-analysis.md) | Eligible price and volume for market signals, and an eligible valuation range for comparing price with estimated value. |
+| What conclusions are supported for each horizon? | [Synthesis](references/synthesis.md) | Applicable verified analyses and a record of gaps or conflicting results. |
+
+For a full quarterly review, start with financial, operating and industry
+work in parallel where possible, cross-check the findings, then do valuation
+and risk, technical analysis and finally synthesis. Track risk evidence as it
+emerges. Build valuation from the verified inputs relevant to the model, and
+use an eligible valuation range for the price-versus-value comparison within
+technical analysis. Price and volume signals can be computed independently.
+If data or a comparable valuation range is missing, finish supported parts
+and leave the affected required question pending. Synthesize after applicable
+findings have been checked or their gaps are known.
+
+For a price-only revision, reassess the affected technical questions, any
+valuation comparisons that consumed that price and dependent synthesis. Reuse
+independent valid financial, operating, industry and intrinsic-value work.
+When an adopted valuation range changes, refresh the technical price-versus-value
+comparison and dependent synthesis. Reuse unchanged price and volume signals.
+Apply the same dependency check to other source or method updates. Keep the existing
+quarterly output and review contracts. Combine or separate analysis in notes as
+the actual scope warrants.
+
+Write source-grounded reasoning, counterevidence and calculation checks.
+For conditional short/medium/long judgments use the synthesis reference. Missing
+required research remains pending. Record `insufficient_evidence` when the
+evidence cannot support a judgment.
 
 ## 4. Save resumable work safely
 
