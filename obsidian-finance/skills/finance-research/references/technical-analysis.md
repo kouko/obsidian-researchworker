@@ -43,7 +43,10 @@ supported market observations.
 Bind material observations and calculations to their sources. State the
 supported observation, counterevidence and the next observable change that
 would invalidate the interpretation. Recalculate affected metrics when price
-or volume changes. When only the adopted valuation changes, update the
-price-versus-value comparison and preserve the still-valid market signals.
+or volume changes. When the quote changes, refresh the price-versus-value
+comparison with the updated eligible quote and applicable valuation range,
+including a reused range that remains valid. When only the adopted valuation
+changes, refresh the comparison using the still-eligible quote and preserve the
+still-valid market signals.
 Leave the affected in-scope work pending if its inputs or sufficient lookback
 are unavailable, and tell synthesis which conclusions the gap limits.
