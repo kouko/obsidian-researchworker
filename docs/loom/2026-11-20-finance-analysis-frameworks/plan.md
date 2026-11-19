@@ -16,7 +16,7 @@ charter: 1.1
 
 **W1-01 Split and route research methods**  acceptance: 1, 2, 3, 4
 - Files: obsidian-finance/skills/finance-research/SKILL.md, obsidian-finance/skills/finance-research/references/
-- Test: A1 positive: six-resolved-frameworks; negative: duplicate-framework. A2 positive: targeted-read; boundary: missing-quote. A3 positive: reuse-price-independent-analysis; boundary: future-quote. A4 positive: version-one-tests; boundary: partial-checkpoint.
+- Test: A1 positive: six-resolved-frameworks; negative: duplicate-framework. A2 positive: targeted-read; boundary: missing-price-or-valuation. A3 positive: reuse-price-independent-analysis; boundary: future-quote. A4 positive: version-one-tests; boundary: partial-checkpoint.
 - Risk: Agent-decided preserve existing store contracts and validate reference routing with focused local scenarios. Avoid permanent tests for prose matching.
 
 ## Simplicity check
@@ -31,3 +31,4 @@ charter: 1.1
 ## Risks
 
 1. A new reference can be missed during reuse. Bind selected shared and dimension guidance to the actual applied method identity and retain historical versions.
+2. User-directed: full quarterly analysis runs fundamentals, valuation and risk, technical analysis, then synthesis. Technical analysis compares price to eligible valuation when available. Verify that missing valuation leaves independently supported price signals usable and affects only the comparison.
