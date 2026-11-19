@@ -145,6 +145,39 @@ def test_new_quarter():
     assert run(data)["gaps"]
 
 
+def test_conflicting_period_ends_do_not_propose_duplicate_new_quarter():
+    data = snapshot()
+    for sid, period_end in (("q3-first", "2024-06-28"), ("q3-second", "2024-06-29")):
+        data["sources"].append(dict(id=sid, issuer="issuer", kind="financial_original",
+            version=sid, projection={"revenue": 20}, available_at="2024-08-02",
+            fiscal=dict(year=2024, period="Q3", period_end=period_end, original_accession=sid)))
+
+    result = run(data)
+    assert result["status"] == "partial"
+    assert "create_next_quarter_analysis" not in actions(result)
+    assert {gap["evidence"] for gap in result["gaps"]} == {"q3-first", "q3-second"}
+
+    data["sources"][-1]["available_at"] = "2024-09-01"
+    proposals = [d for d in run(data)["decisions"] if d["action"] == "create_next_quarter_analysis"]
+    assert [d["evidence"] for d in proposals] == [["q3-first"]]
+
+
+def test_contradictory_consumed_financial_original_blocks_reuse():
+    data = snapshot()
+    source = data["sources"][0]
+    source.update(kind="financial_original", fiscal=dict(
+        year=2024, period="Q2", period_end="2024-06-30", original_accession="q2"))
+    result = run(data)
+    assert not result["reusable"]
+    assert "resume_incomplete_work" in actions(result)
+    assert any(gap["evidence"] == "price" for gap in result["gaps"])
+
+    source["fiscal"]["period_end"] = "2024-03-29"
+    assert not run(data)["reusable"]
+    source["fiscal"]["period_end"] = "2024-03-30"
+    assert run(data)["reusable"] == [{"record": "q2", "work": "valuation"}]
+
+
 def test_historical_exclusion():
     data = snapshot()
     data["sources"][0]["available_at"] = "2024-05-06"
