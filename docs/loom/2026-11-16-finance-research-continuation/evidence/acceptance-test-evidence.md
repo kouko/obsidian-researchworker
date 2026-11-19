@@ -1,3 +1,31 @@
+# Independent acceptance at 78318514b8fd0b0d1ccf09ea1e6e210f99236b6a
+
+## Setup and current executions
+
+The exact committed tree was extracted into /private/tmp/continuation-783-acceptance/checkout with git archive. Followed the Python 3.11+ standard-library source loading directions, using Python 3.12.11 for the independent offline run. No Git mutations, network acquisition, real vault access or installation changes.
+
+```sh
+git -C /private/tmp/finance-continuation-sync-trial archive 7831851 | tar xf - -C /private/tmp/continuation-783-acceptance/checkout
+cd /private/tmp/continuation-783-acceptance/checkout
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B -m pytest obsidian-finance/tests/test_research_store.py obsidian-finance/tests/test_research_publication.py obsidian-finance/tests/test_research_continuation.py obsidian-finance/tests/test_future_history_validation.py -q -p no:cacheprovider
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-783-acceptance/gate.py
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-783-acceptance/witness.py
+/Users/kouko/.conda/envs/dbt-redshift/bin/python3 -B /private/tmp/continuation-783-acceptance/arrival.py
+```
+
+Passing results: 87 focused tests, two independent public API gate cases, and two offline replay drivers. The complete automated suite is `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`, which runs before change acceptance and blocks on failure. The parent observed 295 passing tests. Exact current outputs are in focused.txt, gate.jsonl, witness.jsonl and arrival.json under /private/tmp/continuation-783-acceptance.
+
+- Acceptance 1–4 and UI-1, UI-3–5, UI-7, UI-9–10, UI-14–15: current archive reused six full-case units with two no-update decisions and no path/content difference across 466 files. Bounded prior, arrival, method end-state and no-work copies reproduced their prior results. Adding 13 digest-verified Q4 source files generated one unambiguous Q4 record with three pending questions and preserved all 56 original inputs. Saved successive checkpoints kept identity and growth reusable while leaving investment-case pending. Inspected the completed Q2/Q3 source references, cutoffs and conditional multi-horizon conclusions in the retained full case. The dedicated gate script tried different accessions with the same period end and different accessions with different ends. For each, discovery named both conflicting filings, proposed no Q3 work, and kept Q2 valuation reusable. Public publish with an otherwise complete research envelope rejected the initial checkpoint with ambiguous original filing identity. The defined failed attempt retained only request and journal records. No Q3 review was published and all nine original files remained exact. A first incomplete test envelope was rejected earlier in validation and was discarded as a fixture setup attempt.
+- Acceptance 5 and UI-2, UI-6, UI-8, UI-11–13, UI-16: source replay recovered and withdrew the retained late interruption, preserving 86 originals, and both operations refused an edited-file conflict with 483 files intact. Focused runs passed early and late interruption recovery, late rollback, missing scope, future-source visibility, and path guards. External freshness remained unverified.
+- Acceptance 6: verified /private/tmp/continuation-783-installed/main-run.jsonl and method-run.jsonl each began with thread.started and ended with turn.completed. Independently compared all six runtime fingerprints against both exact archive and installed files: README, assessment adapter/core, store helper, skill and generic method all matched. No auth, contact or unrelated configuration was read. The actual fresh main dialogue ran the five retained lifecycle drivers against installed helpers. It verified controlled Q4 source arrival, two actual append-only checkpoint writes, no-work, a deliberately injected late interruption, repeatable resume, withdrawal on a separate copy, and user edit protection. All 800 supplied files across five trees were unchanged. The independent follow-up checksum run validated all 87 retained resume paths and all 88 rollback paths. An initial supplemental shell redirection failure was retained and the checksum was retried successfully.
+- The separate actual fresh method dialogue ran baseline, change, Q2 publication, Q3 publication and verify. All five commands exited 0. Each growth analysis was recomputed, the two unchanged identity units were reused verbatim, all four units then became reusable with no gaps, and repeat discovery matched. Forty-five of 46 original files retained their exact original path and bytes, and the superseded method manifest was preserved byte-for-byte in its archive. Both actual dialogues used retained source data and performed no live acquisition. They establish the requested installed lifecycle on controlled copies.
+
+Installed witness details: /private/tmp/continuation-783-installed/work/verification/transcripts/commands-and-output.md, verification/runtime.json, verification/preservation, verification/operations, and work/method-change/stage-f/run-record.json and verified-hashes.json.
+
+---
+
+## Earlier independent acceptance evidence (historical, retained)
+
 # Independent acceptance at 449358e1f95b41f6d9398e32397246ffbe20f4f1
 
 ## Setup and commands
