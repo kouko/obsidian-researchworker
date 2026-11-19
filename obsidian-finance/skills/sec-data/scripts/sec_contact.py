@@ -125,9 +125,19 @@ def _read_terminal_line(fd):
 
 
 @contextmanager
-def _profile_directory(path):
-    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+def _profile_directory(path, *, create=False):
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory = os.open(path.parents[2], flags)
     try:
+        for component in (path.parent.parent.name, path.parent.name):
+            if create:
+                try:
+                    os.mkdir(component, mode=0o700, dir_fd=directory)
+                except FileExistsError:
+                    pass
+            child = os.open(component, flags, dir_fd=directory)
+            os.close(directory)
+            directory = child
         yield directory
     finally:
         os.close(directory)
@@ -154,8 +164,7 @@ def save(contact):
     contact = validate(contact)
     try:
         path = Path(PROFILE).expanduser()
-        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        with _profile_directory(path) as directory:
+        with _profile_directory(path, create=True) as directory:
             temporary = '.sec-contact-' + token_hex(16)
             flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
             descriptor = os.open(temporary, flags, 0o600, dir_fd=directory)

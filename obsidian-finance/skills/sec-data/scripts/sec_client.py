@@ -89,6 +89,11 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
         def handle_data(self, data):
             self.found = self.found or reflects_contact(data, decoded_field=True)
 
+        handle_comment = handle_data
+        handle_decl = handle_data
+        handle_pi = handle_data
+        unknown_decl = handle_data
+
         def handle_starttag(self, tag, attrs):
             self.found = self.found or any(
                 value and reflects_contact(value, decoded_field=True) for _, value in attrs)

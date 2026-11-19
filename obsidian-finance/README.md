@@ -6,16 +6,15 @@ continuation from a designated folder. It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
 Claude and Codex manifests register this separate package in the repository's
-local marketplace. Registration is not installation or evidence of fresh-session
-skill execution. No global plugin refresh or host installation is performed;
-OpenCode support is unverified and no finance loader is shipped for that host.
+local marketplace. Isolated Codex installation and fresh-session operation were
+verified. Global plugin refresh and OpenCode support remain unverified, and no
+finance loader is shipped for OpenCode.
 
 The [actual host-session evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
-records separate Codex CLI invocations using public isolated fixtures and the
-skill source explicitly. Observed native headers identify provider `openai`,
-model `gpt-6.1-sol`; these trials do not establish installed-plugin discovery,
-complete equity research, or support for other hosts. Partial checkpoints retain
-unresolved required investment research, and scoped reuse is not global no-work.
+records source-invoked Codex CLI tests using public isolated fixtures. The
+[contact acceptance evidence](../docs/loom/2026-11-18-sec-contact-setup/evidence/acceptance-test-evidence.md)
+covers isolated installed Codex conversations and distinguishes offline tests
+from live SEC access. Partial checkpoints retain unresolved research.
 
 ## Run directly
 

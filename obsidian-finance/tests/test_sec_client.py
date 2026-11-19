@@ -113,7 +113,8 @@ def test_no_original_runtime(monkeypatch):
     assert not any('monkey' in str(v).lower() for v in vars(module).values() if hasattr(v, '__file__'))
 
 
-@pytest.mark.parametrize('document', ['aapl.htm', '../aapl.htm', 'aapl.htm?x=1', 'reflect.htm'])
+@pytest.mark.parametrize('document', ['aapl.htm', '../aapl.htm', 'aapl.htm?x=1',
+                                      'reflect.htm', 'reflect-comment.htm'])
 def test_primary_document_transport(document, monkeypatch):
     from test_fiscal_quarter import declaration, evidence
     module = client()
@@ -126,6 +127,8 @@ def test_primary_document_transport(document, monkeypatch):
     filing = declaration().encode()
     if document == 'reflect.htm':
         filing += b'<p>Requester: OperatorAlias</p>'
+    elif document == 'reflect-comment.htm':
+        filing += b'<!-- Requester: OperatorAlias -->'
     data.append(filing)
     calls = []
     def fetch(url, headers):
@@ -139,7 +142,7 @@ def test_primary_document_transport(document, monkeypatch):
         assert source['status'] == 'valid' and source['raw_bytes'] == declaration().encode()
         assert source['sha256'] == hashlib.sha256(source['raw_bytes']).hexdigest()
         assert calls[-1] == 'https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl.htm'
-    elif document == 'reflect.htm':
+    elif document.startswith('reflect'):
         source = result['sources'][-1]
         assert source['status'] == 'error'
         assert source['raw_bytes'] is None and source['sha256'] is None
