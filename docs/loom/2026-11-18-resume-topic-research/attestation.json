@@ -1,0 +1,70 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-18-resume-topic-research",
+  "content_digest": "7dffdf50e12f68499774e1a70c8e71e72c2e7b0a",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "7846ffef54635f8111d4b24a74c13412b0dfdfabe6b9ff6c5385d3bc698a316d"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-18-resume-topic-research/evidence/probes/test_transaction_path_alias.py",
+      "result": "pass",
+      "command_digest": "b290ef2c0b6c4996778e89ffab3f39747a0d3decdc3947cb852e775add14fb65"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "resume_final_code_a",
+      "vendor": "openai",
+      "model": "unobserved",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "tests",
+          "anchor": "docs/loom/2026-11-18-resume-topic-research/plan.md:18",
+          "text": "nitpick: The task marks main in its Risk line. The Files line lists the helper without identifying its CLI entry.",
+          "fix": "Move the existing CLI entry annotation from Risk to Files."
+        }
+      ]
+    },
+    {
+      "reviewer": "resume_final_code_b",
+      "vendor": "openai",
+      "model": "unobserved",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "ab7b05a",
+  "tested_commit": "de0472aa1e65b3d6cb2d6be44f034bd6f66b3fb7",
+  "reviewed_commit": "8b062d2ba98b096b8a905c8ec1ca1e0300e80603",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

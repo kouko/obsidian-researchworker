@@ -1,6 +1,6 @@
 # Obsidian ResearchWorker
 
-Fifteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
+Sixteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
 work. Version 4.2.0 provides local vault search from any project through
 `obsidian-knowledge` and its bundled read-only shell script.
 Version 4.1.0 adds personalized shared vault instructions and safe setup
@@ -29,8 +29,25 @@ and note creation remain unmet. Other hosts and remote installation are unverifi
 See the [plugin guide](obsidian/README.md) for retained skills and dependencies,
 [provenance](docs/provenance.md) for history and limitations, and
 [roadmap](ROADMAP.md) for future work. Existing vault notes, news digests,
-story-tracking notes and settings are untouched. YTSS/RLSS integration and
-resumable multi-note research remain proposed.
+story-tracking notes and settings are untouched. YTSS/RLSS integration remains
+proposed.
+
+Use [`obsidian-research-resume`](obsidian/skills/obsidian-research-resume/SKILL.md)
+to continue an existing multi-note investigation from `research/{topic}` or a
+specified folder in the selected vault. The skill recovers the saved question
+and open work, updates affected notes when evidence changes the judgment, and
+preserves the evidence used by earlier reports.
+
+## Optional finance data package
+
+The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 adds
+one SEC data acquisition skill with source evidence, publication cutoffs and
+separate output runs. Select its marketplace entry independently of `obsidian`;
+the existing general-note package remains 4.2.0. Runtime requires Python 3.11+
+and a genuine operator-supplied `SEC_USER_AGENT`, with no runtime packages.
+This is data acquisition, not investment advice or automatic vault research.
+Claude/Codex registration is provided; installation, fresh host invocation and
+live SEC access are unverified. No finance OpenCode loader is shipped.
 
 ## Optional finance data package
 
