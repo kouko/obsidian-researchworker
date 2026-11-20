@@ -1,0 +1,58 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-20-finance-historical-filer-identity",
+  "content_digest": "120af9997d7da964439fcb32b5b22d9abff3e97e",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_acquire.py",
+      "artifact": "obsidian-finance/tests/test_acquire.py",
+      "result": "pass",
+      "command_digest": "28d3b45e17f9d9e0b4efe1e860d3a699a8bc3194f8c22c612a4ecc8c0d41e291"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "historical_review_code",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "historical_review_contract",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "spec+adversarial",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "cfd25af5a6ba0fde0618896d4bbe25f4e2ed171e",
+  "tested_commit": "cb34e9a",
+  "reviewed_commit": "11ecbfe0993dd3f1153f846913e2910400fb4ca3",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    }
+  ]
+}
