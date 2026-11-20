@@ -302,13 +302,13 @@ def _acquire_filer(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, 
     return result
 
 
-def _unresolved(result, detail):
-    result['errors'].append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=detail))
+def _unresolved(result, detail, *, source='fiscal-quarter'):
+    result['errors'].append(dict(source=source, code='FISCAL_PERIOD_UNRESOLVED', detail=detail))
 
 
 def _resolve_quarter(result, quarter, as_of, *, automatic):
     """Return True only when trustworthy sources establish a clean miss."""
-    from fiscal_quarter import AmbiguousOriginal, NoEligibleOriginal, resolve
+    from fiscal_quarter import AmbiguousOriginal, MalformedCompanyfacts, NoEligibleOriginal, resolve
 
     if not result['company'] or not result['identity_valid']:
         _unresolved(result, 'trustworthy issuer data unavailable')
@@ -325,6 +325,8 @@ def _resolve_quarter(result, quarter, as_of, *, automatic):
     except AmbiguousOriginal as exc:
         guidance = '; select the filer explicitly with --cik' if automatic else ''
         _unresolved(result, str(exc) + guidance)
+    except MalformedCompanyfacts as exc:
+        _unresolved(result, str(exc), source='companyfacts')
     except ValueError as exc:
         _unresolved(result, str(exc))
     return False

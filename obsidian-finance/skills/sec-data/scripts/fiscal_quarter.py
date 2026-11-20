@@ -14,6 +14,10 @@ class AmbiguousOriginal(ValueError):
     """More than one original satisfies the same fiscal request."""
 
 
+class MalformedCompanyfacts(ValueError):
+    """Malformed observations prevent ruling out an original."""
+
+
 def _unresolved(detail):
     return ValueError('FISCAL_PERIOD_UNRESOLVED: ' + detail)
 
@@ -47,20 +51,32 @@ def conflicting_publication(filings, filed):
 
 def candidates(data, quarter, cutoff):
     """Companyfacts focus only nominates documents with matching report endpoints."""
+    selected, _ = _candidates(data, quarter, cutoff)
+    return selected
+
+
+def _candidates(data, quarter, cutoff):
     year, period = quarter[:4], 'FY' if quarter[-1] == '4' else quarter[4:]
     nominations = set()
+    malformed = False
     for concepts in (data.get('facts') or {}).get('facts', {}).values():
         if not isinstance(concepts, dict):
+            malformed = True
             continue
         for metadata in concepts.values():
-            units = metadata.get('units', {}) if isinstance(metadata, dict) else {}
+            units = metadata.get('units') if isinstance(metadata, dict) else None
             if not isinstance(units, dict):
+                malformed = True
                 continue
             for rows in units.values():
                 if not isinstance(rows, list):
+                    malformed = True
                     continue
                 for row in rows:
-                    if isinstance(row, dict) and str(row.get('fy')) == year and row.get('fp') == period:
+                    if not isinstance(row, dict):
+                        malformed = True
+                        continue
+                    if str(row.get('fy')) == year and row.get('fp') == period:
                         accession, end = row.get('accn'), row.get('end')
                         if isinstance(accession, str) and _date(end):
                             nominations.add((accession, end))
@@ -72,6 +88,8 @@ def candidates(data, quarter, cutoff):
                 or (accession, endpoint) not in nominations or filed is None
                 or filed > _date(cutoff) or row.get('form') != ('10-K' if period == 'FY' else '10-Q')):
             continue
+        if filed < _date(endpoint):
+            raise _unresolved('original filing date precedes its report end')
         document = row.get('primaryDocument')
         if (not re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}', accession)
                 or not isinstance(document, str)
@@ -84,7 +102,7 @@ def candidates(data, quarter, cutoff):
                 for k in ('reportDate', 'primaryDocument', 'form')):
             raise _unresolved('conflicting original filing metadata')
         selected[accession] = row
-    return list(selected.values())
+    return list(selected.values()), malformed
 
 
 class _Declarations(HTMLParser):
@@ -152,7 +170,8 @@ def _declarations(html):
 def resolve(data, quarter, cutoff):
     """Require one original filing whose source-bound DEI proves the quarter."""
     matches = []
-    for filing in candidates(data, quarter, cutoff):
+    filings, malformed = _candidates(data, quarter, cutoff)
+    for filing in filings:
         accession = filing['accessionNumber']
         sources = [s for s in data['sources'] if s['id'] == 'primary-' + accession and s['status'] == 'valid']
         if len(sources) != 1:
@@ -174,6 +193,8 @@ def resolve(data, quarter, cutoff):
                 source_id=source['id'], url=source['url'], sha256=source['sha256'],
                 retrieved_at=source['retrieved_at'], contexts=contexts, declarations=values)))
     if not matches:
+        if malformed:
+            raise MalformedCompanyfacts('malformed Companyfacts structure prevents verifying original filing absence')
         raise NoEligibleOriginal('FISCAL_PERIOD_UNRESOLVED: no eligible source-declared original by the cutoff')
     if len(matches) > 1:
         raise AmbiguousOriginal('FISCAL_PERIOD_UNRESOLVED: multiple source-declared originals')

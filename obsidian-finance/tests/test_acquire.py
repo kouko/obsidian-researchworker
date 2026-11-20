@@ -1,3 +1,5 @@
+# concern: malformed current Companyfacts must not authorize predecessor selection
+# concern: an original filing dated before its report end must not resolve the quarter
 import hashlib
 import importlib.util
 import json
@@ -559,8 +561,10 @@ def test_xom_historical_filer(tmp_path, monkeypatch, quarter, end, filed, explic
     ('boundary_filed', '--cik'),
     ('current_transport', 'HTTP 403'),
     ('current_mismatch', 'ISSUER_MISMATCH'),
+    ('current_malformed_facts', 'malformed Companyfacts'),
     ('primary_mismatch', 'primary filing issuer mismatch'),
     ('conflict', 'conflicting original filing publication evidence'),
+    ('filing_before_report_end', 'original filing date precedes its report end'),
 ])
 def test_historical_filer_does_not_guess(tmp_path, monkeypatch, failure, expected):
     summary, path, calls = historical_run(tmp_path, monkeypatch, '2024Q2', '2024-06-30',
@@ -569,7 +573,8 @@ def test_historical_filer_does_not_guess(tmp_path, monkeypatch, failure, expecte
     assert expected in json.dumps(summary['errors'])
     assert not (path / 'completion.json').exists()
     assert not (path / 'eligible-facts.json').exists()
-    if failure in ('missing_transition', 'overlap', 'current_transport', 'current_mismatch'):
+    if failure in ('missing_transition', 'overlap', 'current_transport', 'current_mismatch',
+                   'current_malformed_facts'):
         assert all('0000034088' not in url for url in calls)
 
 
@@ -617,6 +622,8 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
     elif failure == 'boundary_filed':
         end = '2026-06-30'
         filed = '2026-07-01'
+    elif failure == 'filing_before_report_end':
+        filed = '2024-06-29'
 
     accession = '0000034088-24-000001'
     submissions = {'cik': 34088, 'name': 'EXXON MOBIL CORP', 'tickers': [],
@@ -638,6 +645,8 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
     current_submissions = {'cik': 7 if failure == 'current_mismatch' else current_cik,
         'tickers': ['XOM'], 'filings': {'files': [], 'recent': {}}}
     current_facts = {'cik': current_cik, 'entityName': 'ExxonMobil Holdings Corporation', 'facts': {}}
+    if failure == 'current_malformed_facts':
+        current_facts['facts'] = {'us-gaap': []}
     calls = []
 
     def fetch(url, headers):

@@ -60,3 +60,19 @@ def test_unresolved_period(mode):
         data['filings'][0]['form'] = '10-Q/A'
     with pytest.raises(ValueError, match='FISCAL_PERIOD_UNRESOLVED'):
         mod.resolve(data, '2024Q3', '2024-12-31')
+
+
+@pytest.mark.parametrize('malformed', [
+    [],
+    {'Revenue': []},
+    {'Revenue': {}},
+    {'Revenue': {'units': {'USD': {}}}},
+    {'Revenue': {'units': {'USD': [None]}}},
+])
+def test_malformed_companyfacts_cannot_prove_original_absence(malformed):
+    mod = importlib.import_module('fiscal_quarter')
+    data = evidence()
+    data['facts']['facts']['invalid'] = malformed
+    with pytest.raises(ValueError, match='malformed Companyfacts'):
+        mod.resolve(data, '2024Q2', '2024-12-31')
+    assert mod.resolve(data, '2024Q3', '2024-12-31')['original_accession'] == '0000320193-24-000081'
