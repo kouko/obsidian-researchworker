@@ -125,27 +125,36 @@ Preserve prior identities and use the existing version-1 input contract.
 | How did financial condition and results change? | [Financial analysis](references/financial-analysis.md) | Eligible financial statements and notes. |
 | What changed in the business and capital allocation? | [Operating analysis](references/operating-analysis.md) | Eligible operating and governance evidence. |
 | What changed in the industry and competitive position? | [Industry and competition](references/industry-and-competition.md) | Comparable industry, peer and issuer evidence. |
-| What value ranges and risks follow from the evidence? | [Valuation and risk](references/valuation-and-risk.md) | Verified financial, operating and industry inputs where material to assumptions, and dated market inputs where used. |
+| What operating outcomes are supported over the forecast horizon? | [Forward forecast](references/forward-forecast.md) | Eligible financial, operating and industry findings, plus dated expectations and prior forecasts where used. |
+| What value ranges and risks follow from the evidence? | [Valuation and risk](references/valuation-and-risk.md) | The adopted forecast version, verified fundamentals material to assumptions, and dated market inputs where used. |
 | What do the observed trading data show? | [Technical analysis](references/technical-analysis.md) | Eligible prices and any volume data needed for market signals, and an eligible valuation range for comparing price with estimated value. |
 | What conclusions are supported for each horizon? | [Synthesis](references/synthesis.md) | Applicable verified analyses and a record of gaps or conflicting results. |
 
 For a full quarterly review, start with financial, operating and industry
-work in parallel where possible, cross-check the findings, then do valuation
-and risk, technical analysis and finally synthesis. Track risk evidence as it
-emerges. Build valuation from the verified inputs relevant to the model, and
+work in parallel where possible, cross-check the findings, then prepare the
+forward forecast before valuation and risk, technical analysis and synthesis.
+Track risk evidence as it emerges. Build valuation from the verified inputs
+relevant to the model, and
 use an eligible valuation range for the price-versus-value comparison within
 technical analysis. Price and volume signals can be computed independently.
-If data or a comparable valuation range is missing, finish supported parts
-and leave the affected required question pending. Synthesize after applicable
-findings have been checked or their gaps are known.
+If required data, forecast evidence or a comparable valuation range is
+missing, finish supported parts and leave the affected required question
+pending. Synthesize after applicable findings have been checked or their gaps
+are known. A realized forecast-error score requires a version demonstrably
+authored and retained before the first public comparable actual, with an
+information cutoff before that release.
 
 For a price-only revision, reassess every valuation result that used the changed
 price directly or through a model input, such as market-value capital weights.
 Refresh the technical price-versus-value comparison with the updated
 eligible quote and the applicable valuation range, whether refreshed or reused.
 Recompute affected price and volume signals from eligible market data and update
-dependent synthesis. Reuse valid financial, operating and industry results and
-intrinsic valuation that are independent of the changed price.
+dependent synthesis. Reuse the eligible operating forecast, valid financial,
+operating and industry results, and intrinsic valuation independent of the
+changed price.
+For a forecast revision, re-evaluate valuation and synthesis that adopted the
+changed forecast or result. Refresh the technical price-versus-value comparison
+if its valuation range changes, and retain independent market signals.
 For a valuation-only revision, refresh the technical comparison using the
 still-eligible quote and update dependent synthesis. Preserve unchanged price
 and volume signals.

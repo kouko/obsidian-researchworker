@@ -15,15 +15,21 @@ read coverage and bound inputs. Reuse still-valid results for unaffected
 questions. Include conflicting findings and unresolved work, allowing a
 limited conclusion where an independent line of evidence permits it.
 Distinguish technical observations about trading from claims about business
-performance and value.
+performance and value. Use the adopted [forward forecast](forward-forecast.md)
+where it supports the judgment and distinguish its scenarios from management
+guidance, analyst consensus and price-implied expectations.
 
 ## Analysis
 
 Test the preferred thesis against contrary evidence, unresolved drivers and
 alternative causal explanations. Explain changes across quarters and differences
-in definitions or acquired business scope. For disagreement among findings,
-show which assumptions, horizon or evidence quality explain the difference and
-which judgment is affected. A missing technical input can constrain a
+in definitions or acquired business scope. Summarize material forecast revisions
+and their reasons, and which horizon judgments depend on changed assumptions
+or remaining gaps. Present realized forecast errors only for verified frozen
+pre-release versions that meet the forecast reference's scoring rules. Label
+any reconstructed comparisons separately.
+For disagreement among findings, show which assumptions, horizon or evidence
+quality explain the difference and which judgment is affected. A missing technical input can constrain a
 price-sensitive short-term judgment while independent operating conclusions
 remain supported. Propagate a price revision only to judgments that consume
 the changed observation or a result that depends on it.
