@@ -1,6 +1,6 @@
 # Historical SEC filer selection — acceptance test evidence
 
-Tried on 2026-11-21, in a clean copy of the project at b1aa889 (b1aa889e7aed4b509b64e23795d0863b7e620abd).
+Tried on 2026-11-21, in a clean copy of the project at cb34e9a (cb34e9a83f3b0c2c9ec94f036e5eaf182d823e2b).
 
 Setup: cloned without hard links, checked out the exact commit detached, and ran `python3 -B obsidian-finance/skills/sec-data/scripts/acquire.py --help`. The stdlib entry point loaded and advertised mutually exclusive `--ticker` and `--cik` plus `--fiscal-quarter` and `--as-of`. The README uses pytest for offline verification. A setup-and-acquisition test was included below.
 
@@ -62,3 +62,9 @@ Setup: cloned without hard links, checked out the exact commit detached, and ran
 - Fresh detached clone; `acquire.py --help` loaded successfully. Repeated all six URL-keyed SEC response replays in #1 and #3, covering acceptance #1, #3, UI-1, UI-2 and UI-4. All exited 0, reproduced the source hashes and accessions above, and passed the identity, fiscal declaration and cutoff assertions.
 - #2, UI-3 and UI-4: re-ran the same focused command as the preceding section. Output: `48 passed, 70 deselected in 1.14s`. The four new `test_submissions_governs_exclusion_of_malformed_fact` cases verified that dates or forms in malformed Companyfacts cannot override a conflicting official filing record, and that the official record can exclude a post-cutoff filing or amendment.
 - `test_historical_filer_does_not_guess` also verified that malformed current facts, conflicting original publication evidence and pre-period filing dates prompt `--cik`; transport and issuer-identity failures keep their specific errors. Rechecked the prior ambiguous transition, invalid explicit identifier, explicit issuer mismatch and cutoff examples.
+
+## Re-run on 2026-11-21, at cb34e9a
+
+- The intervening diff contains acceptance documentation and the expanded intent confirmation SHA. Repeated setup and all acceptance checks on a fresh detached clone at this exact commit.
+- `acquire.py --help` exited 0. All six archived public SEC response replays in #1 and #3 exited 0 and reproduced the verified filing identities, accessions, checksums, fiscal declarations and cutoffs.
+- The same focused test command passed: `48 passed, 70 deselected in 1.17s`, including the unresolved selection, explicit selector and malformed evidence cases in #2.

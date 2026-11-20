@@ -1,6 +1,6 @@
 # 以歷史申報實體取得原始財報 — 驗收結果
 
-Tried on 2026-11-21, in a clean copy of the project at b1aa889.
+Tried on 2026-11-21, in a clean copy of the project at cb34e9a.
 操作與結果詳見 `docs/loom/2026-11-20-finance-historical-filer-identity/evidence/acceptance-test-evidence.md`。
 
 ## 逐項驗收
