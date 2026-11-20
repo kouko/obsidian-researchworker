@@ -1,9 +1,9 @@
 # 以歷史申報實體取得原始財報
 originator: kouko
 kind: product
-needs-design: yes — 使用者需要指定歷史申報實體，且擷取指令必須說明選擇結果與錯誤
-status: confirmed 2026-11-20
-intent_confirmed_sha: 2c7455e
+needs-design: yes — 工具會自動選擇歷史申報實體，使用者也可以明確指定，且擷取指令必須說明選擇結果與錯誤
+status: confirmed 2026-11-21
+intent_confirmed_sha: cfd25af
 
 ## Problem
 
@@ -11,12 +11,12 @@ intent_confirmed_sha: 2c7455e
 
 ## Proposed outcome
 
-使用者可以指定原申報實體的 SEC 識別碼。取得的原文可核實是哪個申報實體提交及屬於哪一個季度。只有股票代號時，仍可用原有流程。
+使用者可以只輸入股票代號，工具在 SEC 證據能唯一確認時自動選擇對應的歷史申報公司，並顯示依據。使用者也可以明確指定 SEC 識別碼。
 
 ## Acceptance
 
-1. ExxonMobil 的原申報實體可選取並取得 2024 Q2 和 Q3 原始 SEC 財報；兩期均核對申報實體、季別和資訊截止日。
-2. 指定錯誤實體或找不到符合季度的原始財報時，明確說明缺口，不用後來的比較數字補成當時的原始財報。
+1. 以 XOM 自動選擇或手動指定原申報實體，均可取得 2024 Q2 和 Q3 原始 SEC 財報；兩期均核對申報實體、季別和資訊截止日。
+2. 自動判斷缺證據或有歧義時，提示手動指定。指定無效或該實體沒有符合截止條件的原文時，明確說明缺口。
 3. 只提供股票代號的現有流程仍可支援 AAPL 和 JPM；輸出可追溯紀錄實際採用的實體。
 
 ## Constraints
@@ -26,7 +26,7 @@ intent_confirmed_sha: 2c7455e
 
 ## Out of scope
 
-- 自動推測所有企業的歷史重組關係。
+- 缺乏 SEC 證據時猜測企業的歷史重組關係。
 
 ## Open questions
 
