@@ -17,6 +17,27 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 TICKERS = 'https://www.sec.gov/files/company_tickers.json'
 BASE = 'https://data.sec.gov'
 
+# Each entry claims predecessor filings before its effective date. Competing
+# entries for one successor overlap on the historical side.
+ISSUER_TRANSITIONS = {
+    2115436: (
+        dict(predecessor_cik=34088, effective_date='2026-07-01',
+             succession_url='https://www.sec.gov/Archives/edgar/data/2115436/000119312526291990/d71068d8k12b.htm',
+             predecessor_filing_urls=[
+                 'https://www.sec.gov/Archives/edgar/data/34088/000003408824000050/xom-20240630.htm',
+                 'https://www.sec.gov/Archives/edgar/data/34088/000003408824000068/xom-20240930.htm',
+             ]),
+    ),
+}
+
+
+def normalize_cik(value):
+    if isinstance(value, str) and re.fullmatch(r'[0-9]{1,10}', value):
+        value = int(value)
+    if type(value) is int and 0 < value < 10 ** 10:
+        return value
+    raise ValueError('INVALID_INPUT: CIK must be one to ten digits and greater than zero')
+
 
 class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -40,7 +61,7 @@ def _rows(block):
             for i in range(count)]
 
 
-def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
+def _acquire_filer(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=None):
     """Return company, identity_valid, sources, filings, facts and errors.
 
     Each source has id/url/status/retrieved_at/payload/raw_bytes/sha256; errors carry
@@ -50,7 +71,11 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
     """
     if not isinstance(identity, str) or not re.search(r'\S+@[^\s@]+\.[^\s@]+', identity) or any(c in identity for c in '\r\n'):
         raise ValueError('SEC_IDENTITY_REQUIRED: supply an identifying name and contact email')
-    if not isinstance(ticker, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', ticker):
+    if (ticker is None) == (cik is None):
+        raise ValueError('INVALID_INPUT: supply either ticker or CIK')
+    if cik is not None:
+        cik = normalize_cik(cik)
+    elif not isinstance(ticker, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,14}', ticker):
         raise ValueError('INVALID_INPUT: invalid ticker')
     if fiscal_quarter is not None and (not isinstance(fiscal_quarter, str)
             or not re.fullmatch(r'[0-9]{4}Q[1-4]', fiscal_quarter)):
@@ -61,8 +86,9 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
             raise ValueError()
     except (ValueError, TypeError):
         raise ValueError('INVALID_INPUT: as_of must be a non-future ISO date') from None
-    ticker = ticker.upper()
-    result = dict(company=None, identity_valid=True, sources=[], filings=[], facts=None, errors=[])
+    ticker = ticker.upper() if ticker is not None else None
+    result = dict(company=None, identity_valid=True, sources=[], filings=[], facts=None, errors=[],
+                  resolution=None, issuer_selection=None)
     transport = fetch or _fetch
     name, _, email = identity.rpartition(' ')
     bounded_name = rf'(?<!\w){re.escape(name)}(?!\w)'
@@ -180,19 +206,25 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
         if not isinstance(payload, dict) or not all(isinstance(v, dict) for v in payload.values()):
             raise ValueError()
 
-    registry = get('tickers', TICKERS, registry_valid)
-    if registry is None:
-        return result
-    entries = [v for v in registry.values() if v.get('ticker') == ticker]
-    if len(entries) != 1:
-        error(result['sources'][0], 'ISSUER_NOT_FOUND', 'Verify ticker in SEC registry')
-        return result
-    entry = entries[0]
-    cik = entry.get('cik_str')
-    if type(cik) is not int or not 0 < cik < 10 ** 10 or not isinstance(entry.get('title'), str):
-        error(result['sources'][0], 'INVALID_SOURCE_DATA', 'Invalid registry identity')
-        return result
-    result['company'] = dict(ticker=ticker, cik=cik, name=entry['title'])
+    if ticker is not None:
+        registry = get('tickers', TICKERS, registry_valid)
+        if registry is None:
+            return result
+        entries = [v for v in registry.values() if v.get('ticker') == ticker]
+        if len(entries) != 1:
+            detail = 'Verify ticker in SEC registry or select the filer explicitly with --cik'
+            error(result['sources'][0], 'ISSUER_NOT_FOUND', detail)
+            return result
+        entry = entries[0]
+        cik = entry.get('cik_str')
+        if type(cik) is not int or not 0 < cik < 10 ** 10 or not isinstance(entry.get('title'), str):
+            error(result['sources'][0], 'INVALID_SOURCE_DATA', 'Invalid registry identity')
+            return result
+        company_name = entry['title']
+    else:
+        company_name = None
+    result['company'] = dict(ticker=ticker, cik=cik, name=company_name)
+    result['issuer_selection'] = dict(method='ticker_registry' if ticker is not None else 'explicit_cik', cik=cik)
 
     def issuer(payload):
         if not isinstance(payload, dict):
@@ -209,7 +241,7 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
 
     def submissions_valid(payload):
         issuer(payload)
-        if ticker not in payload.get('tickers', []):
+        if ticker is not None and ticker not in payload.get('tickers', []):
             result['identity_valid'] = False
             raise ValueError()
         _rows(payload['filings']['recent'])
@@ -247,6 +279,10 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
             raise ValueError()
 
     result['facts'] = get('companyfacts', f'{BASE}/api/xbrl/companyfacts/CIK{cik:010d}.json', facts_valid)
+    if company_name is None:
+        submissions_name = (submissions or {}).get('name')
+        result['company']['name'] = (submissions_name if isinstance(submissions_name, str)
+                                     else (result['facts'] or {}).get('entityName'))
     if not result['identity_valid']:
         result['facts'] = None
         result['filings'] = []
@@ -264,3 +300,87 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None):
         except ValueError as exc:
             result['errors'].append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=str(exc)))
     return result
+
+
+def _unresolved(result, detail):
+    result['errors'].append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=detail))
+
+
+def _resolve_quarter(result, quarter, as_of, *, automatic):
+    """Return True only when trustworthy sources establish a clean miss."""
+    from fiscal_quarter import AmbiguousOriginal, NoEligibleOriginal, resolve
+
+    if not result['company'] or not result['identity_valid']:
+        _unresolved(result, 'trustworthy issuer data unavailable')
+        return False
+    if any(error['code'] == 'FISCAL_PERIOD_UNRESOLVED' or error['source'].startswith('primary-')
+           for error in result['errors']):
+        return False
+    try:
+        result['resolution'] = resolve(result, quarter, as_of)
+    except NoEligibleOriginal:
+        if not result['errors']:
+            return True
+        _unresolved(result, 'required issuer source unavailable; original fiscal period could not be verified')
+    except AmbiguousOriginal as exc:
+        guidance = '; select the filer explicitly with --cik' if automatic else ''
+        _unresolved(result, str(exc) + guidance)
+    except ValueError as exc:
+        _unresolved(result, str(exc))
+    return False
+
+
+def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=None):
+    """Acquire an explicit SEC CIK or resolve a ticker and its documented predecessor."""
+    result = _acquire_filer(ticker, as_of, identity, fetch, fiscal_quarter=fiscal_quarter, cik=cik)
+    if fiscal_quarter is None:
+        return result
+
+    automatic = ticker is not None
+    original_absent = _resolve_quarter(result, fiscal_quarter, as_of, automatic=automatic)
+    if not result['company']:
+        return result
+    current_cik = result['company']['cik']
+    transitions = ISSUER_TRANSITIONS.get(current_cik, ()) if automatic else ()
+    resolution = result['resolution']
+    manual = '; select the filer explicitly with --cik'
+    if resolution:
+        if any(resolution['period_end'] < entry['effective_date'] for entry in transitions):
+            result['resolution'] = None
+            _unresolved(result, 'current filer original conflicts with documented succession' + manual)
+        return result
+    if not original_absent:
+        return result
+    if len(transitions) != 1:
+        detail = 'no eligible source-declared original by the cutoff'
+        if automatic:
+            detail += '; missing or ambiguous succession evidence' + manual
+        _unresolved(result, detail)
+        return result
+
+    transition = transitions[0]
+    predecessor_cik = transition['predecessor_cik']
+    predecessor = _acquire_filer(None, as_of, identity, fetch, fiscal_quarter=fiscal_quarter, cik=predecessor_cik)
+    predecessor['issuer_selection'] = None
+    predecessor_absent = _resolve_quarter(predecessor, fiscal_quarter, as_of, automatic=True)
+    resolution = predecessor['resolution']
+    if resolution and predecessor['errors']:
+        predecessor['resolution'] = None
+        _unresolved(predecessor, 'required predecessor source unavailable; original fiscal period could not be verified')
+    elif resolution and max(resolution['period_end'], resolution['original_filing_date']) >= transition['effective_date']:
+        predecessor['resolution'] = None
+        _unresolved(predecessor, 'original is at or beyond the succession boundary' + manual)
+    elif resolution:
+        predecessor['company']['ticker'] = ticker.upper()
+        predecessor['issuer_selection'] = dict(method='documented_predecessor', cik=predecessor_cik,
+                                               current_cik=current_cik, transition=transition)
+    elif predecessor_absent:
+        _unresolved(predecessor, 'documented predecessor has no eligible source-declared original by the cutoff' + manual)
+
+    # Keep the current issuer's evidence distinct from the predecessor files
+    # used for the analytical package.
+    predecessor['sources'][:0] = [
+        source if source['id'] == 'tickers' else dict(source, id='current-' + source['id'])
+        for source in result['sources']
+    ]
+    return predecessor

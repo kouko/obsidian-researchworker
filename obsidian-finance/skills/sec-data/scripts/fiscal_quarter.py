@@ -6,6 +6,14 @@ import re
 from zoneinfo import ZoneInfo
 
 
+class NoEligibleOriginal(ValueError):
+    """No verified original is eligible for this filer and cutoff."""
+
+
+class AmbiguousOriginal(ValueError):
+    """More than one original satisfies the same fiscal request."""
+
+
 def _unresolved(detail):
     return ValueError('FISCAL_PERIOD_UNRESOLVED: ' + detail)
 
@@ -165,6 +173,8 @@ def resolve(data, quarter, cutoff):
             original_filing_date=filing['filingDate'], evidence=dict(
                 source_id=source['id'], url=source['url'], sha256=source['sha256'],
                 retrieved_at=source['retrieved_at'], contexts=contexts, declarations=values)))
-    if len(matches) != 1:
-        raise _unresolved('expected one source-declared original fiscal period')
+    if not matches:
+        raise NoEligibleOriginal('FISCAL_PERIOD_UNRESOLVED: no eligible source-declared original by the cutoff')
+    if len(matches) > 1:
+        raise AmbiguousOriginal('FISCAL_PERIOD_UNRESOLVED: multiple source-declared originals')
     return matches[0]

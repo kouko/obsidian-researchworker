@@ -251,6 +251,7 @@ def test_quarter_package(tmp_path, monkeypatch, quarter, focus):
     assert [row['start'] for row in rows] == ['2023-10-01', '2024-03-31']
     manifest = read(path, 'manifest.json')
     assert manifest['resolution'] == summary['resolution']
+    assert manifest['issuer_selection'] == {'method': 'ticker_registry', 'cik': 320193}
     source = manifest['sources'][-1]
     assert source['path'].endswith('.html')
     assert (path / source['path']).read_bytes() == html.encode()
@@ -524,3 +525,138 @@ def test_separate_terminal_contact_input(tmp_path, monkeypatch, mode):
             process.wait()
         os.close(master)
         os.close(slave)
+
+
+@pytest.mark.parametrize('quarter,end,filed', [
+    ('2024Q2', '2024-06-30', '2024-08-07'),
+    ('2024Q3', '2024-09-30', '2024-11-06'),
+])
+@pytest.mark.parametrize('explicit', [False, True])
+def test_xom_historical_filer(tmp_path, monkeypatch, quarter, end, filed, explicit):
+    summary, path, calls = historical_run(tmp_path, monkeypatch, quarter, end, filed, explicit=explicit)
+    manifest = read(path, 'manifest.json')
+    assert summary['exit_code'] == 0
+    assert manifest['company']['cik'] == 34088
+    assert manifest['company'] == summary['company']
+    assert summary['resolution']['original_accession'] == '0000034088-24-000001'
+    assert summary['resolution']['period_end'] == end
+    assert summary['effective_cutoff'] == filed
+    assert manifest['issuer_selection']['method'] == ('explicit_cik' if explicit else 'documented_predecessor')
+    assert manifest['issuer_selection'] == summary['issuer_selection']
+    assert ('company_tickers.json' in calls[0]) != explicit
+    if not explicit:
+        assert manifest['issuer_selection']['transition']['succession_url'].startswith('https://www.sec.gov/')
+        assert manifest['issuer_selection']['transition']['effective_date'] == '2026-07-01'
+        assert 'current-submissions' in {source['id'] for source in manifest['sources']}
+    assert [row['val'] for row in read(path, 'eligible-facts.json')] == [100]
+
+
+@pytest.mark.parametrize('failure,expected', [
+    ('early', 'no eligible source-declared original'),
+    ('missing_transition', '--cik'),
+    ('overlap', '--cik'),
+    ('boundary', '--cik'),
+    ('boundary_filed', '--cik'),
+    ('current_transport', 'HTTP 403'),
+    ('current_mismatch', 'ISSUER_MISMATCH'),
+    ('primary_mismatch', 'primary filing issuer mismatch'),
+    ('conflict', 'conflicting original filing publication evidence'),
+])
+def test_historical_filer_does_not_guess(tmp_path, monkeypatch, failure, expected):
+    summary, path, calls = historical_run(tmp_path, monkeypatch, '2024Q2', '2024-06-30',
+                                          '2024-08-07', failure=failure)
+    assert summary['exit_code'] == 1
+    assert expected in json.dumps(summary['errors'])
+    assert not (path / 'completion.json').exists()
+    assert not (path / 'eligible-facts.json').exists()
+    if failure in ('missing_transition', 'overlap', 'current_transport', 'current_mismatch'):
+        assert all('0000034088' not in url for url in calls)
+
+
+@pytest.mark.parametrize('extra', [['--cik', '0'], ['--cik', '34088/'], ['--cik', '34088', '--ticker', 'XOM']])
+def test_invalid_cik_preflight(tmp_path, monkeypatch, extra):
+    configure_contact(tmp_path, monkeypatch)
+    result = module().run(['--fiscal-quarter', '2024Q2', '--output-dir', str(tmp_path), *extra],
+                          fetch=lambda *args: pytest.fail('unexpected request'))
+    assert result['exit_code'] == 64 and result['run_path'] is None
+
+
+@pytest.mark.parametrize('failure,expected', [
+    ('early', 'no eligible source-declared original'),
+    ('primary_mismatch', 'primary filing issuer mismatch'),
+    ('predecessor_mismatch', 'ISSUER_MISMATCH'),
+])
+def test_explicit_cik_does_not_switch_filers(tmp_path, monkeypatch, failure, expected):
+    summary, path, calls = historical_run(tmp_path, monkeypatch, '2024Q2', '2024-06-30',
+                                          '2024-08-07', explicit=True, failure=failure)
+    assert summary['exit_code'] == 1
+    assert expected in json.dumps(summary['errors'])
+    assert not (path / 'completion.json').exists()
+    assert all('company_tickers.json' not in url and '/2115436/' not in url
+               and 'CIK0002115436' not in url for url in calls)
+
+
+def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False, failure=None):
+    from urllib.error import HTTPError
+
+    import sec_client
+    from test_fiscal_quarter import declaration
+
+    configure_contact(tmp_path, monkeypatch)
+    monkeypatch.setattr(sec_client.time, 'sleep', lambda seconds: None)
+    if failure == 'missing_transition':
+        monkeypatch.setattr(sec_client, 'ISSUER_TRANSITIONS', {}, raising=False)
+    elif failure == 'overlap':
+        registry = getattr(sec_client, 'ISSUER_TRANSITIONS', {})
+        monkeypatch.setattr(sec_client, 'ISSUER_TRANSITIONS',
+                            {cik: (*transitions, *transitions) for cik, transitions in registry.items()},
+                            raising=False)
+    elif failure == 'boundary':
+        end = '2026-07-01'
+        filed = '2026-08-06'
+    elif failure == 'boundary_filed':
+        end = '2026-06-30'
+        filed = '2026-07-01'
+
+    accession = '0000034088-24-000001'
+    submissions = {'cik': 34088, 'name': 'EXXON MOBIL CORP', 'tickers': [],
+                   'filings': {'files': [], 'recent': {
+                      'accessionNumber': [accession], 'form': ['10-Q'],
+                      'filingDate': [filed], 'reportDate': [end],
+                      'primaryDocument': ['xom.htm']}}}
+    if failure == 'predecessor_mismatch':
+        submissions['cik'] = 2115436
+    if failure == 'conflict':
+        for key, entries in submissions['filings']['recent'].items():
+            entries.append('2024-08-08' if key == 'filingDate' else entries[0])
+    facts = {'cik': 34088, 'entityName': 'EXXON MOBIL CORP', 'facts': {'us-gaap': {'Revenues': {
+        'units': {'USD': [dict(end=end, filed=filed, accn=accession, val=100, fy=2024, fp=quarter[4:]),
+                          dict(end=end, filed='2026-10-01', accn=accession, val=900, fy=2024, fp=quarter[4:])]}}}}}
+    html = declaration(quarter[4:], end).replace('0000320193',
+        '0002115436' if failure == 'primary_mismatch' else '0000034088')
+    current_cik = 2115436
+    current_submissions = {'cik': 7 if failure == 'current_mismatch' else current_cik,
+        'tickers': ['XOM'], 'filings': {'files': [], 'recent': {}}}
+    current_facts = {'cik': current_cik, 'entityName': 'ExxonMobil Holdings Corporation', 'facts': {}}
+    calls = []
+
+    def fetch(url, headers):
+        calls.append(url)
+        if url == sec_client.TICKERS:
+            return json.dumps({'0': {'ticker': 'XOM', 'cik_str': current_cik,
+                                     'title': 'ExxonMobil Holdings Corporation'}}).encode()
+        if url.endswith('xom.htm'):
+            return html.encode()
+        if 'CIK0002115436' in url:
+            if failure == 'current_transport':
+                raise HTTPError(url, 403, '', None, None)
+            return json.dumps(current_facts if '/companyfacts/' in url else current_submissions).encode()
+        assert 'CIK0000034088' in url
+        return json.dumps(facts if '/companyfacts/' in url else submissions).encode()
+
+    selector = ['--cik', '0000034088'] if explicit else ['--ticker', 'XOM']
+    cutoff = '2024-08-06' if failure == 'early' else filed
+    summary = module().run([*selector, '--fiscal-quarter', quarter, '--as-of', cutoff,
+                            '--output-dir', str(tmp_path)], fetch=fetch)
+    path = Path(summary['run_path']) if summary.get('run_path') else None
+    return summary, path, calls
