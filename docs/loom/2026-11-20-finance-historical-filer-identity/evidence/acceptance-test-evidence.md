@@ -1,6 +1,6 @@
 # Historical SEC filer selection — acceptance test evidence
 
-Tried on 2026-11-21, in a clean copy of the project at c7a5e75 (c7a5e75a18bddeff400f3034a546c373afea2ae9).
+Tried on 2026-11-21, in a clean copy of the project at b1aa889 (b1aa889e7aed4b509b64e23795d0863b7e620abd).
 
 Setup: cloned without hard links, checked out the exact commit detached, and ran `python3 -B obsidian-finance/skills/sec-data/scripts/acquire.py --help`. The stdlib entry point loaded and advertised mutually exclusive `--ticker` and `--cik` plus `--fiscal-quarter` and `--as-of`. The README uses pytest for offline verification. A setup-and-acquisition test was included below.
 
@@ -56,3 +56,9 @@ Setup: cloned without hard links, checked out the exact commit detached, and ran
 - #3 and UI-1: repeated both AAPL and JPM archived SEC response runs, in each case matching the accession, CIK and declaration metadata above.
 - UI-4: repeated the two explicit XOM replays and the synthetic invalid CIK, both identity mismatches and early cutoff cases.
 - Focused command: `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest obsidian-finance/tests/test_fiscal_quarter.py obsidian-finance/tests/test_acquire.py -q -p no:cacheprovider -k 'malformed or historical_filer or invalid_cik_preflight or explicit_cik or after_hours_apple_replay or setup_cli_and_later_acquisition or nonqualifying_candidate'`. Output: `44 passed, 70 deselected in 1.19s`.
+
+## Re-run on 2026-11-21, at b1aa889
+
+- Fresh detached clone; `acquire.py --help` loaded successfully. Repeated all six URL-keyed SEC response replays in #1 and #3, covering acceptance #1, #3, UI-1, UI-2 and UI-4. All exited 0, reproduced the source hashes and accessions above, and passed the identity, fiscal declaration and cutoff assertions.
+- #2, UI-3 and UI-4: re-ran the same focused command as the preceding section. Output: `48 passed, 70 deselected in 1.14s`. The four new `test_submissions_governs_exclusion_of_malformed_fact` cases verified that dates or forms in malformed Companyfacts cannot override a conflicting official filing record, and that the official record can exclude a post-cutoff filing or amendment.
+- `test_historical_filer_does_not_guess` also verified that malformed current facts, conflicting original publication evidence and pre-period filing dates prompt `--cik`; transport and issuer-identity failures keep their specific errors. Rechecked the prior ambiguous transition, invalid explicit identifier, explicit issuer mismatch and cutoff examples.

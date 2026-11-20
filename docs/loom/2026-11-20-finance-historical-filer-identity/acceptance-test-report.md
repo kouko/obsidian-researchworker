@@ -1,6 +1,6 @@
 # 以歷史申報實體取得原始財報 — 驗收結果
 
-Tried on 2026-11-21, in a clean copy of the project at c7a5e75.
+Tried on 2026-11-21, in a clean copy of the project at b1aa889.
 操作與結果詳見 `docs/loom/2026-11-20-finance-historical-filer-identity/evidence/acceptance-test-evidence.md`。
 
 ## 逐項驗收
@@ -17,7 +17,7 @@ Tried on 2026-11-21, in a clean copy of the project at c7a5e75.
 |---|---|---|---|---|
 | UI-1 | AAPL 或 JPM 加上符合條件的季度與截止日，顯示實際申報實體。 | works | 兩者只用代號識別公司，結果可追溯到原始申報。 | re-tested |
 | UI-2 | XOM 加上 2024 Q2 或 Q3 與合適截止日，自動選擇前身，顯示其 SEC 識別碼、原文與重組依據。 | works | 自動選擇結果包含前身的 CIK、對應的原始 10-Q 和 SEC 重組公告連結。 | re-tested |
-| UI-3 | 自動選擇的承繼證據不足或互相衝突時，解釋無法判斷並提示指定 CIK。 | works | 離線模擬中，缺少證據、候選重疊和承繼日期界線不明時都會提示手動指定。 | re-tested |
+| UI-3 | 自動選擇的承繼證據不足或互相衝突時，解釋無法判斷並提示指定 CIK。 | works | 離線模擬中，承繼證據不足、候選重疊或財報資料有疑義時，都會提示手動指定。 | re-tested |
 | UI-4 | 手動指定 CIK、季度與截止日，依指定實體查詢，並說明無效、實體不符或缺少合格原文。 | works | 兩季的 SEC 原文都可用指定識別碼取得，離線模擬另核對無效、申報實體不符與原文超出截止日的錯誤。 | re-tested |
 
 ## 對你既有的資料做了什麼
