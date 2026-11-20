@@ -76,3 +76,55 @@ def test_malformed_companyfacts_cannot_prove_original_absence(malformed):
     with pytest.raises(ValueError, match='malformed Companyfacts'):
         mod.resolve(data, '2024Q2', '2024-12-31')
     assert mod.resolve(data, '2024Q3', '2024-12-31')['original_accession'] == '0000320193-24-000081'
+
+
+@pytest.mark.parametrize(('source', 'field', 'value'), [
+    ('facts', 'accn', None),
+    ('facts', 'accn', 'malformed'),
+    ('facts', 'end', None),
+    ('facts', 'end', '2024-02-30'),
+    ('filings', 'accessionNumber', None),
+    ('filings', 'filingDate', ''),
+    ('filings', 'reportDate', None),
+    ('filings', 'form', None),
+])
+def test_malformed_candidate_metadata_cannot_prove_original_absence(source, field, value):
+    mod = importlib.import_module('fiscal_quarter')
+    data = evidence()
+    rows = (data['facts']['facts']['us-gaap']['Revenue']['units']['USD']
+            if source == 'facts' else data['filings'])
+    rows[0][field] = value
+    with pytest.raises(ValueError, match='malformed|invalid') as error:
+        mod.resolve(data, '2024Q3', '2024-12-31')
+    assert not isinstance(error.value, mod.NoEligibleOriginal)
+
+
+@pytest.mark.parametrize(('field', 'value'), [
+    ('filingDate', '2025-01-01'),
+    ('form', '10-Q/A'),
+    ('reportDate', '2024-09-29'),
+])
+def test_valid_nonqualifying_candidate_is_a_clean_miss(field, value):
+    mod = importlib.import_module('fiscal_quarter')
+    data = evidence()
+    data['filings'][0][field] = value
+    with pytest.raises(mod.NoEligibleOriginal):
+        mod.resolve(data, '2024Q3', '2024-12-31')
+
+
+@pytest.mark.parametrize(('fields', 'resolves'), [
+    ({}, False),
+    ({'filed': '2025-01-01'}, True),
+    ({'form': '10-Q/A'}, True),
+    ({'fp': 'Q2'}, True),
+])
+def test_malformed_target_evidence_can_hide_a_competing_original(fields, resolves):
+    mod = importlib.import_module('fiscal_quarter')
+    data = evidence()
+    rows = data['facts']['facts']['us-gaap']['Revenue']['units']['USD']
+    rows.append({**rows[0], 'accn': 'bad-accession', **fields})
+    if resolves:
+        assert mod.resolve(data, '2024Q3', '2024-12-31')['original_accession'] == '0000320193-24-000081'
+    else:
+        with pytest.raises(mod.MalformedCompanyfacts):
+            mod.resolve(data, '2024Q3', '2024-12-31')

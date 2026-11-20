@@ -6,6 +6,9 @@ import re
 from zoneinfo import ZoneInfo
 
 
+ACCESSION = re.compile(r'[0-9]{10}-[0-9]{2}-[0-9]{6}')
+
+
 class NoEligibleOriginal(ValueError):
     """No verified original is eligible for this filer and cutoff."""
 
@@ -51,14 +54,17 @@ def conflicting_publication(filings, filed):
 
 def candidates(data, quarter, cutoff):
     """Companyfacts focus only nominates documents with matching report endpoints."""
-    selected, _ = _candidates(data, quarter, cutoff)
+    selected, _, _ = _candidates(data, quarter, cutoff)
     return selected
 
 
 def _candidates(data, quarter, cutoff):
     year, period = quarter[:4], 'FY' if quarter[-1] == '4' else quarter[4:]
-    nominations = set()
+    original_form = '10-K' if period == 'FY' else '10-Q'
+    cutoff_date = _date(cutoff)
+    nominations = {}
     malformed = False
+    malformed_target = False
     for concepts in (data.get('facts') or {}).get('facts', {}).values():
         if not isinstance(concepts, dict):
             malformed = True
@@ -78,21 +84,45 @@ def _candidates(data, quarter, cutoff):
                         continue
                     if str(row.get('fy')) == year and row.get('fp') == period:
                         accession, end = row.get('accn'), row.get('end')
-                        if isinstance(accession, str) and _date(end):
-                            nominations.add((accession, end))
+                        if isinstance(accession, str) and ACCESSION.fullmatch(accession) and _date(end):
+                            nominations.setdefault(accession, set()).add(end)
+                        else:
+                            filed = _date(row.get('filed'))
+                            form = row.get('form')
+                            if filed is not None and filed > cutoff_date:
+                                continue
+                            if isinstance(form, str) and form.strip() and form != original_form:
+                                continue
+                            malformed_target = True
     selected = {}
+    nominated_ends = {end for ends in nominations.values() for end in ends}
     for row in data['filings']:
         filed = _date(row.get('filingDate'))
         accession, endpoint = row.get('accessionNumber'), row.get('reportDate')
-        if (not isinstance(accession, str) or not isinstance(endpoint, str)
-                or (accession, endpoint) not in nominations or filed is None
-                or filed > _date(cutoff) or row.get('form') != ('10-K' if period == 'FY' else '10-Q')):
+        form = row.get('form')
+        if filed is not None and filed > cutoff_date:
             continue
-        if filed < _date(endpoint):
+        if not isinstance(accession, str) or not ACCESSION.fullmatch(accession):
+            if form == original_form and isinstance(endpoint, str) and endpoint in nominated_ends:
+                raise _unresolved('invalid original filing accession for a nominated period')
+            continue
+        if accession not in nominations:
+            continue
+        if not isinstance(form, str) or not form.strip():
+            raise _unresolved('invalid original filing form for a nominated accession')
+        if form != original_form:
+            continue
+        report_end = _date(endpoint)
+        if report_end is None:
+            raise _unresolved('invalid report end for a nominated original filing')
+        if endpoint not in nominations[accession]:
+            continue
+        if filed is None:
+            raise _unresolved('invalid filing date for a nominated original filing')
+        if filed < report_end:
             raise _unresolved('original filing date precedes its report end')
         document = row.get('primaryDocument')
-        if (not re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}', accession)
-                or not isinstance(document, str)
+        if (not isinstance(document, str)
                 or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*\.(?:htm|html)', document)):
             raise _unresolved('invalid primary-document accession or basename')
         versions = [other for other in data['filings'] if other.get('accessionNumber') == accession]
@@ -102,7 +132,7 @@ def _candidates(data, quarter, cutoff):
                 for k in ('reportDate', 'primaryDocument', 'form')):
             raise _unresolved('conflicting original filing metadata')
         selected[accession] = row
-    return list(selected.values()), malformed
+    return list(selected.values()), malformed, malformed_target
 
 
 class _Declarations(HTMLParser):
@@ -170,7 +200,9 @@ def _declarations(html):
 def resolve(data, quarter, cutoff):
     """Require one original filing whose source-bound DEI proves the quarter."""
     matches = []
-    filings, malformed = _candidates(data, quarter, cutoff)
+    filings, malformed, malformed_target = _candidates(data, quarter, cutoff)
+    if malformed_target:
+        raise MalformedCompanyfacts('malformed Companyfacts evidence for the requested fiscal quarter')
     for filing in filings:
         accession = filing['accessionNumber']
         sources = [s for s in data['sources'] if s['id'] == 'primary-' + accession and s['status'] == 'valid']
