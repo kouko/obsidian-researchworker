@@ -1,6 +1,6 @@
 # Historical SEC filer selection — acceptance test evidence
 
-Tried on 2026-11-21, in a clean copy of the project at 62b651a (62b651a1182a46a317346523cbdf21917582d612).
+Tried on 2026-11-21, in a clean copy of the project at c7a5e75 (c7a5e75a18bddeff400f3034a546c373afea2ae9).
 
 Setup: cloned without hard links, checked out the exact commit detached, and ran `python3 -B obsidian-finance/skills/sec-data/scripts/acquire.py --help`. The stdlib entry point loaded and advertised mutually exclusive `--ticker` and `--cik` plus `--fiscal-quarter` and `--as-of`. The README uses pytest for offline verification. A setup-and-acquisition test was included below.
 
@@ -47,3 +47,12 @@ Setup: cloned without hard links, checked out the exact commit detached, and ran
 ## 7. Explicit CIK flow
 
 - Evidence: #1 verified both manual quarters on previously captured SEC responses. #2 verified preflight, identity and cutoff failures through synthetic responses.
+
+## Re-run on 2026-11-21, at c7a5e75
+
+- Fresh detached clone; `acquire.py --help` loaded successfully.
+- #1 and UI-2: repeated both automatic XOM quarters using the archived SEC responses. Both selected CIK 0000034088 with the documented transition, original accessions and matching declarations/cutoffs shown above. Also verified both explicit XOM quarters on the same source bytes.
+- #2 and UI-3: repeated the missing/overlapping transition checks, malformed current Companyfacts (no predecessor requests), invalid explicit CIK and early cutoff cases. Additional focused tests verified that malformed rows naming the target quarter, and malformed filing metadata for a nominated original, do not qualify as clean absence. Valid post-cutoff, amended and different-report-end records remain clean misses.
+- #3 and UI-1: repeated both AAPL and JPM archived SEC response runs, in each case matching the accession, CIK and declaration metadata above.
+- UI-4: repeated the two explicit XOM replays and the synthetic invalid CIK, both identity mismatches and early cutoff cases.
+- Focused command: `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest obsidian-finance/tests/test_fiscal_quarter.py obsidian-finance/tests/test_acquire.py -q -p no:cacheprovider -k 'malformed or historical_filer or invalid_cik_preflight or explicit_cik or after_hours_apple_replay or setup_cli_and_later_acquisition or nonqualifying_candidate'`. Output: `44 passed, 70 deselected in 1.19s`.
