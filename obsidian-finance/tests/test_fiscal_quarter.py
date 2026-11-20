@@ -128,3 +128,19 @@ def test_malformed_target_evidence_can_hide_a_competing_original(fields, resolve
     else:
         with pytest.raises(mod.MalformedCompanyfacts):
             mod.resolve(data, '2024Q3', '2024-12-31')
+
+
+@pytest.mark.parametrize(('fact_fields', 'filing_fields', 'safe'), [
+    ({'filed': '2025-01-01'}, {}, False),
+    ({'form': '10-Q/A'}, {}, False),
+    ({}, {'filingDate': '2025-01-01'}, True),
+    ({}, {'form': '10-Q/A'}, True),
+])
+def test_submissions_governs_exclusion_of_malformed_fact(fact_fields, filing_fields, safe):
+    mod = importlib.import_module('fiscal_quarter')
+    data = evidence()
+    data['facts']['facts']['us-gaap']['Revenue']['units']['USD'][0].update(end=None, **fact_fields)
+    data['filings'][0].update(filing_fields)
+    error = mod.NoEligibleOriginal if safe else mod.MalformedCompanyfacts
+    with pytest.raises(error):
+        mod.resolve(data, '2024Q3', '2024-12-31')

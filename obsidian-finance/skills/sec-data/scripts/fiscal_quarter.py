@@ -1,5 +1,6 @@
 """Bind a fiscal quarter to primary-filing declarations, never calendar guesses."""
 
+from collections import defaultdict
 from datetime import date, datetime
 from html.parser import HTMLParser
 import re
@@ -13,16 +14,16 @@ class NoEligibleOriginal(ValueError):
     """No verified original is eligible for this filer and cutoff."""
 
 
-class AmbiguousOriginal(ValueError):
-    """More than one original satisfies the same fiscal request."""
+class SelectionEvidenceError(ValueError):
+    """Fiscal evidence cannot establish a unique eligible original."""
 
 
-class MalformedCompanyfacts(ValueError):
+class MalformedCompanyfacts(SelectionEvidenceError):
     """Malformed observations prevent ruling out an original."""
 
 
 def _unresolved(detail):
-    return ValueError('FISCAL_PERIOD_UNRESOLVED: ' + detail)
+    return SelectionEvidenceError('FISCAL_PERIOD_UNRESOLVED: ' + detail)
 
 
 def _date(value):
@@ -58,10 +59,20 @@ def candidates(data, quarter, cutoff):
     return selected
 
 
+def _outside_scope(filed, form, cutoff, original_form):
+    return ((filed is not None and filed > cutoff)
+            or (isinstance(form, str) and bool(form.strip()) and form != original_form))
+
+
 def _candidates(data, quarter, cutoff):
     year, period = quarter[:4], 'FY' if quarter[-1] == '4' else quarter[4:]
     original_form = '10-K' if period == 'FY' else '10-Q'
     cutoff_date = _date(cutoff)
+    filings_by_accession = defaultdict(list)
+    for row in data['filings']:
+        accession = row.get('accessionNumber')
+        if isinstance(accession, str) and ACCESSION.fullmatch(accession):
+            filings_by_accession[accession].append(row)
     nominations = {}
     malformed = False
     malformed_target = False
@@ -87,11 +98,14 @@ def _candidates(data, quarter, cutoff):
                         if isinstance(accession, str) and ACCESSION.fullmatch(accession) and _date(end):
                             nominations.setdefault(accession, set()).add(end)
                         else:
-                            filed = _date(row.get('filed'))
-                            form = row.get('form')
-                            if filed is not None and filed > cutoff_date:
-                                continue
-                            if isinstance(form, str) and form.strip() and form != original_form:
+                            filings = filings_by_accession.get(accession) if isinstance(accession, str) else None
+                            if filings:
+                                outside_scope = all(_outside_scope(_date(filing.get('filingDate')),
+                                    filing.get('form'), cutoff_date, original_form) for filing in filings)
+                            else:
+                                outside_scope = _outside_scope(_date(row.get('filed')), row.get('form'),
+                                                               cutoff_date, original_form)
+                            if outside_scope:
                                 continue
                             malformed_target = True
     selected = {}
@@ -125,7 +139,7 @@ def _candidates(data, quarter, cutoff):
         if (not isinstance(document, str)
                 or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*\.(?:htm|html)', document)):
             raise _unresolved('invalid primary-document accession or basename')
-        versions = [other for other in data['filings'] if other.get('accessionNumber') == accession]
+        versions = filings_by_accession[accession]
         if conflicting_publication(versions, filed):
             raise _unresolved('conflicting original filing publication evidence')
         if any(other.get(k) != row.get(k) for other in versions
@@ -207,12 +221,12 @@ def resolve(data, quarter, cutoff):
         accession = filing['accessionNumber']
         sources = [s for s in data['sources'] if s['id'] == 'primary-' + accession and s['status'] == 'valid']
         if len(sources) != 1:
-            raise _unresolved('primary filing unavailable')
+            raise ValueError('FISCAL_PERIOD_UNRESOLVED: primary filing unavailable')
         source = sources[0]
         values, contexts = _declarations(source['payload'])
         cik = values['EntityCentralIndexKey']
         if not re.fullmatch(r'[0-9]{1,10}', cik) or int(cik) != data['company']['cik']:
-            raise _unresolved('primary filing issuer mismatch')
+            raise ValueError('FISCAL_PERIOD_UNRESOLVED: primary filing issuer mismatch')
         endpoint = values['DocumentPeriodEndDate']
         if not _date(endpoint) or endpoint != filing['reportDate']:
             raise _unresolved('primary declaration contradicts reportDate')
@@ -229,5 +243,5 @@ def resolve(data, quarter, cutoff):
             raise MalformedCompanyfacts('malformed Companyfacts structure prevents verifying original filing absence')
         raise NoEligibleOriginal('FISCAL_PERIOD_UNRESOLVED: no eligible source-declared original by the cutoff')
     if len(matches) > 1:
-        raise AmbiguousOriginal('FISCAL_PERIOD_UNRESOLVED: multiple source-declared originals')
+        raise _unresolved('multiple source-declared originals')
     return matches[0]

@@ -61,7 +61,7 @@ def _rows(block):
             for i in range(count)]
 
 
-def _acquire_filer(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=None):
+def _acquire_filer(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=None, automatic=False):
     """Return company, identity_valid, sources, filings, facts and errors.
 
     Each source has id/url/status/retrieved_at/payload/raw_bytes/sha256; errors carry
@@ -290,25 +290,27 @@ def _acquire_filer(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, 
             if e['source'] in ('submissions', 'companyfacts') and e['code'] == 'INVALID_SOURCE_DATA':
                 e['code'] = 'ISSUER_MISMATCH'
     elif fiscal_quarter:
-        from fiscal_quarter import candidates
+        from fiscal_quarter import SelectionEvidenceError, candidates
         try:
             for row in candidates(result, fiscal_quarter, as_of):
                 accession = row['accessionNumber']
                 url = (f'https://www.sec.gov/Archives/edgar/data/{cik}/'
                        f'{accession.replace("-", "")}/{row["primaryDocument"]}')
                 get('primary-' + accession, url, lambda value: None, html=True)
-        except ValueError as exc:
-            result['errors'].append(dict(source='fiscal-quarter', code='FISCAL_PERIOD_UNRESOLVED', detail=str(exc)))
+        except SelectionEvidenceError as exc:
+            _unresolved(result, str(exc), suggest_cik=automatic and not result['errors'])
     return result
 
 
-def _unresolved(result, detail, *, source='fiscal-quarter'):
+def _unresolved(result, detail, *, source='fiscal-quarter', suggest_cik=False):
+    if suggest_cik:
+        detail += '; select the filer explicitly with --cik'
     result['errors'].append(dict(source=source, code='FISCAL_PERIOD_UNRESOLVED', detail=detail))
 
 
 def _resolve_quarter(result, quarter, as_of, *, automatic):
     """Return True only when trustworthy sources establish a clean miss."""
-    from fiscal_quarter import AmbiguousOriginal, MalformedCompanyfacts, NoEligibleOriginal, resolve
+    from fiscal_quarter import MalformedCompanyfacts, NoEligibleOriginal, SelectionEvidenceError, resolve
 
     if not result['company'] or not result['identity_valid']:
         _unresolved(result, 'trustworthy issuer data unavailable')
@@ -322,11 +324,9 @@ def _resolve_quarter(result, quarter, as_of, *, automatic):
         if not result['errors']:
             return True
         _unresolved(result, 'required issuer source unavailable; original fiscal period could not be verified')
-    except AmbiguousOriginal as exc:
-        guidance = '; select the filer explicitly with --cik' if automatic else ''
-        _unresolved(result, str(exc) + guidance)
-    except MalformedCompanyfacts as exc:
-        _unresolved(result, str(exc), source='companyfacts')
+    except SelectionEvidenceError as exc:
+        source = 'companyfacts' if isinstance(exc, MalformedCompanyfacts) else 'fiscal-quarter'
+        _unresolved(result, str(exc), source=source, suggest_cik=automatic and not result['errors'])
     except ValueError as exc:
         _unresolved(result, str(exc))
     return False
@@ -334,35 +334,36 @@ def _resolve_quarter(result, quarter, as_of, *, automatic):
 
 def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=None):
     """Acquire an explicit SEC CIK or resolve a ticker and its documented predecessor."""
-    result = _acquire_filer(ticker, as_of, identity, fetch, fiscal_quarter=fiscal_quarter, cik=cik)
+    automatic = ticker is not None
+    result = _acquire_filer(ticker, as_of, identity, fetch, fiscal_quarter=fiscal_quarter, cik=cik,
+                            automatic=automatic)
     if fiscal_quarter is None:
         return result
 
-    automatic = ticker is not None
     original_absent = _resolve_quarter(result, fiscal_quarter, as_of, automatic=automatic)
     if not result['company']:
         return result
     current_cik = result['company']['cik']
     transitions = ISSUER_TRANSITIONS.get(current_cik, ()) if automatic else ()
     resolution = result['resolution']
-    manual = '; select the filer explicitly with --cik'
     if resolution:
         if any(resolution['period_end'] < entry['effective_date'] for entry in transitions):
             result['resolution'] = None
-            _unresolved(result, 'current filer original conflicts with documented succession' + manual)
+            _unresolved(result, 'current filer original conflicts with documented succession', suggest_cik=True)
         return result
     if not original_absent:
         return result
     if len(transitions) != 1:
         detail = 'no eligible source-declared original by the cutoff'
         if automatic:
-            detail += '; missing or ambiguous succession evidence' + manual
-        _unresolved(result, detail)
+            detail += '; missing or ambiguous succession evidence'
+        _unresolved(result, detail, suggest_cik=automatic)
         return result
 
     transition = transitions[0]
     predecessor_cik = transition['predecessor_cik']
-    predecessor = _acquire_filer(None, as_of, identity, fetch, fiscal_quarter=fiscal_quarter, cik=predecessor_cik)
+    predecessor = _acquire_filer(None, as_of, identity, fetch, fiscal_quarter=fiscal_quarter,
+                                 cik=predecessor_cik, automatic=True)
     predecessor['issuer_selection'] = None
     predecessor_absent = _resolve_quarter(predecessor, fiscal_quarter, as_of, automatic=True)
     resolution = predecessor['resolution']
@@ -371,13 +372,14 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
         _unresolved(predecessor, 'required predecessor source unavailable; original fiscal period could not be verified')
     elif resolution and max(resolution['period_end'], resolution['original_filing_date']) >= transition['effective_date']:
         predecessor['resolution'] = None
-        _unresolved(predecessor, 'original is at or beyond the succession boundary' + manual)
+        _unresolved(predecessor, 'original is at or beyond the succession boundary', suggest_cik=True)
     elif resolution:
         predecessor['company']['ticker'] = ticker.upper()
         predecessor['issuer_selection'] = dict(method='documented_predecessor', cik=predecessor_cik,
                                                current_cik=current_cik, transition=transition)
     elif predecessor_absent:
-        _unresolved(predecessor, 'documented predecessor has no eligible source-declared original by the cutoff' + manual)
+        _unresolved(predecessor, 'documented predecessor has no eligible source-declared original by the cutoff',
+                    suggest_cik=True)
 
     # Keep the current issuer's evidence distinct from the predecessor files
     # used for the analytical package.

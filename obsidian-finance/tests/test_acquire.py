@@ -573,6 +573,10 @@ def test_historical_filer_does_not_guess(tmp_path, monkeypatch, failure, expecte
     assert expected in json.dumps(summary['errors'])
     assert not (path / 'completion.json').exists()
     assert not (path / 'eligible-facts.json').exists()
+    if failure in ('current_malformed_facts', 'conflict', 'filing_before_report_end'):
+        assert '--cik' in json.dumps(summary['errors'])
+    if failure in ('current_transport', 'current_mismatch', 'primary_mismatch'):
+        assert '--cik' not in json.dumps(summary['errors'])
     if failure in ('missing_transition', 'overlap', 'current_transport', 'current_mismatch',
                    'current_malformed_facts'):
         assert all('0000034088' not in url for url in calls)
