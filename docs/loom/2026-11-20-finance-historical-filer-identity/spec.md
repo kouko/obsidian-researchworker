@@ -1,6 +1,6 @@
 # Historical SEC filer selection — spec
 intent: 2026-11-20-finance-historical-filer-identity@2cc8b1c
-confirmed-behavior: 2026-11-21 @7728c04
+confirmed-behavior: 2026-11-21 @4e7eb33
 pre-build-review: required — issuer identity is a source-integrity boundary
 
 ## Requirements
@@ -14,7 +14,9 @@ REQ-3 — Preserve ordinary ticker use
 
 ## Design decision
 
-Agent-decided: apply SEC issuer succession only as navigation evidence and retain its reference; apply the historical cutoff to the original financial evidence. Explicit CIK is an alternative selector and takes no historical fallback. Require the original's issuer and fiscal declarations. Stop on contradictory or ambiguous originals.
+Agent-decided: apply SEC issuer succession only as navigation evidence and retain its reference; apply the historical cutoff to the original financial evidence. Explicit CIK replaces the ticker argument and takes no historical fallback. Compare the supplied CIK with both SEC submissions and original filing declarations. Use verified effective dates to resolve applicable filers. If eligible originals compete and the evidence does not uniquely establish priority, report ambiguity. A current-ticker success without a competing verified claim continues unchanged.
+
+Agent-decided: for the initial implementation, bundle a small registry of SEC-documented transitions keyed by current CIK and effective date. Retain the SEC record references and reject overlapping candidate claims. An unregistered transition prompts for manual CIK. This makes supported transitions automatic without claiming general inference from free-text disclosures.
 
 ## Alternatives considered
 
@@ -28,6 +30,12 @@ Agent-decided: apply SEC issuer succession only as navigation evidence and retai
 - Error: XOM 2024Q2 fails original fiscal selection under CIK 0002115436.
 - Data: the July 2026 SEC 8-K records the transition from Exxon Mobil Corporation to ExxonMobil Holdings Corporation.
 - Boundary: 2024 original documents are under CIK 0000034088.
+
+## Verification cases
+
+- XOM 2024Q2/Q3 selects the SEC-documented predecessor, and the original disclosure must pass its own cutoff and identity checks.
+- Missing or ambiguous registry entries, an early cutoff, a failed source request and a mismatched original remain distinguishable. No post-cutoff economics enter the result.
+- Explicit CIK operates without ticker and never silently switches issuer. Ordinary ticker success remains compatible.
 
 ## UI flows
 
