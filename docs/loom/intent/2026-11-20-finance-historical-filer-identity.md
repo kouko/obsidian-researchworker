@@ -3,7 +3,7 @@ originator: kouko
 kind: product
 needs-design: yes — 工具會自動選擇歷史申報實體，使用者也可以明確指定，且擷取指令必須說明選擇結果與錯誤
 status: confirmed 2026-11-21
-intent_confirmed_sha: cfd25af
+intent_confirmed_sha: cfd25af5a6ba0fde0618896d4bbe25f4e2ed171e
 
 ## Problem
 
