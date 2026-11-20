@@ -9,6 +9,13 @@ local marketplace. Registration is not installation or evidence of fresh-session
 skill execution. No global plugin refresh or host installation is performed;
 OpenCode support is unverified and no finance loader is shipped for that host.
 
+## Skill guide
+
+Use [sec-data](skills/sec-data/README.md) for a public issuer’s filings and
+reported financial observations. Choose the fiscal-quarter selector if the
+issuer’s fiscal calendar matters, or use the observation-end date range when
+you already know the dates.
+
 ## Run directly
 
 Python 3.11 or later is the only runtime requirement; all runtime imports use

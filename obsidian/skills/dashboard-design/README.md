@@ -4,6 +4,16 @@
 
 デジタル庁「ダッシュボードデザインの実践ガイドブック」に基づき、提示型ダッシュボードの設計を要件整理からプロトタイピングまで引導する skill。
 
+## Quick start
+
+Design a dashboard around the decisions its readers need to make.
+
+Example request: “Help me choose charts and a layout for a weekly KPI dashboard.”
+
+A requirements sheet, information inventory, chart choices, layout and checklist. Implementation and general UI review are separate tasks.
+
+[Skill instructions](SKILL.md)
+
 ## Workflow
 
 1. **要件の整理** — 5W1H フレームワークで目的と制約を定義
