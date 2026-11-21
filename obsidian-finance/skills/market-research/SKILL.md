@@ -60,6 +60,10 @@ tracking.
    changes where figures match in scope and method. Discuss the evidence behind
    changes, credible competing explanations and what would require more data.
 4. Carry forward the prior research record, assumptions and forecast version.
+   Copy the unchanged forecast and each of its source records exactly from
+   the returned `record`, including optional fields. Preserve their values
+   and types. The source key already records the version, so do not add a
+   redundant `version` field or reconstruct a saved object from prose.
    Compare the forecast only with an eligible actual matching its target
    period, measure, unit and market. Use the helper’s `compare CUTOFF`
    command. A quarterly result can inform a full-year outlook while leaving

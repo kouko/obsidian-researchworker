@@ -45,6 +45,12 @@ comparison result in `comparisons`. A pending outcome remains open until
 a matching release is eligible. The `compare` command reads `forecast`,
 optional `actual`, and `sources` from standard input.
 
+Carry an unchanged forecast forward by copying its complete object and
+each referenced source object from the returned historical `record`.
+Preserve optional fields, field types and exact source-map keys. The source
+key is the version identifier. Do not add a redundant `version` field to
+an unchanged source object.
+
 A minimal publication example:
 
 ```json
