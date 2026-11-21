@@ -1,0 +1,62 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-21-finance-recovery-and-text-pilot",
+  "content_digest": "fa5d0e49505bdf5f60772617e491a623fcbd7929",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_research_continuation.py",
+      "result": "pass",
+      "command_digest": "1521306eb701f11b79fb88921a9d2a2f98414c9f3f1381f2d81c31d2692e2c74"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "text-pilot-code-review",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "15c3e59f745508703a46b429718a4d89212e084c",
+      "review_target_sha": "6fb38155810e8aebbe1b241bb30d3a5c69b7cf58",
+      "findings": []
+    },
+    {
+      "reviewer": "text-pilot-evidence-review",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "15c3e59f745508703a46b429718a4d89212e084c",
+      "review_target_sha": "6fb38155810e8aebbe1b241bb30d3a5c69b7cf58",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "2c7155d",
+  "tested_commit": "46e49abbf2c28eab47fce77e1cad432b6d315058",
+  "reviewed_commit": "6fb38155810e8aebbe1b241bb30d3a5c69b7cf58",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    }
+  ]
+}
