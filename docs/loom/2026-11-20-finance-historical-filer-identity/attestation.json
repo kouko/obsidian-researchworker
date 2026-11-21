@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-20-finance-historical-filer-identity",
-  "content_digest": "120af9997d7da964439fcb32b5b22d9abff3e97e",
+  "content_digest": "75eb45befca49bff6900bea57ffadd75ea8027ae",
   "executions": [
     {
       "kind": "package-tests",
@@ -20,27 +20,31 @@
   ],
   "verdicts": [
     {
-      "reviewer": "historical_review_code",
+      "reviewer": "pr16_review_code",
       "vendor": "openai",
       "model": "host-inherited",
       "lens": "code",
       "verdict": "PASS",
-      "findings": []
+      "findings": [],
+      "reviewed_sha": "dea15b114443783b9ad974df51987d0a0315d99b",
+      "review_target_sha": "f0187b033bbb7526553b610a454a95afbabbe341"
     },
     {
-      "reviewer": "historical_review_contract",
+      "reviewer": "pr16_review_contract",
       "vendor": "openai",
       "model": "host-inherited",
       "lens": "spec+adversarial",
       "verdict": "PASS",
-      "findings": []
+      "findings": [],
+      "reviewed_sha": "dea15b114443783b9ad974df51987d0a0315d99b",
+      "review_target_sha": "f0187b033bbb7526553b610a454a95afbabbe341"
     }
   ],
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "cfd25af5a6ba0fde0618896d4bbe25f4e2ed171e",
-  "tested_commit": "cb34e9a",
-  "reviewed_commit": "11ecbfe0993dd3f1153f846913e2910400fb4ca3",
+  "tested_commit": "229c722",
+  "reviewed_commit": "f0187b033bbb7526553b610a454a95afbabbe341",
   "acceptance_status": [
     {
       "acceptance": 1,
