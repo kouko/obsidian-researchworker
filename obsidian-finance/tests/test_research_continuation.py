@@ -8,6 +8,7 @@ Verification files are author self-check fixtures, never independent approval.
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import shutil
 from pathlib import Path
 from string import Template
 
@@ -232,6 +233,8 @@ def test_generic_publication_interruption_preserves_other_issuer(tmp_path, monke
     assets = two_issuers(tmp_path)
     base = "investing/assets/equities/" + assets[0]
     old = base + "/cycles/2024Q2/2024-08-01-r1"
+    ordinary = tmp_path / base / "cycles/2024Q2/Ordinary note.md"
+    ordinary.write_text("# Preserve this observation")
     saved = json.loads((tmp_path / old / "review.json").read_text())
     saved.update(id="r2", predecessor="r1", cutoff=CUTOFF,
         research=dict(method="Mechanical integration fixture; not investment research", assumptions=[], changes="Recovery exercise",
@@ -270,6 +273,7 @@ def test_generic_publication_interruption_preserves_other_issuer(tmp_path, monke
         assert all(p.read_bytes() == value for p, value in before.items())
     assert all(p.read_bytes() == value for p, value in other_files.items())
     assert (tmp_path / old / "review.json").is_file()
+    assert ordinary.read_text() == "# Preserve this observation"
 
 
 def test_equal_local_source_ids_invalidate_only_own_issuer(tmp_path):
@@ -498,3 +502,43 @@ def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
         else:
             assert len(module.discover(tmp_path, "latest", CUTOFF)["reusable"]) == 12
     assert base.joinpath("asset.json").read_bytes() == legacy
+
+
+def test_legacy_recovery_refuses_markdown_descendant_appearing_after_snapshot(tmp_path, monkeypatch):
+    asset = two_issuers(tmp_path)[0]
+    cycle = f"investing/assets/equities/{asset}/cycles/2024Q2"
+    module = load()
+    legacy = json.loads((tmp_path / cycle / "2024-08-01-r1/review.json").read_text())
+    legacy.update(id="legacy-parent", predecessor="r1", cutoff=CUTOFF, research=dict(
+        method="Read retained source", assumptions=[], changes="Legacy checkpoint", gaps=[],
+        horizons={h: dict(judgment="insufficient_evidence", evidence=[], invalidation_triggers=[])
+                  for h in ("short", "medium", "long")}))
+    parent = module.publish(tmp_path, asset, legacy, {}, module.publication_snapshot(tmp_path), "legacy-parent")
+    root = tmp_path / "separate-copy"
+    shutil.copytree(tmp_path / "investing", root / "investing")
+    child = dict(legacy, id="markdown-child", predecessor="legacy-parent")
+    published = module.publish(root, asset, child, {}, module.publication_snapshot(root),
+                               "markdown-child", storage="markdown")
+    child_dir = Path(published["review"]).parent
+    preflight = module._preconditions
+    quarter_lock = module._quarter_lock
+    locks = []
+
+    def track_lock(root, path):
+        locks.append(path)
+        return quarter_lock(root, path)
+
+    def sync_after_preflight(root, expected, target):
+        preflight(root, expected, target)
+        # A sync client does not take the tool's lock. Its newly arrived
+        # descendant must still prevent withdrawing the legacy parent.
+        if not (root / child_dir).exists():
+            shutil.copytree(tmp_path / "separate-copy" / child_dir, root / child_dir)
+
+    monkeypatch.setattr(module, "_preconditions", sync_after_preflight)
+    monkeypatch.setattr(module, "_quarter_lock", track_lock)
+    with pytest.raises(ValueError, match="descendant review exists"):
+        module.recover(tmp_path, "legacy-parent", action="rollback")
+    assert locks == [cycle]
+    assert not (tmp_path / Path(parent["review"]).parent / "withdrawn.json").exists()
+    assert (tmp_path / published["review"]).is_file()

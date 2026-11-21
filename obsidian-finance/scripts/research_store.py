@@ -919,81 +919,125 @@ def _recover(root, run_id, *, action, new_target):
     _require(action in ("resume", "rollback"), "recovery action")
     run = "investing/.research-runs/" + run_id
     try:
-        journal = _object(root, run + "/journal.json")
-        raw = _bytes(root, run + "/request.json")
-        _require(sha256(raw).hexdigest() == journal["request_digest"], "Publication conflict: draft edited; preserve it and inspect")
-        request = _object(root, run + "/request.json")
+        request = _recovery_request(root, run)
         quarter, target = _target(request["asset"], request["review"])
-        _preconditions(root, request["expected"], target)
-        staged = run + "/draft"
-        _mkdir(root, staged)
-        for name, content in request["files"].items():
-            reference = staged + "/" + name
-            try:
-                existing = _bytes(root, reference)
-            except FileNotFoundError:
-                _write_new(root, reference, content.encode("utf-8"))
-            else:
-                _require(existing == content.encode("utf-8"), "Publication conflict: saved draft edited: " + reference)
+        if new_target:
+            # publish already holds the quarter lock.
+            return _apply_recovery(root, run_id, request, quarter, target, action, new_target)
+        cycle = target.rsplit("/", 1)[0]
         try:
-            present = set(_names(root, target))
-            target_exists = True
+            os.close(_open(root, cycle, True))
         except FileNotFoundError:
-            present = set()
-            target_exists = False
-        _require(not new_target or not target_exists,
-                 "Publication conflict: directory appeared concurrently: " + target)
-        marker = "withdrawn.json" if "withdrawn.json" in present else "abandoned.json" if "abandoned.json" in present else None
-        allowed = set(request["files"]) | {"pending.json", "review.json"} | ({marker} if marker else set())
-        _require(present <= allowed, "Publication conflict: unexpected files in proposed review")
-        encoded = _publication_bytes(request, target, run_id)
-        for name in present:
-            if name == marker:
-                continue
-            ref = target + "/" + name
-            _require(_bytes(root, ref) == encoded[ref], "Publication conflict: user edited " + ref)
-        if marker:
-            _require(action == "rollback", "run withdrawn; preserve drafts and start a new run")
-            frozen = _object(root, target + "/" + marker)
-            _require(frozen.get("run") == run_id and frozen.get("files") == {
-                ref: sha256(content).hexdigest() for ref, content in encoded.items()
-                if ref.rsplit("/", 1)[1] in present}, "Publication conflict: rollback marker edited")
-            return dict(status="rolled_back", review=target + "/review.json", run=run_id)
-        if action == "rollback":
-            # Descendants cannot safely lose their predecessor's completed view.
-            for directory in _names(root, "investing/assets/equities/" + request["asset"] + "/cycles/" + quarter) if present else []:
-                reference = "investing/assets/equities/" + request["asset"] + "/cycles/" + quarter + "/" + directory + "/review.json"
-                try:
-                    other = _object(root, reference)
-                except FileNotFoundError:
-                    continue
-                _require(other.get("predecessor") != request["review"]["id"], "Publication conflict: descendant review exists")
-            _mkdir(root, target)
-            marker = "withdrawn.json" if "review.json" in present else "abandoned.json"
-            _write_new(root, target + "/" + marker, _encoded(dict(version=1, run=run_id,
-                files={ref: sha256(content).hexdigest() for ref, content in encoded.items() if ref.rsplit("/", 1)[1] in present})))
-            return dict(status="rolled_back", review=target + "/review.json", run=run_id)
-        if "review.json" in present:
-            return dict(status="complete" if request["complete"] else "checkpoint", review=target + "/review.json", run=run_id)
-        _validate_proposal(root, request, staged)
-        # Explicit recovery may find an empty directory left before pending.json.
-        # The first exclusive write claims it for this run without replacing files.
-        if not target_exists:
-            _mkdir(root, target, exclusive=True)
-        for reference, content in encoded.items():
-            if reference.endswith("/review.json"):
-                continue
-            if reference.rsplit("/", 1)[1] not in present:
-                _write_new(root, reference, content)
-        _preconditions(root, request["expected"], target)
-        for reference, content in encoded.items():
-            if not reference.endswith("/review.json"):
-                _require(_bytes(root, reference) == content, "Publication conflict: proposed output edited: " + reference)
-        # Exclusive creation is the commit point. No rename can overwrite user files.
-        _write_new(root, target + "/review.json", encoded[target + "/review.json"])
-        return dict(status="complete" if request["complete"] else "checkpoint", review=target + "/review.json", run=run_id)
+            # Older recovery journals may predate creation of the quarter.
+            _preconditions(root, request["expected"], target)
+            _mkdir(root, cycle)
+        with _quarter_lock(root, cycle):
+            _require(_adapter._core._same_json(_recovery_request(root, run), request),
+                     "Publication conflict: recovery request changed")
+            return _apply_recovery(root, run_id, request, quarter, target, action, new_target)
     except (KeyError, TypeError, UnicodeError, NotADirectoryError, IsADirectoryError, FileExistsError) as error:
         raise ValueError("Cannot recover publication; preserve journal and draft: " + str(error)) from error
+
+
+
+def _recovery_request(root, run):
+    journal = _object(root, run + "/journal.json")
+    raw = _bytes(root, run + "/request.json")
+    _require(sha256(raw).hexdigest() == journal["request_digest"],
+             "Publication conflict: draft edited; preserve it and inspect")
+    data = _adapter._json(raw.decode("utf-8"))
+    _require(isinstance(data, dict) and type(data.get("version")) is int and data["version"] == 1,
+             "unsupported recovery request")
+    return data
+
+
+def _guard_descendants(root, asset, quarter, parent):
+    """Refuse withdrawal if either record format relies on this predecessor."""
+    cycle = f"investing/assets/equities/{asset}/cycles/{quarter}"
+    for name in _managed_directories(root, cycle):
+        directory = cycle + "/" + _id(name)
+        try:
+            legacy = _object(root, directory + "/review.json")
+        except FileNotFoundError:
+            pass
+        else:
+            _require(legacy.get("predecessor") != parent, "Publication conflict: descendant review exists")
+        try:
+            markdown = _bytes(root, directory + "/review.md").decode("utf-8")
+        except FileNotFoundError:
+            continue
+        props, record = _markdown.record(markdown, "review", asset_id=asset, fiscal_quarter=quarter)
+        _require(props.get("predecessor") == record.get("predecessor")
+                 and _target(asset, record)[1] == directory,
+                 "Publication conflict: Markdown descendant identity is not verifiable")
+        _require(record.get("predecessor") != parent, "Publication conflict: descendant review exists")
+
+
+def _apply_recovery(root, run_id, request, quarter, target, action, new_target):
+    run = "investing/.research-runs/" + run_id
+    _preconditions(root, request["expected"], target)
+    staged = run + "/draft"
+    _mkdir(root, staged)
+    for name, content in request["files"].items():
+        reference = staged + "/" + name
+        try:
+            existing = _bytes(root, reference)
+        except FileNotFoundError:
+            _write_new(root, reference, content.encode("utf-8"))
+        else:
+            _require(existing == content.encode("utf-8"), "Publication conflict: saved draft edited: " + reference)
+    try:
+        present = set(_names(root, target))
+        target_exists = True
+    except FileNotFoundError:
+        present = set()
+        target_exists = False
+    _require(not new_target or not target_exists,
+             "Publication conflict: directory appeared concurrently: " + target)
+    marker = "withdrawn.json" if "withdrawn.json" in present else "abandoned.json" if "abandoned.json" in present else None
+    allowed = set(request["files"]) | {"pending.json", "review.json"} | ({marker} if marker else set())
+    _require(present <= allowed, "Publication conflict: unexpected files in proposed review")
+    encoded = _publication_bytes(request, target, run_id)
+    for name in present:
+        if name == marker:
+            continue
+        ref = target + "/" + name
+        _require(_bytes(root, ref) == encoded[ref], "Publication conflict: user edited " + ref)
+    if marker:
+        _require(action == "rollback", "run withdrawn; preserve drafts and start a new run")
+        frozen = _object(root, target + "/" + marker)
+        _require(frozen.get("run") == run_id and frozen.get("files") == {
+            ref: sha256(content).hexdigest() for ref, content in encoded.items()
+            if ref.rsplit("/", 1)[1] in present}, "Publication conflict: rollback marker edited")
+        return dict(status="rolled_back", review=target + "/review.json", run=run_id)
+    if action == "rollback":
+        if present:
+            _guard_descendants(root, request["asset"], quarter, request["review"]["id"])
+        _preconditions(root, request["expected"], target)
+        _mkdir(root, target)
+        marker = "withdrawn.json" if "review.json" in present else "abandoned.json"
+        _write_new(root, target + "/" + marker, _encoded(dict(version=1, run=run_id,
+            files={ref: sha256(content).hexdigest() for ref, content in encoded.items() if ref.rsplit("/", 1)[1] in present})))
+        return dict(status="rolled_back", review=target + "/review.json", run=run_id)
+    if "review.json" in present:
+        return dict(status="complete" if request["complete"] else "checkpoint", review=target + "/review.json", run=run_id)
+    _validate_proposal(root, request, staged)
+    # Explicit recovery may find an empty directory left before pending.json.
+    # The first exclusive write claims it for this run without replacing files.
+    if not target_exists:
+        _mkdir(root, target, exclusive=True)
+    for reference, content in encoded.items():
+        if reference.endswith("/review.json"):
+            continue
+        if reference.rsplit("/", 1)[1] not in present:
+            _write_new(root, reference, content)
+    _preconditions(root, request["expected"], target)
+    for reference, content in encoded.items():
+        if not reference.endswith("/review.json"):
+            _require(_bytes(root, reference) == content, "Publication conflict: proposed output edited: " + reference)
+    # Exclusive creation is the commit point. No rename can overwrite user files.
+    _write_new(root, target + "/review.json", encoded[target + "/review.json"])
+    return dict(status="complete" if request["complete"] else "checkpoint", review=target + "/review.json", run=run_id)
 
 
 def _markdown_drafts(root):
