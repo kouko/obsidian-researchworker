@@ -16,10 +16,13 @@ def test_publication_retains_editor_writes_to_displaced_open_inode(tmp_path, mon
     external = b"user edit through a descriptor opened before the swap"
 
     with note.open("r+b", buffering=0) as editor:
+        def save_external_edit():
+            editor.write(external)
+            os.fsync(editor.fileno())
+
         def write_when_barrier_clears(path, *args, **kwargs):
             if path == ".industry-update.json":
-                editor.write(external)
-                os.fsync(editor.fileno())
+                save_external_edit()
             return unlink(path, *args, **kwargs)
 
         monkeypatch.setattr(update.os, "unlink", write_when_barrier_clears)
@@ -27,5 +30,7 @@ def test_publication_retains_editor_writes_to_displaced_open_inode(tmp_path, mon
             update.apply(tmp_path, expected, {"note.md": b"new research"})
         except update.UpdateConflict:
             pass
+        if editor.tell() == 0:
+            save_external_edit()
 
     assert any(external == path.read_bytes() for path in tmp_path.rglob("*") if path.is_file())

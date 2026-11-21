@@ -125,3 +125,10 @@ Each row gives an ISO `month`, `scope`, `metric`, `unit`, `definition` and its
 source IDs for the components and identifies missing months when coverage
 is partial. Confirm that each row represents a discrete observation.
 A rolling monthly average cannot be added as if it were a monthly total.
+
+A successful same-path replacement may retain the displaced file in a
+hidden .industry-stage-<transaction>/ directory inside the vault. Its
+displaced.json maps retained payloads to original vault-relative note
+paths. This preserves later writes through an editor's still-open file
+handle. These files accumulate and the helper does not prune them. They
+are recovery artifacts; the quarterly notes remain the research entry.

@@ -235,12 +235,15 @@ def _finish(root, stage_name, changes):
                 raise UpdateConflict(f"Notes changed before batch publication: {path}")
         os.unlink(_PENDING, dir_fd=root)
         os.fsync(root)
-        # Once the barrier is cleared, a cleanup interruption can only leave
-        # an unreferenced private staging directory.
-        for index in range(len(changes)):
-            os.unlink(f"{index}.note", dir_fd=stage)
+        # An external editor may still hold the displaced inode open. Leave
+        # replacements linked so later writes to that inode remain recoverable.
+        for index, (before, _) in enumerate(changes.values()):
+            if before is None:
+                os.unlink(f"{index}.note", dir_fd=stage)
         os.unlink("journal", dir_fd=stage)
-    os.rmdir(stage_name, dir_fd=root)
+        os.fsync(stage)
+    if all(before is None for before, _ in changes.values()):
+        os.rmdir(stage_name, dir_fd=root)
 
 
 def apply(vault, expected, intended):
@@ -276,9 +279,15 @@ def apply(vault, expected, intended):
                     os.rmdir(stage_name, dir_fd=root)
                     raise
             record = {"stage": stage_name, "files": []}
+            displaced = {}
             for index, (path, (before, after)) in enumerate(changes.items()):
-                _write_new(stage, f"{index}.note", after)
+                payload = f"{index}.note"
+                _write_new(stage, payload, after)
                 record["files"].append([path, _packed(before), _packed(after)])
+                if before is not None:
+                    displaced[payload] = path
+            if displaced:
+                _write_new(stage, "displaced.json", json.dumps(displaced).encode())
             _write_new(stage, "journal", json.dumps(record).encode())
             os.fsync(stage)
             os.link("journal", _PENDING, src_dir_fd=stage, dst_dir_fd=root, follow_symlinks=False)

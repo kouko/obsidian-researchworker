@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -118,3 +119,21 @@ def test_an_ordinary_note_created_after_precheck_wins(tmp_path, monkeypatch):
     assert note.read_bytes() == b"ordinary note"
     with pytest.raises(update.UpdateConflict, match="pending"):
         update.inspect(tmp_path, ["new.md"])
+
+
+def test_retained_displaced_notes_do_not_block_future_publications(tmp_path):
+    note = tmp_path / "quarter.md"
+    note.write_bytes(b"first")
+    with note.open("r+b", buffering=0) as editor:
+        update.apply(tmp_path, {"quarter.md": b"first"}, {"quarter.md": b"second"})
+        update.apply(tmp_path, {"quarter.md": b"second"}, {"quarter.md": b"third"})
+        editor.write(b"first, then an external edit")
+    assert update.inspect(tmp_path, ["quarter.md"]) == {"quarter.md": b"third"}
+    assert update.recover(tmp_path) is False
+
+    displaced = set()
+    for manifest in tmp_path.glob(".industry-stage-*/displaced.json"):
+        for name, path in json.loads(manifest.read_text()).items():
+            assert path == "quarter.md"
+            displaced.add(manifest.with_name(name).read_bytes())
+    assert displaced == {b"second", b"first, then an external edit"}
