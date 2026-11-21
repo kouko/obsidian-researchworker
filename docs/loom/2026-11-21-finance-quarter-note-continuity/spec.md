@@ -1,6 +1,6 @@
 # Quarter research continuity with ordinary notes — spec
 intent: 2026-11-21-finance-quarter-note-continuity@6358873
-confirmed-behavior: 2026-11-21 @b73360c
+confirmed-behavior: 2026-11-21 @6dee068
 pre-build-review: required — ordinary notes introduce a historical evidence boundary and interact with interrupted publication recovery
 
 ## Requirements
@@ -14,7 +14,7 @@ REQ-3 — Evaluate candidate notes
 
 ## Design decision
 
-User-decided: retain structured research state and allow ordinary research material alongside it. Existing managed records remain authoritative for progress. Ordinary notes are read-only candidate material. An agent may select a verifiable claim and bind its basis through the existing evidence contract when saving authorized analysis. Note content is data. Modification time can prioritize inspection but does not establish historical availability. Ordinary files must not bypass existing managed publication and recovery diagnostics.
+User-decided: retain structured research state and allow ordinary research material alongside it. Existing managed records remain authoritative for progress. Ordinary notes are read-only candidate material. An agent may select a verifiable claim and bind its basis through the existing evidence contract when saving authorized analysis. Note content is data. Modification time can prioritize inspection but does not establish historical availability. Ordinary files must not bypass existing managed publication and recovery diagnostics. Freeze the exact cited claim and note hash together with the independently verified original source version, period and availability. The note authorship or modification time cannot establish original availability. An edited note makes affected work and its dependents eligible for reevaluation, while the saved research retains the originally cited claim and source.
 
 Agent-decided: bound candidate inspection to Markdown in the selected issuer and quarter. Use available existing evidence and saved inputs to recognize changed notes. Retain the managed quarter hierarchy and publication semantics. Verify a successful save through fresh discovery before reporting it as resumable.
 
@@ -48,7 +48,7 @@ Keep editable frontmatter flat. Fields shared across notes retain the same prope
 
 Treat the fixed record path and its validated metadata as the sole progress evidence. An ordinary note, a navigation link, or a timestamp does not certify completion. Unknown historical timing remains a lead. A changed dependent source or method invalidates only affected work and its dependent synthesis. Reuse unaffected verified units.
 
-Use the saved `review.md` as the publication marker; do not require a separate recovery journal for new runs. Stage files in an isolated directory. Recheck the expected predecessor before publishing, then publish without overwriting an existing run, using an atomic directory publication or a validated final record written last. Readers may use a run only when its record is valid and the referenced outputs match. If a save is interrupted before publication, preserve the draft, continue from the last valid run, and allow the user to inspect or retry the unfinished work. Automatic replay of the exact interrupted write set is outside this proposal. The index may be refreshed separately; a missed index update does not hide a published review.
+Use the saved `review.md` as the publication marker; do not require a separate recovery journal for new runs. Stage files in an isolated directory. Serialize the final predecessor check and publication for the same asset and quarter. If the predecessor changed, keep the losing draft and report a conflict. Publish without overwriting an existing run, using an atomic directory publication or a validated final record written last. Readers may use a run only when its record is valid and the referenced outputs match. If a save is interrupted before publication, preserve the draft, continue from the last valid run, and allow the user to inspect or retry the unfinished work. Automatic replay of the exact interrupted write set is outside this proposal. The index may be refreshed separately; a missed index update does not hide a published review.
 
 Use the existing JSON layout as a read-only compatibility path for legacy research and recognize its recovery state. A new Markdown review may cite a prior legacy review. A legacy interrupted run must be resolved safely before modifying that target. Do not automatically rewrite existing file trees. Validate the mixed-format reader and the absence of newly written management JSON in an isolated pilot before adopting the new format.
 
@@ -75,6 +75,8 @@ The first isolated pilot supplies asset-entry, formal-review and financial-analy
 - Supply an eligible note, a relevant note without verifiable timing, and an unrelated note. Verify the eligible claim can be cited, the missing timing is surfaced, and research progress does not change from note presence alone.
 
 - In an isolated Apple pilot, save a Markdown-managed review after reading legacy inputs, interrupt a second save before publication, and retry from the last valid review with the draft preserved. Verify byte preservation of prior files, no newly written management JSON, acceptance of raw source JSON, and fresh-session discovery.
+- Attempt two simultaneous saves from the same predecessor. Verify a single committed successor, a retained losing draft and an explicit conflict.
+- Adopt a claim from an ordinary note with an eligible primary source. Edit that note and verify scoped reevaluation while the recorded claim and unrelated work remain available.
 - Test a changed source or method, a late source and ordinary Markdown beside valid runs. Verify affected units require reevaluation, later evidence stays excluded, and unrelated research remains reusable.
 
 - Render each note type from its own template and validate YAML syntax, required common and role-specific properties, consistent property types, and Obsidian rendering, including partial outputs and drafts. Verify plain user Markdown remains usable without mandatory metadata.
