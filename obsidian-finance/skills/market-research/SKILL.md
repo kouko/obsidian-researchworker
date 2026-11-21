@@ -23,6 +23,8 @@ previous quarter. Use `--cutoff CUTOFF` for historical selection. Read each
 returned review and linked Markdown notes. Report any recovery issues and
 continue from the valid record if one exists. Keep an unresolved source or
 interrupted publication distinct from a market conclusion.
+When an interrupted write occupies a revision, leave its files intact.
+Base the next save on the valid record and choose an unused revision number.
 
 ## Research and review
 
@@ -45,8 +47,9 @@ interrupted publication distinct from a market conclusion.
    changes, credible competing explanations and what would require more data.
 4. Carry forward the prior research record, assumptions and forecast version.
    Compare the forecast only with an eligible actual matching its target
-   period, measure, unit and market. Use the helper’s `compare CUTOFF` command. A quarterly result can inform a full-year
-   outlook while leaving forecast error pending. Record revised assumptions,
+   period, measure, unit and market. Use the helper’s `compare CUTOFF`
+   command. A quarterly result can inform a full-year outlook while leaving
+   forecast error pending. Record revised assumptions,
    a conditional outlook and the next release or observation to check.
    Use ranges and explain assumptions if a size or forecast needs an estimate.
    Keep published forecasts separate from analyst-authored estimates.
@@ -63,6 +66,10 @@ existing vault material.
 
 For a company citation, call `cite ROOT MARKET QUARTER CLAIM_ID CUTOFF`.
 Return its exact claim, original source versions, observation quarter and
-dates. Name the issuer's fiscal quarter separately. If the result is empty,
-withhold the citation and explain which evidence is missing or ineligible.
-Do not infer eligibility from the date of the Markdown note.
+source publication dates. Name the issuer's fiscal quarter separately. Keep
+the issuer assessment `cutoff`, market review `snapshot_cutoff` and each
+source's `published_at` distinct. When `retrospective` is true, say that
+the claim comes from a market review with a later cutoff and reconstructs
+the result using originals eligible at the issuer cutoff. If the result is
+empty, withhold the citation and explain which evidence is missing or
+ineligible. Do not infer eligibility from the date of the Markdown note.

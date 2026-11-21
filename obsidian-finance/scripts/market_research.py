@@ -14,7 +14,8 @@ from urllib.parse import urlsplit
 from market_evidence import _parse_time, claim_is_eligible, compare_forecast
 
 
-_NOTE_NAMES = ("analysis.md", "sources.md", "outlook.md")
+_LEGACY_NOTE_NAMES = ("analysis.md", "sources.md", "outlook.md")
+_NOTE_NAMES = ("overview.md", *_LEGACY_NOTE_NAMES)
 _RECORD_START = "\n```market-research-record\n"
 _RECORD_END = "\n```\n"
 
@@ -111,21 +112,33 @@ def _digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def _note_bytes(text):
+    return (text.rstrip() + "\n").encode("utf-8")
+
+
 def _read_record(path, market, quarter, revision):
     _, marker, tail = _read_bytes(path).decode().partition(_RECORD_START)
     encoded, footer, trailing = tail.partition(_RECORD_END)
     if not marker or not footer or trailing:
         raise ValueError("Missing or malformed snapshot record")
     manifest = json.loads(encoded)
-    if not isinstance(manifest, dict) or manifest.get("schema") != 1:
+    if not isinstance(manifest, dict) or type(manifest.get("schema")) is not int:
         raise ValueError("Unsupported snapshot schema")
+    schema = manifest["schema"]
+    if schema not in (1, 2):
+        raise ValueError("Unsupported snapshot schema")
+    note_names = _LEGACY_NOTE_NAMES if schema == 1 else _NOTE_NAMES
     record, files = manifest.get("record"), manifest.get("files")
-    if not isinstance(record, dict) or not isinstance(files, dict) or set(files) != set(_NOTE_NAMES):
+    if not isinstance(record, dict) or not isinstance(files, dict) or set(files) != set(note_names):
         raise ValueError("Incomplete snapshot manifest")
     _validate(record, market, quarter, revision)
-    for name in _NOTE_NAMES:
+    for name in note_names:
         if _digest(_read_bytes(path.with_name(name))) != files[name]:
             raise ValueError(f"Content changed in {name}")
+    if schema == 1:
+        overview = path.parents[2] / "overview.md"
+        if _digest(_read_bytes(overview)) != _digest(_note_bytes(record["overview"])):
+            raise ValueError("Legacy shared overview.md differs from the saved snapshot")
     return record
 
 
@@ -176,21 +189,24 @@ def publish(root, record):
         if old["revision"] < revision and _boundary(old["cutoff"]) <= _boundary(record["cutoff"])
     ]
     notes = {
+        "overview.md": record["overview"],
         "analysis.md": record["analysis"],
         "sources.md": "# Source versions\n\n```json\n" + _canonical_json(record["sources"]) + "\n```",
         "outlook.md": record["outlook"],
     }
-    notes = {name: (body.rstrip() + "\n").encode() for name, body in notes.items()}
+    notes = {name: _note_bytes(body) for name, body in notes.items()}
     manifest = {
-        "schema": 1, "record": record,
+        "schema": 2, "record": record,
         "files": {name: _digest(data) for name, data in notes.items()},
     }
     label = "Partial" if record["pending"] else "Complete"
-    links = "\n".join(f"- [{name.removesuffix('.md').title()}]({name})" for name in _NOTE_NAMES)
+    links = "\n".join(
+        f"- [{name.removesuffix('.md').title()}]({name})" for name in _LEGACY_NOTE_NAMES
+    )
     predecessor = f"\n[Previous snapshot](../{earlier[0].parent.name}/review.md)\n" if earlier else ""
     review = (
         f"# {market} {quarter} r{revision}\n\n{label} at {record['cutoff']}\n\n"
-        f"[Market overview](../../overview.md)\n\n{links}\n{predecessor}"
+        f"[Market overview](overview.md)\n\n{links}\n{predecessor}"
         f"{_RECORD_START}{_canonical_json(manifest)}{_RECORD_END}"
     )
     snapshot_dir.mkdir(parents=True, exist_ok=False)

@@ -10,6 +10,14 @@ sys.path.insert(0, str(SCRIPTS))
 from market_research import aggregate_quarter, cite, publish, resume
 
 
+def market_cli(*args, record=None, check=True):
+    return subprocess.run(
+        [sys.executable, str(SCRIPTS / "market_research.py"), *map(str, args)],
+        input=json.dumps(record) if record is not None else None,
+        capture_output=True, text=True, check=check,
+    )
+
+
 def record(market="phones", quarter="2024Q3", revision=1, cutoff="2024-10-31"):
     return {
         "market": market,
@@ -31,18 +39,60 @@ def record(market="phones", quarter="2024Q3", revision=1, cutoff="2024-10-31"):
 def test_publish_same_note_structure_for_two_markets_and_reopen_in_fresh_process(tmp_path):
     for market in ("phones", "chips"):
         snapshot = record(market=market)
-        review = publish(tmp_path, snapshot)
+        created = market_cli("publish", tmp_path, record=snapshot)
+        review = Path(json.loads(created.stdout)["review"])
         assert review == tmp_path / market / "2024Q3/r1/review.md"
         assert {p.name for p in review.parent.iterdir()} == {
-            "analysis.md", "sources.md", "outlook.md", "review.md",
+            "analysis.md", "sources.md", "outlook.md", "overview.md", "review.md",
         }
         assert (tmp_path / market / "overview.md").is_file()
-        result = subprocess.run(
-            [sys.executable, str(SCRIPTS / "market_research.py"), "resume",
-             str(tmp_path), market, "2024Q3"],
-            capture_output=True, text=True, check=True,
-        )
+        result = market_cli("resume", tmp_path, market, "2024Q3")
         assert json.loads(result.stdout)["record"]["pending"] == snapshot["pending"]
+
+
+@pytest.mark.parametrize("damage", ["missing", "changed"])
+def test_resume_requires_verified_revision_local_overview(tmp_path, damage):
+    original = Path(json.loads(market_cli("publish", tmp_path, record=record()).stdout)["review"])
+    later = record(revision=2, cutoff="2024-11-02")
+    later["overview"] = "# Changed market scope"
+    revision = Path(json.loads(market_cli("publish", tmp_path, record=later).stdout)["review"])
+    assert "[Market overview](overview.md)" in revision.read_text()
+    assert (original.parent / "overview.md").read_text() == "# Market overview\n"
+    entry = tmp_path / "phones" / "overview.md"
+    entry.write_text("User-owned market entry")
+    result = market_cli("resume", tmp_path, "phones", "2024Q3")
+    assert json.loads(result.stdout)["review"] == str(revision)
+    overview = revision.parent / "overview.md"
+    if damage == "missing":
+        overview.unlink()
+    else:
+        overview.write_text("Edited revision overview")
+    recovered = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
+    assert recovered["review"] == str(original)
+    assert recovered["issues"] and "overview.md" in recovered["issues"][0]
+    assert entry.read_text() == "User-owned market entry"
+
+
+def test_legacy_resume_verifies_shared_overview_without_rewriting(tmp_path):
+    review = publish(tmp_path, record())
+    start, marker, body = review.read_text().partition("\n```market-research-record\n")
+    manifest = json.loads(body.removesuffix("\n```\n"))
+    manifest["schema"] = 1
+    del manifest["files"]["overview.md"]
+    (review.parent / "overview.md").unlink()
+    start = start.replace("(overview.md)", "(../../overview.md)")
+    legacy_review = start + marker + json.dumps(manifest, indent=2) + "\n```\n"
+    review.write_text(legacy_review)
+
+    result = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
+    assert result["review"] == str(review)
+    shared_overview = tmp_path / "phones" / "overview.md"
+    shared_overview.write_text("User notes with a different overview")
+    result = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
+    assert result["review"] is None
+    assert "Legacy shared overview.md differs" in result["issues"][0]
+    assert shared_overview.read_text() == "User notes with a different overview"
+    assert review.read_text() == legacy_review
 
 
 def test_resume_ignores_interrupted_and_tampered_records_without_masking_other_scope(tmp_path):
@@ -56,7 +106,7 @@ def test_resume_ignores_interrupted_and_tampered_records_without_masking_other_s
     (first.parent.parent / "personal.md").write_text("ordinary note")
     publish(tmp_path, record(quarter="2024Q4", cutoff="2025-01-31"))
     publish(tmp_path, record(market="chips"))
-    recovered = resume(tmp_path, "phones", "2024Q3")
+    recovered = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
     assert recovered["review"] == str(first)
     assert len(recovered["issues"]) == 2
     assert (first.parent.parent / "personal.md").read_text() == "ordinary note"
@@ -69,8 +119,8 @@ def test_publish_preserves_existing_records_and_ordinary_overview(tmp_path):
     overview.write_text("existing")
     review = publish(tmp_path, record())
     before = review.read_bytes()
-    with pytest.raises(FileExistsError):
-        publish(tmp_path, record())
+    duplicate = market_cli("publish", tmp_path, record=record(), check=False)
+    assert duplicate.returncode != 0
     assert review.read_bytes() == before
     assert overview.read_text() == "existing"
 
@@ -81,7 +131,7 @@ def test_citation_checks_every_dependency_at_original_cutoff(tmp_path):
     revised["sources"]["late-v1"] = {"version": "v1", "published_at": "2024-11-01"}
     revised["claims"]["size"]["source_ids"].append("late-v1")
     publish(tmp_path, revised)
-    result = cite(tmp_path, "phones", "2024Q3", "size", "2024-10-31")
+    result = json.loads(market_cli("cite", tmp_path, "phones", "2024Q3", "size", "2024-10-31").stdout)
     assert result["review"] == str(early)
     assert list(result["sources"]) == ["release-v1"]
     assert cite(tmp_path, "phones", "2024Q3", "size", "2024-09-28") is None
@@ -96,9 +146,13 @@ def test_aggregate_requires_complete_unique_months_and_recomputes_ratio():
         for month, top, bottom in [("2024-07", 10, 100), ("2024-08", 40, 100), ("2024-09", 20, 400)]
     ]
     sources = {row["month"]: {"published_at": "2024-10-22"} for row in months}
-    run = lambda items, cutoff: aggregate_quarter(
-        "2024Q3", items, cutoff, sources=sources, ratio=True,
-    )
+    def run(items, cutoff):
+        result = market_cli(
+            "aggregate", "2024Q3", cutoff, "--ratio",
+            record={"observations": items, "sources": sources},
+        )
+        return json.loads(result.stdout)
+
     complete = run(months, "2024-10-31")
     assert complete["status"] == "complete"
     assert complete["value"] == pytest.approx(70 / 600)
