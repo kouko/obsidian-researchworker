@@ -475,8 +475,11 @@ result = research_store.recover(root, "unique-run-id", action="resume")
 result = research_store.recover(root, "unique-run-id", action="rollback")
 ```
 
-`publication_snapshot(root) -> dict[path, sha256]` captures exact regular-file
-bytes beneath `investing/`, excluding the helper's `.research-runs/` journals.
+`publication_snapshot(root) -> dict[path, sha256]` captures protected regular-file
+bytes beneath `investing/`. It excludes helper journals and drafts and ordinary
+Markdown notes directly inside a quarter. Quarter navigation and recognizable
+managed note roles stay protected even if their frontmatter is malformed.
+A path entering or leaving managed status still causes a conflict.
 The returned map is mandatory and must remain the original pre-analysis map;
 refreshing it to suppress a conflict defeats user-edit protection. Changed,
 added or missing managed files cause a conflict. Publication and recovery check
@@ -548,7 +551,9 @@ the eligible predecessor-chain leaf defines the saved view.
 preconditions, journal integrity, saved draft/output bytes and current source,
 method and assumption dependencies before adopting unfinished work. Repeating
 a successful resume returns the same saved result if its files and original
-preconditions still match. `action="rollback"` appends a validated
+preconditions still match. Runs staged before ordinary-note hashing was
+removed still use their original saved snapshot policy during recovery.
+Later runs use the managed-only snapshot policy. `action="rollback"` appends a validated
 `withdrawn.json` for a committed review, or `abandoned.json` for unfinished
 publication; the prior eligible view becomes visible while all reports,
 drafts and failure evidence stay on disk. Rollback refuses edits, unexpected
@@ -564,3 +569,85 @@ files and draft, inspect the conflict and reassess before starting a new run.
 Do not edit run journals or completion files to force a success. These are
 local mechanics; actual agent continuation and fresh-host research behavior
 require separate verification.
+
+## Markdown research continuation
+
+Use this format for new skill-managed research. Python needs PyYAML for
+Markdown metadata; existing JSON runs remain readable without it. The helper's
+legacy write interface remains available to older callers.
+
+Markdown records use a restricted PyYAML loader and a dumper without aliases.
+The loader rejects anchors, aliases, and duplicate mapping keys. It keeps
+implicit timestamps as strings so saved cutoffs retain their timezone text.
+The contracts exercised with PyYAML 6.0.2 derive from the
+[PyYAML documentation](https://pyyaml.org/wiki/PyYAMLDocumentation) and the
+upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.py),
+[constructor](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/constructor.py),
+[resolver](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/resolver.py), and
+[representer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/representer.py).
+
+- `investing/index.md` with role `research-overview` supplies the tracked assets.
+  An ordinary unmarked overview leaves the legacy watchlist in effect.
+- Within the selected `cycles/<YYYYQq>/` directory, register research inputs
+  under `data/sources/` and authored methods under `data/analysis/`. Use the
+  bundled templates with a matching source or method identity and version.
+  Payload paths in quarter registrations are relative to the quarter directory.
+  The fenced YAML record uses the same version-1 field names as the legacy
+  reader. Keep evidence bytes in their original format. Distinct source
+  versions may coexist.
+- Every newly authored Markdown note uses its bundled role template and
+  flat Obsidian frontmatter. For a new method or assumption, put the
+  explanation and limits in the method-registration note. Save the compact
+  applied method payload separately as UTF-8 `data/materials/<name>.txt`.
+  Register its quarter-relative `content_ref` and SHA-256 `content_digest`.
+  Use the research-root-relative path to the same bytes and the same digest
+  in the citing unit's `analysis_inputs` publication proposal. Preserve the
+  original bytes and format of copied external or legacy payloads.
+
+- An optional marked asset note in the asset directory uses a flat Obsidian
+  property header and a fenced asset-entry record. Its identity must match
+  any existing legacy asset metadata. Duplicate or malformed marked entries
+  fail.
+- Pass a selected asset and quarter through the candidate-discovery argument.
+  `candidate_notes` lists ordinary note paths. `adopted_claims` lists the
+  selected review's saved claims, work, downstream dependents, original source
+  identity and availability, and whether the ordinary note remains available.
+  Compare the meaning of each current claim against the saved attribution and
+  the eligible original before reusing analysis or reporting no work. A missing
+  or materially changed claim requires review of its dependent work. Formatting
+  alone does not. New citations omit note hashes, and old citation hashes are
+  ignored. Standalone verification checks saved claims against their source
+  bindings without the live note. Original filings and managed outputs remain
+  subject to exact hash checks.
+- The existing publication helper accepts Markdown mode for the
+  seven analysis roles. It renders a versioned review note, embeds verification,
+  retains old outputs, and writes no management JSON for new pilot runs.
+- Staged analysis notes declare draft status. The final review appears after
+  the exact final analysis bytes are written and verified. Quarter evidence
+  files are flushed before their destination names become visible. An
+  interruption or conflicting publisher leaves a draft for inspection.
+  Re-run discovery and prepare a fresh publication; legacy recovery remains
+  a separate operation.
+
+
+### Copy and verify a quarter
+
+A portable Markdown review keeps its bound inputs under
+`cycles/{YYYYQn}/data/`. Source registrations and method registrations are
+Markdown. Raw evidence keeps its original format and bytes. A source
+registration can bind both the reviewed extraction (`raw_ref` and
+`raw_digest`) and the original filing (`original_ref` and
+`original_digest`). Register both when citing an extraction whose original
+filing is distinct. Comparison sources keep their real fiscal identity.
+They do not create cycles in the destination.
+
+Copy the whole quarter folder, then call
+`verify_quarter(quarter_root, "run-directory/review.md")`. Operational
+references are quarter-relative. Verification checks the captured
+configuration, rendered outputs and local evidence, including their hashes
+and historical cutoff. A missing local file fails verification even if the
+original vault is accessible. Cross-quarter links describe provenance, and
+previous research notes stay in their original folders. Save a cited prior
+conclusion with `excerpt`, `origin`, and `revision` in
+`research.adopted_conclusions`. The verifier does not judge the financial
+conclusions.

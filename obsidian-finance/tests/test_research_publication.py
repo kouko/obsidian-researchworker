@@ -103,10 +103,14 @@ def test_incomplete_envelope_rejected(tmp_path, missing):
 @pytest.mark.parametrize("finish, interruption_file", [
     ("resume", "pending.json"), ("resume", "review.json"), ("rollback", "review.json"),
 ])
-def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish, interruption_file):
+@pytest.mark.parametrize("snapshot_scope", ["legacy-unmarked", "managed"])
+def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish, interruption_file, snapshot_scope):
     _, old, saved = proposal(tmp_path)
     module = load()
     target = "investing/assets/equities/aapl/cycles/2024Q2/2024-08-31-r2"
+    ordinary = target.rsplit("/", 1)[0] + "/Observations.md"
+    original_note = b"# Ordinary quarter note"
+    (tmp_path / ordinary).write_bytes(original_note)
     content = "Revised analysis with bounded evidence"
     digest = hashlib.sha256(content.encode()).hexdigest()
     saved["units"]["valuation"].update(output=dict(path=target + "/analysis.md", digest=digest), verification=target + "/check.json")
@@ -122,12 +126,39 @@ def test_interrupted_publication_recovers(tmp_path, monkeypatch, finish, interru
         module.publish(tmp_path, "aapl", saved, files, module.publication_snapshot(tmp_path), "run1")
     assert {r["record"] for r in module.discover(tmp_path, "latest", CUTOFF)["reusable"]} == {"aapl/2024Q2/r1"}
     monkeypatch.setattr(module, "_write_new", original)
+    journal_dir = tmp_path / "investing/.research-runs/run1"
+    request_path = journal_dir / "request.json"
+    journal_path = journal_dir / "journal.json"
+    request = json.loads(request_path.read_text())
+    assert request["snapshot_scope"] == "managed"
+    assert ordinary not in request["expected"]
+    if snapshot_scope == "legacy-unmarked":
+        del request["snapshot_scope"]
+        request["expected"][ordinary] = hashlib.sha256(original_note).hexdigest()
+        serialized = json.dumps(request).encode()
+        request_path.write_bytes(serialized)
+        journal_path.write_text(json.dumps(dict(version=1, request_digest=hashlib.sha256(serialized).hexdigest())))
+    old_output = tmp_path / old / "analysis.md"
+    original_output = old_output.read_bytes()
+    old_output.write_text("Edited managed analysis")
+    with pytest.raises(ValueError, match="Publication conflict"):
+        module.recover(tmp_path, "run1", action=finish)
+    old_output.write_bytes(original_output)
+    (tmp_path / ordinary).write_text("Reformatted ordinary quarter note")
+    if snapshot_scope == "legacy-unmarked":
+        with pytest.raises(ValueError, match="Publication conflict.*Observations"):
+            module.recover(tmp_path, "run1", action=finish)
+        (tmp_path / ordinary).write_bytes(original_note)
+    request_at_recovery = request_path.read_bytes()
+    journal_at_recovery = journal_path.read_bytes()
+    result = module.recover(tmp_path, "run1", action=finish)
+    assert request_path.read_bytes() == request_at_recovery
+    assert journal_path.read_bytes() == journal_at_recovery
     if finish == "rollback":
-        assert module.recover(tmp_path, "run1", action="rollback")["status"] == "rolled_back"
+        assert result["status"] == "rolled_back"
         assert module.discover(tmp_path, "latest", CUTOFF)["reusable"] == [dict(record="aapl/2024Q2/r1", work="valuation")]
         assert (tmp_path / target / "analysis.md").read_text() == content
         return
-    result = module.recover(tmp_path, "run1")
     assert result["status"] == "complete"
     assert module.recover(tmp_path, "run1") == result
     assert (tmp_path / old / "analysis.md").read_text() == "analysis"

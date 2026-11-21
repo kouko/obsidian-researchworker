@@ -17,7 +17,7 @@ from the loaded skill directory: the package README is `../../README.md`, the
 helper is `../../scripts/research_store.py`, and acquisition is sibling
 `../sec-data/SKILL.md`. Read the README's version-1 contracts before constructing
 metadata or calling publication/recovery. Use existing Python 3.11+; these
-helpers use the standard library. No research-store CLI exists.
+legacy helpers use the standard library. No research-store CLI exists.
 
 ## 1. Establish the boundary
 
@@ -41,19 +41,35 @@ plugins or start a new paid provider obligation to finish research.
 
 ## 2. Discover before deciding
 
-Import the actual package helper by its resolved script path; use its Python
-APIs, not an invented command:
+Import the actual package helper by its resolved script path. For a selected
+issuer and quarter, include candidate notes in the assessment used to decide
+whether work is needed:
 
 ```python
-result = research_store.discover(root, mode, cutoff)
+result = research_store.discover(root, mode, cutoff, candidate_for=(asset_id, quarter))
 ```
 
-Read decisions, reusable units, gaps, exclusions and unfinished run observations.
-The durable `investing/research.json` and asset questions define scope; derive
-work from source revisions, retained reviews and outputs rather than asking for
-a hand-written task list. Unsupported older Markdown stays untouched. Explain
-the missing version-1 configuration; initialize only a newly authorized subtree
-or isolated copy, without migrating arbitrary notes.
+If the request covers multiple periods, identify affected issuer/quarter scopes
+first and apply the candidate check before deciding no work for each of them.
+Read decisions, reusable units, gaps, exclusions and unfinished runs. Before
+reporting any reuse or no work, inspect `adopted_claims` for the selected
+review. It lists each saved claim, original source identity and availability,
+the affected work and its downstream dependents. Open the current ordinary note
+when `note_present` is true and compare the meaning with the saved claim.
+Treat typography, spelling and layout changes as immaterial when the claim
+still means the same thing. Check the bound original for cutoff, period and
+support. If a note is missing, a claim disappeared or changed materially, or
+its source no longer qualifies, mark that analysis and its downstream units
+for recheck and report independently reusable work separately. A helper result
+of `reusable` covers recorded evidence checks, so confirm the adopted claims
+before relying on it. Inspect other relevant returned `candidate_notes` as
+leads. Unverified notes remain leads and their timestamps cannot establish
+publication. Include what was checked in a no-work response.
+
+The marked `investing/index.md` or legacy `investing/research.json` and asset
+questions define scope; derive work from source revisions, retained reviews and
+outputs. Unsupported older Markdown stays untouched. Explain missing version-1
+configuration and initialize only a newly authorized subtree or isolated copy.
 
 For declared applied methods, compare the selected bundled method's actual
 content/version with its local applied-version manifest before relying on reuse.
@@ -84,6 +100,89 @@ check was performed. A successful local assessment, saved check flags or hashes
 do not certify analytical quality, current SEC coverage or a complete investment
 case. Do not convert a failed source check into a no-work claim.
 
+### Isolated Markdown pilot
+
+Use the Markdown format for new research saves. The Markdown path requires
+PyYAML in the selected Python environment. Existing JSON research remains readable; leave legacy interrupted
+publications untouched and report their recovery details.
+
+To retain an adopted claim, bind its consumed source and add a
+`candidate_notes` entry to its unit with `path`, the adopted `claim`,
+`source_id`, `source_version`, and `source_available_at`. Use text that
+preserves the claim's meaning and verify it against the original first. The
+workflow checks source-declared fiscal periods. Ordinary notes do not require
+hashes. Existing citation hashes are ignored and prior records stay in place.
+Standalone verification uses the recorded claim and captured source even
+when the live note is absent. It cannot decide whether the live claim changed.
+
+Use the [research overview](templates/research-overview.md),
+[asset entry](templates/asset-entry.md), [quarter navigation](templates/quarter-navigation.md),
+[review](templates/review.md), [source registration](templates/source-registration.md),
+and [method registration](templates/method-registration.md) templates for their
+corresponding note roles. Choose the matching analysis template:
+[financial](templates/financial-analysis.md), [operating](templates/operating-analysis.md),
+[industry and competition](templates/industry-and-competition.md),
+[forward forecast](templates/forward-forecast.md), [valuation and risk](templates/valuation-and-risk.md),
+[technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
+Use the same role for partial work and drafts, with their respective status.
+Substitute YAML properties as typed scalars and remove all placeholders.
+In the selected quarter directory (`cycles/<YYYYQq>/`), save a new source
+registration under `data/sources/` and a new method or assumption registration
+under `data/analysis/`. Create new evidence only under this quarter's `data/`.
+Use quarter-relative payload paths such as `data/raw/filing.html` in these
+registrations.
+Use the source and method templates, including their fenced metadata blocks.
+Reuse an existing legacy JSON registration unchanged when applicable.
+Every newly authored Markdown note, including a draft or calculation note,
+uses its bundled role template and flat Obsidian frontmatter. Put a new
+method or assumption's human-readable procedure, assumptions, and limits
+in the body of its method-registration note. Save the exact applied method
+payload separately as UTF-8 plain text (`data/materials/<name>.txt`) in this
+quarter. In the registration's fenced record, set `content_ref` to that
+quarter-relative payload path and `content_digest` to the SHA-256 of its
+exact bytes. Bind the same payload and digest in the unit's `analysis_inputs`,
+using the research-root-relative path in the publication proposal. The helper
+captures the quarter-relative reference in the saved review. Do not save a
+second bare Markdown note as the payload.
+
+Do not create JSON or TOML method files, helper caches, journals, or
+verification sidecars. Retain externally supplied and legacy input bytes
+in their original format, including evidence supplied as data-native JSON
+or a pre-existing Markdown payload. This format rule applies to new
+authorship, not to exact copies of existing inputs.
+When deciding whether bounded analysis is reusable, check the exact
+configured research question. A verified, explicitly scoped answer may be
+a reusable unit within a partial review; broader unanswered questions
+remain pending. State the scope before saving the unit.
+A unique, valid marked asset entry supersedes legacy asset configuration.
+Keep the existing legacy identity if both are present.
+
+Specify `storage="markdown"` in the normal `publish` call and supply new
+analysis output as Markdown with inline verification objects in its units.
+Save reusable partial output as `partial`. Staged analysis notes declare
+`draft`, and publication verifies and commits the exact final proposal bytes.
+The helper generates `review.md` from the review template. Reopen with fresh
+discovery and confirm the saved unit is visible. If publication stops, keep
+the draft and restart from the last validated review using a fresh run ID.
+
+### Quarter-owned evidence and portable reviews
+
+A new Markdown publication saves the exact consumed source versions and
+method contents under the selected quarter's `data/` directory, including
+prior-period inputs cited in a comparison. Keep the source's original fiscal
+identity and actual publication time. An original filing separate from its
+extraction is registered with `original_ref` and `original_digest`. Do not
+rewrite the extracted JSON or HTML. A cited previous conclusion goes into
+`research.adopted_conclusions` as an `excerpt`, `origin`, and `revision`,
+without copying the predecessor notebook.
+
+To verify an independently copied quarter, use
+`research_store.verify_quarter(quarter_root, "run-directory/review.md")`.
+This checks the saved work and exact local sources, methods, dates, and
+hashes against that review's captured configuration. Fix a missing or
+changed local input at its source or save a new review with verified
+evidence. Verification does not fetch a replacement from the original vault.
+
 ## 3. Acquire and execute only the required work
 
 Separate locally reusable work from new quarters, changed dependencies, missing
@@ -108,8 +207,9 @@ Keep economic source identity, publication/observation time, raw hash, relevant
 typed projection, units and fiscal identity separate. Preserve later comparative
 rows as excluded evidence at an earlier cutoff. Store local method/assumption
 metadata with actual authorship and content digest, separately from economic
-sources. Generic methods remain here; local files contain private assumptions
-and compact applied-version manifests, not a duplicate policy manual.
+sources. Generic methods remain in the skill. Keep local explanations in
+the method-registration note and use the plain-text payload for the compact
+applied-version content actually bound to the analysis.
 
 ### Select the analysis framework
 
@@ -194,7 +294,7 @@ repairing an omission, re-evaluate and check the affected unit as a new version;
 do not attach new identities to an unchanged output to manufacture coverage.
 
 Construct version-1 review metadata using the README contract, final root-relative
-output/check paths, current eligible predecessor and the exact source-declared
+output paths and inline verification, current eligible predecessor and the exact source-declared
 fiscal identity. Preserve unchanged units verbatim; changed inputs require new
 analysis/checks, not attaching new dependency identities to an old output.
 Include method, assumptions, changes, gaps and all three horizon judgments:
@@ -208,26 +308,31 @@ Do not pass a list for `changes`; it is explanatory text, not change records.
 ```python
 saved = research_store.publish(
     root, asset_id, review, files, expected, unique_run_id,
-    complete=False,  # checkpoint while required questions/gaps remain
+    complete=False, storage="markdown",  # checkpoint while required work remains
 )
 ```
 
 Use `complete=True` only after all configured required work is substantively
 checked and reusable and required gaps are empty. The helper's structural
 acceptance never supplies the research judgment. Re-run discovery after saving;
-confirm valid independent units are reusable and unresolved work stays pending.
+confirm valid independent units are reusable and unresolved work stays pending. Compare the new
+path set with the pre-analysis snapshot and report any newly written
+management JSON or TOML as a format failure. Existing registered evidence
+in its original JSON format is permitted.
 Do not advance `last_success` through local publication. Report actual external
 attempts and successful verification separately.
 
 ## 5. Recover and report honestly
 
-For an identified interrupted run use `recover(root, run_id, action="resume")`;
-it revalidates the original baseline, journal, drafts and dependencies. A bounded
+For a Markdown interruption, keep the draft, rediscover the last valid review,
+and use fresh run and review IDs to retry. For an identified legacy interrupted
+run, the legacy recovery operation `recover(root, run_id, action="resume")`
+revalidates the original baseline, journal, drafts and dependencies. A bounded
 withdrawal uses `action="rollback"`, preserves history and may also refuse edits
 or later dependent reviews. Neither operation authorizes arbitrary file repair.
 
 If a new proposal fails validation, inspect the named field and retain that
-attempt. Where its unchanged preconditions permit, safely abandon it through
+attempt. For legacy saves, where unchanged preconditions permit, abandon it through
 `recover(..., action="rollback")` before a corrected proposal. Reassess and use
 both a new run ID and a new review ID/target; do not reuse a failed attempt's
 target merely because its completion file is absent. If abandonment conflicts,

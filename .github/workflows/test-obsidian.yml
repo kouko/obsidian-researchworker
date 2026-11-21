@@ -41,8 +41,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install pytest
-        run: python3 -m pip install --quiet 'pytest>=7'
+      - name: Install test dependencies
+        run: python3 -m pip install --quiet 'pytest>=7' 'PyYAML>=6.0.2'
 
       - name: Run obsidian and finance pytest suites
         env:

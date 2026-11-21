@@ -1,0 +1,66 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-21-finance-remove-ordinary-note-hashes",
+  "content_digest": "1aed86488f348503b6a4f42845b6e322621a910d",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_research_continuation.py",
+      "result": "pass",
+      "command_digest": "1521306eb701f11b79fb88921a9d2a2f98414c9f3f1381f2d81c31d2692e2c74"
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "3704995dd6b16c09b3f8c98692b553be531af436",
+      "review_target_sha": "22a54473f115de59264be469dfe95ed617b85022",
+      "reviewer": "ordinary_note_code_review"
+    },
+    {
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "3704995dd6b16c09b3f8c98692b553be531af436",
+      "review_target_sha": "22a54473f115de59264be469dfe95ed617b85022",
+      "reviewer": "ordinary_note_skill_review"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "b84fa26",
+  "tested_commit": "22a54473f115de59264be469dfe95ed617b85022",
+  "reviewed_commit": "b1b400a4added52fd1c2c95366a70c1322d8ec65",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
