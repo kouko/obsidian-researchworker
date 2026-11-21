@@ -1,5 +1,120 @@
 # Independent industry and market research — acceptance test evidence
 
+## Re-run on 2026-11-22, at 96c10da
+
+The final clean detached clone was at
+`96c10daf3769ddb089565e0938159695101ef2fd`. Compared to 276a163, only
+`obsidian-finance/tests/test_market_research_workflow.py` changed. Git tree
+IDs for the docs, scripts and skills match exactly, so the runtime and
+Desktop evidence below retains its original attribution. The source
+entry point still loaded. The focused command
+`PYTHONDONTWRITEBYTECODE=1 /private/tmp/sec-package-evaluation-venv/bin/python -m pytest obsidian-finance/tests/test_market_research_workflow.py -q -p no:cacheprovider`
+returned `9 passed in 2.67s`. The expanded outlook test ran in an Obsidian
+vault, rejected a changed carried-forward forecast, selected the matching
+global annual actual from observations that also included North America,
+and confirmed the latest compared result and earlier pending result were
+both readable at their respective cutoffs.
+
+## Re-run on 2026-11-22, at 276a163
+
+The clean detached clone was at
+`276a1631636c4318c4f01704550d668ad8e50341`. The README source entry point
+loaded and listed all six commands. `git diff b622dc3 276a163` changes
+only the market skill and its record guide, which now explicitly say to
+copy an unchanged forecast and each complete source object. The helpers
+are byte-identical to b622dc3. I repeated the eight focused checks below
+on this checkout and got `8 passed in 1.50s`.
+
+I used the clean clone CLI to read the older native vault at each
+historical cutoff, then replayed five publications in
+`/private/tmp/industry-276a163-vault.fmz5a9vp`, a new vault. This was a
+CLI execution at 276a163 using previously generated public research
+records. Earlier agent conversations and desktop checks retain their
+original execution attribution.
+
+- 1: Re-tested. Both smartphone quarters republished with the original
+  visible analysis, scope, ship/share observations and limitations.
+- 2: Re-tested. Clean `resume` read each saved native market-quarter
+  and each republished quarter without issues, preserving pending work.
+  Independent publish and resume processes continued Q2 to Q3 for
+  both markets and then applied the phone Q3 update. For the past
+  October 31 cutoff the returned record excluded Counterpoint even
+  though the returned path opens the current overview that mentions it.
+  The CLI read barrier still refused resume with a pending batch.
+- 3: Re-tested. The original native Apple issuer note was checked
+  against the clean helper's exact IDC text, claim version and URL;
+  the note retains separate fiscal and market periods. The September
+  28 issuer cutoff returned null, and the October 31 citation retained
+  the October IDC release. The focused read-barrier check confirmed
+  citation refuses pending transactions. No issuer note was rewritten.
+- 4: Re-tested. The unchanged older native Q3 source objects each had
+  an added redundant `version` key and failed publication with
+  `Comparison changed a carried-forward forecast or release`. The
+  rejected attempts left the published notes byte-identical. Following
+  the updated guide, I reused the precise Q2 forecast source objects.
+  Both Q3 publications then preserved the saved quarterly actuals,
+  outlooks and pending comparisons. The focused tests also exercised
+  the annual on-release comparison, duplicate identity, conflicting
+  actuals and forged error.
+- 5: Re-tested. Phone Q3 revisions 1 and 2 published to the same paths.
+  The size/share note displayed `重要修訂`, 316.1 million from IDC,
+  and 307 million from Counterpoint. The cutoff-specific citations
+  selected those different releases. The earlier verified Desktop
+  links still refer to the same note layout.
+- 6: Re-tested. Both studies first published in
+  `investing/industries/<market>/<quarter>/` without a destination
+  override. The coordinated concurrent first-publish test accepted
+  the first identity and rejected the stale, inconsistent identity
+  without publishing the competing quarter.
+- 7: Carried over. The scope recheck rejects a competing identity
+  without changing the filename or property output. The diff changed
+  neither the renderer nor the filterable format previously exercised
+  in Obsidian Desktop.
+
+## Re-run on 2026-11-22, at b622dc3
+
+The clean detached clone was at
+`b622dc38f43181b1770f93b04558d9cab24ae897`. The README source entry point
+loaded under Python 3.15.0 and exposed all six commands. Focused checks used
+the existing isolated test environment; the package suite is left to
+closing review.
+
+```text
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/sec-package-evaluation-venv/bin/python -m pytest obsidian-finance/tests/test_market_research.py::test_first_publish_rechecks_study_identity_under_write_lock obsidian-finance/tests/test_market_research.py::test_industry_publish_rejects_invalid_forecast_comparisons obsidian-finance/tests/test_market_research.py::test_cli_read_barrier_refuses_resume_and_cite_until_recovery obsidian-finance/tests/test_market_research_workflow.py::test_prior_outlook_round_trip_and_target_horizon_comparison obsidian-finance/tests/test_market_research_workflow.py::test_industry_notes_keep_two_corrections_and_original_citations obsidian-finance/tests/test_market_research_workflow.py::test_industry_resume_keeps_legacy_and_prior_forecast_versions -q -p no:cacheprovider
+8 passed in 1.60s
+```
+
+- In the earlier native replay vault, clean-clone `resume` with and
+  without a cutoff returned `issues: []` for phones and semiconductors
+  in both quarters. `cite` selected the same market claim and linked
+  release as the historical record in each group. Phone Q3 at
+  October 31 returned revision 1 and excluded the November Counterpoint
+  source, even though the navigation overview links to the current note
+  that mentions it. November 2 selected Counterpoint. The October 31
+  Apple claim retained the exact source and claim version; the
+  September 28 Pacific cutoff returned `null`. The focused recovery
+  check confirmed read-only resume and citation refuse a pending batch.
+- I tried to republish those records from Q2 to Q3, unchanged apart from
+  the documented name and language required to start in a new vault.
+  Phone Q2 succeeded, and Q3 returned `Comparison changed a carried-forward
+  forecast or release: idc-may-2024`. The forecast and the release URL,
+  date, locator and observation period already matched. The old Q3
+  output added a redundant `version` key to the release object already
+  keyed by the exact release ID. Both markets' prior forecast releases
+  showed the same difference on inspection.
+- I repeated publication in `/private/tmp/industry-r2-accept-vault.djrbc85s`
+  after carrying the two original Q2 forecast source objects over whole.
+  Both Q2 and both Q3 groups published and read back with the original
+  comparison records. Phone Q3 revision 2 used the original paths,
+  retained the IDC and Counterpoint claim versions and displayed both
+  figures and the important revision in the size/share note. No replay
+  source notes were modified.
+- The coordinated first-publish test preserved one project overview and
+  the winning quarter when a conflicting name and naming language
+  arrived on a stale plan. The three invalid comparison fixtures
+  (duplicated forecast identity, conflicting actuals and a forged
+  arithmetic error) were rejected before creating an investing folder.
+
 ## Re-run on 2026-11-22, at e51c4ea
 
 The independent tester used a clean detached clone at
