@@ -78,7 +78,7 @@ pending: obtain comparable calendar-year 2024 sales, assess logic and memory
 ## 9. Revision
 
 - How I tried it: In the independent vault, submitted an eligible `r2` via `publish` with an explicit revision date and a clarification that Apple share means worldwide shipment share. This was a wording correction with figures held constant.
-- What came back: `r2/review.md:11` links `../r1/review.md`; `r2/analysis.md:13` dates the correction 2026-11-21 and states that the figures and conclusion are unchanged. A recursive diff against the original Q3 `r1` folder had no output. The focused workflow test `test_revision_does_not_supersede_eligible_citation_or_broken_resume` separately exercises a revised observation, citation eligibility and fallback to the surviving verified record.
+- What came back: `r2/review.md:11` links `../r1/review.md`; `r2/analysis.md:13` dates the correction 2026-11-21 and states that the figures and conclusion are unchanged. A recursive diff against the original Q3 `r1` folder had no output. The focused workflow test `test_revision_does_not_supersede_eligible_citation_or_broken_resume` separately exercises a second snapshot with a later source and different observation, cutoff-specific citation selection, and fallback to the surviving verified record.
 - Evidence: Independent test vault `/private/tmp/market-accept-vault.nNLok6`, with the revision body and link summarized above. No new actual market figure was introduced for this wording-correction replay.
 
 ## 10. Company citation
