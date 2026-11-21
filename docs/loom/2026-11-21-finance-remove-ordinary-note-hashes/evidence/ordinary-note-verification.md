@@ -46,3 +46,12 @@ status. The two-case scratch probe at
 `/private/tmp/finance-managed-note-adversary-57723c8/test_managed_note_snapshot.py`
 passed after the fix. Both regressions are now covered in the existing
 continuation suite.
+
+On 6cfac25, the complete suite passed 380 and the continuation suite passed
+49. An exact-version fresh read of both Apple copies recomputed the local
+SEC original digests, checked the historical cutoff, and confirmed the
+scope of each decision. A formatting-only addition left the adopted claim
+usable. A missing note led the agent to revisit financial and dependent
+synthesis while retaining independent competition. In the missing-note
+case the standalone file checks still passed using saved evidence. The
+transcript is `/private/tmp/finance-ordinary-note-reread.md`.
