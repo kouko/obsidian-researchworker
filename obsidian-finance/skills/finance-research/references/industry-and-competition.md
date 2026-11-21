@@ -33,3 +33,15 @@ Explain the peer set and comparison limits, the best evidence for and against
 the claimed position, and implications for the assumptions used downstream.
 Keep required conclusions pending when comparability or corroboration is
 insufficient.
+
+## Adopt quarterly market evidence
+
+When the user designates a saved quarterly industry or market study,
+use [market-research](../../market-research/SKILL.md) to retrieve the exact
+claim and eligible source versions at the issuer assessment cutoff. Record
+the issuer fiscal quarter and market observation quarter separately. Preserve
+the returned originals and versions as evidence dependencies in the issuer
+workflow. A later market review, an unresolved source release time or a
+changed statistical definition can affect what may be cited. If lookup finds
+no eligible claim, continue with independently eligible issuer evidence and
+report the market evidence gap.
