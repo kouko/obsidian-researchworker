@@ -1,0 +1,62 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-20-finance-historical-filer-identity",
+  "content_digest": "75eb45befca49bff6900bea57ffadd75ea8027ae",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_acquire.py",
+      "artifact": "obsidian-finance/tests/test_acquire.py",
+      "result": "pass",
+      "command_digest": "28d3b45e17f9d9e0b4efe1e860d3a699a8bc3194f8c22c612a4ecc8c0d41e291"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "pr16_review_code",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "dea15b114443783b9ad974df51987d0a0315d99b",
+      "review_target_sha": "f0187b033bbb7526553b610a454a95afbabbe341"
+    },
+    {
+      "reviewer": "pr16_review_contract",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "spec+adversarial",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "dea15b114443783b9ad974df51987d0a0315d99b",
+      "review_target_sha": "f0187b033bbb7526553b610a454a95afbabbe341"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "cfd25af5a6ba0fde0618896d4bbe25f4e2ed171e",
+  "tested_commit": "229c722",
+  "reviewed_commit": "f0187b033bbb7526553b610a454a95afbabbe341",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    }
+  ]
+}

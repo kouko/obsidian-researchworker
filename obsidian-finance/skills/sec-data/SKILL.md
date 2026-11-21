@@ -11,8 +11,9 @@ statements, general Obsidian research notes or automatic note updates.
 
 ## Run the operation
 
-Obtain the ticker, company fiscal quarter `YYYYQq` and an explicit output
-directory. An optional `--as-of YYYY-MM-DD` limits publication eligibility;
+Obtain the ticker or SEC Central Index Key (CIK), company fiscal quarter
+`YYYYQq` and an explicit output directory. Supply exactly one of `--ticker`
+or `--cik` (one to ten digits). An optional `--as-of YYYY-MM-DD` limits publication eligibility;
 without it the UTC acquisition date becomes the recorded retrospective data
 cutoff. A requested historical snapshot uses an explicit cutoff, never a guessed
 quarter-end or original-filing-date cutoff. Ask only for missing inputs.
@@ -33,6 +34,20 @@ python3 '<skill-directory>/scripts/acquire.py' \
   --fiscal-quarter 2024Q3 \
   --output-dir /private/tmp/sec-data-sample
 ```
+
+For quarter requests the ticker lookup can follow documented SEC issuer
+succession. It checks the predecessor's original fiscal declarations and
+official filing date against the cutoff and succession boundary. When a
+current filer's verified original was filed after the transition for a
+quarter ending before it, the tool checks the predecessor for a competing
+verified original. Records under both filers count as one original only if
+their accession, filing date, period end, form, and primary document basename
+agree. Succession records identify the filer and do not contribute eligible
+financial data.
+If selection remains unresolved, use the error detail to identify the missing
+or conflicting evidence. An explicit request such as `--cik 0000034088` for
+Exxon Mobil Corporation verifies that filer without switching to another CIK.
+Date-range ticker requests use the current ticker registry.
 
 ### Configure contact on first use
 
@@ -88,8 +103,10 @@ relevant limits in the conversation language:
 - `failed` / exit 1: inspect the error; no usable completed eligible dataset.
 - exit 64: resolve the contact, request or destination error before retrying.
 
-For quarter requests report `resolution`, `mode` and `effective_cutoff` from
-the result. `FISCAL_PERIOD_UNRESOLVED` forces failed / exit 1, retaining raw
+For quarter requests report `company`, `issuer_selection`, `resolution`,
+`mode` and `effective_cutoff` from the result. The selection records the
+actual CIK, the selection method and, when used, the SEC succession references.
+`FISCAL_PERIOD_UNRESOLVED` forces failed / exit 1, retaining raw
 diagnostics without an eligible dataset or completion marker. Explain the
 missing/contradictory evidence instead of choosing a calendar quarter.
 
