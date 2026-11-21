@@ -289,24 +289,28 @@ def _key(data):
                                    separators=(",", ":"), allow_nan=False).encode()).hexdigest()
 
 
-def _history(text):
+def _history_scope(study, quarter, role, company=None):
+    return [study.identifier, quarter, role, company]
+
+
+def _history(text, scope):
     visible, marker, trailing = notes.managed_body(text).partition(_HISTORY_START)
     if not marker or not trailing.endswith(_HISTORY_END):
         raise ValueError("Missing industry note history")
     envelope = json.loads(trailing[:-len(_HISTORY_END)])
     if (
         not isinstance(envelope, dict) or set(envelope) != {"hash", "data"}
-        or envelope["hash"] != _key([visible, envelope["data"]])
+        or envelope["hash"] != _key([scope, visible, envelope["data"]])
     ):
         raise ValueError("Industry note content conflicts with saved history")
     return envelope["data"]
 
 
-def _pack_history(visible, data):
+def _pack_history(visible, data, scope):
     visible = visible.rstrip()
     if _HISTORY_START in visible:
         raise ValueError("Unexpected history marker in research text")
-    envelope = {"hash": _key([visible, data]), "data": data}
+    envelope = {"hash": _key([scope, visible, data]), "data": data}
     return visible + _HISTORY_START + _canonical_json(envelope) + _HISTORY_END
 
 
@@ -319,23 +323,23 @@ def _note_for(study, quarter, role, company=None, name=None):
     return notes.note_path(study, role, quarter=quarter, company=company, company_name=name)
 
 
-def _decode_parts(study, quarter, index):
-    loaded = {}
-    for version in index:
-        for ref in version["parts"]:
-            role, company = ref["role"], ref.get("company")
-            identity = role, company
-            if identity in loaded:
-                continue
-            path = _note_for(study, quarter, role, company)
-            text = _read_note(study, path)
-            if text is None:
-                raise ValueError(f"Missing linked industry note: {path}")
-            items = _history(text)
-            if not isinstance(items, dict) or any(key != _key(item) for key, item in items.items()):
-                raise ValueError(f"Invalid material history in {path}")
-            loaded[identity] = items, text
-    return loaded
+def _decode_parts(study, quarter, version, loaded):
+    for ref in version["parts"]:
+        role, company = ref["role"], ref.get("company")
+        identity = role, company
+        if identity in loaded:
+            continue
+        path = _note_for(study, quarter, role, company)
+        text = _read_note(study, path)
+        if text is None:
+            raise ValueError(f"Missing linked industry note: {path}")
+        scope = _history_scope(study, quarter, role, company)
+        items = _history(text, scope)
+        if not isinstance(items, dict) or any(
+            key != _key([scope, item]) for key, item in items.items()
+        ):
+            raise ValueError(f"Invalid material history in {path}")
+        loaded[identity] = items, text
 
 
 def _record_from_version(study, quarter, version, loaded):
@@ -364,18 +368,25 @@ def _record_from_version(study, quarter, version, loaded):
     return record
 
 
-def _quarter_history(study, quarter):
+def _quarter_history(study, quarter, *, issues=None):
     overview = _note_for(study, quarter, "overview")
     text = _read_note(study, overview)
     if text is None:
         return overview, text, [], {}, []
-    index = _history(text)
+    index = _history(text, _history_scope(study, quarter, "overview"))
     if not isinstance(index, list) or not index:
         raise ValueError("Invalid industry quarter index")
     if [entry["revision"] for entry in index] != list(range(1, len(index) + 1)):
         raise ValueError("Industry quarter revisions must be contiguous")
-    loaded = _decode_parts(study, quarter, index)
-    records = [_record_from_version(study, quarter, entry, loaded) for entry in index]
+    loaded, records = {}, []
+    for entry in index:
+        try:
+            _decode_parts(study, quarter, entry, loaded)
+            records.append(_record_from_version(study, quarter, entry, loaded))
+        except (ValueError, OSError, AttributeError, KeyError, TypeError) as error:
+            if issues is None:
+                raise
+            issues.append(f"r{entry['revision']}: {error}")
     return overview, text, index, loaded, records
 
 
@@ -411,7 +422,7 @@ def _material_text(role, item, sources_heading):
     return text
 
 
-def _part_body(study, role, current, history, earlier):
+def _part_body(study, role, current, history, earlier, scope):
     _, _, revisions, sources, prior, edited = _DISPLAYS[study.language]
     sections = [_material_text(role, current, sources)]
     if earlier:
@@ -419,7 +430,7 @@ def _part_body(study, role, current, history, earlier):
         for key, revision, cutoff, updated in earlier:
             sections.append(f"### {prior} {revision} · {cutoff} · {edited} {updated}\n\n"
                             + _material_text(role, history[key], sources))
-    return _pack_history("\n\n".join(sections), history)
+    return _pack_history("\n\n".join(sections), history, scope)
 
 
 def _observation_identity(row):
@@ -461,7 +472,8 @@ def _plan_industry_publication(study, record):
     for (role, company), (item, name) in parts.items():
         path = _note_for(study, quarter, role, company, name)
         paths.append(path)
-        ref = {"role": role, "version": _key(item)}
+        scope = _history_scope(study, quarter, role, company)
+        ref = {"role": role, "version": _key([scope, item])}
         if company:
             ref.update(company=company, name=name)
         references.append(ref)
@@ -481,7 +493,7 @@ def _plan_industry_publication(study, record):
         ]
         earlier = list({entry[0]: entry for entry in reversed(prior_refs)}.values())
         history = {**history, key: item}
-        updated = notes.render_note(study, role, _part_body(study, role, item, history, earlier),
+        updated = notes.render_note(study, role, _part_body(study, role, item, history, earlier, scope),
                                     company=company, company_name=name, existing=old_text, **props)
         changes[path] = old_text, updated
 
@@ -506,7 +518,8 @@ def _plan_industry_publication(study, record):
         body.extend((f"## {revisions}", *changes_to_overview))
     index = [*index, {key: record[key] for key in ("revision", "cutoff", "overview", "pending")}]
     index[-1].update(parts=references, updated=props["updated"])
-    rendered = notes.render_note(study, "overview", _pack_history("\n\n".join(body), index),
+    rendered = notes.render_note(study, "overview", _pack_history("\n\n".join(body), index,
+                                               _history_scope(study, quarter, "overview")),
                                  existing=previous, **props)
     changes[overview] = previous, rendered
     return overview, changes
@@ -546,7 +559,7 @@ def _available_records(root, market, quarter, destination):
                 issues.append(f"Existing destination has no matching industry study: {path}")
             return legacy, issues
         study = notes.identify_study(vault, market, destination=destination)
-        overview, _, _, _, records = _quarter_history(study, quarter)
+        overview, _, _, _, records = _quarter_history(study, quarter, issues=issues)
     except (ValueError, OSError, AttributeError, KeyError, TypeError) as error:
         return legacy, [*issues, str(error)]
     candidates = [(record, overview) for record in reversed(records)] + legacy
@@ -585,7 +598,7 @@ def cite(root, market, quarter, claim_id, cutoff, *, destination=None):
             return {"claim": claim, "sources": sources, "review": str(path),
                     "market": market, "quarter": quarter, "cutoff": cutoff,
                     "snapshot_cutoff": record["cutoff"],
-                    "claim_version": _key([claim_id, claim, sources]),
+                    "claim_version": _key([market, quarter, claim_id, claim, sources]),
                     "retrospective": _boundary(record["cutoff"]) > boundary}
     return None
 
