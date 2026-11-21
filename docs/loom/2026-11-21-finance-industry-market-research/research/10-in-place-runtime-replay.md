@@ -82,3 +82,33 @@ publishes a sell-through figure. The source packet supports the distinction
 between IDC shipments and retail sell-through, but it does not establish the
 existence of such an Apple disclosure. No Apple sell-through figure,
 financial result, or investment conclusion is treated as verified here.
+
+## Apple issuer wording follow-up
+
+Re-ran the issuer step alone in a fresh ephemeral conversation, thread
+`01a1ff02-550c-7910-b45a-a836e989cf51`, with copied and byte-verified
+`b66a90f` package files and the same disposable market notes. The input
+explicitly requested adoption of only the supported part of the stored
+claim, retaining its exact identity and excluding any unsupported
+implication that Apple reports retail sell-through. No companies' net
+sales numbers were supplied to or used by this replay.
+
+```sh
+cd /private/tmp/industry-issuer-followup.Ho1Qmj
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/issuer-prompt.txt > issuer-events.jsonl 2> issuer-stderr.log
+```
+
+The process exited zero and the trace ended at `turn.completed`. The new
+`issuer/AAPL/FY2024Q4/industry-and-competition.md` reports the sourced
+IDC estimate of 56.0 million units, +3.5% YoY and 17.7% of worldwide
+calendar Q3 shipments. It states that those shipment figures cannot
+establish retail sell-through or company-reported net sales. It retains
+claim version
+`1b0ea56dd8cbb2f443f5d4596b203d4746ba23ba17859ab48db3db6ea36c9045`,
+the original IDC source, table and publication date, and the two separate
+issuer cutoffs. October 31 yields IDC. September 28 yields null and
+Counterpoint's November 1 release remains excluded at both times.
+A recursive comparison found no differences in the copied market vault.
+This resolves the citation wording in the follow-up artifact. The
+earlier saved claim and initial replay remain intact, and this focused
+run does not establish that an unprompted run always avoids that wording.
