@@ -12,6 +12,7 @@ ANALYSIS_ROLES = frozenset({
     "forward-forecast", "valuation-and-risk", "technical-analysis", "synthesis",
 })
 _RUN_FIELDS = ("asset_id", "fiscal_quarter", "as_of", "review_id", "status")
+_SCALAR_STRING_TAG = r"(?:(?:!!str|!<tag:yaml\.org,2002:str>)[ \t]+)?"
 _ROLE_FIELDS = {
     "research-overview": (),
     "asset-entry": ("asset_id",),
@@ -103,18 +104,31 @@ def declares_role(text, role):
     except ValueError:
         end = len(lines)
     header = "\n".join(lines[1:end])
-    key = r"""(?:finance_role|'finance_role'|"finance_role")"""
-    position = r"(?:^|[,{])[ \t]*" + key + r"[ \t]*:"
-    if not header.lstrip().startswith("{") and not re.search(position, header, re.M):
+    def unescape_identifier(match):
+        code = int(match[0][2:], 16)
+        if code < 128 and (chr(code).isalnum() or chr(code) in "_-"):
+            return chr(code)
+        return match[0]
+
+    # Match a quoted block key even when an ASCII identifier character is
+    # represented by a YAML escape. The actual loader still decides validity.
+    lexical = re.sub(r"\\\n[ \t]*", "", header)
+    lexical = re.sub(r"\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})",
+                     unescape_identifier, lexical)
+    key = _SCALAR_STRING_TAG + r"""(?:finance_role|'finance_role'|"finance_role")"""
+    position = (r"(?:^|[,{])[ \t]*" + key + r"[ \t]*:"
+                + r"|^[ \t]*\?[ \t]+" + key + r"[ \t]*\n[ \t]*:")
+    if not header.lstrip().startswith("{") and "finance_role" not in lexical:
         return False
     try:
-        return _mapping(header).get("finance_role") == role
+        actual = _mapping(header).get("finance_role")
+        return actual == role or (isinstance(actual, str) and bool(re.fullmatch(re.escape(role) + r"[ \t]*\[", actual)))
     except ValueError:
         # A recognizable declaration must still reach record validation when
         # the surrounding YAML is malformed or the YAML dependency is absent.
         value = re.escape(role)
-        marker = rf"""{position}[ \t]*(?:{value}|'{value}'|"{value}")(?=[ \t]*(?:[,}}]|#|$))"""
-        return bool(re.search(marker, header, re.M))
+        marker = rf"""(?:{position})[ \t]*{_SCALAR_STRING_TAG}(?:{value}|'{value}'|"{value}")(?=[ \t]*(?:[,}}\[]|#|$))"""
+        return bool(re.search(marker, lexical, re.M))
 
 
 def parse_note(text, role, **expected):

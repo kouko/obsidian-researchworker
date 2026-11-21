@@ -60,8 +60,8 @@ def _bytes(root, reference, *, quarter_relative=False):
         return stream.read()
 
 
-def _names(root, reference):
-    fd = _open(root, reference, True)
+def _names(root, reference, *, quarter_relative=False):
+    fd = _open(root, reference, True, quarter_relative=quarter_relative)
     try:
         return sorted(os.listdir(fd))
     finally:
@@ -318,17 +318,19 @@ def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
     return valid
 
 
+_LEGACY_REVIEW_MARKERS = frozenset({"review.json", "pending.json", "withdrawn.json", "abandoned.json"})
 _QUARTER_NOTE = re.compile(r"investing/assets/equities/[^/]+/cycles/[0-9]{4}Q[1-4]/(?!index\.md$)[^/]+\.md")
 _CITATION_FIELDS = ("path", "claim", "source_id", "source_version", "source_available_at")
-_SCALAR_STRING_TAG = r"(?:(?:!!str|!<tag:yaml\.org,2002:str>)[ \t]+)?"
 _ROLE_MARKER = re.compile(
-    r"(?:^|[,{])[ \t]*" + _SCALAR_STRING_TAG + r"""['"]?finance_role['"]?[ \t]*:[ \t]*"""
-    + _SCALAR_STRING_TAG + r"""['"]?([a-z-]+)(?![\w-])""", re.M)
+    r"(?:^|[,{])[ \t]*" + _markdown._SCALAR_STRING_TAG + r"""['"]?finance_role['"]?[ \t]*:[ \t]*"""
+    + _markdown._SCALAR_STRING_TAG + r"""['"]?([a-z-]+)(?![\w-])""", re.M)
 
 
 def _ordinary_quarter_note(path, payload):
-    if not _QUARTER_NOTE.fullmatch(path):
-        return False
+    return bool(_QUARTER_NOTE.fullmatch(path)) and _ordinary_markdown(payload)
+
+
+def _ordinary_markdown(payload):
     text = payload.decode("utf-8", errors="replace").lstrip("\ufeff")
     if not text.startswith(("---\n", "---\r\n")):
         return True
@@ -409,7 +411,8 @@ def _candidate_sources_valid(base, quarter, cutoff, unit, sources):
     return True
 
 
-def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_units=None):
+def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
+             invalid_units=None, repairable_gaps=None):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
@@ -443,7 +446,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
                          and props.get("predecessor") == review.get("predecessor")
                          and props.get("review_id") == rid and props.get("as_of") == review["cutoff"]
                          and _target(asset, review)[1] == path, "Markdown review identity mismatch")
-                _require(not {"review.json", "pending.json", "withdrawn.json", "abandoned.json"} &
+                _require(not _LEGACY_REVIEW_MARKERS &
                          set(_names(root, path)), "conflicting Markdown and legacy review")
             except (OSError, ValueError, KeyError, TypeError) as error:
                 gaps.append(dict(record=path + "/review.md", evidence="reviews", reason="Invalid Markdown review: " + str(error),
@@ -495,6 +498,12 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
                         recovery="Preserve conflicting bytes and draft; inspect the recorded run before retry"))
                     continue
             review = _object(root, path + "/review.json")
+            rid = _id(review["id"])
+            _adapter._timestamp(review["cutoff"])
+            fiscal = review.get("fiscal")
+            _require(_adapter._core._fiscal(fiscal)
+                     and f"{fiscal['year']}{fiscal['period']}" == quarter
+                     and isinstance(review.get("units"), dict), "invalid legacy review envelope")
         except FileNotFoundError:
             try:
                 abandoned = _object(root, path + "/abandoned.json")
@@ -506,9 +515,11 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
                 reason="Interrupted publication; prior research remains available",
                 recovery="Use recover(root, run_id) to revalidate/resume or action='rollback' to abandon; preserve drafts"))
             continue
-        rid = _id(review["id"])
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            gaps.append(dict(record=path + "/review.json", evidence="reviews", reason="Invalid legacy review: " + str(error),
+                recovery="Preserve the damaged marker and inspect the prior valid record"))
+            continue
         _require(rid not in saved, "duplicate review identity")
-        _adapter._timestamp(review["cutoff"])
         saved[rid] = (path, review)
         try:
             marker = _object(root, path + "/withdrawn.json")
@@ -576,6 +587,19 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
         tip = leaves[0]
         while tip in unusable:
             tip = saved[tip][1].get("predecessor")
+        if repairable_gaps is not None and tip == leaves[0]:
+            ancestor = tip
+            while ancestor is not None:
+                path, older = saved[ancestor]
+                for qid, error in invalid_units.get(path, {}).items():
+                    if isinstance(error, _QuarterInputError):
+                        units = older["units"]
+                        affected = [qid, *_dependent_work(older["requirements"], qid)]
+                        repairable_gaps[path, "quarter-unit:" + qid] = {
+                            units[work]["output"]["path"] for work in affected
+                            if work in units and "output" in units[work]
+                        }
+                ancestor = older.get("predecessor")
         return [eligible[tip]] if tip in eligible else []
     except (ValueError, FileNotFoundError) as error:
         gaps.append(dict(record=base + "/cycles/" + quarter, evidence="reviews", reason=str(error), recovery="Repair review metadata or provide the requested cutoff review; preserve existing research"))
@@ -1120,6 +1144,10 @@ class _QuarterMaterialError(ValueError):
     """A bound quarter file or completion claim failed its local checks."""
 
 
+class _QuarterInputError(_QuarterMaterialError):
+    """A saved input is damaged, regardless of the integrity of its output."""
+
+
 def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     """Replay exact quarter-local bindings, optionally recording individual material failures."""
     manifest = stored["quarter_evidence"]
@@ -1161,17 +1189,17 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     def read(path):
         return _bytes(folder, path, quarter_relative=True)
 
-    def checked(path, checksum):
+    def checked(path, checksum, *, error_type=_QuarterMaterialError):
         try:
             payload = read(path)
         except (OSError, ValueError) as error:
-            raise _QuarterMaterialError(f"cannot read quarter evidence {path}: {error}") from error
+            raise error_type(f"cannot read quarter evidence {path}: {error}") from error
         if sha256(payload).hexdigest() != checksum:
-            raise _QuarterMaterialError("quarter evidence digest mismatch: " + path)
+            raise error_type("quarter evidence digest mismatch: " + path)
         return payload
 
     def registration(ref, folder_name, kind):
-        payload = checked(_evidence_path(ref, folder_name), Path(ref).stem)
+        payload = checked(_evidence_path(ref, folder_name), Path(ref).stem, error_type=_QuarterInputError)
         props, metadata = _markdown.record(payload.decode("utf-8"), kind + "-registration", asset_id=asset)
         _require(type(metadata.get("version")) is int and metadata["version"] == 1
                  and props[kind + "_id"] == metadata["id"]
@@ -1190,27 +1218,6 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                     consumed={asset + ":" + sid: value for sid, value in consumed.items()})
         unit_sources = {}
         try:
-            for sid, ref in links["sources"].items():
-                record = registration(ref, "sources", "source")
-                _require(record["id"] == sid and record["identity"] == consumed[sid]["version"]
-                         and _adapter._core._same_json(record["projection"], consumed[sid]["projection"]),
-                         "quarter evidence source identity mismatch: " + sid)
-                published = _available(record.get("available_at"), cutoff)
-                _require(published is not None and published <= cutoff, "quarter evidence source is later than cutoff")
-                raw = checked(_evidence_path(record["raw_ref"], "raw"), record["raw_digest"])
-                _verify_source_payload(record, raw)
-                if "original_ref" in record or "original_digest" in record:
-                    checked(_evidence_path(record["original_ref"], "raw"), record["original_digest"])
-                source = dict(record, id=asset + ":" + sid, version=record["identity"])
-                unit_sources[sid] = source
-            for mid, method in links["methods"].items():
-                frozen = methods[mid]
-                record = registration(method["reference"], "analysis", "method")
-                _require(record["id"] == mid and record["identity"] == frozen["version"]
-                         and all(_adapter._core._same_json(record[field], frozen[field])
-                                 for field in _ANALYSIS_FIELDS - {"version"}),
-                         "quarter evidence method identity mismatch: " + mid)
-                checked(_evidence_path(record["content_ref"], "materials"), record["content_digest"])
             if "output" in unit:
                 output = unit["output"]
                 _require(len(Path(output["path"]).parts) == 2 and output["path"].endswith(".md"),
@@ -1224,6 +1231,30 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                 _require(set(_required(question, quarter)) <= consumed.keys()
                          and set(question.get("required_analysis", [])) <= methods.keys(),
                          "quarter analysis lacks required captured inputs: " + qid)
+            for sid, ref in links["sources"].items():
+                record = registration(ref, "sources", "source")
+                _require(record["id"] == sid and record["identity"] == consumed[sid]["version"]
+                         and _adapter._core._same_json(record["projection"], consumed[sid]["projection"]),
+                         "quarter evidence source identity mismatch: " + sid)
+                published = _available(record.get("available_at"), cutoff)
+                _require(published is not None and published <= cutoff, "quarter evidence source is later than cutoff")
+                raw = checked(_evidence_path(record["raw_ref"], "raw"), record["raw_digest"],
+                              error_type=_QuarterInputError)
+                _verify_source_payload(record, raw)
+                if "original_ref" in record or "original_digest" in record:
+                    checked(_evidence_path(record["original_ref"], "raw"), record["original_digest"],
+                            error_type=_QuarterInputError)
+                source = dict(record, id=asset + ":" + sid, version=record["identity"])
+                unit_sources[sid] = source
+            for mid, method in links["methods"].items():
+                frozen = methods[mid]
+                record = registration(method["reference"], "analysis", "method")
+                _require(record["id"] == mid and record["identity"] == frozen["version"]
+                         and all(_adapter._core._same_json(record[field], frozen[field])
+                                 for field in _ANALYSIS_FIELDS - {"version"}),
+                         "quarter evidence method identity mismatch: " + mid)
+                checked(_evidence_path(record["content_ref"], "materials"), record["content_digest"],
+                        error_type=_QuarterInputError)
             for note in _candidate_citations(unit):
                 path = note["path"]
                 _require(_QUARTER_NOTE.fullmatch(f"investing/assets/equities/{asset}/cycles/{quarter}/{path}"),
@@ -1268,6 +1299,8 @@ def verify_quarter(folder, review):
              "provide the quarter-relative run/review.md")
     _id(path.parts[0])
     try:
+        _require(not _LEGACY_REVIEW_MARKERS & set(_names(folder, path.parts[0], quarter_relative=True)),
+                 "conflicting Markdown and legacy review")
         props, stored = _markdown.record(_bytes(folder, review, quarter_relative=True).decode("utf-8"), "review")
         asset, quarter = props["asset_id"], props["fiscal_quarter"]
         stored_quarter, target = _target(asset, stored)
@@ -1278,6 +1311,19 @@ def verify_quarter(folder, review):
         return dict(verification=result, status="verified", reusable=result["reusable"], gaps=result["gaps"])
     except (OSError, ValueError, KeyError, TypeError) as error:
         raise ValueError("Cannot verify quarter evidence: " + str(error)) from error
+
+
+def _validate_markdown_target(root, target, files, *, committed=False):
+    try:
+        names = set(_names(root, target))
+        extras = names - files.keys()
+        _require(files.keys() <= names and (not extras or (committed and all(
+            name.endswith(".md") and _ordinary_markdown(_bytes(root, target + "/" + name)) for name in extras))),
+                 "Publication conflict: unexpected files in proposed review: " + target)
+        _require(all(_bytes(root, target + "/" + name) == content for name, content in files.items()),
+                 "Publication conflict: proposed review files changed: " + target)
+    except OSError as error:
+        raise ValueError("Publication conflict: cannot verify proposed review: " + target) from error
 
 
 def _publish_markdown(root, asset, review, files, expected, run_id, complete):
@@ -1309,9 +1355,12 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         gaps = []
         entries = _managed_directories(root, cycle)
         cutoff = _adapter._core._instant(review["cutoff"])
-        leaves = _reviews(root, base, quarter, cutoff, "latest", gaps) if entries else []
+        invalid_units, repairable_gaps = {}, {}
+        leaves = (_reviews(root, base, quarter, cutoff, "latest", gaps,
+                           invalid_units=invalid_units, repairable_gaps=repairable_gaps) if entries else [])
         _, draft_targets = _markdown_drafts(root)
-        inherited = [gap for gap in gaps if gap["record"] not in draft_targets]
+        inherited = [gap for gap in gaps if gap["record"] not in draft_targets
+                     and (gap["record"], gap["evidence"]) not in repairable_gaps]
         if entries and not leaves and not inherited:
             _require(review.get("predecessor") is None, "initial review cannot have predecessor")
         elif entries:
@@ -1339,8 +1388,16 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
                          "Unfinished legacy publication; preserve files for legacy recovery")
         _require(review.get("last_success") == previous.get("last_success"),
                  "local publication cannot advance last successful external verification")
+        asset_metadata = _asset_metadata(root, base)
+        requirements = _unique(asset_metadata["questions"])
+        damaged = set(invalid_units.get(leaves[0][0], {})) if leaves else set()
+        affected = damaged | {work for qid in damaged for work in _dependent_work(requirements, qid)}
+        retired_outputs = set().union(*repairable_gaps.values())
         for qid, unit in review.get("units", {}).items():
             output_path = unit.get("output", {}).get("path", "")
+            _require(output_path not in retired_outputs
+                     and (not (qid in affected and output_path) or output_path.startswith(target + "/")),
+                     "Publication conflict: recompute damaged unit or dependent output: " + qid)
             if output_path.startswith(target + "/"):
                 name = output_path[len(target) + 1:]
                 _require(name in files and isinstance(unit.get("verification"), dict)
@@ -1348,8 +1405,6 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
                          and sha256(files[name].encode("utf-8")).hexdigest() == unit["output"]["digest"],
                          "new Markdown output lacks valid inline verification: " + qid)
 
-        asset_metadata = _asset_metadata(root, base)
-        requirements = _unique(asset_metadata["questions"])
         saved = dict(review, requirements=requirements, publication=dict(run=run_id, complete=complete))
         request = dict(asset=asset, review=saved, files=files, previous=previous, complete=complete)
         _validate_proposal(root, request, stage, output_suffix=".final")
@@ -1379,9 +1434,14 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
             after_evidence[destination] = sha256(payload).hexdigest()
         _verify_quarter_evidence(Path(root) / cycle, asset, quarter, portable)
         _preconditions(root, after_evidence, target)
-        _require(all(_bytes(root, target + "/" + name) == files[name].encode("utf-8") for name in files)
-                 and _bytes(root, stage + "/review.md") == content.encode("utf-8"), "staged review changed")
-        _link_staged(root, stage, target, "review.md", content.encode("utf-8"))
+        final_files = {name: output.encode("utf-8") for name, output in files.items()}
+        _validate_markdown_target(root, target, final_files)
+        marker = content.encode("utf-8")
+        try:
+            _link_staged(root, stage, target, "review.md", marker)
+        except FileExistsError as error:
+            raise ValueError("Publication conflict: review marker appeared concurrently: " + target) from error
+        _validate_markdown_target(root, target, {**final_files, "review.md": marker}, committed=True)
     return dict(status="complete" if complete else "checkpoint", review=target + "/review.md", run=run_id)
 
 

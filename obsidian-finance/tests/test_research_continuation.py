@@ -100,7 +100,7 @@ def test_discover_markdown_scope_and_source_registration(tmp_path):
             }, source.with_suffix(".md").name)
 
     overview = tmp_path / "investing/index.md"
-    overview.write_text(overview.read_text().replace("finance_role:", '"finance_role":', 1))
+    overview.write_text(overview.read_text().replace("finance_role:", r'"finance\u005frole":', 1))
     migrated = module.discover(tmp_path, "latest", CUTOFF)
     assert migrated["reusable"] == initial["reusable"]
     assert migrated["excluded"] == initial["excluded"]
@@ -328,6 +328,41 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         assert {item["record"] for item in local_readback["decisions"]} == {"aapl/2024Q3/checkpoint"}
         assert {item["work"] for item in local_readback["reusable"]} == {"financial", "competition", "synthesis"}
         local_quarter = local_vault / base / "cycles" / quarter
+        damaged_vault = tmp_path / "damaged-leaf"
+        shutil.copytree(local_vault, damaged_vault)
+        (damaged_vault / base / "cycles" / quarter / registration["original_ref"]).unlink()
+        damaged_baseline = module.publication_snapshot(damaged_vault)
+        recovered = module._rebase_review(published, f"{base}/cycles/{quarter}", portable=False)
+        recovered.update(id="independent", predecessor="checkpoint")
+        stale_synthesis = json.loads(json.dumps(recovered))
+        stale_synthesis["units"].pop("financial")
+        with pytest.raises(ValueError, match="damaged unit or dependent output"):
+            module.publish(damaged_vault, asset, stale_synthesis, {}, damaged_baseline,
+                           "stale-synthesis", complete=False, storage="markdown")
+        recovered["units"] = {"competition": recovered["units"]["competition"]}
+        damaged_output = damaged_vault / base / "cycles" / quarter / published["units"]["financial"]["output"]["path"]
+        output_before = damaged_output.read_bytes()
+        damaged_output.write_text("Damaged historical output")
+        with pytest.raises(ValueError, match="Publication conflict"):
+            module.publish(damaged_vault, asset, recovered, {}, module.publication_snapshot(damaged_vault),
+                           "corrupt-output", complete=False, storage="markdown")
+        damaged_output.write_bytes(output_before)
+        checkpoint = module.publish(damaged_vault, asset, recovered, {}, damaged_baseline,
+                                    "independent", complete=False, storage="markdown")
+        assert checkpoint["status"] == "checkpoint"
+        resumed = module.discover(damaged_vault, "latest", cutoff)
+        assert {"record": "aapl/2024Q3/independent", "work": "competition"} in resumed["reusable"]
+        recovered.update(id="independent-next", predecessor="independent")
+        follow_up_baseline = module.publication_snapshot(damaged_vault)
+        stale_synthesis.update(id="resurrect-stale", predecessor="independent")
+        with pytest.raises(ValueError, match="damaged unit or dependent output"):
+            module.publish(damaged_vault, asset, stale_synthesis, {}, follow_up_baseline,
+                           "resurrect-stale", complete=False, storage="markdown")
+        checkpoint = module.publish(damaged_vault, asset, recovered, {}, follow_up_baseline,
+                                    "independent-next", complete=False, storage="markdown")
+        assert checkpoint["status"] == "checkpoint"
+        resumed = module.discover(damaged_vault, "latest", cutoff)
+        assert {"record": "aapl/2024Q3/independent-next", "work": "competition"} in resumed["reusable"]
         old_marker = local_quarter / f"{cutoff[:10]}-checkpoint/review.md"
         old_marker.write_text(module._markdown.render_review(asset, quarter, legacy_record))
         carried = module._rebase_review(legacy_record, f"{base}/cycles/{quarter}", portable=False)
@@ -631,6 +666,7 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
     "publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis",
     "method-copy", "method-conflict", "method-newer",
     "damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "bad-review-symlink", "replaced-bad-output",
+    "foreign-before-marker", "foreign-during-marker", "foreign-ordinary-after-marker",
     "registration-interruption", "damaged-method-registration",
 ])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
@@ -698,6 +734,48 @@ status: partial
     def publish():
         return module.publish(tmp_path, asset, saved, {"analysis.md": output}, previous,
                               "pilot", complete=False, storage="markdown")
+
+    if scenario.startswith("foreign-"):
+        ordinary_after = scenario == "foreign-ordinary-after-marker"
+        target = tmp_path / quarter / "2024-08-31-r2"
+        foreign = target / ("Observations.md" if ordinary_after else "review.json")
+        foreign_content = "# Ordinary observation" if ordinary_after else '{"version":1,"foreign":true}'
+        preflight, link = module._preconditions, module._link_staged
+
+        def inject_after_preflight(root, expected, target=None):
+            preflight(root, expected, target)
+            if target is not None:
+                foreign.write_text(foreign_content)
+
+        def inject_during_link(*args):
+            link(*args)
+            foreign.write_text(foreign_content)
+
+        if scenario == "foreign-before-marker":
+            monkeypatch.setattr(module, "_preconditions", inject_after_preflight)
+        else:
+            monkeypatch.setattr(module, "_link_staged", inject_during_link)
+        if ordinary_after:
+            assert publish()["status"] == "checkpoint"
+            assert foreign.read_text() == foreign_content
+            scanned = module.discover(tmp_path, "latest", CUTOFF)
+            assert dict(record=f"{asset}/2024Q2/r2", work="credit") in scanned["reusable"]
+            return
+        with pytest.raises(ValueError, match="Publication conflict"):
+            publish()
+        assert foreign.read_text() == foreign_content
+        assert (tmp_path / "investing/.research-drafts/pilot/review.md").is_file()
+        marker = target / "review.md"
+        if scenario == "foreign-before-marker":
+            assert not marker.exists()
+        else:
+            with pytest.raises(ValueError, match="conflicting Markdown and legacy review"):
+                module.verify_quarter(tmp_path / quarter, "2024-08-31-r2/review.md")
+        scanned = module.discover(tmp_path, "latest", CUTOFF)
+        assert dict(record=f"{asset}/2024Q2/r1", work="credit") in scanned["reusable"]
+        assert not any(r["record"] == f"{asset}/2024Q2/r2" for r in scanned["reusable"])
+        assert any("/2024-08-31-r2" in gap["record"] for gap in scanned["gaps"])
+        return
 
     if scenario == "registration-interruption":
         link = module.os.link
@@ -878,7 +956,11 @@ status: partial
             tmp_path, "latest", CUTOFF)["reusable"]
 
 
-@pytest.mark.parametrize("case", ["ordinary", "marked", "flow", "flow-malformed", "malformed", "duplicate"])
+@pytest.mark.parametrize("case", [
+    "ordinary", "marked", "flow", "flow-malformed", "malformed", "duplicate",
+    "escaped", "escaped-explicit-continuation", "escaped-duplicate", "escaped-duplicate-key",
+    "malformed-tagged-explicit",
+])
 def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
     asset = two_issuers(tmp_path)[0]
     base = tmp_path / "investing/assets/equities" / asset
@@ -904,16 +986,26 @@ def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
                 header = header[:-1]
             properties = "---\n" + header + "\n---\n\n# Reordered questions\n"
         text = properties + body
+        if case.startswith("escaped"):
+            text = text.replace("finance_role:", r'"finance\u005frole":')
+        if case == "escaped-explicit-continuation":
+            text = properties.replace("finance_role: asset-entry",
+                                      '? "finance_' + chr(92) + '\n  role"\n: asset-entry') + body
+        if case == "escaped-duplicate-key":
+            text = text.replace("finance_schema: 1", "finance_schema: 1\nfinance_role: asset-entry")
+        if case == "malformed-tagged-explicit":
+            text = text.replace("finance_role: asset-entry", '? !!str "finance_role"\n: !!str asset-entry [')
         if case == "malformed":
             text = text.replace("finance_schema: 1", "finance_schema: unsupported")
         (base / "Overview.md").write_text(text)
-        if case == "duplicate":
+        if case in ("duplicate", "escaped-duplicate"):
             (base / "Second.md").write_text(text)
-    if case in ("flow-malformed", "malformed", "duplicate"):
-        with pytest.raises(ValueError, match="invalid managed note YAML|invalid Obsidian properties|duplicate Markdown asset"):
+    if case in ("flow-malformed", "malformed", "duplicate", "escaped-duplicate", "escaped-duplicate-key",
+                "malformed-tagged-explicit"):
+        with pytest.raises(ValueError, match="invalid managed note YAML|invalid Obsidian properties|duplicate Markdown asset|unique text keys"):
             module.discover(tmp_path, "latest", CUTOFF)
     else:
-        if case in ("marked", "flow"):
+        if case in ("marked", "flow", "escaped", "escaped-explicit-continuation"):
             # Existing reviews use all old question IDs. A marked entry must
             # supply the current metadata rather than silently falling back.
             assert len(module._asset_metadata(tmp_path, f"investing/assets/equities/{asset}")["questions"]) == 1
