@@ -1,48 +1,70 @@
 # Quarterly industry and market research — plan
-intent: 2026-11-21-finance-industry-market-research@25ddff0
-spec: docs/loom/2026-11-21-finance-industry-market-research/spec.md@4c49831
+intent: 2026-11-21-finance-industry-market-research@57f464b
+spec: docs/loom/2026-11-21-finance-industry-market-research/spec.md@a1b457d
 charter: 1.1
 
-Binding review criteria: research/07-spec-review-criteria.md@0c6dc5d.
+Binding criteria: research/07-spec-review-criteria.md@0c6dc5d and research/09-in-place-review-criteria.md@c1ea01a. The latter replaces revision-directory criteria for new writes.
 
 ## Task DAG
 
-### Wave 1 — Evidence and saved research
+### Wave 1 — Identify and persist Obsidian notes
 
-**W1-01 Market evidence and outlook rules**  acceptance: 3, 4
-- Files: obsidian-finance/scripts/market_evidence.py (entry: claim_is_eligible/compare_forecast), obsidian-finance/tests/test_market_evidence.py
-- Test: A3 positive: eligible-originals; negative: mixed-vintage-claim. A4 positive: matched-actual; boundary: annual-forecast-quarter-actual.
-- Risk: Agent-decided per REQ-3/4 and research/07-spec-review-criteria.md, bind facts to source dates and forecasts to matching target metrics.
+**W1-03 Resolve vault and render stable study notes**  acceptance: 6, 7
+- Files: obsidian-finance/scripts/industry_notes.py (entry: resolve study and render notes), obsidian-finance/tests/test_industry_notes.py
+- Test: A6 positive: vault-default; negative: escaped-vault. A7 positive: stable-localized-prefix-and-properties; boundary: existing-case-or-schema-collision.
+- Risk: agent-decided under REQ-6/7, keep stable identifiers and one filename convention, using existing study identity on every continuation.
 
-**W1-02 Quarterly Markdown publication and resume**  after: W1-01  acceptance: 1, 2
-- Files: obsidian-finance/scripts/market_research.py (entry: main with publish/resume/cite/aggregate/compare), obsidian-finance/tests/test_market_research.py
-- Test: A1 positive: two-market-quarter-structure; boundary: incomplete-months. A2 positive: fresh-read; negative: interrupted-newer-record.
-- Risk: Agent-decided per REQ-1/2 and research/07-spec-review-criteria.md, publish a valid record last, retain earlier snapshots and scope discovery to the selected market.
+**W1-04 Safely publish same-path updates**  after: W1-03  acceptance: 2, 5
+- Files: obsidian-finance/scripts/industry_update.py (entry: inspect, apply and recover), obsidian-finance/tests/test_industry_update.py
+- Test: A2 positive: recover-interrupted-batch; negative: edited-pending-batch. A5 positive: same-path-preserve-user-text; negative: noncooperating-external-writer.
+- Risk: agent-decided under REQ-2/5, retain displaced bytes at replacement so cooperative locks cannot hide external edits.
 
-### Wave 2 — Skill and realistic use
+### Wave 2 — Continue and cite
 
-**W2-01 Connect skill entry and verify representative runs**  after: W1-02  acceptance: 1, 2, 3, 4
-- Files: obsidian-finance/skills/market-research/, obsidian-finance/skills/finance-research/references/industry-and-competition.md, obsidian-finance/README.md, obsidian-finance/tests/test_market_research_workflow.py, obsidian-finance/.codex-plugin/plugin.json, obsidian-finance/.claude-plugin/plugin.json, .claude-plugin/marketplace.json
-- Test: A1 positive: smartphone-and-chips; boundary: eu-missing-month. A2 positive: fixture-resume; negative: broken-latest. A3 positive: apple-october-cutoff; negative: late-release. A4 positive: comparable-outlook-review; boundary: not-yet-reported.
-- Risk: Agent-decided per REQ-1–4, inspect emitted notes in scripted workflow tests; existing issuer workflow remains usable and issuer integration only adopts eligible market findings.
+**W2-03 Keep historical claims and forecasts in the notes**  after: W1-04  acceptance: 1, 2, 3, 4, 5
+- Files: obsidian-finance/scripts/market_research.py (entry: publish, resume and cite CLI), obsidian-finance/tests/test_market_research.py, obsidian-finance/tests/test_market_research_workflow.py
+- Test: A1 positive: phone-baseline-update; boundary: missing-component. A2 positive: resume-partial; negative: half-written. A3 positive: original-at-cutoff; negative: late-revision. A4 positive: prior-target-match; boundary: annual-pending. A5 positive: two-in-place-revisions; negative: lost-history.
+- Risk: agent-decided under REQ-1–5, preserve original legacy readers and history for stable citation and reuse shared evidence comparisons.
 
-**W2-02 Replay in fresh Codex conversations**  after: W2-01  acceptance: 1, 2, 3, 4
-- Files: docs/loom/2026-11-21-finance-industry-market-research/research/08-runtime-replay.md
-- Test: A1 positive: two-markets-two-quarters; boundary: quarterly-layout. A2 positive: fresh-context-resume; negative: no-chat-history. A3 positive: exact-apple-source; negative: post-cutoff-source. A4 positive: outlook-reviewed; boundary: annual-actual-pending.
-- Risk: Agent-decided per REQ-1–4, record plugin discovery, commands, transcript excerpts and output paths; scripted fixtures cannot prove real session continuation.
+**W2-04 Package instructions and validate actual sessions**  after: W2-03  acceptance: 1, 2, 3, 4, 5, 6, 7
+- Files: obsidian-finance/skills/market-research/, obsidian-finance/skills/finance-research/references/industry-and-competition.md, obsidian-finance/README.md, docs/loom/2026-11-21-finance-industry-market-research/research/10-in-place-runtime-replay.md
+- Test: A1 positive: two-markets; boundary: distinct-metrics. A2 positive: fresh-resume; negative: broken-link. A3 positive: apple-original; negative: late-source. A4 positive: prior-outlook; boundary: pending. A5 positive: same-note; negative: lost-edit. A6 positive: industries-default; negative: escape. A7 positive: Obsidian-properties; boundary: locale-change.
+- Risk: agent-decided under REQ-1–7, retain old runtime traces only as evidence of the old format and exercise the new output in fresh sessions and a disposable Obsidian vault.
+
+## Verification details
+
+- W1-03: Check missing vault, traversal and symlink escapes, a valid override,
+  an unrelated existing destination, Unicode and case collisions, title and
+  role identity, vault-relative links and property type conflicts. Preserve
+  existing vault settings and note frontmatter.
+- W1-04: Journal each expected and intended file with its recoverable
+  displaced bytes. Inject an external edit between final precheck and swap,
+  and a crash after swap but before reconciliation. Exercise unsupported
+  exchange, ordinary-note no-clobber, unmanaged text and frontmatter,
+  managed-region conflicts, and a single committed-state barrier for resume and cite during recovery.
+- W2-03: Pin each historical identity and its data. Replay two corrections,
+  prove exact source and forecast pairing at the requested cutoff, and test
+  mixed discovery of older and new notes without modifying the older files.
+  A user note copy cannot establish original historical availability.
+- W2-04: Re-run adjacent smartphone and semiconductor quarters, the Apple
+  fiscal/calendar cutoff contrast and the EU BEV weighted-share calculation
+  with missing and conflicting months and exact component releases. Use a
+  disposable vault to verify the filenames, links, and property filters. Verify standalone finance package discovery.
 
 ## Simplicity check
 
-- Share one research workflow and vary metrics by market — taken
-- Use separate persistence implementations for each industry — declined: the three research cases need the same record lifecycle.
-- Use one canonical review record as the publication boundary and derive lookup from it — taken
+- Reuse market evidence and aggregation logic with unchanged inputs — taken
+- Keep a browseable copy of every full note revision — declined: stable notes with material history satisfy the updated browsing requirement.
+- Reuse the existing project helper’s validation patterns without importing the sibling package or using its check-then-replace operation — taken
+- Share one study path, note identity, and commit boundary for all markets — taken
 
 ## Questions asked
 
-① — what — 若需求草稿符合你的預期，回覆「確認，先不開 PR」可繼續在本機做。回覆「確認」也授權驗證與審查通過後推送分支並開 PR，合併另行決定。
-② — behaviour — 這些是你預期的使用行為嗎？
+① — what — 請確認這是 PR #18 的新版範圍。
+② — behaviour — 以上是你預期的新版使用方式嗎？
 
 ## Risks
 
-1. Market period, issuer fiscal quarter and publication time are independent. Preserve original release versions and material dependencies for eligible citations.
-2. Existing tests cover issuer research and Obsidian utilities. Separate tests catch market-specific cutoff, aggregation, interruption and outlook mismatches. Run the full dual-package suite.
+1. Unchanged cutoff, aggregation, and forecast logic keeps its existing tests. The new write and read paths need direct runtime evidence, including current and historical citations.
+2. The old plan's implementation remains in Git and its previous release verification is stale for this changed obligation.
+3. Study IDs and approved vault paths stay stable across session language changes. Existing content and vault-wide property settings are preserved on ambiguity.
