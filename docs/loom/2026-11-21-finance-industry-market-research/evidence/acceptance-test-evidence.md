@@ -1,5 +1,208 @@
 # Independent industry and market research — acceptance test evidence
 
+## Re-run on 2026-11-22, at e51c4ea
+
+The independent tester used a clean detached clone at
+`e51c4ea18f175c3633bbf68272acfa3e7604df5e`. The package README
+points to the bundled market skill and Python 3.11+ source entry point.
+`python3 -B obsidian-finance/scripts/market_research.py --help` loaded
+under Python 3.15.0 and listed publish, recover, resume, cite, aggregate
+and compare. The default interpreter lacked pytest. The existing isolated
+test environment was used for these focused checks:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/sec-package-evaluation-venv/bin/python -m pytest obsidian-finance/tests/test_industry_notes.py obsidian-finance/tests/test_industry_update.py obsidian-finance/tests/test_market_research_workflow.py obsidian-finance/tests/test_market_research.py::test_cli_read_barrier_refuses_resume_and_cite_until_recovery -q -p no:cacheprovider
+25 passed in 2.73s
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/sec-package-evaluation-venv/bin/python -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_industry_{displaced_writer,history_scope}.py -q -p no:cacheprovider
+3 passed in 0.30s
+```
+
+The package check reserved for closing review is
+`python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+The independent tester did not run the full package suite.
+
+The disposable native replay root was
+`/private/tmp/industry-final-replay.d5vqi9`. I compared all 16 staged
+package files (both complete skill directories and all four helper scripts)
+byte-for-byte against the clean clone for each of the Q2, Q3 and issuer
+projects. The two helpers changed since the initial in-place replay have
+SHA-256 hashes `a7c9aa6aabe5c06f7f9c86a25eb2de81d8a3052659d72afdd11e6134764ff9af`
+(`market_research.py`) and
+`47bd4ada32c5735c619d10dc1db2eb3a298c63f5c19c25cc5bf7557e482801d1`
+(`industry_update.py`). The disposable projects used local skill copies
+and public-source packets. They do not establish installation or automatic
+selection in a normal user session.
+
+### 1. 可獨立產出全球智慧型手機市場相鄰兩個市場季度的研究紀錄，交代出貨量、主要品牌市占、涵蓋範圍與來源口徑，並指出可比較的變化、可能原因與證據限制。
+
+- How I tried it: Inspected the completed Q2 and Q3 outputs, read all four
+  published market-quarter groups using the clean clone's
+  `resume VAULT MARKET QUARTER`, and compared numbers and source limits
+  to the public-release packets supplied to the runs.
+- What came back: The notes identify worldwide new branded smartphone
+  shipments estimated by IDC. Worldwide shipments are the share
+  denominator. IDC's July preliminary data give 285.4 million, with
+  Samsung 18.9%, Apple 15.8% and Xiaomi 14.8%. October's data give
+  316.1 million, with Samsung 18.3%, Apple 17.7% and Xiaomi 13.5%.
+  Recomputing from the archived preliminary values gives +30.7 million
+  (+10.76%, displayed as 10.8%) and a 1.9-point increase in Apple share.
+  Stronger Android demand is plausible. The notes leave regional demand,
+  channel and inventory attribution unresolved, distinguish shipment
+  estimates from end-customer sales and lack an exact revised Q2 series.
+- Evidence: Both `規模與市佔率` notes, the public packets and clean readback.
+  [IDC Q2 preliminary release](https://www.idc.com/resource-center/press-releases/worldwide-smartphone-market-grew-6-5-in-the-second-quarter-of-2024-as-momentum-continues-to-build-according-to-idc-tracker/) ·
+  [IDC Q3 preliminary release](https://www.idc.com/resource-center/press-releases/worldwide-smartphone-market-grows-4-with-316-1-million-units-shipped-in-the-third-quarter-of-2024-according-to-idc/) ·
+  [IDC August forecast](https://www.idc.com/resource-center/press-releases/worldwide-smartphone-market-forecast-to-grow-nearly-6-in-2024-driven-by-stronger-growth-for-android-in-china-and-emerging-markets-according-to-idc/).
+
+### 2. 另一段對話能讀回已存的 Markdown 研究進度、來源版本與未完成事項，接續同季研究或追蹤下一季。
+
+- How I tried it: Checked distinct conversations and terminal events in
+  `q2/q2-events.jsonl` and `q3/q3-events.jsonl`, audited the second
+  conversation's actual readback and publication output, compared the
+  two copies of all Q2 Markdown by SHA-256, and ran clean readbacks.
+- What came back: Q2 thread `01a1ff06-6607-7971-9e6b-8ea6a1664704` and Q3
+  thread `01a1ff07-e049-7990-a929-9387040a18a6` ended in `turn.completed`.
+  The Q3 conversation read Q2 versions and open work from Markdown,
+  created both Q3 groups and continued phone Q3 to revision 2. The
+  independent readback found `issues: []` for all four groups, and the
+  Q2 quarter notes stayed byte-identical. Smartphone Q2 retained
+  `idc-2024q2-preliminary` and `idc-may-2024`, with the exact Q2 revision,
+  Android/channel evidence and annual actual pending. Semiconductor Q2
+  retained `sia-wsts-2024q2` and `wsts-spring-2024`, with disaggregation
+  and the annual actual pending.
+- Evidence: Q2 events `item_10` and `item_11`, Q3 events `item_4`,
+  `item_6`, and `item_8`. Q2's first smoke check assumed a top-level
+  language field in the resume result. Its next command read both studies
+  successfully before an inapplicable git status reported the sandbox was
+  not a repository. Independent readbacks passed. A focused interruption
+  test confirmed readback stops during an incomplete batch and can continue
+  after recovery. Collision tests preserved displaced editor text.
+
+### 3. Apple 的公司分析可引用其資訊截止時間前已公開的市場研究依據，並能查回引用版本與原始來源。公司財季與市場季度各自標示。
+
+- How I tried it: Checked the issuer terminal event, inspected the actual
+  Apple note and ran the clean clone's `cite VAULT smartphones 2024Q3 apple-shipments`
+  against the September 28 and October 31 Pacific cutoffs. The replay
+  verifier confirmed the issuer's market Markdown matched the Q3 copy.
+- What came back: Issuer thread `01a1ff0b-2c89-7700-8254-faca3ed5d9eb`
+  ended at `turn.completed` and saved an isolated Apple FY2024 Q4 note
+  identifying the market data as calendar 2024Q3. September 28 returned
+  `null`. October 31 selected the October 14 release, original IDC URL
+  and table locator, 56.0 million and 17.7%, and
+  `claim_version: 98b1436c20cb27c1f01581d120f4f8ebad04a0454e642ec12f4474e67490db04`.
+  The issuer note carries the same exact claim and explains the exclusion
+  of November 1 evidence. It explicitly limits the claim to shipments.
+- Evidence: `issuer/issuer/AAPL/FY2024Q4/industry-and-competition.md`
+  and `issuer/issuer-events.jsonl` under the replay root, the clean-clone
+  outputs, and the [native replay record](../research/10-in-place-runtime-replay.md).
+  [Apple FY2024 Q4 release](https://www.apple.com/newsroom/2024/10/apple-reports-fourth-quarter-results/) ·
+  [IDC original release](https://www.idc.com/resource-center/press-releases/worldwide-smartphone-market-grows-4-with-316-1-million-units-shipped-in-the-third-quarter-of-2024-according-to-idc/).
+
+### 4. 至少兩個市場各有相鄰兩季紀錄，可回顧前季證據與展望、核對已公布實績，並更新後續展望。
+
+- How I tried it: Compared the Q2/Q3 analysis, outlooks and the corresponding
+  readback fields, and ran the focused annual comparison test at pre- and
+  post-release cutoffs.
+- What came back: Smartphones used IDC's 285.4 → 316.1 million series and
+  retained the annual forecast increase from 1,210 to 1,230 million, or
+  4.0% to 5.8% annual growth, with the updated Android assumptions.
+  Semiconductors checked USD 149.9 → 166.0 billion (+10.74%, displayed as
+  10.7%) against SIA/WSTS releases, retained the USD 611 billion spring
+  outlook and updated the logic/memory and pricing/volume limitations.
+  Annual errors remained `pending / missing-actual` at the quarterly
+  cutoffs. The focused test withheld SIA's initial annual release until
+  available and then paired USD 627.6 billion with the USD 611 billion
+  forecast (+USD 16.6 billion).
+- Evidence: Both markets' `指引與展望` and `規模與市佔率` notes and
+  `test_prior_outlook_round_trip_and_target_horizon_comparison`.
+  [SIA Q2 release](https://www.semiconductors.org/global-semiconductor-sales-increase-18-3-in-q2-2024-compared-to-q2-2023-quarter-to-quarter-sales-up-6-5/) ·
+  [SIA Q3 release](https://www.semiconductors.org/global-semiconductor-sales-increase-23-2-in-q3-2024-compared-to-q3-2023-quarter-to-quarter-sales-up-10-7/).
+
+### 5. 同季更新後可從季度主筆記找到各項子研究，並在更新的原筆記查回最新分析與重要修訂。重要修訂保留舊數值、判斷或預測及其來源與時間，供歷史引用。
+
+- How I tried it: Audited the Q3 trace's update and late-source negative
+  control, repeated cutoff-specific `cite` in the clean clone, opened
+  the Q3 size/share note in the disposable Desktop vault, and ran
+  correction and displaced-editor tests.
+- What came back: Q3 retained the standard note paths and its optional
+  Apple note, with no visible revision directories. The November 1
+  release was rejected at the October 31 cutoff and accepted at November
+  2. The original size/share file shows the separate Counterpoint 307
+  million estimate and its November 1 source. Its `重要修訂` section
+  preserves the October 31 cutoff, prior IDC 316.1 million estimate and
+  its original October 14 source. Clean CLI claim versions were
+  `9f7aa59d08af0bd2eded8b9e662cee81a693f9b07f395581af95f68a658db3b0`
+  for IDC and
+  `f0d46cb7be5045869cb132bfd258bce3b77ab836096fa2f3131130940f9ecffd`
+  for Counterpoint.
+- Evidence: Q3 `item_6` published at the same paths and initially looked
+  for the wrong history heading. `item_8` verified the actual heading
+  and provenance. Desktop opened the same path, and the overview resolved
+  its linked substudies. The named
+  `test_industry_notes_keep_two_corrections_and_original_citations` test
+  covered two controlled corrections. The market replay added a
+  separately sourced estimate. Focused tests covered interrupted
+  writes, untouched user text and frontmatter, and recovery of a write
+  made to a displaced file still open in an external editor.
+
+### 6. 首次在已選定的 Obsidian vault 開始研究且未指定位置時，可在 vault 的投資研究區找到產業專案及當季筆記。
+
+- How I tried it: The native Q2 project started with an empty `vault/`
+  containing `.obsidian` and no location override. In a separate empty
+  vault at `/private/tmp/industry-accept-vault.pzL20T`, I used the clean
+  clone's `resume`, supplied the documented name and language needed for
+  first publication, and passed its JSON record to `publish` with the
+  vault as the only argument.
+- What came back: The independent publication produced, at the default
+  location, the market overview and the four quarter-level notes for
+  smartphones, plus the optional Apple supply-chain note under
+  `companies/`. New-process readback returned `issues: []`,
+  `idc-2024q2-preliminary`, `idc-may-2024`, and four pending items.
+  The native Q2 project also produced both markets under the default
+  `vault/investing/industries/` location.
+- Evidence: `test_vault_default_and_relative_override`,
+  `test_missing_vault_traversal_and_symlink_escapes`,
+  `test_unrelated_existing_destination_is_preserved`, and
+  `test_industry_explicit_vault_destination_discovery` passed. These
+  checks cover rejection of missing, escaping, and unrelated destinations
+  as well as a usable vault-local override.
+
+### 7. 同一市場同一季的主筆記與子研究，在 Obsidian 中以共同前綴辨識與分組，並能以筆記屬性篩選市場、季度及研究進度。
+
+- How I tried it: Preserved the previous UI fixture outside the disposable
+  Obsidian Desktop vault, then copied in the completed exact-version Q2
+  Markdown outputs. `obsidian vault=industryreplay vault` confirmed the
+  active target was `/private/tmp/industry-obsidian-ui.5L40g8/vault`. The
+  CLI ran a property search, listed the Q2 smartphone overview's outbound
+  links, read its indexed properties, and opened its size/share note.
+- What came back: `[market:smartphones] [quarter:2024Q2] [status:partial]`
+  returned five records: the overview, size/share, supply-chain and outlook
+  notes plus the optional Apple supply-chain note. All five filenames
+  begin `2024Q2 全球智慧型手機市場-`. The overview's indexed links resolved
+  all four of those related notes and the project overview. Its properties
+  were `type: industry-overview`, `market: smartphones`, `quarter: 2024Q2`,
+  `status: partial`, `as_of: 2024-07-15` and `updated: 2026-11-22`.
+  The active leaf rendered `2024Q2 全球智慧型手機市場-規模與市佔率` and
+  its Properties widget rendered all six keys.
+- Evidence: `obsidian vault=industryreplay search 'query=[market:smartphones] [quarter:2024Q2] [status:partial]' format=json`,
+  `links path=<quarter overview>`, `properties path=<quarter overview> format=json`,
+  `open path=<size/share note>`, and
+  `dev:dom 'selector=.workspace-leaf.mod-active .inline-title' text`.
+  The earlier [provisional Obsidian interface run](obsidian-interface.md)
+  remains separately attributed to b66a90f. The focused naming tests
+  also covered language continuity, name collisions, vault-relative
+  links, and a property-type conflict without overwriting user data.
+
+- Q3 UI recheck: Copied the completed Q3 notes to the disposable vault.
+  The reused profile initially indexed metadata from the older Q3 copy.
+  After `obsidian vault=industryreplay reload`, the Q3 property query
+  included all five smartphone notes with the shared prefix. All five
+  links from the overview resolved, and the overview showed
+  `as_of: 2024-11-02` and `updated: 2026-11-22`. Its size/share note
+  showed the correct Q3 title, dated revision and source history.
+
+## Earlier acceptance evidence for the former revision layout
+
 Tried on 2026-11-21 in a clean detached clone at `fee2dc0d86347c876d0dd413bfa3944752ef35f0`. The README points to the source skill and requires Python 3.11+. The clone's `python3 -B obsidian-finance/scripts/market_research.py --help` loaded the source successfully and listed `publish`, `resume`, `cite`, `aggregate` and `compare`. The tests used disposable vaults and the public-source packets supplied to the two native Codex executions. This was source invocation, without evidence of fresh marketplace installation or automatic skill routing.
 
 Focused tests from the clean clone:
