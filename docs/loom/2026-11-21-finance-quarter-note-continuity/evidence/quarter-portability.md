@@ -39,3 +39,11 @@
 三個修正版對話均正常發布一份新增紀錄。以 `/private/tmp/finance-w3-final-check.py /private/tmp/finance-w3-corrected` 獨立檢查，三份紀錄各自綁定兩季 10-Q 原件及方法，單季搬移可讀回。Apple、JPMorgan Chase、ExxonMobil 各有 95、27、20 個既有檔未變更。新增研究資料均位於該季，新增 Markdown 全部通過角色檔頭檢查，沒有新增管理 JSON 或 TOML。另以 `/private/tmp/finance-w3-corrected-interrupt.py` 在三份修正版成果複本注入中斷，三案均顯示中斷、保留草稿及既有檔案並沿用前一份有效紀錄。
 
 修正版另開唯讀對話完成三家成果接續，重算 Apple 營收季減 5.48%、JPMorgan Chase 淨利息收入占比分別為 45.3% 和 54.9%、ExxonMobil 歸母淨利占營業收入比率分別為 10.27% 和 9.81%。三家重新以較早的資料截止掃描時都列出 Q3 來源晚於截止。待辦與指標適用限制保留。逐項驗收與完整紀錄見同一變更的驗收報告。
+
+## Obsidian 原生顯示
+
+在 Obsidian 1.15.1 以獨立的 `/private/tmp/Finance Rendering Check` vault 開啟十三種模板的產出、一篇草稿格式樣例及一篇手寫筆記，未使用使用者的正式 vault 進行驗收。腳本 `/private/tmp/finance-native-render-check.py` 對每篇執行 Obsidian CLI 的 `open`、`properties` 與 `dev:dom`。逐篇核對實際顯示的一級標題、屬性筆數及 Obsidian 讀出的屬性值，15 篇皆符合預期。草稿格式樣例顯示 `status: draft`，普通手寫筆記正常顯示且沒有需要補的研究屬性。實際存檔中斷後生成的草稿另驗。
+
+另加入一份單行 YAML 映射的標的入口。Obsidian 重載隔離 vault 後，該筆記的一級標題及四個屬性皆正確顯示，驗證樣本共 16 篇。
+
+以 `/private/tmp/finance-native-actual-draft.py` 在三份修正版 Q3 測試副本停止於最終紀錄之前，三案均沿用先前成果且保留標示草稿的檔案。將 Apple 實際生成的草稿複製到隔離 Obsidian vault。重載後，工具確認顯示「Apple FY2024Q2 → Q3 財務比較」標題及八個屬性，包含 `status: draft`。原生核對合計 17 篇。
