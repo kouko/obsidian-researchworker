@@ -449,7 +449,10 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
             module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
 
 
-@pytest.mark.parametrize("change", ["managed-edit", "ordinary-to-managed", "managed-to-ordinary", "role-malformed"])
+@pytest.mark.parametrize("change", [
+    "managed-edit", "ordinary-to-managed", "managed-to-ordinary", "role-malformed",
+    "escaped-role-key", "truncated-tagged-role",
+])
 def test_publication_snapshot_protects_quarter_managed_note_transitions(tmp_path, change):
     asset = two_issuers(tmp_path)[0]
     module = load()
@@ -460,13 +463,35 @@ def test_publication_snapshot_protects_quarter_managed_note_transitions(tmp_path
     initial = ordinary if change == "ordinary-to-managed" else managed
     if change == "role-malformed":
         initial = malformed
+    if change == "escaped-role-key":
+        initial = managed.replace("finance_role", r'"finance\u005frole"')
+    if change == "truncated-tagged-role":
+        initial = malformed.replace("quarter-navigation", "!!str quarter-navigation")
     (tmp_path / path).write_text(initial)
     expected = module.publication_snapshot(tmp_path)
     assert (path in expected) == (initial != ordinary)
-    changed = ordinary if change == "managed-to-ordinary" else managed + "\n## Edited"
+    changed = initial + "\n## Edited"
+    if change == "ordinary-to-managed":
+        changed = managed
+    if change == "managed-to-ordinary":
+        changed = ordinary
     (tmp_path / path).write_text(changed)
+    prior = (tmp_path / path).parent / "2024-08-01-r1/review.json"
+    proposal = dict(json.loads(prior.read_text()), id="managed-edit-check", predecessor="r1", cutoff=CUTOFF)
     with pytest.raises(ValueError, match="Publication conflict"):
-        module._preconditions(tmp_path, expected)
+        module.publish(tmp_path, asset, proposal, {}, expected, "managed-edit-check",
+                       complete=False, storage="markdown")
+
+
+def test_publication_snapshot_leaves_role_mentions_in_ordinary_notes_unprotected(tmp_path):
+    asset = two_issuers(tmp_path)[0]
+    module = load()
+    path = f"investing/assets/equities/{asset}/cycles/2024Q2/Notes.md"
+    (tmp_path / path).write_text('---\ntitle: "Mention {finance_role: quarter-navigation}"\n---\n\n# Ordinary\n')
+    expected = module.publication_snapshot(tmp_path)
+    assert path not in expected
+    (tmp_path / path).write_text("# Changed ordinary note")
+    module._preconditions(tmp_path, expected)
 
 
 def test_source_declared_new_quarters_without_saved_conversation(tmp_path):

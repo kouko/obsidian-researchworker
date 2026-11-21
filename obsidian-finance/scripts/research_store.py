@@ -320,7 +320,10 @@ def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
 
 _QUARTER_NOTE = re.compile(r"investing/assets/equities/[^/]+/cycles/[0-9]{4}Q[1-4]/(?!index\.md$)[^/]+\.md")
 _CITATION_FIELDS = ("path", "claim", "source_id", "source_version", "source_available_at")
-_ROLE_MARKER = re.compile(r"""(?:^|[,{])[ \t]*['"]?finance_role['"]?[ \t]*:[ \t]*['"]?([a-z-]+)(?![\w-])""", re.M)
+_SCALAR_STRING_TAG = r"(?:(?:!!str|!<tag:yaml\.org,2002:str>)[ \t]+)?"
+_ROLE_MARKER = re.compile(
+    r"(?:^|[,{])[ \t]*" + _SCALAR_STRING_TAG + r"""['"]?finance_role['"]?[ \t]*:[ \t]*"""
+    + _SCALAR_STRING_TAG + r"""['"]?([a-z-]+)(?![\w-])""", re.M)
 
 
 def _ordinary_quarter_note(path, payload):
@@ -330,8 +333,6 @@ def _ordinary_quarter_note(path, payload):
     if not text.startswith(("---\n", "---\r\n")):
         return True
     header = re.split(r"\r?\n---(?:\r?\n|$)", text[3:], maxsplit=1)[0]
-    if "finance_role" not in header and not header.lstrip().startswith("{"):
-        return True
     try:
         properties = _markdown._mapping(header)
     except ValueError:
