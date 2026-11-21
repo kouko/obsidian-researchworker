@@ -59,6 +59,15 @@ def candidates(data, quarter, cutoff):
     return selected
 
 
+def has_later_original_candidate(data, quarter, cutoff):
+    """Check available metadata without fetching a post-cutoff original."""
+    try:
+        later_view, _, _ = _candidates(data, quarter, date.max.isoformat())
+    except SelectionEvidenceError:
+        return False  # disputed metadata does not establish a later filing
+    return any(row['filingDate'] > cutoff for row in later_view)
+
+
 def _outside_scope(filed, form, cutoff, original_form):
     return ((filed is not None and filed > cutoff)
             or (isinstance(form, str) and bool(form.strip()) and form != original_form))

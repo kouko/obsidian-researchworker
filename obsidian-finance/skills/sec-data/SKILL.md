@@ -37,8 +37,11 @@ python3 '<skill-directory>/scripts/acquire.py' \
 
 For quarter requests the ticker lookup can follow documented SEC issuer
 succession. It checks the predecessor's original fiscal declarations and
-official filing date against the cutoff and succession boundary. Succession
-records identify the filer and do not contribute eligible financial data.
+official filing date against the cutoff and succession boundary. When a
+current filer's verified original was filed after the transition for a
+quarter ending before it, the tool checks the predecessor for a competing
+verified original. Succession records identify the filer and do not
+contribute eligible financial data.
 If selection remains unresolved, use the error detail to identify the missing
 or conflicting evidence. An explicit request such as `--cik 0000034088` for
 Exxon Mobil Corporation verifies that filer without switching to another CIK.

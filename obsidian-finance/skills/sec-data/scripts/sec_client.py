@@ -345,19 +345,31 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
         return result
     current_cik = result['company']['cik']
     transitions = ISSUER_TRANSITIONS.get(current_cik, ()) if automatic else ()
-    resolution = result['resolution']
-    if resolution:
-        if any(resolution['period_end'] < entry['effective_date'] for entry in transitions):
+    current = result['resolution']
+    if current:
+        crossing = [entry for entry in transitions if current['period_end'] < entry['effective_date']]
+        if not crossing:
+            return result
+        if len(transitions) != 1 or current['original_filing_date'] < crossing[0]['effective_date']:
             result['resolution'] = None
             _unresolved(result, 'current filer original conflicts with documented succession', suggest_cik=True)
+            return result
+        if result['errors']:
+            result['resolution'] = None
+            _unresolved(result, 'required current filer source unavailable; original fiscal period could not be verified')
+            return result
+    elif not original_absent:
         return result
-    if not original_absent:
-        return result
-    if len(transitions) != 1:
+    elif len(transitions) != 1:
+        from fiscal_quarter import has_later_original_candidate
+
         detail = 'no eligible source-declared original by the cutoff'
-        if automatic:
-            detail += '; missing or ambiguous succession evidence'
-        _unresolved(result, detail, suggest_cik=automatic)
+        if not transitions and has_later_original_candidate(result, fiscal_quarter, as_of):
+            _unresolved(result, detail + '; SEC metadata indicates a candidate original was filed after the cutoff')
+        else:
+            if automatic:
+                detail += '; missing or ambiguous succession evidence'
+            _unresolved(result, detail, suggest_cik=automatic)
         return result
 
     transition = transitions[0]
@@ -367,6 +379,18 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
     predecessor['issuer_selection'] = None
     predecessor_absent = _resolve_quarter(predecessor, fiscal_quarter, as_of, automatic=True)
     resolution = predecessor['resolution']
+    if current:
+        result['sources'].extend(dict(source, id='predecessor-' + source['id'])
+                                 for source in predecessor['sources'])
+        if predecessor['errors']:
+            result['resolution'] = None
+            result['errors'].extend(dict(error, source='predecessor-' + error['source'])
+                                    for error in predecessor['errors'])
+            _unresolved(result, 'required predecessor source unavailable or inconclusive; competing original could not be ruled out')
+        elif resolution and resolution['original_accession'] != current['original_accession']:
+            result['resolution'] = None
+            _unresolved(result, 'competing verified originals across documented succession', suggest_cik=True)
+        return result
     if resolution and predecessor['errors']:
         predecessor['resolution'] = None
         _unresolved(predecessor, 'required predecessor source unavailable; original fiscal period could not be verified')

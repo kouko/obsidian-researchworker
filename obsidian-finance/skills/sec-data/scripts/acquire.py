@@ -219,7 +219,7 @@ def run(argv=None, fetch=None):
             source['path'] = None
             if raw is not None:
                 filename = f'raw/{source["id"]}.json'
-                source_kind = source['id'].removeprefix('current-')
+                source_kind = source['id'].removeprefix('current-').removeprefix('predecessor-')
                 if source_kind.startswith('primary-'):
                     filename = f'raw/{source["id"]}.html'
                 if source_kind.startswith('archive-'):
