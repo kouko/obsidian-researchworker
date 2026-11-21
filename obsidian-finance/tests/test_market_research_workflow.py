@@ -172,3 +172,123 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
     assert scored["forecast_version"] == "wsts-spring-2024"
     assert scored["actual_version"] == "sia-2024"
     assert scored["error"] == pytest.approx(16.6)
+
+
+def test_industry_notes_keep_two_corrections_and_original_citations(tmp_path):
+    (tmp_path / ".obsidian").mkdir()
+    record = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    record.update(market_name="全球智慧型手機市場", language="zh-TW", updated="2026-11-21")
+    overview = Path(run_market("publish", tmp_path, record=record)["review"])
+    expected = tmp_path / "investing/industries/smartphones/2024Q3"
+    assert overview == expected / "2024Q3 全球智慧型手機市場-總覽.md"
+    size = expected / "2024Q3 全球智慧型手機市場-規模與市佔率.md"
+    with size.open("a") as handle:
+        handle.write("\nPersonal note after the managed section.\n")
+    for revision, cutoff, value in [(2, "2024-11-01", 316.2), (3, "2024-11-04", 316.3)]:
+        candidate = sample_record(
+            "smartphones", "2024Q3", cutoff, f"idc-q3-r{revision}",
+            IDC_Q3, "shipments", "million units", value,
+        )
+        candidate.update(revision=revision, market_name="Smartphones", language="en",
+                         updated="2026-11-21")
+        assert Path(run_market("publish", tmp_path, record=candidate)["review"]) == overview
+    assert "Personal note after the managed section." in size.read_text()
+    assert all(str(value) in size.read_text() for value in (316.1, 316.2, 316.3))
+    assert not list(expected.glob("r[0-9]*"))
+    for cutoff, source in [("2024-10-31", "idc-q3-initial"), ("2024-11-02", "idc-q3-r2")]:
+        cited = run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", cutoff)
+        assert list(cited["sources"]) == [source]
+    current = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert current["record"]["revision"] == 3
+    assert current["record"]["pending"]
+
+
+def test_industry_resume_keeps_legacy_and_prior_forecast_versions(tmp_path):
+    old = sample_record(
+        "smartphones", "2024Q2", "2024-07-15", "idc-q2-initial",
+        IDC_Q2, "shipments", "million units", 285.4,
+    )
+    legacy = Path(run_market("publish", tmp_path, record=old)["review"])
+    bytes_before = {path: path.read_bytes() for path in legacy.parent.glob("*.md")}
+    (tmp_path / ".obsidian").mkdir()
+    baseline = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    baseline.update(market_name="Smartphones", supply_chain="Independent assembly assumptions.",
+                    companies=[{"company": "aapl", "name": "Apple", "body": "Channel watch."}])
+    known_forecast = {
+        "version": "idc-q3-outlook", "scope": "global", "metric": "shipments",
+        "target_period": "2024Q4", "unit": "million units", "value": 315.0,
+        "source_ids": ["idc-q3-initial"],
+    }
+    baseline["forecasts"] = [known_forecast]
+    run_market("publish", tmp_path, record=baseline)
+    revised = sample_record(
+        "smartphones", "2024Q3", "2024-11-01", "idc-q3-correction",
+        IDC_Q3, "shipments", "million units", 316.2,
+    )
+    revised.update(revision=2, forecasts=[
+        dict(known_forecast, version="idc-q3-outlook-correction", value=320.0,
+             source_ids=["idc-q3-correction"]),
+    ])
+    run_market("publish", tmp_path, record=revised)
+    assert run_market("resume", tmp_path, "smartphones", "2024Q2")["review"] == str(legacy)
+    assert all(path.read_bytes() == old_bytes for path, old_bytes in bytes_before.items())
+    previous = run_market("resume", tmp_path, "smartphones", "2024Q3", "--cutoff", "2024-10-31")
+    current = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert previous["record"]["forecasts"] == [known_forecast]
+    assert current["record"]["forecasts"][0]["value"] == 320.0
+    assert current["record"]["supply_chain"] == baseline["supply_chain"]
+    assert current["record"]["companies"] == baseline["companies"]
+
+
+def test_industry_explicit_vault_destination_discovery(tmp_path):
+    (tmp_path / ".obsidian").mkdir()
+    record = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    alternate = "Research/Industry Studies/Phone Market"
+    record["market_name"] = "Smartphones"
+    published = run_market("publish", tmp_path, "--destination", alternate, record=record)
+    assert Path(published["review"]).parent == tmp_path / alternate / "2024Q3"
+    assert run_market("resume", tmp_path, "smartphones", "2024Q3", "--destination", alternate)[
+        "review"
+    ] == published["review"]
+    assert run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31",
+                      "--destination", alternate)["sources"]["idc-q3-initial"]["url"] == IDC_Q3
+    assert run_market("resume", tmp_path, "smartphones", "2024Q3")["review"] is None
+
+
+def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_path):
+    (tmp_path / ".obsidian").mkdir()
+    baseline = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    baseline["market_name"] = "Smartphones"
+    overview = Path(run_market("publish", tmp_path, record=baseline)["review"])
+    late = json.loads(json.dumps(baseline))
+    late.update(revision=2, cutoff="2024-10-31")
+    late["sources"]["later"] = dict(late["sources"]["idc-q3-initial"], published_at="2024-11-01")
+    late["claims"]["market-total"]["source_ids"].append("later")
+    failure = subprocess.run(
+        [sys.executable, str(SCRIPT), "publish", str(tmp_path)],
+        input=json.dumps(late), text=True, capture_output=True,
+    )
+    assert failure.returncode != 0
+    assert "Ineligible source version" in failure.stderr
+    assert run_market("resume", tmp_path, "smartphones", "2024Q3")["record"]["revision"] == 1
+
+    before = overview.read_text()
+    changed = before.replace("Worldwide market, calendar quarters.", "Manual change in analysis.")
+    overview.write_text(changed)
+    readback = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert readback["record"] is None
+    assert readback["issues"] == ["Industry note content conflicts with saved history"]
+    assert run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31") is None
+    assert overview.read_text() == changed

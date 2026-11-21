@@ -169,3 +169,35 @@ def test_aggregate_requires_complete_unique_months_and_recomputes_ratio():
     assert run(months, "2024-10-20")["status"] == "partial"
     assert run(months + [dict(months[0], numerator=11)], "2024-10-31")["status"] == "partial"
     assert run(months[:2] + [dict(months[2], scope="europe")], "2024-10-31")["status"] == "partial"
+
+
+def test_cli_read_barrier_refuses_resume_and_cite_until_recovery(tmp_path, monkeypatch):
+    import industry_update
+
+    (tmp_path / ".obsidian").mkdir()
+    initial = record()
+    initial["market_name"] = "Phones"
+    market_cli("publish", tmp_path, record=initial)
+    revised = dict(initial, revision=2, analysis="This edition preserves the earlier observation.")
+    native_exchange = industry_update._exchange
+
+    def interrupted(stage, payload, parent, name):
+        native_exchange(stage, payload, parent, name)
+        raise OSError("interrupted after exchange")
+
+    with monkeypatch.context() as patches:
+        patches.setattr(industry_update, "_exchange", interrupted)
+        with pytest.raises(OSError, match="interrupted after exchange"):
+            publish(tmp_path, revised)
+
+    for args in [
+        ("resume", tmp_path, "phones", "2024Q3"),
+        ("cite", tmp_path, "phones", "2024Q3", "size", "2024-10-31"),
+    ]:
+        failed = market_cli(*args, check=False)
+        assert failed.returncode != 0
+        assert "update pending" in failed.stderr
+
+    assert json.loads(market_cli("recover", tmp_path).stdout) == {"recovered": True}
+    recovered = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
+    assert recovered["record"]["revision"] == 2
