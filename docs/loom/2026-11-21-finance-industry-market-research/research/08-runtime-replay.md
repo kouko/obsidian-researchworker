@@ -99,3 +99,38 @@ Obsidian GUI, or fetch sources live. The replay confirms the two markets'
 annual outlooks remain pending at their Q3 cutoffs; scoring a compatible
 later annual actual and reconstructing an EU quarter from monthly releases
 are covered separately by the scripted workflow tests.
+
+## Supplemental issuer-side replay
+
+A third ephemeral Codex session started from
+`/private/tmp/market-research-apple-runtime.nmMEDB`. It explicitly invoked
+the project-local `$finance-research` and supplied only the saved public
+smartphone study and a bounded Apple FY2024 Q4 task. The event log shows
+that it read `industry-and-competition.md` and the designated saved
+market review before calling the market citation helper.
+
+```sh
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/issuer-prompt.txt > issuer-events.jsonl 2> issuer-stderr.log
+```
+
+Thread `01a1fd67-19d1-77d1-acad-f8fb04167f37` exited 0 with
+`turn.completed`. It exercised both timezone-aware lookups against the
+same saved smartphone study:
+
+```sh
+python3 -B "$PWD/.agents/scripts/market_research.py" cite "$PWD/market-vault" smartphones 2024Q3 apple-shipments 2024-10-31T23:59:59-07:00
+python3 -B "$PWD/.agents/scripts/market_research.py" cite "$PWD/market-vault" smartphones 2024Q3 apple-shipments 2024-09-28T23:59:59-07:00
+```
+
+The October result supplied `idc-q3-2024-preliminary`, October 14,
+calendar Q3, the original IDC URL, and the `Global shipments table`
+locator. The September result was `null`. Codex wrote and read back
+`issuer/AAPL/FY2024Q4/industry-and-competition.md`. The note quotes the
+exact returned claim, links to the revision-1 market review and IDC
+original, and identifies the issuer FY2024 Q4 separately from market
+calendar Q3. It records the September cutoff rejection and explains
+that the November 1 Counterpoint release supplies no evidence for this
+replay. An independent comparison found the copied market notes
+byte-identical to their Q3 originals. This exercised issuer adoption
+into a bounded Markdown note in an isolated fixture without a full
+issuer research-store publication.
