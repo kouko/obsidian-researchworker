@@ -114,6 +114,7 @@ def test_eu_aggregate_withholds_quarter_until_third_month_is_eligible():
     sources = {month: {"published_at": release} for month, release, _, _ in periods}
     observations = [
         dict(month=month, scope="European Union", metric="BEV share",
+             definition="BEV share of new passenger car registrations",
              unit="ratio", numerator=top, denominator=bottom, source_ids=[month])
         for month, _, top, bottom in periods
     ]

@@ -23,9 +23,13 @@ as Markdown strings. Supply `sources` as a mapping from unique exact
 release identifiers to source records, `claims` as a mapping from stable
 claim IDs to claim records, and `pending` as a list of unresolved work.
 Each source records its verified `published_at` date or timestamp, URL,
-locator, observation period and classification, such as preliminary.
+locator, observation period and classification, such as preliminary. The
+mapping key identifies that exact source version.
 Each claim gives its text and a `source_ids` list with all of its economic
-inputs. Avoid using a date-only same-day release for an intraday claim.
+inputs. Save unavailable inputs as pending work. A claim, forecast or actual
+cannot use a source released after the saved snapshot cutoff. A citation also
+needs a URL, locator and observation period for each source version.
+Avoid using a date-only same-day release for an intraday claim.
 
 Save reusable structured observations and forecasts in `actuals` and
 `forecasts` where appropriate. Give each observation its `version`,
@@ -43,7 +47,7 @@ issues found. A citation returns the matched claim and source records,
 or null when there is no eligible match.
 
 For monthly aggregation, send an object with `observations` and `sources`.
-Each row gives an ISO `month`, `scope`, `metric`, `unit` and its
+Each row gives an ISO `month`, `scope`, `metric`, `unit`, `definition` and its
 `source_ids`. For totals supply `value`. For `--ratio`, supply
 `numerator` and `denominator` to obtain a fraction. The helper returns
 source IDs for the components and identifies missing months when coverage

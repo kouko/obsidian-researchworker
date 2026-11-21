@@ -21,6 +21,7 @@ def record(market="phones", quarter="2024Q3", revision=1, cutoff="2024-10-31"):
         "outlook": "# Market outlook",
         "sources": {"release-v1": {
             "published_at": "2024-10-14", "version": "v1", "url": "https://example.org/releases",
+            "locator": "Table 1", "observation_period": quarter,
         }},
         "claims": {"size": {"text": "Published market size", "source_ids": ["release-v1"]}},
         "pending": ["Further release expected"],
@@ -90,6 +91,7 @@ def test_citation_checks_every_dependency_at_original_cutoff(tmp_path):
 def test_aggregate_requires_complete_unique_months_and_recomputes_ratio():
     months = [
         {"month": month, "scope": "eu", "metric": "bev-share", "unit": "ratio",
+         "definition": "BEV share of new passenger car registrations",
          "numerator": top, "denominator": bottom, "source_ids": [month]}
         for month, top, bottom in [("2024-07", 10, 100), ("2024-08", 40, 100), ("2024-09", 20, 400)]
     ]

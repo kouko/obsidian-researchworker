@@ -9,6 +9,7 @@ import re
 import sys
 from datetime import datetime, time, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from market_evidence import _parse_time, claim_is_eligible, compare_forecast
 
@@ -47,6 +48,18 @@ def _canonical_json(value):
     return json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False)
 
 
+def _provenance_available(source):
+    for key in ("url", "locator", "observation_period"):
+        value = source.get(key)
+        if not isinstance(value, str) or not value.strip():
+            return False
+    try:
+        original = urlsplit(source["url"])
+    except ValueError:
+        return False
+    return original.scheme in ("https", "http") and bool(original.hostname)
+
+
 def _validate(record, market, quarter, revision):
     if record.get("market") != market or record.get("quarter") != quarter:
         raise ValueError("Snapshot identity does not match its location")
@@ -75,9 +88,17 @@ def _validate(record, market, quarter, revision):
             raise ValueError(f"Expected claim text and source versions for {claim_id}")
         if any(not isinstance(key, str) or key not in record["sources"] for key in ids):
             raise ValueError(f"Unknown source version for {claim_id}")
+        if not claim_is_eligible(claim, record["sources"], record["cutoff"]):
+            raise ValueError(f"Ineligible source version at snapshot cutoff for {claim_id}")
     for field in ("forecasts", "actuals", "comparisons"):
         if field in record and not isinstance(record[field], list):
             raise ValueError(f"Expected a list of {field}")
+    for field in ("forecasts", "actuals"):
+        for observation in record.get(field, []):
+            if not isinstance(observation, dict) or not claim_is_eligible(
+                observation, record["sources"], record["cutoff"],
+            ):
+                raise ValueError(f"Ineligible source version at snapshot cutoff in {field}")
 
 
 def _read_bytes(path):
@@ -202,7 +223,11 @@ def cite(root, market, quarter, claim_id, cutoff):
     snapshots, _ = _snapshots(_scope(root, market, quarter))
     for record, path in snapshots:
         claim = record["claims"].get(claim_id)
-        if claim is not None and claim_is_eligible(claim, record["sources"], cutoff):
+        if (
+            claim is not None
+            and claim_is_eligible(claim, record["sources"], cutoff)
+            and all(_provenance_available(record["sources"][key]) for key in claim["source_ids"])
+        ):
             return {
                 "claim": claim,
                 "sources": {key: record["sources"][key] for key in claim["source_ids"]},
@@ -237,7 +262,7 @@ def aggregate_quarter(quarter, observations, cutoff, *, sources, ratio=False):
     missing = [month for month in expected if month not in components]
     rows = [components[month] for month in expected if month in components]
     source_ids = list(dict.fromkeys(key for row in rows for key in row["source_ids"]))
-    for key in ("scope", "metric", "unit"):
+    for key in ("scope", "metric", "unit", "definition"):
         descriptors = [row.get(key) for row in rows]
         if any(not isinstance(value, str) or not value.strip() for value in descriptors):
             issues.append(f"Missing component {key}")
