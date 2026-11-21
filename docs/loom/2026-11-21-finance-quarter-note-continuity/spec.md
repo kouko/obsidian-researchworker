@@ -1,6 +1,6 @@
 # Quarter research continuity with ordinary notes — spec
 intent: 2026-11-21-finance-quarter-note-continuity@6358873
-confirmed-behavior: 2026-11-21 @6dee068
+confirmed-behavior: 2026-11-21 @081dc84
 pre-build-review: required — ordinary notes introduce a historical evidence boundary and interact with interrupted publication recovery
 
 ## Requirements
@@ -25,7 +25,7 @@ Newly written management files must not use JSON, including configuration, progr
 | Location | Responsibility |
 |---|---|
 | `investing/index.md` | Research entry and links to tracked assets. |
-| `investing/assets/equities/aapl/Apple 研究總覽.md` | Asset setup, research questions and dependencies, with links to periods, shared methods and sources. Discover exactly one direct child Markdown with finance_role asset-entry and asset_id matching the selected directory. Missing or duplicate entry properties are reported; a display name is never used as an identity. |
+| `investing/assets/equities/aapl/Apple 研究總覽.md` | Asset setup, research questions and dependencies, with links to periods, shared methods and sources. Discover exactly one direct child Markdown with finance_role asset-entry and asset_id matching the selected directory. A valid marked Markdown entry is authoritative; fall back to valid legacy asset.json only when no entry is marked. A malformed or duplicate marked entry, or an identity mismatch with existing configuration, is reported as a conflict. A display name never establishes identity. |
 | `cycles/2024Q3/index.md` | Optional navigational note, including links to saved runs and free-form material. |
 | `cycles/2024Q3/競爭觀察.md` | Example of ordinary user material. Preserve it and consider relevant claims under the existing evidence rules. |
 | `cycles/2024Q3/<cutoff-date>-<review-id>/review.md` | One authoritative, versioned record of the run, with analysis Markdown files alongside it. |
@@ -50,7 +50,7 @@ Treat the fixed record path and its validated metadata as the sole progress evid
 
 Use the saved `review.md` as the publication marker; do not require a separate recovery journal for new runs. Stage files in an isolated directory. Serialize the final predecessor check and publication for the same asset and quarter. If the predecessor changed, keep the losing draft and report a conflict. Publish without overwriting an existing run, using an atomic directory publication or a validated final record written last. Readers may use a run only when its record is valid and the referenced outputs match. If a save is interrupted before publication, preserve the draft, continue from the last valid run, and allow the user to inspect or retry the unfinished work. Automatic replay of the exact interrupted write set is outside this proposal. The index may be refreshed separately; a missed index update does not hide a published review.
 
-Use the existing JSON layout as a read-only compatibility path for legacy research and recognize its recovery state. A new Markdown review may cite a prior legacy review. A legacy interrupted run must be resolved safely before modifying that target. Do not automatically rewrite existing file trees. Validate the mixed-format reader and the absence of newly written management JSON in an isolated pilot before adopting the new format.
+Use the existing JSON layout as a read-only compatibility path for legacy research and recognize its recovery state. A new Markdown review may cite a prior legacy review. Diagnose a legacy interrupted run read-only and leave the affected target untouched during the pilot; legacy recovery remains a separate operation. Do not automatically rewrite existing file trees. Validate the mixed-format reader and the absence of newly written management JSON in an isolated pilot before adopting the new format.
 
 The first isolated pilot supplies asset-entry, formal-review and financial-analysis templates. It reads existing research configuration and evidence without rewriting its fixture. The full design subsequently supplies the remaining note roles and Markdown configuration. Managed drafts stay outside published run directories. Revalidate references and round-trip typed values before publication.
 
@@ -75,6 +75,7 @@ The first isolated pilot supplies asset-entry, formal-review and financial-analy
 - Supply an eligible note, a relevant note without verifiable timing, and an unrelated note. Verify the eligible claim can be cited, the missing timing is surfaced, and research progress does not change from note presence alone.
 
 - In an isolated Apple pilot, save a Markdown-managed review after reading legacy inputs, interrupt a second save before publication, and retry from the last valid review with the draft preserved. Verify byte preservation of prior files, no newly written management JSON, acceptance of raw source JSON, and fresh-session discovery.
+- Verify legacy-only configuration, a valid Markdown entry beside legacy configuration, and invalid or duplicate marked entries. Verify legacy interrupted state is reported without writes.
 - Attempt two simultaneous saves from the same predecessor. Verify a single committed successor, a retained losing draft and an explicit conflict.
 - Adopt a claim from an ordinary note with an eligible primary source. Edit that note and verify scoped reevaluation while the recorded claim and unrelated work remain available.
 - Test a changed source or method, a late source and ordinary Markdown beside valid runs. Verify affected units require reevaluation, later evidence stays excluded, and unrelated research remains reusable.
