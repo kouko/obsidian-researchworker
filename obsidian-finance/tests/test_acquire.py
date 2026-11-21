@@ -571,6 +571,12 @@ def test_current_original_across_succession(tmp_path, monkeypatch, predecessor_f
         assert summary['exit_code'] == 0
         assert summary['company']['cik'] == 2115436
         assert summary['resolution']['original_filing_date'] == '2026-08-06'
+        selection = read(path, 'manifest.json')['issuer_selection']
+        assert selection == summary['issuer_selection']
+        assert selection['method'] == 'ticker_registry'
+        assert selection['cik'] == 2115436
+        assert selection['transition']['predecessor_cik'] == 34088
+        assert selection['transition']['succession_url'].startswith('https://www.sec.gov/')
         assert (path / 'completion.json').exists()
         assert [row['val'] for row in read(path, 'eligible-facts.json')] == [100]
     else:
@@ -615,7 +621,25 @@ def test_shared_accession_metadata_conflict_without_resolved_predecessor(
     )
     assert summary['exit_code'] == 1
     assert 'conflicting original filing metadata' in json.dumps(summary['errors'])
-    assert all(not url.endswith('/xom.htm') for url in calls)
+    assert all('/Archives/edgar/data/34088/' not in url for url in calls)
+    assert not (path / 'completion.json').exists()
+
+
+@pytest.mark.parametrize('document,form,nominate', [
+    ('alternate.htm', '10-Q', True),
+    ('alternate.htm', '10-Q', False),
+    ('xom.htm', '10-Q/A', False),
+])
+def test_shared_accession_requires_consistent_document_and_form(
+        tmp_path, monkeypatch, document, form, nominate):
+    summary, path, _ = historical_run(
+        tmp_path, monkeypatch, '2026Q2', '2026-06-30', '2026-08-07',
+        successor_filed='2026-08-06', predecessor_filed='2026-08-06',
+        shared_accession=True, nominate_predecessor=nominate,
+        predecessor_document=document, predecessor_form=form,
+    )
+    assert summary['exit_code'] == 1
+    assert 'conflicting original filing metadata' in json.dumps(summary['errors'])
     assert not (path / 'completion.json').exists()
 
 
@@ -673,7 +697,7 @@ def test_explicit_cik_does_not_switch_filers(tmp_path, monkeypatch, failure, exp
 
 def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False, failure=None,
                    successor_filed=None, predecessor_filed=None, successor_end=None, shared_accession=False,
-                   nominate_predecessor=True):
+                   nominate_predecessor=True, predecessor_document='xom.htm', predecessor_form='10-Q'):
     from urllib.error import HTTPError
 
     import sec_client
@@ -705,9 +729,9 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
     accession = f'0000034088-{year % 100:02d}-000001'
     submissions = {'cik': 34088, 'name': 'EXXON MOBIL CORP', 'tickers': [],
                    'filings': {'files': [], 'recent': {
-                      'accessionNumber': [accession], 'form': ['10-Q'],
+                      'accessionNumber': [accession], 'form': [predecessor_form],
                       'filingDate': [filed], 'reportDate': [end],
-                      'primaryDocument': ['xom.htm']}}}
+                      'primaryDocument': [predecessor_document]}}}
     if failure == 'predecessor_mismatch':
         submissions['cik'] = 2115436
     if failure == 'conflict':
@@ -732,7 +756,7 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
         current_submissions['filings']['recent'] = {
             'accessionNumber': [successor_accession], 'form': ['10-Q'],
             'filingDate': [successor_filed], 'reportDate': [successor_end],
-            'primaryDocument': ['successor.htm'],
+            'primaryDocument': ['xom.htm'],
         }
         current_facts['facts'] = {'us-gaap': {'Revenues': {'units': {'USD': [
             dict(end=successor_end, filed=successor_filed, accn=successor_accession, val=100,
@@ -749,9 +773,9 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
         if url == sec_client.TICKERS:
             return json.dumps({'0': {'ticker': 'XOM', 'cik_str': current_cik,
                                      'title': 'ExxonMobil Holdings Corporation'}}).encode()
-        if url.endswith('successor.htm'):
+        if '/Archives/edgar/data/2115436/' in url:
             return successor_html.encode()
-        if url.endswith('xom.htm'):
+        if '/Archives/edgar/data/34088/' in url:
             return html.encode()
         if 'CIK0002115436' in url:
             if failure == 'current_transport':

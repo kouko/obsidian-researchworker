@@ -41,8 +41,9 @@ official filing date against the cutoff and succession boundary. When a
 current filer's verified original was filed after the transition for a
 quarter ending before it, the tool checks the predecessor for a competing
 verified original. Records under both filers count as one original only if
-their accession, filing date and period end agree. Succession records identify
-the filer and do not contribute eligible financial data.
+their accession, filing date, period end, form, and primary document basename
+agree. Succession records identify the filer and do not contribute eligible
+financial data.
 If selection remains unresolved, use the error detail to identify the missing
 or conflicting evidence. An explicit request such as `--cik 0000034088` for
 Exxon Mobil Corporation verifies that filer without switching to another CIK.

@@ -4,6 +4,7 @@ fetch(url, headers) may be injected and returns JSON bytes; default transport
 uses only the standard library. Returned payloads are unfiltered evidence.
 """
 
+from copy import deepcopy
 from datetime import date, datetime, timezone
 import hashlib
 import html as html_entities
@@ -396,11 +397,16 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
 
             same_accession = [row for row in predecessor['filings']
                               if row.get('accessionNumber') == current['original_accession']]
+            current_filing = next(row for row in result['filings']
+                                  if row.get('accessionNumber') == current['original_accession'])
             if (conflicting_publication(same_accession, date.fromisoformat(current['original_filing_date']))
-                    or any(row.get('reportDate') != current['period_end'] for row in same_accession)):
+                    or any(row.get(field) != current_filing.get(field)
+                           for row in same_accession for field in ('reportDate', 'form', 'primaryDocument'))):
                 result['resolution'] = None
                 _unresolved(result, 'conflicting original filing metadata across documented succession',
                             suggest_cik=True)
+            else:
+                result['issuer_selection']['transition'] = deepcopy(transition)
         return result
     if resolution and predecessor['errors']:
         predecessor['resolution'] = None
@@ -411,7 +417,7 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
     elif resolution:
         predecessor['company']['ticker'] = ticker.upper()
         predecessor['issuer_selection'] = dict(method='documented_predecessor', cik=predecessor_cik,
-                                               current_cik=current_cik, transition=transition)
+                                               current_cik=current_cik, transition=deepcopy(transition))
     elif predecessor_absent:
         _unresolved(predecessor, 'documented predecessor has no eligible source-declared original by the cutoff',
                     suggest_cik=True)
