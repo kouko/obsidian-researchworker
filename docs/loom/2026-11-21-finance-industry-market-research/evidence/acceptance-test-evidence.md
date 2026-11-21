@@ -105,3 +105,18 @@ The Q2 thread `01a1fd6b-ab68-7973-832a-040716dcb67f` and Q3 thread `01a1fd6c-b13
 ### Fresh native issuer run at 27a31001
 
 Issuer thread `01a1fd6e-0300-79a0-ac65-93867b34ec3f` ended with `turn.completed` and wrote the isolated Apple note `issuer/AAPL/FY2024Q4/industry-and-competition.md`. I independently checked that the staged helper and issuer guidance matched the clean commit and that the copied smartphone evidence matched the Q3 session byte-for-byte. The note separately records Apple FY2024 Q4 and calendar 2024Q3, issuer `cutoff: 2024-10-31T23:59:59-07:00`, `snapshot_cutoff: 2024-10-31`, `retrospective: false`, and source `published_at: 2024-10-14`. It preserves the exact claim, original IDC URL and release version `idc-2024q3-preliminary`, and records the September 28 `null` result and later Counterpoint exclusion. This was adoption into an isolated issuer note.
+
+## Re-run on 2026-11-21, at 7f2c126
+
+The clean detached clone was at `7f2c1269f52d4c75bf0bd3cbae12e3b2576eaf6b`. The final commit changed the plan and the market test module. It moved the missing-quarter, pre-release citation and cutoff-aware resume assertions to the public CLI. The source entry point loaded, and the focused market command recorded above reported `26 passed in 1.65s`.
+
+`git diff --exit-code 27a31001 HEAD -- obsidian-finance/scripts obsidian-finance/skills` returned 0. An independent `cmp` matched both staged Python helpers from all three native sessions to the final clone, matched the two market-session skill and record documents, and matched the issuer session's industry guidance to the final clone. The earlier native executions retain their original commit attribution.
+
+- 2 and 7: re-tested. Ran `resume "$final_q3_vault" MARKET QUARTER` using the final clone on all four saved schema-2 records. Each returned revision 1 with `issues: []` and retained its source versions and pending comparisons. `diff -rq` again confirmed both Q2 revision directories were identical across the original Q2 and Q3 sessions. The affected CLI test also passed the interrupted, altered and absent-quarter cases.
+- 3 and 10: re-tested. Ran `cite "$final_issuer_market_vault" smartphones 2024Q3 apple-shipments CUTOFF` from the final clone. September 28 at 23:59:59 Pacific returned `null`. October 31 at 23:59:59 Pacific returned the original IDC source, exact version, October 14 publication date, market calendar Q3, `snapshot_cutoff: 2024-10-31` and `retrospective: false`. The affected CLI test also passed historical selection when a later revision exists. The prior issuer execution wrote the Apple FY2024 Q4 note using byte-identical source.
+- 1: carried over — no change to quarterly note publication or source and metric definitions.
+- 4: carried over — no change to the actuals or forecast comparisons and their eligibility rules.
+- 5: carried over — no change to first-quarter publication, links or overview verification.
+- 6: carried over — no change to the partial status or the representation of pending work.
+- 8: carried over — no change to next-quarter update or target-period matching.
+- 9: carried over — no change to revision publication, predecessor links or integrity validation. The affected tests were rerun at the final commit.
