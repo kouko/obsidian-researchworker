@@ -1,9 +1,56 @@
 """Obsidian properties and versioned Markdown records for the research pilot."""
 
+from datetime import date, datetime
 from pathlib import Path
 import re
 from string import Template
 
+
+ANALYSIS_ROLES = frozenset({
+    "financial-analysis", "operating-analysis", "industry-and-competition",
+    "forward-forecast", "valuation-and-risk", "technical-analysis", "synthesis",
+})
+_RUN_FIELDS = ("asset_id", "fiscal_quarter", "as_of", "review_id", "status")
+_ROLE_FIELDS = {
+    "research-overview": (),
+    "asset-entry": ("asset_id",),
+    "quarter-navigation": ("asset_id", "fiscal_quarter"),
+    "review": _RUN_FIELDS,
+    "source-registration": ("asset_id", "source_id", "source_version"),
+    "method-registration": ("asset_id", "method_id", "method_version"),
+    **dict.fromkeys(ANALYSIS_ROLES, _RUN_FIELDS),
+}
+
+
+def _validate_role_properties(props, role):
+    for field in _ROLE_FIELDS[role]:
+        value = props.get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("invalid or missing Obsidian property: " + field)
+    for field in ("asset_id", "review_id", "source_id", "method_id", "predecessor"):
+        if field in props and (not isinstance(props[field], str)
+                or not re.fullmatch(r"[a-zA-Z0-9_-]+", props[field])):
+            raise ValueError("invalid Obsidian identity: " + field)
+    if "fiscal_quarter" in props and (not isinstance(props["fiscal_quarter"], str)
+            or not re.fullmatch(r"[0-9]{4}Q[1-4]", props["fiscal_quarter"])):
+        raise ValueError("invalid Obsidian fiscal quarter")
+    for field in ("as_of", "available_at", "authored_at"):
+        if field not in props:
+            continue
+        value = props[field]
+        try:
+            if not isinstance(value, str):
+                raise ValueError
+            if field == "available_at" and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+                date.fromisoformat(value)
+            elif "T" not in value or datetime.fromisoformat(value).utcoffset() is None:
+                raise ValueError
+        except ValueError as error:
+            raise ValueError("invalid Obsidian date or timezone: " + field) from error
+    if role in ANALYSIS_ROLES or role == "review":
+        statuses = ("partial", "complete", "draft") if role in ANALYSIS_ROLES else ("partial", "complete")
+        if props["status"] not in statuses:
+            raise ValueError("invalid Obsidian status")
 
 def _yaml():
     try:
@@ -46,10 +93,10 @@ def _mapping(text):
     return value
 
 
-def is_asset_entry(text):
+def declares_role(text, role):
     frontmatter = text.split("---", 2)
     return (len(frontmatter) >= 2 and frontmatter[0] == ""
-            and re.search(r"(?m)^finance_role:\s*['\"]?asset-entry['\"]?([ \t]+#.*)?[ \t]*\r?$", frontmatter[1]) is not None)
+            and re.search(r"(?m)^finance_role:\s*['\"]?" + re.escape(role) + r"['\"]?([ \t]+#.*)?[ \t]*\r?$", frontmatter[1]) is not None)
 
 
 def parse_note(text, role, **expected):
@@ -58,13 +105,17 @@ def parse_note(text, role, **expected):
         raise ValueError("missing YAML frontmatter")
     props, body = _mapping(match[1]), match[2]
     simple = (str, int, float, bool)
+    actual_role = props.get("finance_role")
+    allowed = (role,) if isinstance(role, str) else role
     if (type(props.get("finance_schema")) is not int or props["finance_schema"] != 1
-            or props.get("finance_role") != role or not isinstance(props.get("title"), str)
+            or not isinstance(actual_role, str) or actual_role not in _ROLE_FIELDS
+            or actual_role not in allowed or not isinstance(props.get("title"), str)
             or not props["title"].strip() or not re.search(r"(?m)^# \S", body)
             or any(type(value) not in simple and (
                 not isinstance(value, list) or not all(type(item) in simple for item in value))
                    for value in props.values())):
         raise ValueError("invalid Obsidian properties or missing note heading")
+    _validate_role_properties(props, actual_role)
     for key, value in expected.items():
         if props.get(key) != value:
             raise ValueError("managed Markdown identity mismatch: " + key)

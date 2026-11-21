@@ -556,12 +556,19 @@ Do not edit run journals or completion files to force a success. These are
 local mechanics; actual agent continuation and fresh-host research behavior
 require separate verification.
 
-## Isolated Apple Markdown continuation pilot
+## Markdown research continuation
 
-Use this format on disposable fixture copies. Python needs PyYAML for the pilot
-only; existing JSON runs remain readable without it. The pilot reads legacy
-watchlist, source, and method records. It does not migrate old files or change
-the default writer for existing callers.
+Use this format for new skill-managed research. Python needs PyYAML for
+Markdown metadata; existing JSON runs remain readable without it. The helper's
+legacy write interface remains available to older callers.
+
+- `investing/index.md` with role `research-overview` supplies the tracked assets.
+  An ordinary unmarked overview leaves the legacy watchlist in effect.
+- Register research inputs under `data/sources/<revision>.md` and authored
+  methods under `data/analysis/<method-id>.md`. Use the bundled templates with
+  a matching source or method identity and version. The fenced YAML record
+  uses the same version-1 field names as the legacy reader. Keep evidence bytes
+  in their original format. Distinct source versions may coexist.
 
 - An optional marked asset note in the asset directory uses a flat Obsidian
   property header and a fenced asset-entry record. Its identity must match
@@ -571,8 +578,8 @@ the default writer for existing callers.
   Read relevant returned notes and check their claims against the original
   evidence. Frozen notes record the exact claim, note hash, source version,
   and proven availability. Edited notes invalidate dependent work.
-- The existing publication helper accepts Markdown mode for the pilot's
-  financial output. It renders a versioned review note, embeds verification,
+- The existing publication helper accepts Markdown mode for the
+  seven analysis roles. It renders a versioned review note, embeds verification,
   retains old outputs, and writes no management JSON for new pilot runs.
 - The final review appears after its output is written and verified. An
   interruption or conflicting publisher leaves a draft for inspection.

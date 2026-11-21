@@ -49,7 +49,7 @@ result = research_store.discover(root, mode, cutoff)
 ```
 
 Read decisions, reusable units, gaps, exclusions and unfinished run observations.
-The durable `investing/research.json` and asset questions define scope; derive
+The marked `investing/index.md` or legacy `investing/research.json` and asset questions define scope; derive
 work from source revisions, retained reviews and outputs rather than asking for
 a hand-written task list. Unsupported older Markdown stays untouched. Explain
 the missing version-1 configuration; initialize only a newly authorized subtree
@@ -86,9 +86,8 @@ case. Do not convert a failed source check into a no-work claim.
 
 ### Isolated Markdown pilot
 
-When the user requests this pilot, use a disposable copy with existing source
-and method metadata. The Markdown path requires PyYAML in the selected Python
-environment. Existing JSON research remains readable; leave legacy interrupted
+Use the Markdown format for new research saves. The Markdown path requires
+PyYAML in the selected Python environment. Existing JSON research remains readable; leave legacy interrupted
 publications untouched and report their recovery details.
 
 For the requested issuer and fiscal quarter, pass
@@ -98,17 +97,26 @@ each claim against an eligible, independently verified original source. A note
 without that evidence is a lead. To retain an adopted claim, bind the normal
 consumed source identity and add a `candidate_notes` entry to its unit with
 `path`, `digest`, verbatim `claim`, `source_id`, `source_version`, and
-`source_available_at`. The pilot checks source-declared fiscal periods.
+`source_available_at`. The workflow checks source-declared fiscal periods.
 Note creation time and timestamps are not publication evidence.
 
-Use the [asset-entry](templates/asset-entry.md),
-[financial-analysis](templates/financial-analysis.md) and
-[review](templates/review.md) templates for generated notes. Substitute YAML
-properties as typed scalars and remove all placeholders. Within existing
-configuration, a unique, valid marked asset entry supersedes legacy asset
-configuration. Keep the existing legacy identity if both are present.
+Use the [research overview](templates/research-overview.md),
+[asset entry](templates/asset-entry.md), [quarter navigation](templates/quarter-navigation.md),
+[review](templates/review.md), [source registration](templates/source-registration.md),
+and [method registration](templates/method-registration.md) templates for their
+corresponding note roles. Choose the matching analysis template:
+[financial](templates/financial-analysis.md), [operating](templates/operating-analysis.md),
+[industry and competition](templates/industry-and-competition.md),
+[forward forecast](templates/forward-forecast.md), [valuation and risk](templates/valuation-and-risk.md),
+[technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
+Use the same role for partial work and drafts, with their respective status.
+Substitute YAML properties as typed scalars and remove all placeholders.
+A unique, valid marked asset entry supersedes legacy asset configuration.
+Keep the existing legacy identity if both are present.
+
 Specify `storage="markdown"` in the normal `publish` call and supply new
-financial output as Markdown with inline verification objects in its units.
+analysis output as Markdown with inline verification objects in its units.
+Save reusable partial output as `partial`. Draft output remains staged.
 The helper generates `review.md` from the review template. Reopen with fresh
 discovery and confirm the saved unit is visible. If publication stops, keep
 the draft and restart from the last validated review using a fresh run ID.
@@ -223,7 +231,7 @@ repairing an omission, re-evaluate and check the affected unit as a new version;
 do not attach new identities to an unchanged output to manufacture coverage.
 
 Construct version-1 review metadata using the README contract, final root-relative
-output/check paths, current eligible predecessor and the exact source-declared
+output paths and inline verification, current eligible predecessor and the exact source-declared
 fiscal identity. Preserve unchanged units verbatim; changed inputs require new
 analysis/checks, not attaching new dependency identities to an old output.
 Include method, assumptions, changes, gaps and all three horizon judgments:
@@ -237,7 +245,7 @@ Do not pass a list for `changes`; it is explanatory text, not change records.
 ```python
 saved = research_store.publish(
     root, asset_id, review, files, expected, unique_run_id,
-    complete=False,  # checkpoint while required questions/gaps remain
+    complete=False, storage="markdown",  # checkpoint while required work remains
 )
 ```
 
@@ -250,13 +258,15 @@ attempts and successful verification separately.
 
 ## 5. Recover and report honestly
 
-For an identified interrupted run use `recover(root, run_id, action="resume")`;
-it revalidates the original baseline, journal, drafts and dependencies. A bounded
+For a Markdown interruption, keep the draft, rediscover the last valid review,
+and use fresh run and review IDs to retry. For an identified legacy interrupted
+run, the legacy recovery operation `recover(root, run_id, action="resume")`
+revalidates the original baseline, journal, drafts and dependencies. A bounded
 withdrawal uses `action="rollback"`, preserves history and may also refuse edits
 or later dependent reviews. Neither operation authorizes arbitrary file repair.
 
 If a new proposal fails validation, inspect the named field and retain that
-attempt. Where its unchanged preconditions permit, safely abandon it through
+attempt. For legacy saves, where unchanged preconditions permit, abandon it through
 `recover(..., action="rollback")` before a corrected proposal. Reassess and use
 both a new run ID and a new review ID/target; do not reuse a failed attempt's
 target merely because its completion file is absent. If abandonment conflicts,

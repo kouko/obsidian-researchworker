@@ -70,6 +70,64 @@ def two_issuers(root):
     return assets
 
 
+def test_discover_markdown_scope_and_source_registration(tmp_path):
+    import yaml
+
+    assets = two_issuers(tmp_path)
+    module = load()
+    initial = module.discover(tmp_path, "latest", CUTOFF)
+
+    def convert(relative, role, extras, filename):
+        original = tmp_path / relative
+        record = json.loads(original.read_text())
+        properties = dict(finance_schema=1, finance_role=role, title=role, **extras)
+        content = ("---\n" + yaml.safe_dump(properties) + "---\n\n# " + role
+                   + "\n\n## Research record\n\n" + "```finance-" + role + "\n"
+                   + yaml.safe_dump(record) + "```\n")
+        original.with_name(filename).write_text(content)
+        original.unlink()
+
+    (tmp_path / "investing/index.md").write_text("# Ordinary overview")
+    assert module.discover(tmp_path, "latest", CUTOFF)["reusable"] == initial["reusable"]
+    convert("investing/research.json", "research-overview", {}, "index.md")
+    for asset in assets:
+        base = f"investing/assets/equities/{asset}"
+        convert(base + "/asset.json", "asset-entry", {"asset_id": asset}, "Asset overview.md")
+        for source in (tmp_path / base / "data/sources").glob("*.json"):
+            record = json.loads(source.read_text())
+            convert(source.relative_to(tmp_path), "source-registration", {
+                "asset_id": asset, "source_id": record["id"], "source_version": record["identity"],
+            }, source.with_suffix(".md").name)
+
+    migrated = module.discover(tmp_path, "latest", CUTOFF)
+    assert migrated["reusable"] == initial["reusable"]
+    assert migrated["excluded"] == initial["excluded"]
+
+
+def test_markdown_method_preserves_retained_apple_dependencies(tmp_path):
+    import shutil
+    import yaml
+
+    fixture = (Path(__file__).parents[2] / "docs/finance/pilots/apple-2024q2-q3"
+               / "host-continuation/cases/clean/investing")
+    shutil.copytree(fixture, tmp_path / "investing")
+    module = load()
+    cutoff = "2024-08-02T23:59:59+00:00"
+    before = module.discover(tmp_path, "historical", cutoff)
+    method = tmp_path / "investing/assets/equities/aapl/data/analysis/growth-method.json"
+    record = json.loads(method.read_text())
+    props = dict(finance_schema=1, finance_role="method-registration", title="Growth method",
+                 asset_id="aapl", method_id=record["id"], method_version=record["identity"])
+    method.with_suffix(".md").write_text(
+        "---\n" + yaml.safe_dump(props) + "---\n\n# Growth method\n\n## Research record\n\n"
+        + "```finance-method-registration\n" + yaml.safe_dump(record) + "```\n")
+    method.unlink()
+
+    after = module.discover(tmp_path, "historical", cutoff)
+    assert before["reusable"] == after["reusable"]
+    assert {"record": "aapl/2024Q3/run-03-q3", "work": "growth"} in after["reusable"]
+
+
 def test_cold_multi_issuer_calendars_repeat_and_amendment(tmp_path):
     assets = two_issuers(tmp_path)
     module = load()
@@ -347,7 +405,7 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
     assert all(p.read_bytes() == value for p, value in before.items())
 
 
-@pytest.mark.parametrize("scenario", ["publish", "interrupt", "race", "mixed-race", "edited-output"])
+@pytest.mark.parametrize("scenario", ["publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis"])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
     asset = two_issuers(tmp_path)[0]
     base = f"investing/assets/equities/{asset}"
@@ -376,6 +434,10 @@ status: partial
 
 # Updated analysis
 """
+    if scenario == "operating-output":
+        output = output.replace("financial-analysis", "operating-analysis")
+    if scenario == "not-analysis":
+        output = output.replace("financial-analysis", "asset-entry")
     saved["units"]["credit"].update(
         output=dict(path=quarter + "/2024-08-31-r2/analysis.md", digest=digest(output)),
         verification=dict(version=1, output_digest=digest(output),
@@ -449,6 +511,11 @@ status: partial
         assert len(list((tmp_path / quarter).glob("*/review.md"))) == 1
         assert (tmp_path / "investing/.research-drafts/pilot/analysis.md").is_file()
         assert (tmp_path / "investing/.research-drafts/pilot-other/analysis.md").is_file()
+        return
+    if scenario == "not-analysis":
+        with pytest.raises(ValueError, match="invalid Obsidian properties"):
+            publish()
+        assert not (tmp_path / quarter / "2024-08-31-r2/review.md").exists()
         return
     result = publish()
     assert result["review"].endswith("/review.md")

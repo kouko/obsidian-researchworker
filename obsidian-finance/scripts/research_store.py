@@ -74,6 +74,36 @@ def _object(root, reference):
     return data
 
 
+def _registered_metadata(root, reference):
+    if reference.endswith(".json"):
+        return _object(root, reference)
+    path = Path(reference)
+    _require(path.suffix == ".md" and path.parent.name in ("sources", "analysis"),
+             "unsupported research registration")
+    asset = path.parts[3]
+    kind = "source" if path.parent.name == "sources" else "method"
+    props, record = _markdown.record(_bytes(root, reference).decode("utf-8"),
+                                     kind + "-registration", asset_id=asset)
+    _require(type(record.get("version")) is int and record["version"] == 1
+             and props.get(kind + "_id") == record.get("id")
+             and props.get(kind + "_version") == record.get("identity"),
+             "Markdown research registration identity mismatch")
+    return record
+
+
+def _research_config(root):
+    try:
+        note = _bytes(root, "investing/index.md").decode("utf-8")
+    except FileNotFoundError:
+        return _object(root, "investing/research.json")
+    if not _markdown.declares_role(note, "research-overview"):
+        return _object(root, "investing/research.json")
+    _, record = _markdown.record(note, "research-overview")
+    _require(type(record.get("version")) is int and record["version"] == 1,
+             "unsupported Markdown research configuration")
+    return record
+
+
 def _managed_directories(root, path):
     """Skip regular notes while preserving unsafe paths and legacy diagnostics."""
     entries = []
@@ -93,7 +123,7 @@ def _asset_metadata(root, base):
     for name in _names(root, base):
         if name.endswith(".md"):
             note = _bytes(root, base + "/" + name).decode("utf-8")
-            if _markdown.is_asset_entry(note):
+            if _markdown.declares_role(note, "asset-entry"):
                 marked.append(note)
     _require(len(marked) <= 1, "duplicate Markdown asset entries")
     if not marked:
@@ -206,7 +236,11 @@ def _analysis_valid(root, base, required, consumed, record, gaps):
         if frozen is not None:
             _analysis_identity(frozen)
         try:
-            metadata = _object(root, base + "/data/analysis/" + identity + ".json")
+            reference = base + "/data/analysis/" + identity
+            try:
+                metadata = _registered_metadata(root, reference + ".md")
+            except FileNotFoundError:
+                metadata = _registered_metadata(root, reference + ".json")
             _require(metadata.get("id") == identity and metadata.get("kind") in ("method", "assumption"), "local analysis identity/kind")
             _require(not {"available_at", "fiscal", "raw_ref"} & metadata.keys(), "economic evidence cannot be a local analysis input")
             _adapter._timestamp(metadata["authored_at"])
@@ -408,7 +442,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
 
 
 def _snapshot(root, cutoff, mode, proposed=None):
-    config = _object(root, "investing/research.json")
+    config = _research_config(root)
     _require(isinstance(config.get("assets"), list) and config["assets"], "missing asset scope")
     assets = [_id(asset) for asset in config["assets"]]
     _require(len(set(assets)) == len(assets), "duplicate asset identity")
@@ -431,8 +465,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
             _required(question, "2024Q1")  # Validate the sole literal template.
         local = []
         for name in _names(root, base + "/data/sources"):
-            _require(name.endswith(".json"), "unsupported source metadata")
-            source = _object(root, base + "/data/sources/" + name)
+            source = _registered_metadata(root, base + "/data/sources/" + name)
             _require(source.get("issuer") == issuer, "source issuer mismatch")
             _require(_adapter._text(source.get("kind")), "source kind")
             _require(source["kind"] not in ("method", "assumption"), "local analysis inputs must not be economic sources")
@@ -738,10 +771,10 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
                  for name, content in files.items()), "Markdown analysis filenames required")
     quarter, target = _target(asset, review)
     base = "investing/assets/equities/" + asset
-    _require(asset in _object(root, "investing/research.json")["assets"], "asset outside configured scope")
+    _require(asset in _research_config(root)["assets"], "asset outside configured scope")
     _require(isinstance(expected, dict) and expected, "publication preconditions required")
     for content in files.values():
-        props, _ = _markdown.parse_note(content, "financial-analysis", asset_id=asset,
+        props, _ = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
             fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
         _require(props.get("status") in ("complete", "partial"), "invalid analysis status")
 
@@ -796,7 +829,7 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
                          and sha256(files[name].encode("utf-8")).hexdigest() == unit["output"]["digest"],
                          "new Markdown output lacks valid inline verification: " + qid)
 
-        provenance = {path: _object(root, path) for path in expected
+        provenance = {path: _registered_metadata(root, path) for path in expected
                       if path.startswith(base + "/data/sources/") or path.startswith(base + "/data/analysis/")}
         requirements = _unique(_asset_metadata(root, base)["questions"])
         saved = dict(review, provenance=provenance, requirements=requirements,
@@ -860,7 +893,7 @@ def publish(root, asset, review, files, expected, run_id, *, complete=True, stor
     _preconditions(root, expected)
     quarter, target = _target(asset, review)
     base = "investing/assets/equities/" + asset
-    _require(asset in _object(root, "investing/research.json")["assets"], "asset outside configured scope")
+    _require(asset in _research_config(root)["assets"], "asset outside configured scope")
     cycle = base + "/cycles/" + quarter
     _mkdir(root, cycle)
     with _quarter_lock(root, cycle):
@@ -892,7 +925,7 @@ def _publish_legacy(root, asset, review, files, expected, run_id, complete, quar
     _require(review.get("last_success") == previous.get("last_success"),
              "local publication cannot advance last successful external verification")
     # The frozen metadata and raw hashes keep provenance even after future revisions.
-    provenance = {path: _object(root, path) for path in expected
+    provenance = {path: _registered_metadata(root, path) for path in expected
                   if path.startswith(base + "/data/sources/") or path.startswith(base + "/data/analysis/")}
     requirements = _unique(_asset_metadata(root, base)["questions"])
     review = dict(review, provenance=provenance, requirements=requirements, publication=dict(run=run_id, complete=complete))
@@ -1083,7 +1116,7 @@ def discover(root, mode, cutoff, *, candidate_for=None):
         result = _adapter.assess(snapshot, mode, cutoff)
         if candidate_for is not None:
             asset, quarter = candidate_for
-            _require(_id(asset) in _object(boundary, "investing/research.json")["assets"], "asset outside configured scope")
+            _require(_id(asset) in _research_config(boundary)["assets"], "asset outside configured scope")
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             base = "investing/assets/equities/" + asset
             result["candidate_notes"] = [
