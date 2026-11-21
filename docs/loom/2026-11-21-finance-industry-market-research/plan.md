@@ -9,13 +9,13 @@ Binding review criteria: research/07-spec-review-criteria.md@0c6dc5d.
 
 ### Wave 1 — Evidence and saved research
 
-**W1-01 Market evidence and outlook rules (`market_evidence.claim_is_eligible`, `market_evidence.compare_forecast`)**  acceptance: 3, 4
-- Files: obsidian-finance/scripts/market_evidence.py, obsidian-finance/tests/test_market_evidence.py
+**W1-01 Market evidence and outlook rules**  acceptance: 3, 4
+- Files: obsidian-finance/scripts/market_evidence.py (entry: claim_is_eligible/compare_forecast), obsidian-finance/tests/test_market_evidence.py
 - Test: A3 positive: eligible-originals; negative: mixed-vintage-claim. A4 positive: matched-actual; boundary: annual-forecast-quarter-actual.
 - Risk: Agent-decided per REQ-3/4 and research/07-spec-review-criteria.md, bind facts to source dates and forecasts to matching target metrics.
 
-**W1-02 Quarterly Markdown publication and resume (`market_research.main`: publish, resume, cite, aggregate, compare)**  after: W1-01  acceptance: 1, 2
-- Files: obsidian-finance/scripts/market_research.py, obsidian-finance/tests/test_market_research.py
+**W1-02 Quarterly Markdown publication and resume**  after: W1-01  acceptance: 1, 2
+- Files: obsidian-finance/scripts/market_research.py (entry: main with publish/resume/cite/aggregate/compare), obsidian-finance/tests/test_market_research.py
 - Test: A1 positive: two-market-quarter-structure; boundary: incomplete-months. A2 positive: fresh-read; negative: interrupted-newer-record.
 - Risk: Agent-decided per REQ-1/2 and research/07-spec-review-criteria.md, publish a valid record last, retain earlier snapshots and scope discovery to the selected market.
 

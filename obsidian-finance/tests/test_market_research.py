@@ -7,7 +7,12 @@ import pytest
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
-from market_research import aggregate_quarter, cite, publish, resume
+from market_research import publish
+
+# The standalone adversarial probes import these Python entries via this fixture.
+from market_research import aggregate_quarter as aggregate_quarter
+from market_research import cite as cite
+from market_research import resume as resume
 
 
 def market_cli(*args, record=None, check=True):
@@ -110,7 +115,8 @@ def test_resume_ignores_interrupted_and_tampered_records_without_masking_other_s
     assert recovered["review"] == str(first)
     assert len(recovered["issues"]) == 2
     assert (first.parent.parent / "personal.md").read_text() == "ordinary note"
-    assert resume(tmp_path, "phones", "2024Q2")["record"] is None
+    missing = json.loads(market_cli("resume", tmp_path, "phones", "2024Q2").stdout)
+    assert missing["record"] is None
 
 
 def test_publish_preserves_existing_records_and_ordinary_overview(tmp_path):
@@ -134,8 +140,10 @@ def test_citation_checks_every_dependency_at_original_cutoff(tmp_path):
     result = json.loads(market_cli("cite", tmp_path, "phones", "2024Q3", "size", "2024-10-31").stdout)
     assert result["review"] == str(early)
     assert list(result["sources"]) == ["release-v1"]
-    assert cite(tmp_path, "phones", "2024Q3", "size", "2024-09-28") is None
-    assert resume(tmp_path, "phones", "2024Q3", "2024-10-31")["review"] == str(early)
+    too_early = market_cli("cite", tmp_path, "phones", "2024Q3", "size", "2024-09-28")
+    assert json.loads(too_early.stdout) is None
+    historical = market_cli("resume", tmp_path, "phones", "2024Q3", "--cutoff", "2024-10-31")
+    assert json.loads(historical.stdout)["review"] == str(early)
 
 
 def test_aggregate_requires_complete_unique_months_and_recomputes_ratio():
