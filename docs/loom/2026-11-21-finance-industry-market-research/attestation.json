@@ -1,0 +1,73 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-21-finance-industry-market-research",
+  "content_digest": "334c6fdfd148fe7f77339415630b5923fcf64a56",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_historical_market_provenance.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_historical_market_provenance.py",
+      "result": "pass",
+      "command_digest": "a62731b39fb4ec83cd7867c5a0eac7010ec96655e3863be1dc1844aa185c8b88"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_market_month_definitions.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_market_month_definitions.py",
+      "result": "pass",
+      "command_digest": "32f572615ab4f295fa01b5543fbb13d4312cc0f2d5305eec5e311a37459b14d2"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "close_code",
+      "vendor": "openai",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "e7817ff",
+      "review_target_sha": "1520693"
+    },
+    {
+      "reviewer": "close_skill",
+      "vendor": "openai",
+      "model": "inherited",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "e7817ff",
+      "review_target_sha": "1520693"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "a2cf96c",
+  "tested_commit": "7f2c126",
+  "reviewed_commit": "14dfef8879bf06524b2e005afb3c93614bf002db",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
