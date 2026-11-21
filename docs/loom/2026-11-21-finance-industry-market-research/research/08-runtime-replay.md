@@ -1,0 +1,199 @@
+# Quarterly market research: fresh Codex replay
+
+## Setup
+
+Two separate `codex-cli 0.171.0` sessions used explicitly invoked
+`$market-research` from isolated project-local `.agents/skills` fixtures.
+The commands used the regular skill entry and helper; no global plugin,
+user configuration, or existing vault was changed. The first fixture used
+the skill and helper from `47092f1`. The second used the skill and helper
+from `fee2dc0`, whose two helper file digests matched the checked-out files
+after the run. It received the first session's saved vault Markdown only,
+plus a new source packet containing Q3 public release data. Neither fixture
+included private notes, brokerage data, or previous chat messages.
+
+The initial default-sandbox attempt stopped at app-server initialization
+before creating a thread, with `Operation not permitted (os error 1)`.
+The authorized outer-shell run initialized successfully. The nested Codex
+session retained workspace-write sandboxing. Both successful invocations
+used a new `codex exec` rather than resume or fork.
+
+Run from the Q2 fixture root `/private/tmp/market-research-runtime.dRRjYP`:
+
+```sh
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q2-prompt.txt > q2-events.jsonl 2> q2-stderr.log
+```
+
+Run from the Q3 fixture root `/private/tmp/market-research-q3-runtime.YXCAxv`:
+
+```sh
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q3-prompt.txt > q3-events.jsonl 2> q3-stderr.log
+python3 verify-replay.py
+```
+
+The event logs record the actual commands and terminal responses. These
+temporary roots and raw events are local evidence. This document preserves
+the thread identifiers and decisive observations if temporary files are
+later removed.
+
+| Session | Thread | Host result |
+|---|---|---|
+| Q2 baselines | `01a1fd60-d4c3-7f81-991c-49e6b1bafa6d` | Exit 0, `turn.completed` |
+| Q3 continuation | `01a1fd63-0790-7583-87f0-0075b49a31b9` | Exit 0, `turn.completed` |
+
+## Results
+
+The Q2 session read the local skill and data contract, checked for saved
+work, used the helper to publish two baselines, and read both back. In the
+new session Codex said it would “recover both Q2 records, build Q3 from the
+supplied packet, and verify the published notes and cutoff checks.” Its
+recorded commands read the Q3 packet, invoked `resume` for both prior
+quarters, then used `compare`, `publish`, and `cite`.
+
+| Market | Q2 record | Q3 continuation | Forecast review |
+|---|---|---|---|
+| Worldwide smartphones | July 15 cutoff. IDC estimated 285.4m units; Apple 45.2m and 15.8% share. | October 31 cutoff. IDC estimated 316.1m, up 30.7m (+10.76%) versus saved Q2 and +4.0% year over year. | Retained `idc-may-2024` (1,210m for 2024) and logged the August revision to 1,230m and its Android assumption. Annual actual pending. |
+| Worldwide semiconductors | August 5 cutoff. SIA/WSTS reported USD 149.9bn. | November 5 cutoff. USD 166.0bn, up USD 16.1bn (+10.74%) versus saved Q2 and +23.2% year over year. | Retained `wsts-spring-2024` (USD 611bn for 2024). Regional growth supported direction, while logic and memory attribution and the annual actual remained pending. |
+
+The final fixture contains:
+
+```text
+vault/
+  smartphones/
+    overview.md
+    2024Q2/r1/{analysis,sources,outlook,review}.md
+    2024Q3/r1/{analysis,sources,outlook,review}.md
+  semiconductors/
+    overview.md
+    2024Q2/r1/{analysis,sources,outlook,review}.md
+    2024Q3/r1/{analysis,sources,outlook,review}.md
+```
+
+Independent helper read-back reported no issues on all four records.
+The verifier checked the four file roles per revision, source URLs and
+locators, observation periods and publication dates, retained exact
+forecast versions, and open work. Q2 revision files in both markets
+matched their original SHA-256 digests after the Q3 run. The source-map
+key is the exact release version identifier.
+
+### Apple citation and negative control
+
+At Apple FY2024 Q4's October 31 research cutoff, `cite` for
+`apple-shipments` returned the calendar 2024 Q3 estimate of 56.0m
+worldwide units, +3.5% YoY and 17.7% share, with the exact
+`idc-q3-2024-preliminary` source dated October 14 and locator
+“Global shipments table.” The September 28 cutoff returned `null`.
+The October 31 Q3 revision 2 test draft added a claim dependent on
+Counterpoint's November 1 release. The helper returned exit 1 with
+`Ineligible source version at snapshot cutoff for counterpoint-market-total`;
+the first revision remained readable and no `r2` directory was created.
+
+[IDC original release](https://www.idc.com/resource-center/press-releases/worldwide-smartphone-market-grows-4-with-316-1-million-units-shipped-in-the-third-quarter-of-2024-according-to-idc/)
+
+## Verification boundary
+
+This was a real fresh-session replay of the packaged skill files through
+project-local discovery, using supplied public release facts. It did not
+install the named plugin into a live user catalog, render the notes in the
+Obsidian GUI, or fetch sources live. The replay confirms the two markets'
+annual outlooks remain pending at their Q3 cutoffs; scoring a compatible
+later annual actual and reconstructing an EU quarter from monthly releases
+are covered separately by the scripted workflow tests.
+
+## Supplemental issuer-side replay
+
+A third ephemeral Codex session started from
+`/private/tmp/market-research-apple-runtime.nmMEDB`. It explicitly invoked
+the project-local `$finance-research` and supplied only the saved public
+smartphone study and a bounded Apple FY2024 Q4 task. The event log shows
+that it read `industry-and-competition.md` and the designated saved
+market review before calling the market citation helper.
+
+```sh
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/issuer-prompt.txt > issuer-events.jsonl 2> issuer-stderr.log
+```
+
+Thread `01a1fd67-19d1-77d1-acad-f8fb04167f37` exited 0 with
+`turn.completed`. It exercised both timezone-aware lookups against the
+same saved smartphone study:
+
+```sh
+python3 -B "$PWD/.agents/scripts/market_research.py" cite "$PWD/market-vault" smartphones 2024Q3 apple-shipments 2024-10-31T23:59:59-07:00
+python3 -B "$PWD/.agents/scripts/market_research.py" cite "$PWD/market-vault" smartphones 2024Q3 apple-shipments 2024-09-28T23:59:59-07:00
+```
+
+The October result supplied `idc-q3-2024-preliminary`, October 14,
+calendar Q3, the original IDC URL, and the `Global shipments table`
+locator. The September result was `null`. Codex wrote and read back
+`issuer/AAPL/FY2024Q4/industry-and-competition.md`. The note quotes the
+exact returned claim, links to the revision-1 market review and IDC
+original, and identifies the issuer FY2024 Q4 separately from market
+calendar Q3. It records the September cutoff rejection and explains
+that the November 1 Counterpoint release supplies no evidence for this
+replay. An independent comparison found the copied market notes
+byte-identical to their Q3 originals. This exercised issuer adoption
+into a bounded Markdown note in an isolated fixture without a full
+issuer research-store publication.
+
+## Final schema-2 replay and package discovery
+
+Repeated all three native conversations after `27a31001`, the fix that
+binds the revision's own overview to its saved record. The fixtures used
+copies of the committed files. SHA-256 prefixes independently matched the
+worktree as follows:
+
+| Checked file | SHA-256 prefix |
+|---|---|
+| `scripts/market_research.py` | `43e0b7b5ec60` |
+| `scripts/market_evidence.py` | `1a6c4c794b65` |
+| `skills/market-research/SKILL.md` | `8d214631d3f3` |
+| `skills/market-research/references/record.md` | `e12181331172` |
+| `skills/finance-research/references/industry-and-competition.md` | `dca1c7245171` |
+
+Under `/private/tmp/market-research-final-runtime.IIt2uA`, run from each
+project separately:
+
+```sh
+# In q2/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q2-prompt.txt > q2-events.jsonl 2> q2-stderr.log
+# In q3/, after copying only ../q2/vault/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q3-prompt.txt > q3-events.jsonl 2> q3-stderr.log
+# In issuer/, after copying only ../q3/vault/smartphones to market-vault/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/issuer-prompt.txt > issuer-events.jsonl 2> issuer-stderr.log
+# At the fixture root
+python3 verify-final-replay.py
+```
+
+| Session | Thread | Result |
+|---|---|---|
+| Q2 | `01a1fd6b-ab68-7973-832a-040716dcb67f` | Both baselines saved, exit 0 |
+| Q3 | `01a1fd6c-b133-7ef0-a3e7-0825cc479444` | Both resumed from saved notes, exit 0 |
+| Apple issuer note | `01a1fd6e-0300-79a0-ac65-93867b34ec3f` | Linked evidence adopted and checked, exit 0 |
+
+Every trace ended in `turn.completed`. The four saved revisions are schema
+2 and all contain `overview.md`, `analysis.md`, `outlook.md`, `sources.md`
+and `review.md`. The final Q2 files matched their initial bytes. The Q3
+notes preserved the prior exact IDC May and WSTS spring forecasts, with
+their full-year comparison pending. On a scratch copy, editing the
+shared overview left the saved Q3 record valid. Altering that revision's
+own overview instead produced a recovery issue and no candidate record.
+
+The final Apple note at
+`issuer/issuer/AAPL/FY2024Q4/industry-and-competition.md` distinguishes
+Apple fiscal Q4 and calendar market Q3, with exact claim text, source
+`idc-2024q3-preliminary`, original IDC URL, October 14 publication date
+and locator “Global shipments table, all vendors and Apple rows.”
+The October 31 Pacific cutoff returned that source. The September 28
+Pacific cutoff returned `null`. The market run rejected the attempted
+November-source revision at October 31, and the issuer note records that
+release's exclusion. The issuer replay left copied market notes unchanged.
+
+Package discovery was separately checked through read-only
+`codex app-server --stdio`. After `initialize`, `plugin/read` with
+`pluginName: obsidian-finance` and `marketplacePath` set to this checkout's
+absolute `.claude-plugin/marketplace.json` returned
+`obsidian-finance:market-research` alongside
+`obsidian-finance:finance-research` and `obsidian-finance:sec-data`.
+The read-only query did not register a marketplace or install a plugin.
+The three runtime turns used project-local copies of the package files
+and did not render the notes in the Obsidian GUI.

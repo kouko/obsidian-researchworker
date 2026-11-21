@@ -1,0 +1,107 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-21-finance-industry-market-research",
+  "content_digest": "cb75ce6f9cd33a4aebd96077d0beedd0e5b44bf5",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_historical_market_provenance.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_historical_market_provenance.py",
+      "result": "pass",
+      "command_digest": "a62731b39fb4ec83cd7867c5a0eac7010ec96655e3863be1dc1844aa185c8b88"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_market_month_definitions.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_market_month_definitions.py",
+      "result": "pass",
+      "command_digest": "32f572615ab4f295fa01b5543fbb13d4312cc0f2d5305eec5e311a37459b14d2"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_industry_displaced_writer.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_industry_displaced_writer.py",
+      "result": "pass",
+      "command_digest": "c5fa4193fe266e8f63a5a1525fd80f2d53b897ae9a7eac183654ad98b674a498"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_industry_history_scope.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-21-finance-industry-market-research/evidence/probes/test_industry_history_scope.py",
+      "result": "pass",
+      "command_digest": "e1161b4bfc5a0add682e9dc75664d01d2a871abe27c0c84168995eed40f60430"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "industry_close_code",
+      "vendor": "openai",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "65914ab",
+      "review_target_sha": "f832a8d"
+    },
+    {
+      "reviewer": "industry_close_skill",
+      "vendor": "openai",
+      "model": "inherited",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "inconsistency",
+          "anchor": "obsidian-finance/skills/market-research/SKILL.md:18",
+          "text": "The broad destination guidance has an explicit recovery exception and exact command list.",
+          "fix": "Name publish, resume and cite."
+        }
+      ],
+      "reviewed_sha": "65914ab",
+      "review_target_sha": "f832a8d"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "b56b1b9",
+  "tested_commit": "f832a8d",
+  "reviewed_commit": "d00f9b039a2b0062729251817aa807dd7b579a12",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    },
+    {
+      "acceptance": 6,
+      "status": "works"
+    },
+    {
+      "acceptance": 7,
+      "status": "works"
+    }
+  ]
+}

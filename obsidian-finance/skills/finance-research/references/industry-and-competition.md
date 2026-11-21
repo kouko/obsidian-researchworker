@@ -33,3 +33,25 @@ Explain the peer set and comparison limits, the best evidence for and against
 the claimed position, and implications for the assumptions used downstream.
 Keep required conclusions pending when comparability or corroboration is
 insufficient.
+
+## Adopt quarterly market evidence
+
+When the user designates a saved quarterly industry or market study,
+use [market-research](../../market-research/SKILL.md) to retrieve the exact
+claim and eligible source versions at the issuer assessment cutoff. Pass the
+selected vault to the market helper's `cite` command. Use its returned claim
+and source versions as the citation evidence. The returned overview link
+opens the current note for navigation. Use the study's
+established location when the user selects a custom destination or an older
+study. Preserve `claim_version` when returned, since a quarter note can
+change in place. Record the issuer fiscal quarter and market observation
+quarter separately. Retain
+the issuer `cutoff`, the market review's `snapshot_cutoff`, the
+`retrospective` flag, and each source's `published_at`. When
+`retrospective` is true, describe the claim as a reconstruction from a
+market review with a later cutoff based on originals eligible at the issuer
+cutoff. Preserve the original sources and versions as evidence dependencies
+in the issuer workflow. If lookup finds no eligible claim, continue with
+independently eligible issuer evidence and report the market evidence gap.
+If a pending update blocks citation, report it and preserve the vault
+during the read-only lookup.

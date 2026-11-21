@@ -1,7 +1,7 @@
 {
   "name": "obsidian-finance",
   "version": "0.1.0",
-  "description": "Optional SEC evidence acquisition and folder-grounded agent research continuation with source cutoffs and protected checkpoints.",
+  "description": "Optional SEC evidence acquisition and folder-grounded equities and quarterly market research with source cutoffs and protected checkpoints.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",
   "repository": "https://github.com/kouko/obsidian-researchworker",
@@ -9,8 +9,8 @@
   "keywords": ["sec", "edgar", "financial-data", "provenance"],
   "interface": {
     "displayName": "obsidian-finance",
-    "shortDescription": "SEC evidence and folder-grounded equities research",
-    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research to continue work in managed version-1 equities folders while preserving reports and edits. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
+    "shortDescription": "SEC evidence, equities and quarterly market research",
+    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research to continue work in managed version-1 equities folders while preserving reports and edits. Use market-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
