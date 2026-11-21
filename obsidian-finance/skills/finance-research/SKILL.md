@@ -111,8 +111,11 @@ corresponding note roles. Choose the matching analysis template:
 [technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
 Use the same role for partial work and drafts, with their respective status.
 Substitute YAML properties as typed scalars and remove all placeholders.
-Save a new source registration as `data/sources/<revision>.md` and a new
-method or assumption registration as `data/analysis/<method-id>.md`.
+In the selected quarter directory (`cycles/<YYYYQq>/`), save a new source
+registration under `data/sources/` and a new method or assumption registration
+under `data/analysis/`. Create new evidence only under this quarter's `data/`.
+Use quarter-relative payload paths such as `data/raw/filing.html` in these
+registrations.
 Use the source and method templates, including their fenced metadata blocks.
 Reuse an existing legacy JSON registration unchanged when applicable.
 For a new method or assumption that has explanatory content, keep it in

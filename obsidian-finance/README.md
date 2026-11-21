@@ -564,9 +564,10 @@ legacy write interface remains available to older callers.
 
 - `investing/index.md` with role `research-overview` supplies the tracked assets.
   An ordinary unmarked overview leaves the legacy watchlist in effect.
-- Register research inputs under `data/sources/<revision>.md` and authored
-  methods under `data/analysis/<method-id>.md`. Use the bundled templates with
-  a matching source or method identity and version. The fenced YAML record
+- Within the selected `cycles/<YYYYQq>/` directory, register research inputs
+  under `data/sources/` and authored methods under `data/analysis/`. Use the
+  bundled templates with a matching source or method identity and version.
+  Payload paths in quarter registrations are relative to the quarter directory. The fenced YAML record
   uses the same version-1 field names as the legacy reader. Keep evidence bytes
   in their original format. Distinct source versions may coexist.
 
