@@ -112,3 +112,56 @@ A recursive comparison found no differences in the copied market vault.
 This resolves the citation wording in the follow-up artifact. The
 earlier saved claim and initial replay remain intact, and this focused
 run does not establish that an unprompted run always avoids that wording.
+
+## Final replay after the history and safe-write fixes
+
+Repeated the three native conversations on
+`e51c4ea18f175c3633bbf68272acfa3e7604df5e`, which includes `05a8279`,
+in a new disposable root `/private/tmp/industry-final-replay.d5vqi9`.
+No earlier published study was reused as an input to Q2. In all three
+projects, staged files were independently byte-checked against that Git
+tree. SHA-256 prefixes were `a7c9aa6aabe5` (market helper),
+`3f3fdf8cc625` (notes), `47bd4ada32c5` (updates), `1a6c4c794b65`
+(evidence), `8f625c870982` (market skill), `f3ed01de1f37` (record
+reference) and `18b9f96caa26` (issuer reference). Prompts prohibited
+inferences about retail sell-through or company-reported net sales from
+shipment estimates in both the market and issuer notes.
+
+```sh
+python3 /private/tmp/industry-final-replay.d5vqi9/run.py stage
+python3 /private/tmp/industry-final-replay.d5vqi9/run.py run
+python3 /private/tmp/industry-final-replay.d5vqi9/verify.py
+```
+
+The runner used the same native CLI options as the initial replay and
+copied only saved investing notes between conversations. All three
+processes exited zero with `turn.completed`.
+
+| Session | Thread | Verified outcome |
+|---|---|---|
+| Q2 | `01a1ff06-6607-7971-9e6b-8ea6a1664704` | Two localized baseline groups, their exact original forecasts and a separate Apple company observation. |
+| Q3 | `01a1ff07-e049-7990-a929-9387040a18a6` | Read both baselines from the saved notes, left Q2 byte-identical, and saved both Q3 groups with annual comparisons pending. The phone market's subsequent valid November revision kept its existing paths. |
+| Apple issuer | `01a1ff0b-2c89-7700-8254-faca3ed5d9eb` | Independently cited the eligible market claim in a new issuer note. The copied market notes stayed byte-identical. |
+
+Direct CLI readback and the verifier found four valid quarter groups
+under `vault/investing/industries`, with title and filename prefixes
+matching and no `rN` output directories. The phone size/share note
+retained visible `重要修訂` and IDC's 316.1-million Q3 estimate alongside
+Counterpoint's separate 307-million series. October 31 returned IDC and
+November 2 returned Counterpoint with a different claim version. The
+October-cutoff test with a November-source dependency was rejected,
+leaving earlier note contents byte-identical. The source series were
+never treated as like-for-like or as one publisher's correction.
+
+In both the market claim and the separately written issuer evidence,
+56.0 million, +3.5% year over year, and 17.7% describe IDC estimated
+shipments and shipment share. The prose explicitly says these estimates
+cannot establish retail sell-through or company-reported net sales.
+The issuer note records the original source `idc-2024q3-preliminary`,
+the October 14 publication date, original URL and table, and exact claim
+version `98b1436c20cb27c1f01581d120f4f8ebad04a0454e642ec12f4474e67490db04`.
+October 31 Pacific returned IDC, September 28 returned null, and the
+November 1 source remained excluded at both issuer cutoffs. The issuer
+evidence is `issuer/issuer/AAPL/FY2024Q4/industry-and-competition.md`
+within the disposable root. This does not validate unprompted use of
+live research sources or a real issuer vault.
