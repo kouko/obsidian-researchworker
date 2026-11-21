@@ -26,7 +26,12 @@ you already know the dates. Use [finance-research](skills/finance-research/READM
 to continue analysis in an existing managed research folder. Use
 [market-research](skills/market-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
-or cite eligible market findings in issuer research.
+or cite eligible market findings in issuer research. Given an Obsidian vault,
+the default study path is `investing/industries/<market>/`. Each calendar
+quarter has a stable overview and localized topic notes, with material
+changes recorded inside the affected notes. Older snapshots remain readable.
+See the [record and command guide](skills/market-research/references/record.md)
+for custom paths, historical citation, and interruption recovery.
 
 ## Run directly
 

@@ -1,13 +1,14 @@
 # Quarterly market research records
 
 Use Python 3.11 or later. Run these commands with the absolute script and
-research-root paths selected for the current host. The command options below
+vault paths selected for the current host. The command options below
 assume the working directory is the finance plugin root.
 
 ```sh
-python3 scripts/market_research.py resume /path/to/research smartphones 2024Q2 --cutoff 2024-07-15
-python3 scripts/market_research.py publish /path/to/research < /path/to/draft.json
-python3 scripts/market_research.py cite /path/to/research smartphones 2024Q3 market-total 2024-10-31
+python3 scripts/market_research.py resume /path/to/vault smartphones 2024Q2 --cutoff 2024-07-15
+python3 scripts/market_research.py publish /path/to/vault < /path/to/draft.json
+python3 scripts/market_research.py cite /path/to/vault smartphones 2024Q3 market-total 2024-10-31
+python3 scripts/market_research.py recover /path/to/vault
 python3 scripts/market_research.py compare 2024-10-31 < /path/to/comparison.json
 python3 scripts/market_research.py aggregate 2024Q3 2024-10-31 --ratio < /path/to/months.json
 ```
@@ -19,8 +20,12 @@ root, or pass the equivalent JSON on standard input.
 A publication record identifies `market` (a stable slug), `quarter` (such
 as `2024Q3`), `cutoff` (ISO date or timezone-aware ISO date-time) and
 positive integer `revision`. Supply `overview`, `analysis` and `outlook`
-as Markdown strings. Supply `sources` as a mapping from unique exact
-release identifiers to source records, `claims` as a mapping from stable
+as Markdown strings. On first vault publication provide `market_name`
+and use the chosen `language` (`zh-TW`, `ja`, or `en`, the helper
+default). Optionally supply the Markdown fields `project_overview` and
+`supply_chain`, a `companies` array with `company` (stable slug), `name`
+and Markdown `body`, and an ISO date `updated`. Supply `sources` as a
+mapping from exact release identifiers to source records, `claims` as a mapping from stable
 claim IDs to claim records, and `pending` as a list of unresolved work.
 Each source records its verified `published_at` date or timestamp,
 original `url`, `locator` within the source and `observation_period`.
@@ -45,6 +50,8 @@ A minimal publication example:
 ```json
 {
   "market": "smartphones",
+  "market_name": "Global Smartphone Market",
+  "language": "en",
   "quarter": "2024Q3",
   "cutoff": "2024-10-14",
   "revision": 1,
@@ -69,18 +76,41 @@ A minimal publication example:
 }
 ```
 
-The market directory holds a user-editable `overview.md`, created if
-absent and preserved on later publications. Each quarter has revision
-subdirectories with their own `overview.md`, `analysis.md`, `sources.md`,
-`outlook.md` and `review.md`. The review links to the notes saved for
-that revision and is the authoritative published record. For an older
-record without its own overview, a missing or changed shared overview
-is reported as a recovery issue. A resume lookup returns the selected record and any
-issues found. Keep any occupied revision directory intact, including an
-interrupted one. Publish the next attempt under a free revision number and
-use the prior valid record as the starting point where available.
+An Obsidian vault is a directory containing `.obsidian`. The default study
+folder is `investing/industries/<market>/`. For another location use the
+same vault-relative `--destination <study-folder>` on publish, resume,
+and cite. The filename prefix uses the saved full market name and naming
+language. For example, a Traditional Chinese study includes:
 
-A citation returns the matched claim and source records, or null when there
+| Note | Path relative to the study |
+| --- | --- |
+| Project overview | `全球智慧型手機市場總覽.md` |
+| Quarter overview | `2024Q3/2024Q3 全球智慧型手機市場-總覽.md` |
+| Size and share | `2024Q3/2024Q3 全球智慧型手機市場-規模與市佔率.md` |
+| Supply chain, when supplied | `2024Q3/2024Q3 全球智慧型手機市場-供應鏈.md` |
+| Outlook | `2024Q3/2024Q3 全球智慧型手機市場-指引與展望.md` |
+| Company observation, when supplied | `2024Q3/companies/2024Q3 全球智慧型手機市場-供應鏈-Apple.md` |
+
+The quarter notes use the filename stem as the first heading and expose
+flat properties `type`, `market`, `quarter`, `status`, `as_of`, and
+`updated`. A company observation also includes `company`. The overview
+links the saved topic notes and lists pending research. The helper preserves
+unowned frontmatter and user text outside each managed body.
+
+Use the next consecutive `revision` and a cutoff at least as late as
+the last publication. Updates reuse the note paths and preserve material
+changes inside the affected notes. The `review` path in the command result
+points to the quarter overview. Resume and citation can be blocked after
+an interrupted update. Run `recover VAULT`; if recovery reports a conflict,
+retain the notes and recovery artifacts and report the affected paths.
+
+The older explicit-root API still reads revision-directory records. Vault
+lookups can also read matching older snapshots without modifying them.
+An older record without its own overview requires a matching shared overview.
+Start new Obsidian studies with the vault-aware path.
+
+A citation returns the matched claim and source records, with `claim_version`
+for vault-aware results, or null when there
 is no eligible match. Its `cutoff` is the requested issuer assessment cutoff,
 and `snapshot_cutoff` is the selected market review's cutoff. If
 `retrospective` is true, the market review uses a later cutoff. Describe the
