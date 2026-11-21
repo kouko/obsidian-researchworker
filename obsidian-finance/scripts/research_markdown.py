@@ -98,15 +98,23 @@ def declares_role(text, role):
     lines = text.splitlines()
     if not lines or lines[0] != "---":
         return False
+    try:
+        end = lines.index("---", 1)
+    except ValueError:
+        end = len(lines)
+    header = "\n".join(lines[1:end])
     key = r"""(?:finance_role|'finance_role'|"finance_role")"""
-    value = re.escape(role)
-    marker = re.compile(rf"""{key}[ \t]*:[ \t]*(?:{value}|'{value}'|"{value}")(?:[ \t]+#.*)?[ \t]*""")
-    for line in lines[1:]:
-        if line == "---":
-            break
-        if marker.fullmatch(line):
-            return True
-    return False
+    position = r"(?:^|[,{])[ \t]*" + key + r"[ \t]*:"
+    if not header.lstrip().startswith("{") and not re.search(position, header, re.M):
+        return False
+    try:
+        return _mapping(header).get("finance_role") == role
+    except ValueError:
+        # A recognizable declaration must still reach record validation when
+        # the surrounding YAML is malformed or the YAML dependency is absent.
+        value = re.escape(role)
+        marker = rf"""{position}[ \t]*(?:{value}|'{value}'|"{value}")(?=[ \t]*(?:[,}}]|#|$))"""
+        return bool(re.search(marker, header, re.M))
 
 
 def parse_note(text, role, **expected):
@@ -130,6 +138,10 @@ def parse_note(text, role, **expected):
         if props.get(key) != value:
             raise ValueError("managed Markdown identity mismatch: " + key)
     return props, body
+
+
+def render_draft(properties, body):
+    return "---\n" + _dump(dict(properties, status="draft")) + "---\n" + body
 
 
 def record(text, role, **expected):

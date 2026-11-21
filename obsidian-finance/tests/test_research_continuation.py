@@ -491,6 +491,8 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
 @pytest.mark.parametrize("scenario", [
     "publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis",
     "method-copy", "method-conflict", "method-newer",
+    "damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "replaced-bad-output",
+    "registration-interruption", "damaged-method-registration",
 ])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
     asset = two_issuers(tmp_path)[0]
@@ -506,7 +508,7 @@ def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch
         method="Read retained source", assumptions=[], changes="Partial update", gaps=["Synthesis pending"],
         horizons={h: dict(judgment="insufficient_evidence", evidence=[], invalidation_triggers=[])
                   for h in ("short", "medium", "long")}))
-    if scenario.startswith("method-"):
+    if scenario.startswith("method-") or scenario == "damaged-method-registration":
         local = tmp_path / quarter
         directory = local / "data/analysis"
         directory.mkdir(parents=True)
@@ -555,6 +557,28 @@ status: partial
         return module.publish(tmp_path, asset, saved, {"analysis.md": output}, previous,
                               "pilot", complete=False, storage="markdown")
 
+    if scenario == "registration-interruption":
+        link = module.os.link
+
+        def interrupt_registration(source, destination, *, src_dir_fd, dst_dir_fd, follow_symlinks):
+            if destination.endswith(".md") and destination != "review.md":
+                with pytest.raises(FileNotFoundError):
+                    module.os.stat(destination, dir_fd=dst_dir_fd, follow_symlinks=False)
+                fd = module.os.open(source, module.os.O_RDONLY, dir_fd=src_dir_fd)
+                with module.os.fdopen(fd, "rb") as payload:
+                    assert digest(payload.read().decode("utf-8")) + ".md" == destination
+                raise RuntimeError("interrupt before registration link")
+            return link(source, destination, src_dir_fd=src_dir_fd, dst_dir_fd=dst_dir_fd,
+                        follow_symlinks=follow_symlinks)
+
+        monkeypatch.setattr(module.os, "link", interrupt_registration)
+        with pytest.raises(RuntimeError, match="interrupt before registration"):
+            publish()
+        assert not list((tmp_path / quarter / "data/sources").glob("*.md"))
+        assert not (tmp_path / quarter / "2024-08-31-r2/review.md").exists()
+        assert {"record": f"{asset}/2024Q2/r1", "work": "credit"} in load().discover(
+            tmp_path, "latest", CUTOFF)["reusable"]
+        return
     if scenario == "interrupt":
         def interrupt(*args):
             raise RuntimeError("interrupt before marker")
@@ -565,7 +589,11 @@ status: partial
         interrupted = load().discover(tmp_path, "latest", CUTOFF)
         assert {"record": f"{asset}/2024Q2/r1", "work": "credit"} in interrupted["reusable"]
         assert any("Unfinished Markdown draft" in gap["reason"] for gap in interrupted["gaps"])
-        assert (tmp_path / "investing/.research-drafts/pilot/analysis.md").is_file()
+        draft = tmp_path / "investing/.research-drafts/pilot/analysis.md"
+        properties, _ = module._markdown.parse_note(draft.read_text(), "financial-analysis")
+        assert properties["status"] == "draft"
+        final = tmp_path / quarter / "2024-08-31-r2/analysis.md"
+        assert final.read_bytes() == output.encode("utf-8")
         assert not (tmp_path / quarter / "2024-08-31-r2/review.md").exists()
         restarted = json.loads(json.dumps(saved))
         restarted["id"] = "retry"
@@ -628,7 +656,53 @@ status: partial
     result = publish()
     assert result["review"].endswith("/review.md")
     assert (tmp_path / result["review"]).is_file()
-    if scenario.startswith("method-"):
+    if scenario == "damaged-method-registration":
+        reference = f"{quarter}/data/analysis/manual.md"
+        (tmp_path / reference).write_text("---\nfinance_role: method-registration\n[")
+        scan = module.discover(tmp_path, "latest", CUTOFF)
+        assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in scan["reusable"]
+        assert any(g["record"] == reference and g["evidence"] == "quarter-method" for g in scan["gaps"])
+        assert module.verify_quarter(tmp_path / quarter, "2024-08-31-r2/review.md")["status"] == "verified"
+        return
+    if scenario in ("damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "replaced-bad-output"):
+        review_path = tmp_path / result["review"]
+        isolated = tmp_path / quarter
+        if scenario.startswith("damaged-source"):
+            _, stored = module._markdown.record(review_path.read_text(), "review")
+            reference = next(iter(stored["quarter_evidence"]["units"]["credit"]["sources"].values()))
+            registration = isolated / reference
+            if scenario == "damaged-source-registration":
+                registration.write_text("---\nfinance_role: source-registration")
+                damaged_ref = str(registration.relative_to(tmp_path))
+            else:
+                _, source_record = module._markdown.record(registration.read_text(), "source-registration")
+                payload = isolated / source_record["raw_ref"]
+                payload.unlink()
+                damaged_ref = str(payload.relative_to(tmp_path))
+        elif scenario == "bad-review-utf8":
+            review_path.write_bytes(bytes([255]))
+            damaged_ref = result["review"]
+        else:
+            _, stored = module._markdown.record(review_path.read_text(), "review")
+            updated = module._rebase_review(stored, quarter, portable=False)
+            updated.update(id="r3", predecessor="r2")
+            content = output.replace("review_id: r2", "review_id: r3").replace("Updated analysis", "Replacement analysis")
+            current = updated["units"]["credit"]
+            current["output"].update(path=quarter + "/2024-08-31-r3/analysis.md", digest=digest(content))
+            current["verification"]["output_digest"] = digest(content)
+            module.publish(tmp_path, asset, updated, {"analysis.md": content},
+                           module.publication_snapshot(tmp_path), "replacement", complete=False, storage="markdown")
+            (review_path.parent / "analysis.md").write_text("Damaged previous output")
+            damaged_ref = result["review"].rsplit("/", 1)[0]
+        after = load().discover(tmp_path, "latest", CUTOFF)
+        surviving = "r3" if scenario == "replaced-bad-output" else "r1"
+        assert {"record": f"{asset}/2024Q2/{surviving}", "work": "credit"} in after["reusable"]
+        assert {"record": "software-fixture/2024Q4/r1", "work": "retention"} in after["reusable"]
+        assert any(damaged_ref in gap["record"] or damaged_ref in gap["reason"] for gap in after["gaps"])
+        with pytest.raises(ValueError, match="quarter evidence"):
+            module.verify_quarter(isolated, "2024-08-31-r2/review.md")
+        return
+    if scenario.startswith("method-") or scenario == "damaged-method-registration":
         snapshot = module.verify_quarter(local, "2024-08-31-r2/review.md")
         assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in snapshot["reusable"]
     if scenario == "method-conflict":
@@ -655,7 +729,7 @@ status: partial
             tmp_path, "latest", CUTOFF)["reusable"]
 
 
-@pytest.mark.parametrize("case", ["ordinary", "marked", "malformed", "duplicate"])
+@pytest.mark.parametrize("case", ["ordinary", "marked", "flow", "flow-malformed", "malformed", "duplicate"])
 def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
     asset = two_issuers(tmp_path)[0]
     base = tmp_path / "investing/assets/equities" / asset
@@ -674,17 +748,23 @@ def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
         data["questions"] = data["questions"][:1]
         fence = chr(96) * 3
         body = f"\n## Research record\n\n{fence}finance-asset-entry\n{json.dumps(data)}\n{fence}\n"
+        if case in ("flow", "flow-malformed"):
+            props = dict(finance_schema=1, finance_role="asset-entry", title="Reordered questions", asset_id=asset)
+            header = json.dumps(props)
+            if case == "flow-malformed":
+                header = header[:-1]
+            properties = "---\n" + header + "\n---\n\n# Reordered questions\n"
         text = properties + body
         if case == "malformed":
             text = text.replace("finance_schema: 1", "finance_schema: unsupported")
         (base / "Overview.md").write_text(text)
         if case == "duplicate":
             (base / "Second.md").write_text(text)
-    if case in ("malformed", "duplicate"):
-        with pytest.raises(ValueError, match="invalid Obsidian properties|duplicate Markdown asset"):
+    if case in ("flow-malformed", "malformed", "duplicate"):
+        with pytest.raises(ValueError, match="invalid managed note YAML|invalid Obsidian properties|duplicate Markdown asset"):
             module.discover(tmp_path, "latest", CUTOFF)
     else:
-        if case == "marked":
+        if case in ("marked", "flow"):
             # Existing reviews use all old question IDs. A marked entry must
             # supply the current metadata rather than silently falling back.
             assert len(module._asset_metadata(tmp_path, f"investing/assets/equities/{asset}")["questions"]) == 1

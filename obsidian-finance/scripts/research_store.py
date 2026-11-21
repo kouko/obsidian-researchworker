@@ -83,8 +83,10 @@ def _registered_metadata(root, reference):
              "unsupported research registration")
     asset = path.parts[3]
     kind = "source" if path.parent.name == "sources" else "method"
-    props, record = _markdown.record(_bytes(root, reference).decode("utf-8"),
-                                     kind + "-registration", asset_id=asset)
+    payload = _bytes(root, reference)
+    if len(path.parts) == 9 and path.parts[4] == "cycles" and re.fullmatch(r"[0-9a-f]{64}", path.stem):
+        _require(sha256(payload).hexdigest() == path.stem, "quarter registration digest mismatch")
+    props, record = _markdown.record(payload.decode("utf-8"), kind + "-registration", asset_id=asset)
     _require(type(record.get("version")) is int and record["version"] == 1
              and props.get(kind + "_id") == record.get("id")
              and props.get(kind + "_version") == record.get("identity"),
@@ -239,7 +241,7 @@ def _completion_valid(check, output_digest):
             and output_digest == check.get("output_digest"))
 
 
-def _current_method(root, base, quarter, identity):
+def _current_method(root, base, quarter, identity, gaps):
     """Choose the newest authored version, coalescing equivalent located copies."""
     reference = base + "/data/analysis/" + identity
     candidates = []
@@ -250,7 +252,17 @@ def _current_method(root, base, quarter, identity):
             continue
         break
     for path in _metadata_paths(root, base + "/cycles/" + quarter + "/data/analysis"):
-        metadata = _registered_metadata(root, path)
+        try:
+            metadata = _registered_metadata(root, path)
+            _id(metadata["id"])
+            _adapter._timestamp(metadata["authored_at"])
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            gap = dict(record=path, evidence="quarter-method",
+                       reason="Invalid quarter method: " + str(error),
+                       recovery="Preserve damaged bytes and reverify the exact local version")
+            if gap not in gaps:
+                gaps.append(gap)
+            continue
         if metadata.get("id") == identity:
             candidates.append((True, metadata))
     if not candidates:
@@ -283,7 +295,7 @@ def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
         if frozen is not None:
             _analysis_identity(frozen)
         try:
-            localized, metadata = _current_method(root, base, quarter, identity)
+            localized, metadata = _current_method(root, base, quarter, identity, gaps)
             _require(metadata.get("id") == identity and metadata.get("kind") in ("method", "assumption"), "local analysis identity/kind")
             _require(not {"available_at", "fiscal", "raw_ref"} & metadata.keys(), "economic evidence cannot be a local analysis input")
             _adapter._timestamp(metadata["authored_at"])
@@ -352,6 +364,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
+    unusable = set()
     try:
         directories = _managed_directories(root, base + "/cycles/" + quarter)
     except FileNotFoundError:
@@ -361,13 +374,14 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
         _id(directory)
         path = base + "/cycles/" + quarter + "/" + directory
         try:
-            markdown = _bytes(root, path + "/review.md").decode("utf-8")
+            markdown = _bytes(root, path + "/review.md")
         except FileNotFoundError:
             pass
         else:
             try:
                 asset = base.rsplit("/", 1)[1]
-                props, review = _markdown.record(markdown, "review", asset_id=asset, fiscal_quarter=quarter)
+                props, review = _markdown.record(markdown.decode("utf-8"), "review",
+                                                 asset_id=asset, fiscal_quarter=quarter)
                 rid = _id(review["id"])
                 complete = review.get("publication", {}).get("complete")
                 _require(type(review.get("version")) is int and review["version"] == 1
@@ -378,6 +392,15 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
                          and _target(asset, review)[1] == path, "Markdown review identity mismatch")
                 _require(not {"review.json", "pending.json", "withdrawn.json", "abandoned.json"} &
                          set(_names(root, path)), "conflicting Markdown and legacy review")
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                gaps.append(dict(record=path + "/review.md", evidence="reviews", reason="Invalid Markdown review: " + str(error),
+                    recovery="Preserve the damaged marker and inspect the prior valid record"))
+                continue
+
+            # A valid envelope still establishes ancestry when its payload is damaged.
+            _require(rid not in saved, "duplicate review identity")
+            saved[rid] = (path, review)
+            try:
                 if "quarter_evidence" in review:
                     cycle = base + "/cycles/" + quarter
                     _verify_quarter_evidence(Path(root) / cycle, asset, quarter, review, strict_notes=False)
@@ -388,11 +411,12 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
                         _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest")
                                  and _completion_valid(_verification(root, unit), output["digest"]),
                                  "published Markdown output is changed, incomplete or unverified")
-                _require(rid not in saved, "duplicate review identity")
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                unusable.add(rid)
+                gaps.append(dict(record=path, evidence="reviews", reason="Invalid Markdown review payload: " + str(error),
+                    recovery="Preserve affected files and resume from an intact review"))
+            else:
                 saved[rid] = (path, review)
-            except (FileNotFoundError, ValueError, KeyError, TypeError) as error:
-                gaps.append(dict(record=path, evidence="reviews", reason="Invalid Markdown review: " + str(error),
-                    recovery="Preserve the draft and resume from the prior valid record"))
             continue
         try:
             pending = _object(root, path + "/pending.json")
@@ -483,9 +507,12 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
             _require(sum(rid not in parents for rid in saved) == 1, "ambiguous competing future reviews")
             return []
         parents = {pair[1].get("predecessor") for pair in eligible.values()}
-        leaves = [pair for rid, pair in eligible.items() if rid not in parents]
+        leaves = [rid for rid in eligible if rid not in parents]
         _require(len(leaves) == 1, "missing cutoff review or ambiguous competing reviews")
-        return leaves
+        tip = leaves[0]
+        while tip in unusable:
+            tip = saved[tip][1].get("predecessor")
+        return [eligible[tip]] if tip in eligible else []
     except (ValueError, FileNotFoundError) as error:
         gaps.append(dict(record=base + "/cycles/" + quarter, evidence="reviews", reason=str(error), recovery="Repair review metadata or provide the requested cutoff review; preserve existing research"))
         return []
@@ -509,7 +536,30 @@ def _verify_source_payload(source, raw):
                  "free-text projection must retain full raw_text")
 
 
-def _source_catalog(root, base, issuer, quarters):
+def _source_registration(root, path, issuer):
+    source = _registered_metadata(root, path)
+    _id(source["id"])
+    _require(source.get("issuer") == issuer, "source issuer mismatch")
+    _require(_adapter._text(source.get("kind")), "source kind")
+    _require(source["kind"] not in ("method", "assumption"), "local analysis inputs must not be economic sources")
+    _require("fiscal" not in source or isinstance(source["fiscal"], dict), "source fiscal")
+    _require(source.get("identity") is None or _adapter._text(source["identity"]), "source identity")
+    _require(source.get("available_at") is None or _adapter._text(source["available_at"]), "source availability")
+    try:
+        _verify_source_payload(source, _bytes(root, source["raw_ref"]))
+    except (OSError, ValueError, TypeError) as error:
+        raise ValueError(f"{source.get('raw_ref')}: {error}") from error
+    if "original_ref" in source or "original_digest" in source:
+        reference = source.get("original_ref")
+        try:
+            _require(sha256(_bytes(root, reference)).hexdigest() == source["original_digest"],
+                     "source original digest mismatch")
+        except (OSError, ValueError, TypeError, KeyError) as error:
+            raise ValueError(f"{reference}: {error}") from error
+    return source
+
+
+def _source_catalog(root, base, issuer, quarters, gaps):
     """Load eligible source inputs and keep copied comparators out of cycle discovery."""
     by_key = {}
     native = set()
@@ -518,19 +568,17 @@ def _source_catalog(root, base, issuer, quarters):
     for quarter in quarters:
         paths.extend((quarter, path) for path in _metadata_paths(root, base + "/cycles/" + quarter + "/data/sources"))
     for quarter, path in paths:
-        source = _registered_metadata(root, path)
-        _require(source.get("issuer") == issuer, "source issuer mismatch")
-        _require(_adapter._text(source.get("kind")), "source kind")
-        _require(source["kind"] not in ("method", "assumption"), "local analysis inputs must not be economic sources")
-        _require("fiscal" not in source or isinstance(source["fiscal"], dict), "source fiscal")
-        _require(source.get("identity") is None or _adapter._text(source["identity"]), "source identity")
-        _require(source.get("available_at") is None or _adapter._text(source["available_at"]), "source availability")
-        _verify_source_payload(source, _bytes(root, source["raw_ref"]))
-        if "original_ref" in source or "original_digest" in source:
-            _require(sha256(_bytes(root, source["original_ref"])).hexdigest() == source["original_digest"],
-                     "source original digest mismatch")
+        try:
+            source = _source_registration(root, path, issuer)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            if quarter is None:
+                raise
+            gaps.append(dict(record=path, evidence="quarter-source",
+                reason="Invalid quarter source: " + str(error),
+                recovery="Preserve damaged bytes and reverify the exact local version"))
+            continue
         source["version"] = source.pop("identity", None)
-        key = (_id(source["id"]), source["version"])
+        key = (source["id"], source["version"])
         if key in by_key:
             _require(quarter is not None, "duplicate source revision")
             displaced = {"raw_ref", "original_ref", "origin_reference", "origin_raw_ref", "origin_original_ref"}
@@ -575,7 +623,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
             quarters = sorted(set(quarters) | {proposed[1]})
         for quarter in quarters:
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
-        local, native = _source_catalog(root, base, issuer, quarters)
+        local, native = _source_catalog(root, base, issuer, quarters, gaps)
         selected_sources = _source_versions(local, cutoff)
         by_source = {source["id"]: source for source in selected_sources}
         for source in selected_sources:
@@ -808,7 +856,7 @@ def _rollback_valid(root, target, marker):
         return False
 
 
-def _validate_proposal(root, request, staged):
+def _validate_proposal(root, request, staged, *, output_suffix=""):
     asset, review, files = request["asset"], json.loads(json.dumps(request["review"])), request["files"]
     quarter, target = _target(asset, review)
     _require(type(review.get("version")) is int and review["version"] == 1, "review version")
@@ -839,7 +887,7 @@ def _validate_proposal(root, request, staged):
                 _require(name in files, "missing staged output/check")
                 replacement = staged + "/" + name
                 if field == "output":
-                    unit[field]["path"] = replacement
+                    unit[field]["path"] = replacement + output_suffix
                 else:
                     unit[field] = replacement
     snapshot, gaps = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
@@ -896,9 +944,18 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected):
     provenance = {}
     for reference in expected:
         for folder in registrations:
-            if (reference.startswith(base + "/data/" + folder + "/")
-                    or re.fullmatch(re.escape(base) + r"/cycles/[0-9]{4}Q[1-4]/data/" + folder + r"/[^/]+\.md", reference)):
-                registrations[folder].append((reference, _registered_metadata(root, reference)))
+            legacy = reference.startswith(base + "/data/" + folder + "/")
+            local = re.fullmatch(re.escape(base) + r"/cycles/[0-9]{4}Q[1-4]/data/" + folder + r"/[^/]+\.md", reference)
+            if not (legacy or local):
+                continue
+            try:
+                metadata = (_source_registration(root, reference, issuer) if folder == "sources"
+                            else _registered_metadata(root, reference))
+            except (OSError, ValueError, KeyError, TypeError):
+                if legacy:
+                    raise
+                continue
+            registrations[folder].append((reference, metadata))
 
     files = {}
     cutoff = _adapter._core._instant(saved["cutoff"])
@@ -990,7 +1047,10 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, strict_notes=Tru
         return _bytes(folder, path, quarter_relative=True)
 
     def checked(path, checksum):
-        payload = read(path)
+        try:
+            payload = read(path)
+        except OSError as error:
+            raise ValueError(f"cannot read quarter evidence {path}: {error}") from error
         _require(sha256(payload).hexdigest() == checksum, "quarter evidence digest mismatch: " + path)
         return payload
 
@@ -1107,15 +1167,18 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
     base = "investing/assets/equities/" + asset
     _require(asset in _research_config(root)["assets"], "asset outside configured scope")
     _require(isinstance(expected, dict) and expected, "publication preconditions required")
-    for content in files.values():
-        props, _ = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
+    draft_files = {}
+    for name, content in files.items():
+        props, body = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
             fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
         _require(props.get("status") in ("complete", "partial"), "invalid analysis status")
+        draft_files[name] = _markdown.render_draft(props, body).encode("utf-8")
 
     stage = "investing/.research-drafts/" + run_id
     _mkdir(root, stage, exclusive=True)
-    for name, content in files.items():
-        _write_new(root, stage + "/" + name, content.encode("utf-8"))
+    for name, draft in draft_files.items():
+        _write_new(root, stage + "/" + name, draft)
+        _write_new(root, stage + "/" + name + ".final", files[name].encode("utf-8"))
 
     cycle = base + "/cycles/" + quarter
     _mkdir(root, cycle)
@@ -1167,7 +1230,7 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         requirements = _unique(asset_metadata["questions"])
         saved = dict(review, requirements=requirements, publication=dict(run=run_id, complete=complete))
         request = dict(asset=asset, review=saved, files=files, previous=previous, complete=complete)
-        _validate_proposal(root, request, stage)
+        _validate_proposal(root, request, stage, output_suffix=".final")
         portable, evidence = _capture_quarter(root, asset, asset_metadata["issuer"], cycle, saved, expected)
         content = _markdown.render_review(asset, quarter, portable)
         _, roundtrip = _markdown.record(content, "review", asset_id=asset, fiscal_quarter=quarter)
@@ -1175,8 +1238,10 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         _write_new(root, stage + "/review.md", content.encode("utf-8"))
         _mkdir(root, target, exclusive=True)
         for name in files:
-            staged_bytes = _bytes(root, stage + "/" + name)
-            _require(staged_bytes == files[name].encode("utf-8"), "staged analysis changed")
+            staged_bytes = _bytes(root, stage + "/" + name + ".final")
+            _require(staged_bytes == files[name].encode("utf-8")
+                     and _bytes(root, stage + "/" + name) == draft_files[name],
+                     "staged analysis changed")
             _write_new(root, target + "/" + name, staged_bytes)
         after_evidence = dict(expected)
         for reference, payload in evidence.items():
@@ -1185,7 +1250,8 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
             try:
                 previous_bytes = _bytes(root, destination)
             except FileNotFoundError:
-                _write_new(root, destination, payload)
+                parent, name = destination.rsplit("/", 1)
+                _link_new_bytes(root, stage, parent, name, payload)
             else:
                 _require(previous_bytes == payload, "quarter evidence conflicts with an existing file: " + destination)
             after_evidence[destination] = sha256(payload).hexdigest()
@@ -1193,7 +1259,7 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         _preconditions(root, after_evidence, target)
         _require(all(_bytes(root, target + "/" + name) == files[name].encode("utf-8") for name in files)
                  and _bytes(root, stage + "/review.md") == content.encode("utf-8"), "staged review changed")
-        _link_staged(root, stage, target, "review.md")
+        _link_staged(root, stage, target, "review.md", content.encode("utf-8"))
     return dict(status="complete" if complete else "checkpoint", review=target + "/review.md", run=run_id)
 
 
@@ -1207,10 +1273,16 @@ def _quarter_lock(root, cycle):
         os.close(fd)
 
 
-def _link_staged(root, stage, target, name):
-    """Commit a flushed marker without linking the editable draft to it."""
+def _link_staged(root, stage, target, name, payload):
+    """Commit the expected marker bytes without linking the editable draft."""
+    _require(_bytes(root, stage + "/" + name) == payload, "staged review changed")
+    _link_new_bytes(root, stage, target, name, payload)
+
+
+def _link_new_bytes(root, stage, target, name, payload):
+    """Expose only flushed complete evidence and marker files."""
     commit = ".publication-marker"
-    _write_new(root, stage + "/" + commit, _bytes(root, stage + "/" + name))
+    _write_new(root, stage + "/" + commit, payload)
     source = _open(root, stage, True)
     try:
         destination = _open(root, target, True)

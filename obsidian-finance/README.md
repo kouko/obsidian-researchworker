@@ -562,6 +562,16 @@ Use this format for new skill-managed research. Python needs PyYAML for
 Markdown metadata; existing JSON runs remain readable without it. The helper's
 legacy write interface remains available to older callers.
 
+Markdown records use a restricted PyYAML loader and a dumper without aliases.
+The loader rejects anchors, aliases, and duplicate mapping keys. It keeps
+implicit timestamps as strings so saved cutoffs retain their timezone text.
+The contracts exercised with PyYAML 6.0.2 derive from the
+[PyYAML documentation](https://pyyaml.org/wiki/PyYAMLDocumentation) and the
+upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.py),
+[constructor](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/constructor.py),
+[resolver](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/resolver.py), and
+[representer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/representer.py).
+
 - `investing/index.md` with role `research-overview` supplies the tracked assets.
   An ordinary unmarked overview leaves the legacy watchlist in effect.
 - Within the selected `cycles/<YYYYQq>/` directory, register research inputs
@@ -591,7 +601,9 @@ legacy write interface remains available to older callers.
 - The existing publication helper accepts Markdown mode for the
   seven analysis roles. It renders a versioned review note, embeds verification,
   retains old outputs, and writes no management JSON for new pilot runs.
-- The final review appears after its output is written and verified. An
+- Staged analysis notes declare draft status. The final review appears after
+  the exact final analysis bytes are written and verified. Quarter evidence
+  files are flushed before their destination names become visible. An
   interruption or conflicting publisher leaves a draft for inspection.
   Re-run discovery and prepare a fresh publication; legacy recovery remains
   a separate operation.
