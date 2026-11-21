@@ -16,6 +16,14 @@ records source-invoked Codex CLI tests using public isolated fixtures. The
 covers isolated installed Codex conversations and distinguishes offline tests
 from live SEC access. Partial checkpoints retain unresolved research.
 
+## Skill guides
+
+Use [sec-data](skills/sec-data/README.md) for a public issuer’s filings and
+reported financial observations. Choose the fiscal-quarter selector if the
+issuer’s fiscal calendar matters, or use the observation-end date range when
+you already know the dates. Use [finance-research](skills/finance-research/README.md)
+to continue analysis in an existing managed research folder.
+
 ## Run directly
 
 Python 3.11 or later is the only runtime requirement; all runtime imports use

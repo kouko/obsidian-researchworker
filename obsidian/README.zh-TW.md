@@ -4,21 +4,13 @@
 
 > Obsidian vault workflow — daily note、markdown、Bases、圖表、Canvas、file intel、vault 管理、dashboard 設計，封裝為 Claude Code plugin。
 
-## ⚠️ Cowork 相容性
+## 選擇技能
 
-本 plugin 大部分 skill 都與 Cowork 相容，唯獨 `defuddle` skill 例外 ——
-它透過 subprocess 呼叫 [Defuddle CLI](https://github.com/kepano/defuddle)
-抓取與清理外部 URL，會被 Cowork 的 sandbox URL allowlist 阻擋。
-請在 Claude Code CLI 使用 `defuddle`。這些是上游的相容性說明；
-獨立版本的 Claude/Cowork 相容性尚未驗證。[驗證紀錄](../docs/verification.md)
-僅記載過去 Codex 本機來源安裝成功，實際使用仍未達成。
+從[技能指南](skills/README.zh-TW.md)查看使用條件和提問範例。跨輪研究專案與單次研究筆記各有指南。
 
-下表列出獨立版本的驗證狀態；上述 `defuddle` 限制來自上游，並非本版本的實測結果。
+## 執行環境驗證
 
-| Skill | Cowork | Claude Code CLI |
-|---|---|---|
-| `defuddle` | 未驗證；上游記載 URL 抓取受阻 | 未驗證 |
-| 其他 obsidian skill | 未驗證 | 依個別 skill 證據；尚無全套驗證 |
+[11 月 19 日的 Codex 驗收](../docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)比對了已安裝快取與受測版本，並在新對話驗證建立、更新及重送相同證據。[11 月 20 日的試驗](../docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md)則使用工作樹的 skill 在測試 vault 執行。上游回報 Cowork 可能限制 Defuddle 擷取 URL。
 
 ## Version
 
@@ -28,8 +20,8 @@
 `AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
 既有規範會從兩份目前檔案合併，替換前先建立可還原的私人備份。
 既有 memory 與本機 skill 保持原始位元組；缺少的附屬檔案須列入預覽並確認後
-才建立。個人規範與備份只留本機。Codex 探索與 Claude 匯入是相容策略，
-新工作階段的實際載入仍未驗證；不自動變更全域設定或安裝快取。
+才建立。個人規範與備份只留本機。初始化依賴 Codex 探索與 Claude 匯入；初始化產生的規範能否在
+新工作階段載入仍未驗證，且不自動變更全域設定或安裝快取。
 獨立版號的 OpenCode package 為 0.2.0。
 
 ## 獨立發行
@@ -39,9 +31,8 @@
 4.0.0 保留 14 個 skill，移除八個 wiki skill 與 daily-news-digest。
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
-[驗證紀錄](../docs/verification.md)所載版本已在隔離環境完成 Codex 本機來源安裝，
-但 skill 執行與筆記建立仍未達成；其他 host 與遠端安裝尚未驗證。
-4.2.0 改名為 `obsidian-knowledge`，改用隨附的唯讀 shell script 搜尋（不再需要編輯器的 Grep/Glob；skill 數仍為 15）。
+4.2.0 將本機搜尋改名為 `obsidian-knowledge`，並改用隨附的唯讀 shell script。
+目前工作樹有 16 個 skill，包含 `obsidian-research-project`。
 
 ## 背景
 
@@ -81,6 +72,7 @@ file processing、圖表、清理 vault）將請求 routing 至正確的 skill�
 | `obsidian-vault-setup` | 互動式 vault 首次設定 —— 從自由文字回答推測 role 與 scope |
 | `obsidian-tldr` | 把對話摘要寫入 vault，並更新 `memory.md` |
 | `obsidian-research` | 上網研究指定主題（英文＋日文，主題有特定語言時再加該語言並以它為主），在 `research/` 產出附目錄的研究筆記 |
+| `obsidian-research-project` | 建立並跨輪更新研究專案。每輪先確認範圍，保留歷史判斷與來源版本。 |
 | `obsidian-knowledge` | 從任何 project 搜尋本機 vault（唯讀）；SessionStart hook 會告訴每個 session vault 在哪裡；不需 Grep/Glob |
 | `obsidian-file-intel` | 透過 Gemini 從 PDF / PPTX / XLSX / DOCX / CSV / JSON 萃取內容並產出 Obsidian-ready 摘要 |
 | `dashboard-design` | 依日本數位廳 dashboard 設計指引，從需求釐清引導到 layout |
@@ -110,9 +102,7 @@ Upstream：[`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu
 
 ## Install
 
-獨立版本的安裝實績僅有[驗證紀錄](../docs/verification.md)所載的過去隔離 Codex
-本機來源安裝。遠端安裝、Claude/Cowork 相容性與實際使用尚未驗證。
-變更既有安裝前請先閱讀[過渡說明](../docs/migration.md)。
+Codex 的驗證範圍見[執行環境驗證](#執行環境驗證)。遠端安裝與 Claude/Cowork 相容性尚未驗證。切換安裝前請先閱讀[過渡說明](../docs/migration.md)。
 
 `defuddle` skill 需要 Defuddle CLI：
 
@@ -181,6 +171,7 @@ obsidian/
 │   ├── obsidian-vault-setup/    # vault 設定（original）
 │   ├── obsidian-tldr/           # 對話摘要（original）
 │   ├── obsidian-research/       # 單題研究 → vault 筆記（original）
+│   ├── obsidian-research-project/ # 跨輪研究專案
 │   ├── obsidian-knowledge/      # 唯讀 vault 搜尋（original）
 │   ├── obsidian-file-intel/     # 檔案 → Obsidian 摘要（original）
 │   ├── dashboard-design/        # dashboard 設計（original）
