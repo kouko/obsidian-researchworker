@@ -134,3 +134,66 @@ replay. An independent comparison found the copied market notes
 byte-identical to their Q3 originals. This exercised issuer adoption
 into a bounded Markdown note in an isolated fixture without a full
 issuer research-store publication.
+
+## Final schema-2 replay and package discovery
+
+Repeated all three native conversations after `27a31001`, the fix that
+binds the revision's own overview to its saved record. The fixtures used
+copies of the committed files. SHA-256 prefixes independently matched the
+worktree as follows:
+
+| Checked file | SHA-256 prefix |
+|---|---|
+| `scripts/market_research.py` | `43e0b7b5ec60` |
+| `scripts/market_evidence.py` | `1a6c4c794b65` |
+| `skills/market-research/SKILL.md` | `8d214631d3f3` |
+| `skills/market-research/references/record.md` | `e12181331172` |
+| `skills/finance-research/references/industry-and-competition.md` | `dca1c7245171` |
+
+Under `/private/tmp/market-research-final-runtime.IIt2uA`, run from each
+project separately:
+
+```sh
+# In q2/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q2-prompt.txt > q2-events.jsonl 2> q2-stderr.log
+# In q3/, after copying only ../q2/vault/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q3-prompt.txt > q3-events.jsonl 2> q3-stderr.log
+# In issuer/, after copying only ../q3/vault/smartphones to market-vault/
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/issuer-prompt.txt > issuer-events.jsonl 2> issuer-stderr.log
+# At the fixture root
+python3 verify-final-replay.py
+```
+
+| Session | Thread | Result |
+|---|---|---|
+| Q2 | `01a1fd6b-ab68-7973-832a-040716dcb67f` | Both baselines saved, exit 0 |
+| Q3 | `01a1fd6c-b133-7ef0-a3e7-0825cc479444` | Both resumed from saved notes, exit 0 |
+| Apple issuer note | `01a1fd6e-0300-79a0-ac65-93867b34ec3f` | Linked evidence adopted and checked, exit 0 |
+
+Every trace ended in `turn.completed`. The four saved revisions are schema
+2 and all contain `overview.md`, `analysis.md`, `outlook.md`, `sources.md`
+and `review.md`. The final Q2 files matched their initial bytes. The Q3
+notes preserved the prior exact IDC May and WSTS spring forecasts, with
+their full-year comparison pending. On a scratch copy, editing the
+shared overview left the saved Q3 record valid. Altering that revision's
+own overview instead produced a recovery issue and no candidate record.
+
+The final Apple note at
+`issuer/issuer/AAPL/FY2024Q4/industry-and-competition.md` distinguishes
+Apple fiscal Q4 and calendar market Q3, with exact claim text, source
+`idc-2024q3-preliminary`, original IDC URL, October 14 publication date
+and locator “Global shipments table, all vendors and Apple rows.”
+The October 31 Pacific cutoff returned that source. The September 28
+Pacific cutoff returned `null`. The market run rejected the attempted
+November-source revision at October 31, and the issuer note records that
+release's exclusion. The issuer replay left copied market notes unchanged.
+
+Package discovery was separately checked through read-only
+`codex app-server --stdio`. After `initialize`, `plugin/read` with
+`pluginName: obsidian-finance` and `marketplacePath` set to this checkout's
+absolute `.claude-plugin/marketplace.json` returned
+`obsidian-finance:market-research` alongside
+`obsidian-finance:finance-research` and `obsidian-finance:sec-data`.
+The read-only query did not register a marketplace or install a plugin.
+The three runtime turns used project-local copies of the package files
+and did not render the notes in the Obsidian GUI.
