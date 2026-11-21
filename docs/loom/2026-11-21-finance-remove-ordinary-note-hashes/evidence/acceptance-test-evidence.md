@@ -1,10 +1,10 @@
 # Ordinary research note edits — acceptance test evidence
 
-Tried on 2026-11-21, in a clean copy of the project at 6cfac25c93394fb4d129464c4a9cd4eb253978b4.
+Tried on 2026-11-21, in a clean copy of the project at 22a54473f115de59264be469dfe95ed617b85022.
 
-Setup followed the finance research guide's local continuation route. A fresh `git clone --no-local` with detached checkout returned the tested commit and an empty tracked status. The isolated interpreter reported Python 3.12.11 and PyYAML 6.0.2. From its repository root, `/Users/kouko/.conda/envs/dbt-redshift/bin/python -m pytest obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider` returned `49 passed in 6.34s`. The station's automated package check independently runs before final acceptance and blocks it on failure.
+Setup followed the finance research guide's local continuation route. A fresh `git clone --no-local` with detached checkout returned the tested commit and an empty tracked status. The isolated interpreter reported Python 3.12.11 and PyYAML 6.0.2. From its repository root, `/Users/kouko/.conda/envs/dbt-redshift/bin/python -m pytest obsidian-finance/tests/test_research_continuation.py obsidian-finance/tests/test_research_publication.py -q -p no:cacheprovider` returned `78 passed in 7.59s`. The station's automated package check independently runs before final acceptance and blocks it on failure.
 
-The clean clone's Python scripts were used to run the real-originals probe with `PYTHONPATH="$PWD/obsidian-finance/scripts" /Users/kouko/.conda/envs/dbt-redshift/bin/python /private/tmp/finance-ordinary-note-verify-live.py`. It copied a previously saved Apple research fixture into a temporary directory before any writes. The read-only source-invoked Codex run finished with `turn.completed` in `/private/tmp/finance-ordinary-note-reread.jsonl`; the two fixtures' copies of `SKILL.md` and `research_store.py` matched the clean commit byte for byte. The result is captured in `/private/tmp/finance-ordinary-note-reread.md`. Separate preliminary cosmetic and missing-note transcripts at `/private/tmp/finance-ordinary-note-final/{cosmetic,missing}.md` exercised the same skill before the final helper correction.
+The exact clean clone was used to run the real-originals probe with `PYTHONPATH="$PWD/obsidian-finance/scripts" /Users/kouko/.conda/envs/dbt-redshift/bin/python /private/tmp/finance-ordinary-note-verify-live.py`. It copied a previously saved Apple fixture into a temporary directory before any writes. The cosmetic and missing-note host transcript in `/private/tmp/finance-ordinary-note-reread.md` used 6cfac25c. This rerun repeated discovery on both of those fixtures with the exact new clean clone. The reversed-claim host transcript in `/private/tmp/finance-ordinary-note-recheck/changed.md` finished with `turn.completed`; `cmp` confirmed that the host fixture's skill and store helper exactly match the new clean clone.
 
 ## 1. Continue after cosmetic edits
 
@@ -30,31 +30,9 @@ The clean clone's Python scripts were used to run the real-originals probe with 
 - What came back: `old snapshot blocked; detached note optional, SEC original verified`. The probe asserted `Publication conflict` for the second save and `digest mismatch` for the corrupted copy. The host also checked Apple Q2 and Q3 original content and the saved historical cutoff `2024-08-02T23:59:59-04:00`; its comparison of cumulative cash flow matched the saved quarterly result.
 - Evidence: Real-originals probe output, exact host transcript, and `test_public_pilot_adjacent_quarters_and_competition_cutoffs`.
 
-## 5. Edit and continue
+## Re-run on 2026-11-21, at 22a54473f115de59264be469dfe95ed617b85022
 
-- How I tried it: Read-only Codex review of the edited note and exact helper continuation save as in row 1.
-- What came back: The saved claim remained present and supported, and the successor was published.
-- Evidence: Exact host transcript and real-originals probe.
-
-## 6. Continue after the adopted claim is removed
-
-- How I tried it: Asked the local Codex host to continue its review, with the former ordinary note absent in one fixture, as in row 2.
-- What came back: The host recovered the saved attribution, named the live note gap, and explained which work depended on the claim.
-- Evidence: Exact host transcript and the missing-note checks in `test_public_pilot_adjacent_quarters_and_competition_cutoffs`.
-
-## 7. Continue an older quarter
-
-- How I tried it: Opened and advanced the Apple quarter prepared by the pre-change publisher, as in row 3.
-- What came back: The legacy checkpoint remained byte-identical and the successor omitted the ordinary-note digest.
-- Evidence: Real-originals probe.
-
-## 8. Competing save and quarter move
-
-- How I tried it: Replayed the stale-snapshot save and moved the quarter to a separate directory without any adjacent quarter available to the verifier, as in row 4.
-- What came back: The stale save failed. The copied review verified with the SEC originals and became unverifiable when its bound prior-quarter original was damaged.
-- Evidence: Real-originals probe and the historical eligibility checks in `test_public_pilot_adjacent_quarters_and_competition_cutoffs`.
-
-## 相容性重驗
-
-- `22a54473f115de59264be469dfe95ed617b85022` 的存檔復原測試覆蓋舊日誌的繼續與撤回，確認日誌原樣保留。舊日誌仍遵循建立當下的檢查範圍。新版日誌允許普通筆記有排版變更，兩版都會拒絕正式分析檔遭修改的操作。
-- 額外的 Apple 2024Q3 隔離測試將採用過的敘述從「原始申報可取得」改為「不可取得」。Agent 讀回原始 10-Q 後識別意思反轉，標出財務分析及綜合判斷受影響，保留可獨立核對的 IDC 出貨觀察。季度存檔驗證仍通過，內容判斷由 Agent 完成。
+- 1: re-tested — Exact-clone historical discovery found the current note and unchanged adopted claim in the heading-only fixture. The protected-note transition tests passed and the real-originals probe published a successor after its cosmetic edit.
+- 2: re-tested — Exact-clone discovery at the Apple historical cutoff identified the missing note and surfaced the economic claim, its financial adoption, its synthesis dependency, and the independent competition work across all fixtures. The reversed fixture's current note explicitly said the original filing was not available, where the saved claim said it was available. The matched-version Codex host read both claims and the local SEC original, identified the reversal and named only financial and dependent synthesis for reconsideration. The focused suite rejected ineligible citation evidence and preserved independent work when a bound original was missing.
+- 3: re-tested — The real-originals probe loaded the old digest-bearing record, published a digest-free successor with attribution and source, and verified the prior record remained byte-identical. All six interruption recovery cases passed when selected using `-k interrupted_publication_recovers -vv` in the publication test module. Legacy journals retained their original snapshot rules through resume and rollback, with no journal or request modifications.
+- 4: re-tested — The real-originals probe rejected the stale-snapshot save, verified the detached quarter without the note and rejected the deliberately damaged Q2 original. The focused suite checked stale predecessors and historical eligibility. The recovery matrix confirmed that both journal formats block changed managed output, new journals allow ordinary note edits, and old unmarked journals retain their original protection.
