@@ -256,7 +256,7 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         claim = "The original filing is available for the third quarter."
         (tmp_path / ordinary).write_text(claim)
         notes = module.discover(tmp_path, "latest", cutoff, candidate_for=(asset, quarter))["candidate_notes"]
-        assert notes == [{"path": ordinary, "digest": digest(claim)}]
+        assert notes == [{"path": ordinary}]
         current["candidate_notes"] = [dict(notes[0], claim=claim, source_id="filing-" + quarter,
                                            source_version="filing-" + quarter, source_available_at=pack["cutoff"])]
         files["financial.md"] = content
@@ -267,11 +267,15 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
             verification=dict(check, output_digest=digest(synthesis_text)))
         files["synthesis.md"] = synthesis_text
     baseline = module.publication_snapshot(tmp_path)
+    if storage == "markdown":
+        assert ordinary not in baseline
+        (tmp_path / ordinary).write_text("# Formatting only\n\n> " + claim)
     result = module.publish(tmp_path, asset, saved, files, baseline, "public-pilot", complete=False, storage=storage)
     assert result["status"] == "checkpoint"
     saved_text = (tmp_path / result["review"]).read_text()
     if storage == "markdown":
         published = module._markdown.record(saved_text, "review")[1]
+        assert "digest" not in published["units"]["financial"]["candidate_notes"][0]
         after = module.publication_snapshot(tmp_path)
         assert baseline.items() <= after.items()
         assert all(f"/cycles/{quarter}/data/raw/" in path
@@ -306,6 +310,13 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
             (isolated / local_inputs["filing-2024Q2"]).read_text(), "source-registration")
         assert registration["fiscal"]["original_accession"] == comparator["fiscal"]["original_accession"]
         assert (isolated / registration["original_ref"]).read_bytes() == original
+        (isolated / Path(ordinary).name).unlink()
+        assert module.verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md") == validation
+        legacy_record = json.loads(json.dumps(published))
+        legacy_record["units"]["financial"]["candidate_notes"][0]["digest"] = digest(claim)
+        (isolated / f"{cutoff[:10]}-checkpoint/review.md").write_text(
+            module._markdown.render_review(asset, quarter, legacy_record))
+        assert module.verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md") == validation
 
         # A second vault assembled from just this quarter (plus configuration)
         # must not start a Q2 cycle for a copied Q2 comparator.
@@ -316,6 +327,16 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         local_readback = load().discover(local_vault, "latest", cutoff)
         assert {item["record"] for item in local_readback["decisions"]} == {"aapl/2024Q3/checkpoint"}
         assert {item["work"] for item in local_readback["reusable"]} == {"financial", "competition", "synthesis"}
+        local_quarter = local_vault / base / "cycles" / quarter
+        old_marker = local_quarter / f"{cutoff[:10]}-checkpoint/review.md"
+        old_marker.write_text(module._markdown.render_review(asset, quarter, legacy_record))
+        carried = module._rebase_review(legacy_record, f"{base}/cycles/{quarter}", portable=False)
+        carried.update(id="legacy-carry", predecessor="checkpoint")
+        carried_result = module.publish(local_vault, asset, carried, {}, module.publication_snapshot(local_vault),
+                                        "legacy-carry", complete=False, storage="markdown")
+        _, carried_marker = module._markdown.record((local_vault / carried_result["review"]).read_text(), "review")
+        assert carried_marker["units"]["financial"]["candidate_notes"] == published["units"]["financial"]["candidate_notes"]
+        assert module._markdown.record(old_marker.read_text(), "review")[1] == legacy_record
 
         # A newer accession version cannot replace the frozen local older copy.
         late_cutoff = "2024-10-01T23:59:59+00:00"
@@ -367,13 +388,17 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         with pytest.raises(ValueError, match="quarter evidence"):
             module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
         active_original.write_bytes(original)
-        (tmp_path / ordinary).write_text("Changed note")
-        changed = load().discover(tmp_path, "historical", cutoff)
-        assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in changed["reusable"]
+        (tmp_path / ordinary).unlink()
+        changed = load().discover(tmp_path, "historical", cutoff, candidate_for=(asset, quarter))
+        assert dict(record="aapl/2024Q3/checkpoint", work="financial") in changed["reusable"]
         assert dict(record="aapl/2024Q3/checkpoint", work="competition") in changed["reusable"]
+        assert changed["candidate_notes"] == []
+        assert changed["adopted_claims"] == [
+            dict(saved["units"]["financial"]["candidate_notes"][0], record="aapl/2024Q3/checkpoint",
+                 work="financial", note_present=False, dependent_work=["synthesis"], review_path=result["review"])]
+        assert load().discover(tmp_path, "latest", late_cutoff, candidate_for=(asset, quarter))["adopted_claims"] == []
 
-        with pytest.raises(ValueError, match="quarter evidence"):
-            module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
+        assert module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md") == validation
         follow_up = module._rebase_review(amended_record, f"{base}/cycles/{quarter}", portable=False)
         follow_up.update(id="follow-up", predecessor="amended")
         stale_predecessor = dict(follow_up, predecessor="checkpoint")
@@ -396,7 +421,8 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
                                     digest=digest(stale_text))
         stale_unit["verification"]["output_digest"] = digest(stale_text)
         stale_unit["candidate_notes"] = [dict(saved["units"]["financial"]["candidate_notes"][0],
-            source_version=later_identity["version"], source_available_at=late_cutoff)]
+            source_version=later_identity["version"], source_available_at=cutoff)]
+        (tmp_path / ordinary).write_text("Changed note")
         with pytest.raises(ValueError, match="candidate evidence must be independently cutoff eligible and frozen"):
             module.publish(tmp_path, asset, stale_citation, {"financial.md": stale_text},
                            module.publication_snapshot(tmp_path), "stale-citation", complete=False, storage="markdown")
@@ -421,6 +447,26 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         assert any("conflicting quarter evidence source bindings" in gap["reason"] for gap in fail_closed["gaps"])
         with pytest.raises(ValueError, match="conflicting quarter evidence source bindings"):
             module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
+
+
+@pytest.mark.parametrize("change", ["managed-edit", "ordinary-to-managed", "managed-to-ordinary", "role-malformed"])
+def test_publication_snapshot_protects_quarter_managed_note_transitions(tmp_path, change):
+    asset = two_issuers(tmp_path)[0]
+    module = load()
+    path = f"investing/assets/equities/{asset}/cycles/2024Q2/Notes.md"
+    ordinary = "# Personal observations\n"
+    managed = "---\nfinance_role: quarter-navigation\n---\n\n# Quarter navigation\n"
+    malformed = "---\nfinance_role: quarter-navigation [\n"
+    initial = ordinary if change == "ordinary-to-managed" else managed
+    if change == "role-malformed":
+        initial = malformed
+    (tmp_path / path).write_text(initial)
+    expected = module.publication_snapshot(tmp_path)
+    assert (path in expected) == (initial != ordinary)
+    changed = ordinary if change == "managed-to-ordinary" else managed + "\n## Edited"
+    (tmp_path / path).write_text(changed)
+    with pytest.raises(ValueError, match="Publication conflict"):
+        module._preconditions(tmp_path, expected)
 
 
 def test_source_declared_new_quarters_without_saved_conversation(tmp_path):

@@ -318,6 +318,34 @@ def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
     return valid
 
 
+_QUARTER_NOTE = re.compile(r"investing/assets/equities/[^/]+/cycles/[0-9]{4}Q[1-4]/(?!index\.md$)[^/]+\.md")
+_CITATION_FIELDS = ("path", "claim", "source_id", "source_version", "source_available_at")
+_ROLE_MARKER = re.compile(r"""(?:^|[,{])[ \t]*['"]?finance_role['"]?[ \t]*:[ \t]*['"]?([a-z-]+)(?![\w-])""", re.M)
+
+
+def _ordinary_quarter_note(path, payload):
+    if not _QUARTER_NOTE.fullmatch(path):
+        return False
+    text = payload.decode("utf-8", errors="replace").lstrip("\ufeff")
+    if not text.startswith(("---\n", "---\r\n")):
+        return True
+    header = re.split(r"\r?\n---(?:\r?\n|$)", text[3:], maxsplit=1)[0]
+    if "finance_role" not in header and not header.lstrip().startswith("{"):
+        return True
+    try:
+        properties = _markdown._mapping(header)
+    except ValueError:
+        pass
+    else:
+        if "finance_role" not in properties:
+            return True
+        role = properties["finance_role"]
+        if isinstance(role, str) and role in _markdown._ROLE_FIELDS:
+            return False
+    # Keep recognizable declarations protected even if their YAML is truncated.
+    return not any(match[1] in _markdown._ROLE_FIELDS for match in _ROLE_MARKER.finditer(header))
+
+
 def _note_references(root, base, quarter):
     path = base + "/cycles/" + quarter
     try:
@@ -326,42 +354,61 @@ def _note_references(root, base, quarter):
         return []
     try:
         return [path + "/" + name for name in sorted(os.listdir(fd))
-                if name.endswith(".md") and name != "index.md"
-                and stat.S_ISREG(os.stat(name, dir_fd=fd, follow_symlinks=False).st_mode)]
+                if _QUARTER_NOTE.fullmatch(path + "/" + name)
+                and stat.S_ISREG(os.stat(name, dir_fd=fd, follow_symlinks=False).st_mode)
+                and _ordinary_quarter_note(path + "/" + name, _bytes(root, path + "/" + name))]
     finally:
         os.close(fd)
 
 
-def _candidate_evidence_valid(root, base, quarter, cutoff, unit, sources):
+def _candidate_citations(unit):
     references = unit.get("candidate_notes", [])
     _require(isinstance(references, list), "candidate notes must be a list")
-    if not references:
-        return True
-    allowed = set(_note_references(root, base, quarter))
     for citation in references:
-        _require(isinstance(citation, dict) and all(_adapter._text(citation.get(key))
-                 for key in ("path", "digest", "claim", "source_id", "source_version", "source_available_at")),
+        _require(isinstance(citation, dict) and all(_adapter._text(citation.get(key)) for key in _CITATION_FIELDS),
                  "incomplete candidate note evidence")
+    return references
+
+
+def _without_candidate_digests(unit):
+    _require(isinstance(unit, dict), "saved unit object")
+    if "candidate_notes" not in unit:
+        return unit
+    citations = [{key: value for key, value in citation.items() if key != "digest"}
+                 for citation in _candidate_citations(unit)]
+    return dict(unit, candidate_notes=citations)
+
+
+def _dependent_work(questions, work):
+    affected = {work}
+    while True:
+        downstream = {qid for qid, question in questions.items()
+                      if affected.intersection(question.get("depends_on", []))}
+        if downstream <= affected:
+            return sorted(affected - {work})
+        affected.update(downstream)
+
+
+def _candidate_sources_valid(base, quarter, cutoff, unit, sources):
+    cycle = base + "/cycles/" + quarter + "/"
+    for citation in _candidate_citations(unit):
         source_id = _id(citation["source_id"])
         source = sources.get(source_id, {})
         fiscal = source.get("fiscal", {})
         published = _available(source.get("available_at"), cutoff)
         bound = unit.get("consumed", {}).get(source_id, {})
-        if (citation["path"] not in allowed or not published or published > cutoff
+        if (not citation["path"].startswith(cycle) or not _QUARTER_NOTE.fullmatch(citation["path"])
+                or not published or published > cutoff
                 or f"{fiscal.get('year', '')}{fiscal.get('period', '')}" != quarter
                 or citation["source_available_at"] != source["available_at"]
                 or citation["source_version"] != source.get("version")
                 or bound.get("version") != source.get("version")
                 or not _adapter._core._same_json(bound.get("projection"), source.get("projection"))):
             return False
-        content = _bytes(root, citation["path"])
-        if sha256(content).hexdigest() != citation["digest"] or citation["claim"] not in content.decode("utf-8"):
-            return False
     return True
 
 
-def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
-             invalid_units=None, ignore_ancestor_note_edits=False):
+def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_units=None):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
@@ -405,6 +452,8 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
             # A valid envelope still establishes ancestry when its payload is damaged.
             _require(rid not in saved, "duplicate review identity")
             saved[rid] = (path, review)
+            if invalid_units is not None:
+                invalid_units[path] = {}
             try:
                 if "quarter_evidence" in review:
                     cycle = base + "/cycles/" + quarter
@@ -416,8 +465,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
                     if invalid_units is not None:
                         invalid_units[path] = damaged
                     for qid, error in damaged.items():
-                        kind = "quarter-candidate-edit:" if isinstance(error, _StaleCandidateNote) else "quarter-unit:"
-                        gaps.append(dict(record=path, evidence=kind + qid,
+                        gaps.append(dict(record=path, evidence="quarter-unit:" + qid,
                             reason=str(error), recovery="Restore the exact local evidence or recompute the affected unit"))
                 else:
                     for unit in review["units"].values():
@@ -527,20 +575,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
         tip = leaves[0]
         while tip in unusable:
             tip = saved[tip][1].get("predecessor")
-        if tip not in eligible:
-            return []
-        if ignore_ancestor_note_edits:
-            ancestor_paths = set()
-            ancestor = saved[tip][1].get("predecessor")
-            while ancestor is not None:
-                path, older = saved[ancestor]
-                ancestor_paths.add(path)
-                ancestor = older.get("predecessor")
-            # An edited ordinary note still invalidates historical analysis;
-            # it cannot block appending from a successor that no longer needs it.
-            gaps[gaps_start:] = [gap for gap in gaps[gaps_start:]
-                if not (gap["record"] in ancestor_paths and gap["evidence"].startswith("quarter-candidate-edit:"))]
-        return [eligible[tip]]
+        return [eligible[tip]] if tip in eligible else []
     except (ValueError, FileNotFoundError) as error:
         gaps.append(dict(record=base + "/cycles/" + quarter, evidence="reviews", reason=str(error), recovery="Repair review metadata or provide the requested cutoff review; preserve existing research"))
         return []
@@ -621,12 +656,12 @@ def _source_catalog(root, base, issuer, quarters, gaps):
     return list(by_key.values()), native
 
 
-def _snapshot(root, cutoff, mode, proposed=None):
+def _snapshot(root, cutoff, mode, proposed=None, *, candidate_for=None):
     config = _research_config(root)
     _require(isinstance(config.get("assets"), list) and config["assets"], "missing asset scope")
     assets = [_id(asset) for asset in config["assets"]]
     _require(len(set(assets)) == len(assets), "duplicate asset identity")
-    sources, records, gaps = [], [], []
+    sources, records, gaps, adopted_claims = [], [], [], []
     quarantined = set()
     for asset in assets:
         records_start = len(records)
@@ -710,6 +745,12 @@ def _snapshot(root, cutoff, mode, proposed=None):
                         _require(isinstance(identity, dict) and set(identity) == {"version", "projection"} and _adapter._text(identity["version"]), "consumed identity")
                     item = dict(id=qid, status="missing", depends_on=question.get("depends_on", []),
                                 consumed={asset + ":" + sid: value for sid, value in consumed.items()})
+                    if candidate_for == (asset, quarter):
+                        for citation in _candidate_citations(unit):
+                            adopted_claims.append(dict(record=asset + "/" + quarter + "/" + saved["id"], work=qid,
+                                review_path=path + ("/review.md" if path in invalid_units else "/review.json"),
+                                dependent_work=_dependent_work(questions, qid),
+                                **{key: citation[key] for key in _CITATION_FIELDS}))
                     if qid in invalid_units.get(path, {}):
                         if "output" in unit:
                             item["status"] = "complete"
@@ -745,10 +786,10 @@ def _snapshot(root, cutoff, mode, proposed=None):
                         # invalidation action, but withdraw its reusable evidence.
                         item.pop("completion_evidence", None)
                     saved_cutoff = _adapter._core._instant(saved["cutoff"])
-                    if not _candidate_evidence_valid(root, base, quarter, saved_cutoff, unit, by_source):
+                    if not _candidate_sources_valid(base, quarter, saved_cutoff, unit, by_source):
                         item.pop("completion_evidence", None)
                         gaps.append(dict(record=asset + "/" + quarter + "/" + saved["id"],
-                            evidence="candidate:" + qid, reason="Candidate note or bound source changed or is not cutoff eligible",
+                            evidence="candidate:" + qid, reason="Adopted claim lacks its bound cutoff-eligible source",
                             recovery="Check the original source and the saved claim before reusing dependent analysis"))
                     if "requirements" in saved and not _adapter._core._same_json(saved["requirements"].get(qid), question):
                         item.pop("completion_evidence", None)
@@ -762,7 +803,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
         if not initial and len(records) == records_start:
             gaps.append(dict(record=asset, evidence="fiscal", reason="No eligible source-declared initial fiscal quarter", recovery="Supply original filing evidence and fiscal metadata; do not infer a calendar quarter"))
     return dict(version=1, sources=[s for s in sources if s["id"] not in quarantined],
-                records=records), gaps
+                records=records), gaps, adopted_claims
 
 
 def _mkdir(root, reference, *, exclusive=False):
@@ -837,9 +878,12 @@ def publication_snapshot(root, *, _exclude=None):
             finally:
                 os.close(fd)
             if stat.S_ISDIR(kind):
+                _require(not _QUARTER_NOTE.fullmatch(path), "Publication conflict: expected regular quarter note: " + path)
                 visit(path)
             else:
-                result[path] = sha256(_bytes(root, path)).hexdigest()
+                payload = _bytes(root, path)
+                if not _ordinary_quarter_note(path, payload):
+                    result[path] = sha256(payload).hexdigest()
     try:
         visit("investing")
     except OSError as error:
@@ -908,13 +952,21 @@ def _validate_proposal(root, request, staged, *, output_suffix=""):
     metadata = _asset_metadata(root, base)
     questions = _unique(metadata["questions"])
     _require(isinstance(review.get("units"), dict) and review["units"].keys() <= questions.keys(), "unknown unit")
+    ordinary_notes = None
     for qid, unit in review["units"].items():
         # Reused units retain all prior economic and authored dependencies.
         previous = request.get("previous", {}).get("units", {}).get(qid, {})
         if previous and unit.get("output") == previous.get("output"):
-            _require(_adapter._core._same_json(unit, previous), "reused unit changes dependencies/checks without recomputing output")
+            _require(_adapter._core._same_json(_without_candidate_digests(unit), _without_candidate_digests(previous)),
+                     "reused unit changes dependencies/checks without recomputing output")
             frozen = request.get("previous", {}).get("requirements")
             _require(frozen is None or _adapter._core._same_json(frozen.get(qid), questions[qid]), "reused unit changes declared dependencies")
+        previous_citations = _candidate_citations(_without_candidate_digests(previous))
+        for citation in _candidate_citations(_without_candidate_digests(unit)):
+            if citation not in previous_citations:
+                if ordinary_notes is None:
+                    ordinary_notes = set(_note_references(root, base, quarter))
+                _require(citation["path"] in ordinary_notes, "new claim must cite a current ordinary quarter note")
         for field in ("output", "verification"):
             ref = unit.get(field, {}).get("path") if field == "output" else unit.get(field)
             if isinstance(ref, str) and ref.startswith(target + "/"):
@@ -925,7 +977,7 @@ def _validate_proposal(root, request, staged, *, output_suffix=""):
                     unit[field]["path"] = replacement + output_suffix
                 else:
                     unit[field] = replacement
-    snapshot, gaps = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
+    snapshot, gaps, _ = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
     record = asset + "/" + quarter + "/" + review["id"]
     _require(not any(gap["record"] == record and gap["evidence"].startswith("candidate:") for gap in gaps),
              "candidate evidence must be independently cutoff eligible and frozen")
@@ -1066,10 +1118,6 @@ class _QuarterMaterialError(ValueError):
     """A bound quarter file or completion claim failed its local checks."""
 
 
-class _StaleCandidateNote(_QuarterMaterialError):
-    """An ordinary research note was edited after a review cited it."""
-
-
 def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     """Replay exact quarter-local bindings, optionally recording individual material failures."""
     manifest = stored["quarter_evidence"]
@@ -1111,13 +1159,13 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     def read(path):
         return _bytes(folder, path, quarter_relative=True)
 
-    def checked(path, checksum, *, mismatch=_QuarterMaterialError):
+    def checked(path, checksum):
         try:
             payload = read(path)
         except (OSError, ValueError) as error:
             raise _QuarterMaterialError(f"cannot read quarter evidence {path}: {error}") from error
         if sha256(payload).hexdigest() != checksum:
-            raise mismatch("quarter evidence digest mismatch: " + path)
+            raise _QuarterMaterialError("quarter evidence digest mismatch: " + path)
         return payload
 
     def registration(ref, folder_name, kind):
@@ -1174,24 +1222,16 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                 _require(set(_required(question, quarter)) <= consumed.keys()
                          and set(question.get("required_analysis", [])) <= methods.keys(),
                          "quarter analysis lacks required captured inputs: " + qid)
-            stale_note = None
-            for note in unit.get("candidate_notes", []):
+            for note in _candidate_citations(unit):
                 path = note["path"]
-                _require(len(Path(path).parts) == 1 and path.endswith(".md"),
+                _require(_QUARTER_NOTE.fullmatch(f"investing/assets/equities/{asset}/cycles/{quarter}/{path}"),
                          "invalid quarter candidate note path")
-                source = unit_sources[note["source_id"]]
-                if (note["source_version"] != source["version"]
-                        or note["source_available_at"] != source["available_at"]):
+                source = unit_sources.get(note["source_id"], {})
+                fiscal = source.get("fiscal", {})
+                if (note["source_version"] != source.get("version")
+                        or note["source_available_at"] != source.get("available_at")
+                        or f"{fiscal.get('year', '')}{fiscal.get('period', '')}" != quarter):
                     raise _QuarterMaterialError("quarter candidate note source identity mismatch: " + path)
-                try:
-                    payload = checked(path, note["digest"], mismatch=_StaleCandidateNote)
-                except _StaleCandidateNote as error:
-                    stale_note = error
-                else:
-                    if note["claim"] not in payload.decode("utf-8"):
-                        raise _QuarterMaterialError("quarter candidate note claim changed: " + path)
-            if stale_note is not None:
-                raise stale_note
         except _QuarterMaterialError as error:
             if damaged is None:
                 raise
@@ -1267,8 +1307,7 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         gaps = []
         entries = _managed_directories(root, cycle)
         cutoff = _adapter._core._instant(review["cutoff"])
-        leaves = (_reviews(root, base, quarter, cutoff, "latest", gaps, ignore_ancestor_note_edits=True)
-                  if entries else [])
+        leaves = _reviews(root, base, quarter, cutoff, "latest", gaps) if entries else []
         _, draft_targets = _markdown_drafts(root)
         inherited = [gap for gap in gaps if gap["record"] not in draft_targets]
         if entries and not leaves and not inherited:
@@ -1382,6 +1421,8 @@ def publish(root, asset, review, files, expected, run_id, *, complete=True, stor
     """Save one append-only review, completion last; recover using its run ID."""
     _id(run_id)
     _require(storage in ("legacy", "markdown"), "unsupported research storage")
+    if isinstance(review.get("units"), dict):
+        review = dict(review, units={qid: _without_candidate_digests(unit) for qid, unit in review["units"].items()})
     if storage == "markdown":
         return _publish_markdown(root, asset, review, files, expected, run_id, complete)
     _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
@@ -1614,17 +1655,20 @@ def discover(root, mode, cutoff, *, candidate_for=None):
         _adapter._timestamp(cutoff)
         boundary = Path(root).absolute()
         _require(not any(p.is_symlink() for p in (boundary, *boundary.parents)), "symlink root")
-        snapshot, gaps = _snapshot(boundary, _adapter._core._instant(cutoff), mode)
-        result = _adapter.assess(snapshot, mode, cutoff)
         if candidate_for is not None:
             asset, quarter = candidate_for
             _require(_id(asset) in _research_config(boundary)["assets"], "asset outside configured scope")
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
+            candidate_for = (asset, quarter)
+        snapshot, gaps, adopted_claims = _snapshot(boundary, _adapter._core._instant(cutoff), mode,
+                                                   candidate_for=candidate_for)
+        result = _adapter.assess(snapshot, mode, cutoff)
+        if candidate_for is not None:
             base = "investing/assets/equities/" + asset
-            result["candidate_notes"] = [
-                dict(path=path, digest=sha256(_bytes(boundary, path)).hexdigest())
-                for path in _note_references(boundary, base, quarter)
-            ]
+            note_paths = _note_references(boundary, base, quarter)
+            result["candidate_notes"] = [dict(path=path) for path in note_paths]
+            result["adopted_claims"] = [dict(claim, note_present=claim["path"] in note_paths)
+                                        for claim in adopted_claims]
         try:
             runs = _names(boundary, "investing/.research-runs")
         except FileNotFoundError:

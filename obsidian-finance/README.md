@@ -466,8 +466,11 @@ result = research_store.recover(root, "unique-run-id", action="resume")
 result = research_store.recover(root, "unique-run-id", action="rollback")
 ```
 
-`publication_snapshot(root) -> dict[path, sha256]` captures exact regular-file
-bytes beneath `investing/`, excluding the helper's `.research-runs/` journals.
+`publication_snapshot(root) -> dict[path, sha256]` captures protected regular-file
+bytes beneath `investing/`. It excludes helper journals and drafts and ordinary
+Markdown notes directly inside a quarter. Quarter navigation and recognizable
+managed note roles stay protected even if their frontmatter is malformed.
+A path entering or leaving managed status still causes a conflict.
 The returned map is mandatory and must remain the original pre-analysis map;
 refreshing it to suppress a conflict defeats user-edit protection. Changed,
 added or missing managed files cause a conflict. Publication and recovery check
@@ -595,9 +598,16 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
   any existing legacy asset metadata. Duplicate or malformed marked entries
   fail.
 - Pass a selected asset and quarter through the candidate-discovery argument.
-  Read relevant returned notes and check their claims against the original
-  evidence. Frozen notes record the exact claim, note hash, source version,
-  and proven availability. Edited notes invalidate dependent work.
+  `candidate_notes` lists ordinary note paths. `adopted_claims` lists the
+  selected review's saved claims, work, downstream dependents, original source
+  identity and availability, and whether the ordinary note remains available.
+  Compare the meaning of each current claim against the saved attribution and
+  the eligible original before reusing analysis or reporting no work. A missing
+  or materially changed claim requires review of its dependent work. Formatting
+  alone does not. New citations omit note hashes, and old citation hashes are
+  ignored. Standalone verification checks saved claims against their source
+  bindings without the live note. Original filings and managed outputs remain
+  subject to exact hash checks.
 - The existing publication helper accepts Markdown mode for the
   seven analysis roles. It renders a versioned review note, embeds verification,
   retains old outputs, and writes no management JSON for new pilot runs.
