@@ -53,3 +53,8 @@ The clean clone's Python scripts were used to run the real-originals probe with 
 - How I tried it: Replayed the stale-snapshot save and moved the quarter to a separate directory without any adjacent quarter available to the verifier, as in row 4.
 - What came back: The stale save failed. The copied review verified with the SEC originals and became unverifiable when its bound prior-quarter original was damaged.
 - Evidence: Real-originals probe and the historical eligibility checks in `test_public_pilot_adjacent_quarters_and_competition_cutoffs`.
+
+## 相容性重驗
+
+- `22a54473f115de59264be469dfe95ed617b85022` 的存檔復原測試覆蓋舊日誌的繼續與撤回，確認日誌原樣保留。舊日誌仍遵循建立當下的檢查範圍。新版日誌允許普通筆記有排版變更，兩版都會拒絕正式分析檔遭修改的操作。
+- 額外的 Apple 2024Q3 隔離測試將採用過的敘述從「原始申報可取得」改為「不可取得」。Agent 讀回原始 10-Q 後識別意思反轉，標出財務分析及綜合判斷受影響，保留可獨立核對的 IDC 出貨觀察。季度存檔驗證仍通過，內容判斷由 Agent 完成。
