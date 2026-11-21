@@ -260,6 +260,12 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         current["candidate_notes"] = [dict(notes[0], claim=claim, source_id="filing-" + quarter,
                                            source_version="filing-" + quarter, source_available_at=pack["cutoff"])]
         files["financial.md"] = content
+        synthesis_text = content.replace("financial-analysis", "synthesis")
+        synthesis_path = f"{base}/cycles/{quarter}/{cutoff[:10]}-checkpoint/synthesis.md"
+        saved["units"]["synthesis"] = dict(
+            consumed={}, output=dict(path=synthesis_path, digest=digest(synthesis_text)),
+            verification=dict(check, output_digest=digest(synthesis_text)))
+        files["synthesis.md"] = synthesis_text
     baseline = module.publication_snapshot(tmp_path)
     result = module.publish(tmp_path, asset, saved, files, baseline, "public-pilot", complete=False, storage=storage)
     assert result["status"] == "checkpoint"
@@ -309,7 +315,7 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         shutil.copytree(quarter_root, local_vault / base / "cycles" / quarter)
         local_readback = load().discover(local_vault, "latest", cutoff)
         assert {item["record"] for item in local_readback["decisions"]} == {"aapl/2024Q3/checkpoint"}
-        assert {item["work"] for item in local_readback["reusable"]} == {"financial", "competition"}
+        assert {item["work"] for item in local_readback["reusable"]} == {"financial", "competition", "synthesis"}
 
         # A newer accession version cannot replace the frozen local older copy.
         late_cutoff = "2024-10-01T23:59:59+00:00"
@@ -349,10 +355,38 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         original_copy.unlink()
         with pytest.raises(ValueError, match="quarter evidence"):
             module.verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md")
+        active_original = quarter_root / registration["original_ref"]
+        active_original.unlink()
+        damaged = module.discover(tmp_path, "historical", cutoff)
+        reusable = {r["work"] for r in damaged["reusable"] if r["record"] == "aapl/2024Q3/checkpoint"}
+        assert reusable == {"competition"}
+        assert {decision["work"] for decision in damaged["decisions"]
+                if decision["record"] == "aapl/2024Q3/checkpoint"
+                and decision["action"] == "invalidate_dependent_checkpoint_and_recompute"} == {"financial", "synthesis"}
+        assert any(registration["original_ref"] in gap["reason"] for gap in damaged["gaps"])
+        with pytest.raises(ValueError, match="quarter evidence"):
+            module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
+        active_original.write_bytes(original)
         (tmp_path / ordinary).write_text("Changed note")
         changed = load().discover(tmp_path, "historical", cutoff)
         assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in changed["reusable"]
         assert dict(record="aapl/2024Q3/checkpoint", work="competition") in changed["reusable"]
+
+        # Ambiguous saved source identities must not be accepted as one
+        # unit's local file damage even if that unit already has a gap.
+        conflict = json.loads(json.dumps(published))
+        evidence_units = conflict["quarter_evidence"]["units"]
+        source_id = "filing-2024Q2"
+        conflicting = dict(conflict["units"]["financial"]["consumed"][source_id], version="different-version")
+        conflict["units"]["synthesis"]["consumed"][source_id] = conflicting
+        evidence_units["synthesis"]["sources"][source_id] = local_inputs[source_id]
+        marker = quarter_root / f"{cutoff[:10]}-checkpoint/review.md"
+        marker.write_text(module._markdown.render_review(asset, quarter, conflict))
+        fail_closed = module.discover(tmp_path, "historical", cutoff)
+        assert not any(r["record"] == "aapl/2024Q3/checkpoint" for r in fail_closed["reusable"])
+        assert any("conflicting quarter evidence source bindings" in gap["reason"] for gap in fail_closed["gaps"])
+        with pytest.raises(ValueError, match="conflicting quarter evidence source bindings"):
+            module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
 
 
 def test_source_declared_new_quarters_without_saved_conversation(tmp_path):
@@ -491,7 +525,7 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
 @pytest.mark.parametrize("scenario", [
     "publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis",
     "method-copy", "method-conflict", "method-newer",
-    "damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "replaced-bad-output",
+    "damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "bad-review-symlink", "replaced-bad-output",
     "registration-interruption", "damaged-method-registration",
 ])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
@@ -530,6 +564,9 @@ def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch
             put(tmp_path, f"{base}/data/analysis/comparison.json",
                 dict(authored, identity="v1", authored_at="2026-04-01T00:00:00+00:00",
                      content_ref=older_ref, content_digest=digest(older_text)))
+    if scenario in ("damaged-source-registration", "damaged-source-payload"):
+        # The replacement has no independently completed unit if credit fails.
+        saved["units"] = {"credit": saved["units"]["credit"]}
     previous = module.publication_snapshot(tmp_path)
     output = f"""---
 finance_schema: 1
@@ -664,7 +701,7 @@ status: partial
         assert any(g["record"] == reference and g["evidence"] == "quarter-method" for g in scan["gaps"])
         assert module.verify_quarter(tmp_path / quarter, "2024-08-31-r2/review.md")["status"] == "verified"
         return
-    if scenario in ("damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "replaced-bad-output"):
+    if scenario in ("damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "bad-review-symlink", "replaced-bad-output"):
         review_path = tmp_path / result["review"]
         isolated = tmp_path / quarter
         if scenario.startswith("damaged-source"):
@@ -679,8 +716,13 @@ status: partial
                 payload = isolated / source_record["raw_ref"]
                 payload.unlink()
                 damaged_ref = str(payload.relative_to(tmp_path))
-        elif scenario == "bad-review-utf8":
-            review_path.write_bytes(bytes([255]))
+        elif scenario in ("bad-review-utf8", "bad-review-symlink"):
+            if scenario == "bad-review-utf8":
+                review_path.write_bytes(bytes([255]))
+            else:
+                target = review_path.with_name("untrusted-marker.md")
+                review_path.rename(target)
+                review_path.symlink_to(target)
             damaged_ref = result["review"]
         else:
             _, stored = module._markdown.record(review_path.read_text(), "review")
@@ -699,6 +741,8 @@ status: partial
         assert {"record": f"{asset}/2024Q2/{surviving}", "work": "credit"} in after["reusable"]
         assert {"record": "software-fixture/2024Q4/r1", "work": "retention"} in after["reusable"]
         assert any(damaged_ref in gap["record"] or damaged_ref in gap["reason"] for gap in after["gaps"])
+        if scenario == "bad-review-symlink":
+            assert not any(gap["evidence"] == "publication:pilot" for gap in after["gaps"])
         with pytest.raises(ValueError, match="quarter evidence"):
             module.verify_quarter(isolated, "2024-08-31-r2/review.md")
         return

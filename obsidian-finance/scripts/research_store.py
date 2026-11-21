@@ -360,7 +360,7 @@ def _candidate_evidence_valid(root, base, quarter, cutoff, unit, sources):
     return True
 
 
-def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
+def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_units=None):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
@@ -377,6 +377,10 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
             markdown = _bytes(root, path + "/review.md")
         except FileNotFoundError:
             pass
+        except (OSError, ValueError) as error:
+            gaps.append(dict(record=path + "/review.md", evidence="reviews", reason="Invalid Markdown review: " + str(error),
+                recovery="Preserve the damaged marker and inspect the prior valid record"))
+            continue
         else:
             try:
                 asset = base.rsplit("/", 1)[1]
@@ -403,14 +407,23 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
             try:
                 if "quarter_evidence" in review:
                     cycle = base + "/cycles/" + quarter
-                    _verify_quarter_evidence(Path(root) / cycle, asset, quarter, review, strict_notes=False)
+                    damaged = {}
+                    replay = _verify_quarter_evidence(Path(root) / cycle, asset, quarter, review, damaged=damaged)
                     review = _rebase_review(review, cycle, portable=False)
-                for unit in review["units"].values():
-                    output = unit.get("output", {})
-                    if output.get("path", "").startswith(path + "/"):
-                        _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest")
-                                 and _completion_valid(_verification(root, unit), output["digest"]),
-                                 "published Markdown output is changed, incomplete or unverified")
+                    if damaged and not replay["reusable"]:
+                        unusable.add(rid)
+                    if invalid_units is not None:
+                        invalid_units[path] = damaged
+                    for qid, reason in damaged.items():
+                        gaps.append(dict(record=path, evidence="quarter-unit:" + qid,
+                            reason=reason, recovery="Restore the exact local evidence or recompute the affected unit"))
+                else:
+                    for unit in review["units"].values():
+                        output = unit.get("output", {})
+                        if output.get("path", "").startswith(path + "/"):
+                            _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest")
+                                     and _completion_valid(_verification(root, unit), output["digest"]),
+                                     "published Markdown output is changed, incomplete or unverified")
             except (OSError, ValueError, KeyError, TypeError) as error:
                 unusable.add(rid)
                 gaps.append(dict(record=path, evidence="reviews", reason="Invalid Markdown review payload: " + str(error),
@@ -652,7 +665,9 @@ def _snapshot(root, cutoff, mode, proposed=None):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
             _require(candidate is None or quarter not in ambiguous_initial, "ambiguous original filing identity")
-            reviews = _reviews(root, base, quarter, cutoff, mode, gaps, candidate) if quarter in quarters else []
+            invalid_units = {}
+            reviews = (_reviews(root, base, quarter, cutoff, mode, gaps, candidate, invalid_units=invalid_units)
+                       if quarter in quarters else [])
             if not reviews and quarter in ambiguous_initial:
                 quarantined.update(initial_sources[quarter])
                 for sid in initial_sources[quarter]:
@@ -680,6 +695,11 @@ def _snapshot(root, cutoff, mode, proposed=None):
                         _require(isinstance(identity, dict) and set(identity) == {"version", "projection"} and _adapter._text(identity["version"]), "consumed identity")
                     item = dict(id=qid, status="missing", depends_on=question.get("depends_on", []),
                                 consumed={asset + ":" + sid: value for sid, value in consumed.items()})
+                    if qid in invalid_units.get(path, {}):
+                        if "output" in unit:
+                            item["status"] = "complete"
+                        work.append(item)
+                        continue
                     if "output" in unit:
                         output = dict(unit["output"])
                         _require("content" not in output, "output content must be read from file")
@@ -1027,10 +1047,15 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected):
     return _rebase_review(saved, cycle, portable=True), files
 
 
-def _verify_quarter_evidence(folder, asset, quarter, stored, *, strict_notes=True):
-    """Replay a portable record using only the exact cited quarter-local files."""
+class _QuarterMaterialError(ValueError):
+    """A bound quarter file or completion claim failed its local checks."""
+
+
+def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
+    """Replay exact quarter-local bindings, optionally recording individual material failures."""
     manifest = stored["quarter_evidence"]
-    _require(type(manifest["version"]) is int and manifest["version"] == 1
+    _require(isinstance(manifest, dict) and type(manifest.get("version")) is int and manifest["version"] == 1
+             and isinstance(manifest.get("units"), dict) and isinstance(stored.get("units"), dict)
              and manifest["units"].keys() == stored["units"].keys(), "invalid quarter evidence mappings")
     conclusions = stored.get("research", {}).get("adopted_conclusions", [])
     _require(isinstance(conclusions, list)
@@ -1038,10 +1063,31 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, strict_notes=Tru
                      for key in ("excerpt", "origin", "revision")) for item in conclusions),
              "prior conclusion excerpts require origin and revision")
     questions = stored["requirements"]
-    _require(set(stored["units"]) <= questions.keys(), "unknown portable review question")
+    _require(isinstance(questions, dict) and stored["units"].keys() <= questions.keys(),
+             "unknown portable review question")
     cutoff = _adapter._core._instant(stored["cutoff"])
     sources = {}
     work = []
+    source_refs = {}
+    for qid, unit in stored["units"].items():
+        links = manifest["units"][qid]
+        _require(isinstance(unit, dict) and isinstance(links, dict), "invalid quarter evidence unit: " + qid)
+        consumed = unit.get("consumed", {})
+        methods = unit.get("analysis_inputs", {})
+        _require(all(isinstance(value, dict) for value in (links.get("sources"), links.get("methods"), consumed, methods))
+                 and links["sources"].keys() == consumed.keys() and links["methods"].keys() == methods.keys(),
+                 "incomplete quarter evidence mappings: " + qid)
+        for sid, ref in links["sources"].items():
+            _evidence_path(ref, "sources")
+            binding = (ref, consumed[sid])
+            accepted_ref, accepted_identity = source_refs.setdefault(sid, binding)
+            _require(accepted_ref == ref and _adapter._core._same_json(accepted_identity, consumed[sid]),
+                     "conflicting quarter evidence source bindings: " + sid)
+        for mid, mapping in links["methods"].items():
+            _analysis_identity(methods[mid])
+            _evidence_path(mapping["reference"], "analysis")
+            _require(mapping["content_ref"] == methods[mid]["content_ref"],
+                     "quarter evidence method identity mismatch: " + mid)
 
     def read(path):
         return _bytes(folder, path, quarter_relative=True)
@@ -1049,9 +1095,10 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, strict_notes=Tru
     def checked(path, checksum):
         try:
             payload = read(path)
-        except OSError as error:
-            raise ValueError(f"cannot read quarter evidence {path}: {error}") from error
-        _require(sha256(payload).hexdigest() == checksum, "quarter evidence digest mismatch: " + path)
+        except (OSError, ValueError) as error:
+            raise _QuarterMaterialError(f"cannot read quarter evidence {path}: {error}") from error
+        if sha256(payload).hexdigest() != checksum:
+            raise _QuarterMaterialError("quarter evidence digest mismatch: " + path)
         return payload
 
     def registration(ref, folder_name, kind):
@@ -1070,59 +1117,63 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, strict_notes=Tru
         links = manifest["units"].get(qid, {"sources": {}, "methods": {}})
         consumed = unit.get("consumed", {})
         methods = unit.get("analysis_inputs", {})
-        _require(links["sources"].keys() == consumed.keys() and links["methods"].keys() == methods.keys(),
-                 "incomplete quarter evidence mappings: " + qid)
-        for sid, ref in links["sources"].items():
-            record = registration(ref, "sources", "source")
-            _require(record["id"] == sid and record["identity"] == consumed[sid]["version"]
-                     and _adapter._core._same_json(record["projection"], consumed[sid]["projection"]),
-                     "quarter evidence source identity mismatch: " + sid)
-            published = _available(record.get("available_at"), cutoff)
-            _require(published is not None and published <= cutoff, "quarter evidence source is later than cutoff")
-            raw = checked(_evidence_path(record["raw_ref"], "raw"), record["raw_digest"])
-            _verify_source_payload(record, raw)
-            if "original_ref" in record or "original_digest" in record:
-                checked(_evidence_path(record["original_ref"], "raw"), record["original_digest"])
-            source = dict(record, id=asset + ":" + sid, version=record["identity"])
-            _require(sid not in sources or _adapter._core._same_json(sources[sid], source),
-                     "conflicting quarter evidence source bindings: " + sid)
-            sources[sid] = source
-        for mid, method in links["methods"].items():
-            frozen = methods[mid]
-            _analysis_identity(frozen)
-            record = registration(method["reference"], "analysis", "method")
-            _require(record["id"] == mid and record["identity"] == frozen["version"]
-                     and method["content_ref"] == frozen["content_ref"]
-                     and all(_adapter._core._same_json(record[field], frozen[field])
-                             for field in _ANALYSIS_FIELDS - {"version"}),
-                     "quarter evidence method identity mismatch: " + mid)
-            checked(_evidence_path(record["content_ref"], "materials"), record["content_digest"])
-        if strict_notes:
+        item = dict(id=qid, status="missing", depends_on=question.get("depends_on", []),
+                    consumed={asset + ":" + sid: value for sid, value in consumed.items()})
+        unit_sources = {}
+        try:
+            for sid, ref in links["sources"].items():
+                record = registration(ref, "sources", "source")
+                _require(record["id"] == sid and record["identity"] == consumed[sid]["version"]
+                         and _adapter._core._same_json(record["projection"], consumed[sid]["projection"]),
+                         "quarter evidence source identity mismatch: " + sid)
+                published = _available(record.get("available_at"), cutoff)
+                _require(published is not None and published <= cutoff, "quarter evidence source is later than cutoff")
+                raw = checked(_evidence_path(record["raw_ref"], "raw"), record["raw_digest"])
+                _verify_source_payload(record, raw)
+                if "original_ref" in record or "original_digest" in record:
+                    checked(_evidence_path(record["original_ref"], "raw"), record["original_digest"])
+                source = dict(record, id=asset + ":" + sid, version=record["identity"])
+                unit_sources[sid] = source
+            for mid, method in links["methods"].items():
+                frozen = methods[mid]
+                record = registration(method["reference"], "analysis", "method")
+                _require(record["id"] == mid and record["identity"] == frozen["version"]
+                         and all(_adapter._core._same_json(record[field], frozen[field])
+                                 for field in _ANALYSIS_FIELDS - {"version"}),
+                         "quarter evidence method identity mismatch: " + mid)
+                checked(_evidence_path(record["content_ref"], "materials"), record["content_digest"])
             for note in unit.get("candidate_notes", []):
                 path = note["path"]
                 _require(len(Path(path).parts) == 1 and path.endswith(".md"),
                          "invalid quarter candidate note path")
                 payload = checked(path, note["digest"])
-                source = sources[note["source_id"]]
-                _require(note["source_id"] in links["sources"] and note["claim"] in payload.decode("utf-8")
-                         and note["source_version"] == source["version"]
-                         and note["source_available_at"] == source["available_at"],
-                         "quarter candidate note claim or source changed")
-        item = dict(id=qid, status="missing", depends_on=question.get("depends_on", []),
-                    consumed={asset + ":" + sid: value for sid, value in consumed.items()})
-        if "output" in unit:
-            output = unit["output"]
-            _require(len(Path(output["path"]).parts) == 2 and output["path"].endswith(".md"),
-                     "invalid quarter analysis output path")
-            payload = checked(output["path"], output["digest"])
-            check = unit["verification"]
-            _require(isinstance(check, dict) and _completion_valid(check, output["digest"]),
-                     "quarter analysis verification missing or changed")
-            item.update(output=dict(output, content=payload.decode("utf-8")), status="complete",
-                        completion_evidence=json.dumps(check, sort_keys=True))
-            _require(set(_required(question, quarter)) <= consumed.keys()
-                     and set(question.get("required_analysis", [])) <= methods.keys(),
-                     "quarter analysis lacks required captured inputs: " + qid)
+                source = unit_sources[note["source_id"]]
+                if (note["claim"] not in payload.decode("utf-8") or note["source_version"] != source["version"]
+                        or note["source_available_at"] != source["available_at"]):
+                    raise _QuarterMaterialError("quarter candidate note claim or source changed: " + path)
+            if "output" in unit:
+                output = unit["output"]
+                _require(len(Path(output["path"]).parts) == 2 and output["path"].endswith(".md"),
+                         "invalid quarter analysis output path")
+                payload = checked(output["path"], output["digest"])
+                check = unit["verification"]
+                if not isinstance(check, dict) or not _completion_valid(check, output["digest"]):
+                    raise _QuarterMaterialError("quarter analysis verification missing or changed: " + output["path"])
+                item.update(output=dict(output, content=payload.decode("utf-8")), status="complete",
+                            completion_evidence=json.dumps(check, sort_keys=True))
+                _require(set(_required(question, quarter)) <= consumed.keys()
+                         and set(question.get("required_analysis", [])) <= methods.keys(),
+                         "quarter analysis lacks required captured inputs: " + qid)
+        except _QuarterMaterialError as error:
+            if damaged is None:
+                raise
+            damaged[qid] = str(error)
+            if "output" in unit:
+                item["status"] = "complete"
+        for sid, source in unit_sources.items():
+            _require(sid not in sources or _adapter._core._same_json(sources[sid], source),
+                     "conflicting quarter evidence source bindings: " + sid)
+            sources[sid] = source
         work.append(item)
 
     fiscal = stored["fiscal"]
@@ -1507,10 +1558,14 @@ def _markdown_drafts(root):
                     published = _bytes(root, target + "/review.md")
                 except FileNotFoundError:
                     targets.add(target)
+                except (OSError, ValueError):
+                    # Discovery reports the unsafe marker at its real path.
+                    # Its presence is not evidence of an interrupted draft.
+                    continue
                 else:
                     if published == raw:
                         continue
-        except (FileNotFoundError, ValueError, KeyError, TypeError, UnicodeError):
+        except (OSError, ValueError, KeyError, TypeError):
             pass
         gaps.append(dict(record=stage, evidence="publication:" + run_id,
             reason="Unfinished Markdown draft retained; no completed view advanced",
