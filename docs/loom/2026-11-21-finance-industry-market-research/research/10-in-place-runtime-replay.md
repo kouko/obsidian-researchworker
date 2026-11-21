@@ -165,3 +165,47 @@ November 1 source remained excluded at both issuer cutoffs. The issuer
 evidence is `issuer/issuer/AAPL/FY2024Q4/industry-and-competition.md`
 within the disposable root. This does not validate unprompted use of
 live research sources or a real issuer vault.
+
+## Targeted Q3 replay with exact carry-forward
+
+Re-ran Q3 in `/private/tmp/industry-q3-target.h3e7o2` with package
+commit `276a1631636c4318c4f01704550d668ad8e50341`. The staged market
+helper and record reference SHA-256 prefixes were `6ac6642ac1aa` and
+`52852b0696a0`. The new project contained only the saved Q2 investing
+notes from the earlier replay, its own Q3 public source packet and staged
+package. The prompt asked the agent to use sequential structured resume
+output and copy each prior forecast and raw source record exactly. It
+explained that the mapping key already identifies the archived source
+version. No private data or actual user vault was used.
+
+```sh
+cd /private/tmp/industry-q3-target.h3e7o2
+codex exec --ephemeral --ignore-user-config --skip-git-repo-check --sandbox workspace-write --json - < input/q3-prompt.txt > q3-events.jsonl 2> q3-stderr.log
+python3 verify.py
+```
+
+Native thread `01a1ff17-e7c6-7883-9834-57ddb7dbe574` exited zero with
+`turn.completed`. Independent readback found both Q2 note groups
+byte-identical, both Q3 groups valid, and exact equality of the full
+`idc-may-2024` and `wsts-spring-2024` forecasts and their source values
+between Q2 and Q3. The carried sources have no redundant version field.
+The later IDC August outlook has its own forecast version. The annual
+comparisons remained pending because matching actuals were unavailable.
+
+The October phone update with a November dependency was rejected before
+any published-note hashes changed. The later eligible update kept the
+same phone Q3 note paths, retained visible `重要修訂` and returned distinct
+claim versions for the October IDC 316.1-million estimate and November
+Counterpoint 307-million estimate. Neither represents a verified
+restatement of the other. No revision directory was created.
+
+At the independent final CLI readback, October 31 Pacific returned IDC's
+56.0 million estimated Apple shipments, +3.5% YoY and 17.7% shipment share
+from the October 14 original, and September 28 Pacific returned null.
+The new authoring produced exact claim version
+`41720452c4090e35c1183dd216d6dff82b688c0e24ee7a78fd8f540d6ceeb917`.
+The source release and shipment facts match the earlier independent
+issuer replay. Its claim version differs because the authored claim text
+differs. No fresh issuer conversation wrote the new version in this
+targeted run. The earlier issuer replay is behavioral evidence for the
+same citation path, not an exact-artifact match.
