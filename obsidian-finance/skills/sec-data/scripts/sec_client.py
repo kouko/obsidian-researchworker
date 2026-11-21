@@ -387,9 +387,20 @@ def acquire(ticker, as_of, identity, fetch=None, *, fiscal_quarter=None, cik=Non
             result['errors'].extend(dict(error, source='predecessor-' + error['source'])
                                     for error in predecessor['errors'])
             _unresolved(result, 'required predecessor source unavailable or inconclusive; competing original could not be ruled out')
-        elif resolution and resolution['original_accession'] != current['original_accession']:
+        elif resolution and any(resolution[field] != current[field]
+                                for field in ('original_accession', 'original_filing_date', 'period_end')):
             result['resolution'] = None
             _unresolved(result, 'competing verified originals across documented succession', suggest_cik=True)
+        else:
+            from fiscal_quarter import conflicting_publication
+
+            same_accession = [row for row in predecessor['filings']
+                              if row.get('accessionNumber') == current['original_accession']]
+            if (conflicting_publication(same_accession, date.fromisoformat(current['original_filing_date']))
+                    or any(row.get('reportDate') != current['period_end'] for row in same_accession)):
+                result['resolution'] = None
+                _unresolved(result, 'conflicting original filing metadata across documented succession',
+                            suggest_cik=True)
         return result
     if resolution and predecessor['errors']:
         predecessor['resolution'] = None

@@ -581,6 +581,44 @@ def test_current_original_across_succession(tmp_path, monkeypatch, predecessor_f
         assert (path / 'raw/predecessor-primary-0000034088-26-000001.html').exists()
 
 
+@pytest.mark.parametrize('predecessor_end,predecessor_filed,expected_exit', [
+    ('2026-06-30', '2026-08-06', 0),
+    ('2026-06-30', '2026-06-30', 1),
+    ('2026-06-29', '2026-08-06', 1),
+])
+def test_same_accession_requires_consistent_filing_metadata(
+        tmp_path, monkeypatch, predecessor_end, predecessor_filed, expected_exit):
+    summary, path, _ = historical_run(
+        tmp_path, monkeypatch, '2026Q2', predecessor_end, '2026-08-07',
+        successor_filed='2026-08-06', predecessor_filed=predecessor_filed,
+        successor_end='2026-06-30', shared_accession=True,
+    )
+    assert summary['exit_code'] == expected_exit
+    if expected_exit:
+        assert 'competing verified originals' in json.dumps(summary['errors'])
+        assert not (path / 'completion.json').exists()
+    else:
+        assert summary['company']['cik'] == 2115436
+        assert (path / 'completion.json').exists()
+
+
+@pytest.mark.parametrize('predecessor_end,predecessor_filed,nominate', [
+    ('2026-06-30', '2026-08-08', True),
+    ('2026-06-29', '2026-08-06', False),
+])
+def test_shared_accession_metadata_conflict_without_resolved_predecessor(
+        tmp_path, monkeypatch, predecessor_end, predecessor_filed, nominate):
+    summary, path, calls = historical_run(
+        tmp_path, monkeypatch, '2026Q2', predecessor_end, '2026-08-07',
+        successor_filed='2026-08-06', predecessor_filed=predecessor_filed,
+        successor_end='2026-06-30', shared_accession=True, nominate_predecessor=nominate,
+    )
+    assert summary['exit_code'] == 1
+    assert 'conflicting original filing metadata' in json.dumps(summary['errors'])
+    assert all(not url.endswith('/xom.htm') for url in calls)
+    assert not (path / 'completion.json').exists()
+
+
 @pytest.mark.parametrize('failure,expected', [
     ('early', 'no eligible source-declared original'),
     ('missing_transition', '--cik'),
@@ -634,7 +672,8 @@ def test_explicit_cik_does_not_switch_filers(tmp_path, monkeypatch, failure, exp
 
 
 def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False, failure=None,
-                   successor_filed=None, predecessor_filed=None):
+                   successor_filed=None, predecessor_filed=None, successor_end=None, shared_accession=False,
+                   nominate_predecessor=True):
     from urllib.error import HTTPError
 
     import sec_client
@@ -686,18 +725,22 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
     if failure == 'current_malformed_facts':
         current_facts['facts'] = {'us-gaap': []}
     if successor_filed is not None:
-        successor_accession = f'0002115436-{year % 100:02d}-000001'
+        successor_accession = accession if shared_accession else f'0002115436-{year % 100:02d}-000001'
+        successor_end = successor_end or end
+        successor_html = (declaration(quarter[4:], successor_end).replace('>2024<', f'>{year}<')
+                          .replace('0000320193', '0002115436'))
         current_submissions['filings']['recent'] = {
             'accessionNumber': [successor_accession], 'form': ['10-Q'],
-            'filingDate': [successor_filed], 'reportDate': [end],
+            'filingDate': [successor_filed], 'reportDate': [successor_end],
             'primaryDocument': ['successor.htm'],
         }
         current_facts['facts'] = {'us-gaap': {'Revenues': {'units': {'USD': [
-            dict(end=end, filed=successor_filed, accn=successor_accession, val=100,
+            dict(end=successor_end, filed=successor_filed, accn=successor_accession, val=100,
                  fy=year, fp=quarter[4:]),
         ]}}}}
         if predecessor_filed is None:
             submissions['filings']['recent'] = {}
+        if predecessor_filed is None or not nominate_predecessor:
             facts['facts'] = {}
     calls = []
 
@@ -707,7 +750,7 @@ def historical_run(tmp_path, monkeypatch, quarter, end, filed, *, explicit=False
             return json.dumps({'0': {'ticker': 'XOM', 'cik_str': current_cik,
                                      'title': 'ExxonMobil Holdings Corporation'}}).encode()
         if url.endswith('successor.htm'):
-            return html.replace('0000034088', '0002115436').encode()
+            return successor_html.encode()
         if url.endswith('xom.htm'):
             return html.encode()
         if 'CIK0002115436' in url:
