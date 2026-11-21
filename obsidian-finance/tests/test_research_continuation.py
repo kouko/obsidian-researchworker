@@ -666,7 +666,7 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
     "publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis",
     "method-copy", "method-conflict", "method-newer",
     "damaged-source-registration", "damaged-source-payload", "bad-review-utf8", "bad-review-symlink", "replaced-bad-output",
-    "foreign-before-marker", "foreign-during-marker", "foreign-ordinary-after-marker",
+    "foreign-before-marker", "foreign-during-marker", "foreign-ordinary-after-marker", "foreign-text-after-marker",
     "registration-interruption", "damaged-method-registration",
 ])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
@@ -736,10 +736,12 @@ status: partial
                               "pilot", complete=False, storage="markdown")
 
     if scenario.startswith("foreign-"):
-        ordinary_after = scenario == "foreign-ordinary-after-marker"
+        attachments = {"foreign-ordinary-after-marker": "Observations.md",
+                       "foreign-text-after-marker": "Observations.txt"}
+        attachment = attachments.get(scenario)
         target = tmp_path / quarter / "2024-08-31-r2"
-        foreign = target / ("Observations.md" if ordinary_after else "review.json")
-        foreign_content = "# Ordinary observation" if ordinary_after else '{"version":1,"foreign":true}'
+        foreign = target / (attachment or "review.json")
+        foreign_content = "# Ordinary observation" if attachment else '{"version":1,"foreign":true}'
         preflight, link = module._preconditions, module._link_staged
 
         def inject_after_preflight(root, expected, target=None):
@@ -755,7 +757,7 @@ status: partial
             monkeypatch.setattr(module, "_preconditions", inject_after_preflight)
         else:
             monkeypatch.setattr(module, "_link_staged", inject_during_link)
-        if ordinary_after:
+        if attachment:
             assert publish()["status"] == "checkpoint"
             assert foreign.read_text() == foreign_content
             scanned = module.discover(tmp_path, "latest", CUTOFF)

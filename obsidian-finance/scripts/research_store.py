@@ -327,10 +327,8 @@ _ROLE_MARKER = re.compile(
 
 
 def _ordinary_quarter_note(path, payload):
-    return bool(_QUARTER_NOTE.fullmatch(path)) and _ordinary_markdown(payload)
-
-
-def _ordinary_markdown(payload):
+    if not _QUARTER_NOTE.fullmatch(path):
+        return False
     text = payload.decode("utf-8", errors="replace").lstrip("\ufeff")
     if not text.startswith(("---\n", "---\r\n")):
         return True
@@ -1317,8 +1315,8 @@ def _validate_markdown_target(root, target, files, *, committed=False):
     try:
         names = set(_names(root, target))
         extras = names - files.keys()
-        _require(files.keys() <= names and (not extras or (committed and all(
-            name.endswith(".md") and _ordinary_markdown(_bytes(root, target + "/" + name)) for name in extras))),
+        # After the marker commits, readers permit unreferenced attachments.
+        _require(files.keys() <= names and (not extras or (committed and not _LEGACY_REVIEW_MARKERS & extras)),
                  "Publication conflict: unexpected files in proposed review: " + target)
         _require(all(_bytes(root, target + "/" + name) == content for name, content in files.items()),
                  "Publication conflict: proposed review files changed: " + target)
