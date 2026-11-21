@@ -1,5 +1,23 @@
 # Independent industry and market research — acceptance test evidence
 
+## Re-run on 2026-11-22, at f832a8d
+
+The clean detached clone was at
+`f832a8d19d022262cb67ad48e9bf4c87516fd2a1`. The change from 96c10da
+contains only the acceptance report, its evidence and the expanded
+[native replay record](../research/10-in-place-runtime-replay.md).
+The complete `obsidian-finance` tree ID is identical at both commits
+(`8d52ac4eb602287e7c60b51b68b2bfca5a240b28`). The source CLI loaded.
+The following clean-clone checks returned `23 passed in 2.80s`:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/sec-package-evaluation-venv/bin/python -m pytest obsidian-finance/tests/test_market_research_workflow.py obsidian-finance/tests/test_market_evidence.py obsidian-finance/tests/test_market_research.py::test_cli_read_barrier_refuses_resume_and_cite_until_recovery -q -p no:cacheprovider
+```
+
+These checks include forecast identity, historical cutoff selection,
+late-source exclusion, and the read barrier during a pending write.
+The native and Desktop observations retain their original attribution.
+
 ## Re-run on 2026-11-22, at 96c10da
 
 The final clean detached clone was at

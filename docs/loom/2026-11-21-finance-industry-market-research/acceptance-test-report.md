@@ -1,6 +1,6 @@
 # 獨立產業／市場研究驗收
 
-Tried on 2026-11-22, in a clean copy of the project at 96c10da.
+Tried on 2026-11-22, in a clean copy of the project at f832a8d.
 
 操作和結果詳見 `docs/loom/2026-11-21-finance-industry-market-research/evidence/acceptance-test-evidence.md`。
 
