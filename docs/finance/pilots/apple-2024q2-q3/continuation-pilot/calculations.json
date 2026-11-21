@@ -1,0 +1,64 @@
+{
+  "unit": "USD million; margins/growth are fractions",
+  "prior_q4_revenue": "89498",
+  "prior_q4_net_income": "22956",
+  "prior_q4_services": "22314",
+  "prior_q4_products_by_category": {
+    "iPhone": 43805,
+    "Mac": 7614,
+    "iPad": 6443,
+    "Wearables": 9322,
+    "Services": 22314
+  },
+  "services_ytd_growth": "0.132159781191362147377794740",
+  "formulas": {
+    "base": "original FY2023 minus original nine months FY2023; no EPS/share subtraction",
+    "revenue": "prior Q4 revenue * (1 + revenue_growth)",
+    "services": "prior Q4 services * (1 + services_growth)",
+    "products_residual": "revenue - services",
+    "gross_profit": "revenue * gross_margin",
+    "operating_income": "gross_profit - opex",
+    "net_income": "(operating_income + other_income) * (1 - tax_rate)",
+    "required_product_margin": "(gross_profit - services * service_margin) / products_residual"
+  },
+  "scenarios": [
+    {
+      "id": "lower",
+      "revenue": "92182.94",
+      "services": "24991.68",
+      "products_residual": "67191.26",
+      "gross_profit": "41943.23770",
+      "operating_income": "27543.23770",
+      "net_income": "22998.60347950",
+      "net_income_yoy": "0.001855875566300749259452866",
+      "required_product_margin": "0.3489947130028518590066624737"
+    },
+    {
+      "id": "middle",
+      "revenue": "93972.90",
+      "services": "25437.96",
+      "products_residual": "68534.94",
+      "gross_profit": "43227.53400",
+      "operating_income": "28927.53400",
+      "net_income": "24154.49089000",
+      "net_income_yoy": "0.052208176075971423592960446",
+      "required_product_margin": "0.3560730278599499758809156322"
+    },
+    {
+      "id": "upper",
+      "revenue": "95762.86",
+      "services": "25884.24",
+      "products_residual": "69878.62",
+      "gross_profit": "44529.72990",
+      "operating_income": "30329.72990",
+      "net_income": "25325.32446650",
+      "net_income_yoy": "0.103211555432131033281059418",
+      "required_product_margin": "0.3631352808627302599850998775"
+    }
+  ],
+  "limitations": [
+    "FY2023 had 53 weeks, extra week in Q1; Q4 base is derived, no 53/52 scaling",
+    "No forward diluted share count, EPS, price target or long-run growth inferred",
+    "Product residual is not a bottom-up product demand forecast"
+  ]
+}

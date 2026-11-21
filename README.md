@@ -45,17 +45,26 @@ a completed project created by this skill. It preserves folders from the
 former resume skill without migrating them. For a single research note, use
 [`obsidian-research`](obsidian/skills/obsidian-research/README.md).
 
-## Optional finance data package
+## Optional finance package
 
-The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 adds
-one SEC data acquisition skill with source evidence, publication cutoffs and
-separate output runs. Select its marketplace entry independently of `obsidian`;
-the existing general-note package remains 4.2.0. Runtime requires Python 3.11+
-and a genuine operator-supplied `SEC_USER_AGENT`, with no runtime packages.
-This is data acquisition, not investment advice or automatic vault research.
-Claude/Codex registration is provided. The [finance plugin guide](obsidian-finance/README.md#development-and-provenance)
-links to one live CLI acquisition. Installed-host execution remains unverified.
-No finance OpenCode loader is shipped.
+The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 provides
+[`sec-data`](obsidian-finance/skills/sec-data/README.md) for source-linked SEC
+acquisition and [`finance-research`](obsidian-finance/skills/finance-research/README.md)
+for agent-led continuation from a designated managed version-1 equities folder.
+Research discovers required work, reuses valid analysis and saves protected
+checkpoints; horizon judgments remain conditional or insufficient when evidence
+is missing. Select its marketplace entry independently of `obsidian`; the
+existing general-note package is 4.2.0.
+
+Runtime uses Python 3.11+ and the standard library. For live SEC acquisition,
+the SEC skill asks for an operator or organization name and contact email on
+first use, then reuses the private local record at
+`~/.config/obsidian-finance/sec-contact.json`. Local research and reuse checks
+need no SEC contact. [Acceptance evidence](docs/loom/2026-11-18-sec-contact-setup/evidence/acceptance-test-evidence.md)
+records isolated Codex installation and contact setup in fresh conversations.
+Global plugin refresh and broader host coverage remain unverified.
+No daemon, trading or global installation is performed, and no finance OpenCode
+loader is shipped.
 
 ## Existing checks
 

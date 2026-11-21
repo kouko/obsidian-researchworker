@@ -1,0 +1,1 @@
+v2: Compute revenue year-over-year growth plus gross margin current/prior and year-over-year percentage-point change from retained original-quarter values. Reconcile USD units and explain mixed revenue/margin evidence; do not imply investment completion.

@@ -1,0 +1,14 @@
+[
+  {
+    "review": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-03-q3/review.json",
+    "growth_method_version": "v3-authorship-corrected",
+    "partial": true,
+    "all_saved_unit_hashes_match": true
+  },
+  {
+    "review": "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-run-03-q2/review.json",
+    "growth_method_version": "v3-authorship-corrected",
+    "partial": true,
+    "all_saved_unit_hashes_match": true
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-20-finance-analysis-frameworks",
+  "content_digest": "94bb311b20b4c447614ef6230171be491a948229",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "The changed behavior is prose guidance; the adversarial walkthrough found no deterministic failing regression and existing tests exercise the store, not agent compliance."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "framework_review_skill",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "framework_review_docs",
+      "vendor": "openai",
+      "model": "host-inherited",
+      "lens": "docs",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "dea81d2",
+  "tested_commit": "8299c735e76f8c1435bee15dac8340df5c08d958",
+  "reviewed_commit": "48a2b699dc1cacebddfb767485b8364156c66e1e",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

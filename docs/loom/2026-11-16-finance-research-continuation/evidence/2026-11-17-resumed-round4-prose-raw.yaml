@@ -1,0 +1,17 @@
+verdict: PASS_WITH_NOTES
+lens: skill
+reviewed_sha: af839ddc6ace9580cf94276ae60fa47697ea7979
+review_target_sha: 4c649a6c3b3197aa3598afc39bc1720144c6c3b9
+dimension_scores:
+  omission: PASS
+  ambiguity: PASS
+  inconsistency: PASS
+  incorrect-fact: PASS_WITH_NOTES — Original selected-source audit limits remain; this integration and acceptance-publication delta does not independently audit every historical/pilot claim or native transcript.
+  missing-population: PASS
+  user-judgment-leak: PASS
+  deletion-first: PASS
+findings: []
+notes:
+  - "Same reviewer and original episode resumed under the explicitly recorded user exceptions to count and round ceilings; original three rounds and refusal remain historical. The prior README.md:36 inconsistency remains FIXED. Inspected 9be8abfc..target integration, new Build/authorization/research records, original intent, unchanged spec/finance instructions and live related surfaces. Independently confirmed exact target HEAD and an empty delta across the entire finance package, original continuation intent/spec and retained public host inputs. No related integration regression or new finding was identified; unchanged upstream-main debt was not reopened."
+  - "Registry parses to two distinct packages: obsidian 4.2.0 and finance 0.1.0. Both packages' Claude/Codex manifest versions agree; actual general-note inventory contains 15 skills. Root README preserves both finance skills, live-acquisition-only SEC identity, managed equities scope and source-invoked versus installed-loading limits while updating current upstream count/version. Canonical acceptance names clean tested bfee85e, fully re-tests affected rows 1/7/16, supplies diff-grounded reasons for other rows, and distinguishes local discovery from retained native-host evidence. Independently compared archived pre-resumption report with its exact committed predecessor: bytes agree. Original failures, authorship corrections and raw cost counts remain preserved."
+  - "232 package passes and 15 reused-program passes are parent-observed, not runs by this reviewer. No repository artifact was edited; no full suite, stored probe, provider request, installation or new spend was performed. Preserve prior external-source/Decimal spot-check limitations: other originals, all scenario cells, every transcript and every citation were not independently re-audited. Neither unlimited-review authorization nor this verdict supplies a mechanical fixed-cap override, a current attestation, installed-host proof, complete investment diligence or A–G completion."

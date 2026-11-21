@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "noop",
+  "prompt": "Check whether investment research in ROOT needs continuation, latest mode, cutoff 2024-08-31T23:59:59+00:00. Work offline; do not regenerate unchanged analysis. Report the scope of any no-work finding and source freshness. Save a concise operator result to RESULT. No network, installs, external services or edits outside ROOT and RESULT. The repository README and existing helpers are available.",
+  "assertions": [
+    "Executes discovery, correctly reports locally reusable work and no update.",
+    "Leaves every ROOT file byte-identical; no duplicate report or quarter.",
+    "External freshness remains unverified; no claim of current SEC/market coverage or complete substantive investment quality based on local checks.",
+    "Identifies future price revision as excluded and does not create a quarter from its price date."
+  ]
+}

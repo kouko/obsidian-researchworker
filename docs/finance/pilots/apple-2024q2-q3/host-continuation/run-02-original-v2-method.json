@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "growth-method",
+  "kind": "method",
+  "identity": "v2",
+  "authored_at": "2026-11-16T02:10:00+00:00",
+  "projection": {
+    "method": "revenue-yoy-and-gross-margin-v2"
+  },
+  "content_ref": "investing/assets/equities/aapl/data/growth-method-v2.txt",
+  "content_digest": "3d3d34143fd9293ff506926cea8e30be7e83652acd5c9a26f4470148e8984618"
+}

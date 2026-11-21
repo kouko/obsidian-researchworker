@@ -1,0 +1,92 @@
+[
+  {
+    "run": "probe-escalated",
+    "cli_reported_tokens_used": 15789,
+    "raw_cli_value": "15,789",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-01",
+    "cli_reported_tokens_used": 71272,
+    "raw_cli_value": "71,272",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-02",
+    "cli_reported_tokens_used": 56406,
+    "raw_cli_value": "56,406",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-03",
+    "cli_reported_tokens_used": 87405,
+    "raw_cli_value": "87,405",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-04",
+    "cli_reported_tokens_used": 49187,
+    "raw_cli_value": "49,187",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-05",
+    "cli_reported_tokens_used": 69723,
+    "raw_cli_value": "69,723",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-06",
+    "cli_reported_tokens_used": 57240,
+    "raw_cli_value": "57,240",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-07",
+    "cli_reported_tokens_used": 87144,
+    "raw_cli_value": "87,144",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  },
+  {
+    "run": "run-08",
+    "cli_reported_tokens_used": 64762,
+    "raw_cli_value": "64,762",
+    "accounting_scope": "CLI reported aggregate; cached/uncached/billing categories not established",
+    "dollar_cost": "unknown; not inferred",
+    "actual_start_time": "unknown",
+    "actual_end_time": "unknown",
+    "wall_clock_duration": "unknown"
+  }
+]

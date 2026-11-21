@@ -21,13 +21,6 @@ The compatible alternative accepts an inclusive observation end-date range with
 `--period-start`, `--period-end` and required `--as-of`. Do not mix quarter and
 range selectors. All explicit dates are ISO dates; future cutoffs are invalid.
 
-Before making a request, check whether `SEC_USER_AGENT` is configured without
-printing its value. If absent, explain that SEC requires the operator's own
-identifying name and contact email and ask the user to configure it locally.
-Do not invent an identity, reuse an example or source default, or read private
-configuration to fill it. Public requests disclose the supplied identity and
-requested public issuer to SEC; no private notes are sent.
-
 Resolve `scripts/acquire.py` relative to this loaded skill's directory, then run
 it with Python 3.11 or later. The runtime uses only the standard library.
 Use the host-provided skill directory when available; for example,
@@ -41,10 +34,47 @@ python3 '<skill-directory>/scripts/acquire.py' \
   --output-dir /private/tmp/sec-data-sample
 ```
 
+### Configure contact on first use
+
+Run acquisition first. The script checks the private contact file before
+creating output or sending a request. When it reports `SEC_CONTACT_REQUIRED`,
+ask for the genuine operator or organization name and contact email in the
+current conversation. Explain that the script saves both locally in
+`~/.config/obsidian-finance/sec-contact.json` for later acquisitions and sends
+both to SEC in the request header. The host may retain the conversation and
+tool input. Requests identify the public issuer and do not include private
+vault data.
+
+Use the same script in a setup-only invocation. Pass a JSON object with
+`name` and `email` fields as a separate input payload:
+
+- If the host supports non-echoing piped stdin, invoke `--setup-contact` and
+  pass the object through that pipe.
+- In Codex with `exec_command` and `write_stdin`, start the script with
+  `--setup-contact --terminal` and `tty: true`. Wait for
+  `READY_FOR_SEPARATE_INPUT` and a session ID. That marker confirms echo is
+  disabled. In a distinct `write_stdin` call to the same session, send the
+  JSON as one line followed by a newline within 60 seconds. Codex may retain
+  the contents of that tool input.
+
+Never put the values in shell text, arguments, environment variables,
+heredocs, echoed terminal input or user-facing status. If the host cannot
+provide a supported input channel or the terminal never signals readiness,
+report the limitation without sending or echoing the values. Never invent,
+reuse or discover contact details on the user's behalf.
+
+After the script reports `configured`, continue the original acquisition.
+Later runs use the saved file automatically. On `SEC_CONTACT_INVALID`, ask
+only for the correction without repeating the prior values. On
+`SEC_CONTACT_UNUSABLE` or `SEC_CONTACT_SAVE_FAILED`, report the file repair or
+write-permission problem without asking the user to reenter the same contact.
+On `SEC_CONTACT_INPUT_UNAVAILABLE`, report the input channel problem without
+claiming the profile was saved. The dedicated
+profile directory must be a real directory at its configured location.
+
 Use the user's requested destination. Its direct parent must already exist;
 each invocation creates a distinct run directory and preserves previous output.
-Do not discover or write the user's vault, change global configuration or
-install packages into conda base.
+Do not discover or write the user's vault or install packages into conda base.
 
 ## Interpret the result
 
@@ -56,7 +86,7 @@ relevant limits in the conversation language:
 - `partial` / exit 2: a required source or archive failed; usable evidence may remain.
 - `empty` / exit 3: all required sources acquired but no eligible financial observations.
 - `failed` / exit 1: inspect the error; no usable completed eligible dataset.
-- exit 64: correct missing contact identity or invalid request/destination before retrying.
+- exit 64: resolve the contact, request or destination error before retrying.
 
 For quarter requests report `resolution`, `mode` and `effective_cutoff` from
 the result. `FISCAL_PERIOD_UNRESOLVED` forces failed / exit 1, retaining raw
@@ -76,6 +106,10 @@ Inspect `manifest.json` and `coverage.json` for evidence and exclusions. Only
 `eligible-facts.json` and `filings.json` are filtered analytical inputs.
 `raw/` contains unfiltered latest endpoint responses, including later data;
 retain it as evidence, not as an eligible historical snapshot.
+`CONTACT_REFLECTED` means a response was withheld because it matched contact
+data. A matching short name alone does not establish why it appeared. For
+single-character names, the check matches complete values to avoid confusing
+an ordinary letter in a sentence with a name.
 Quarter requests also retain candidate primary-filing HTML. Quarter facts use
 exact resolved end-date matching; the filing inventory still includes eligible
 10-K/10-Q versions across acquired history, without a lower publication bound.

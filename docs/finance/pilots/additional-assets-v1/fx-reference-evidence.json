@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "status": "bounded-method-case",
+  "asset_class": "fx",
+  "instrument": "unlevered USD/JPY spot-reference observations; not an executable position",
+  "quote_unit": "JPY per USD",
+  "source": {
+    "url": "https://www.federalreserve.gov/releases/h10/20240701/",
+    "publication_date": "2024-07-01",
+    "locator": "H.10 Weekly, JAPAN YEN row, June 24 through June 28",
+    "observations": [
+      {
+        "date": "2024-06-24",
+        "value": "159.7100"
+      },
+      {
+        "date": "2024-06-25",
+        "value": "159.6800"
+      },
+      {
+        "date": "2024-06-26",
+        "value": "160.6800"
+      },
+      {
+        "date": "2024-06-27",
+        "value": "160.7000"
+      },
+      {
+        "date": "2024-06-28",
+        "value": "160.8800"
+      }
+    ],
+    "raw_page_retained": false
+  },
+  "calculations": {
+    "usd_price_change_in_jpy_percent": "0.7326",
+    "jpy_price_change_in_usd_percent": "-0.7273"
+  },
+  "cutoff_checks": [
+    {
+      "cutoff": "2024-06-28",
+      "source_eligible": false,
+      "reason": "This weekly publication was released July 1; observation dates do not establish June 28 availability of this document"
+    },
+    {
+      "cutoff": "2024-07-02",
+      "source_eligible": true,
+      "reason": "Publication predates cutoff; no exact same-day release time assumption needed"
+    }
+  ],
+  "model_refusals": [
+    "Do not apply company P/E or corporate free-cash-flow valuation to a currency pair",
+    "Do not use arithmetic sign reversal instead of reciprocal currency returns",
+    "Do not label spot reference changes a carry, leveraged, forward or executable trade return"
+  ],
+  "failure_handling": [
+    "ND is missing, never zero or implicit forward fill",
+    "If exact publication time is unavailable, do not infer intraday eligibility",
+    "If source unavailable, preserve last verified observations and report freshness unknown"
+  ],
+  "complete_investment_case": false,
+  "independent_research_review": "pending",
+  "remaining": [
+    "Independent inflation and external-balance evidence beyond policy descriptions",
+    "Actual instrument-specific funding, transaction and observation conventions",
+    "Independent research challenge and complete horizon analysis"
+  ],
+  "analysis_cutoff": "2024-07-02T23:59:59-04:00",
+  "policy_evidence": [
+    {
+      "institution": "Federal Reserve",
+      "published_at": "2024-06-12T14:00:00-04:00",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm",
+      "target_range_percent": [
+        "5.25",
+        "5.50"
+      ],
+      "reading": "Statement body and publication header inspected",
+      "claim": "Target maintained; decisions remain conditional on incoming data"
+    },
+    {
+      "institution": "Bank of Japan",
+      "published_at": "2024-06-14T12:23:00+09:00",
+      "url": "https://www.boj.or.jp/en/mopo/mpmdeci/state_2024/k240614a.htm",
+      "target_range_percent": [
+        "0",
+        "0.1"
+      ],
+      "reading": "Policy decision, purchase-plan timing, outlook/risk paragraphs and release schedule inspected",
+      "claim": "Overnight guideline maintained; detailed future JGB purchase-reduction plan to be decided at the next meeting",
+      "future_minutes_excluded": {
+        "scheduled_publication": "2024-08-05T08:50:00+09:00",
+        "reason": "Later minutes content unavailable at July 2 cutoff"
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Saved a new managed partial checkpoint with predecessor `run-01-q3`.
+
+- Q3 revenue growth: **4.865704%**.
+- Gross margin: **46.257155%**, versus **44.516303%** prior year; **+1.740853 percentage points**.
+- Fiscal identity reused verbatim; original reports preserved.
+- Full investment-case remains pending. No external verification or new success recorded; `last_success` preserved.
+
+Before/after discovery and exact hash-reuse evidence are retained in run-02 artifacts. Final validation records the active host transcript as the sole changing file.
+
+[run-02-report.md](/private/tmp/finance-host-public-20261116/run-02-report.md)

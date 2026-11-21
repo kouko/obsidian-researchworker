@@ -1,0 +1,7 @@
+Both cases were interrupted at the final `review.json` creation boundary with exit **75**. Journals, drafts, and useful unfinished MD&A progress notes remain; neither case was resumed or rolled back.
+
+- Runs: `run-05-clean-interrupt`, `run-05-useredit-interrupt`
+- Main investing/package bytes unchanged; frozen growth/identity units preserved.
+- Prior Q3 view remains visible. Full investment-case work remains pending.
+
+[run-05-report.md](/private/tmp/finance-host-public-20261116/run-05-report.md) · [run-05-cases.json](/private/tmp/finance-host-public-20261116/run-05-cases.json) · [run-05-validation.json](/private/tmp/finance-host-public-20261116/run-05-validation.json)

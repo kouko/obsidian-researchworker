@@ -1,0 +1,118 @@
+{
+  "runs": [
+    {
+      "run": "missing-skill-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 14
+    },
+    {
+      "run": "missing-skill-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 9
+    },
+    {
+      "run": "missing-skill-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 14
+    },
+    {
+      "run": "noop-skill-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "noop-skill-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "noop-skill-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-skill-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-skill-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-skill-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "missing-baseline-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 1
+    },
+    {
+      "run": "missing-baseline-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 7
+    },
+    {
+      "run": "missing-baseline-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 11
+    },
+    {
+      "run": "noop-baseline-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "noop-baseline-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "noop-baseline-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-baseline-1",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-baseline-2",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    },
+    {
+      "run": "conflict-baseline-3",
+      "nonempty_outputs": true,
+      "originals_unchanged": true,
+      "new_files": 0
+    }
+  ],
+  "matched_fixture_hashes_equal": true,
+  "defects": [
+    "missing-skill-1 and missing-skill-3 passed changes as list and encountered incomplete research envelope; retained and corrected",
+    "missing-skill-3 reused failed review target under another run; mechanical boundary separately recorded by owning task"
+  ],
+  "repair": "v2 exact shape and failed-attempt target guidance; one affected-case inline rerun retained separately, not replacing original scores"
+}

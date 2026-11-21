@@ -1,0 +1,21 @@
+{
+  "authored_at": "2026-11-16T01:57:33.068714+00:00",
+  "applied_manifest": {
+    "version": 1,
+    "id": "growth-method",
+    "kind": "method",
+    "identity": "v1",
+    "authored_at": "2026-11-16T00:00:00+00:00",
+    "projection": {
+      "method": "revenue-yoy-v1"
+    },
+    "content_ref": "investing/assets/equities/aapl/data/growth-method.txt",
+    "content_digest": "210e18b8056de7b6a4bf38ffdf97db670074debb7fe3239ea445f3b5e2983283"
+  },
+  "generic_files": {
+    "package/skills/finance-research/SKILL.md": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e",
+    "package/skills/finance-research/references/research-method.md": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163",
+    "package/README.md": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967"
+  },
+  "decision": "Keep revenue-yoy-v1 unchanged: exact local content matches its stated bounded formula; generic evidence/coverage/horizon rules applied."
+}

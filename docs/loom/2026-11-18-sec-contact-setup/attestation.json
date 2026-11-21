@@ -1,0 +1,78 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-18-sec-contact-setup",
+  "content_digest": "524442bc7ff5727b63bfb63646c0fa4fd134268f",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_contact_vault_symlink.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_contact_vault_symlink.py",
+      "result": "pass",
+      "command_digest": "d425a171d3782d883e85f1a44787cb3321883e01cc2502df400f33c72cf556a5"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_oversized_terminal_contact_echo.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_oversized_terminal_contact_echo.py",
+      "result": "pass",
+      "command_digest": "678aea86cd21f417721dde6d9f24e4f061c3ff24320540d700c6c15f06eafc3c"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_single_token_contact_reflection.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_single_token_contact_reflection.py",
+      "result": "pass",
+      "command_digest": "da55fb33f302a5f6c5c8bce28f8a933118a3f789f52ae5ac9b564d19bef34272"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "contact_post_main_code",
+      "vendor": "codex",
+      "model": "inherited/unverified",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "0c8fbdfb149afa179907027cad218a057c412fd8"
+    },
+    {
+      "reviewer": "contact_post_main_prose",
+      "vendor": "codex",
+      "model": "inherited/unverified",
+      "lens": "prose",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "0c8fbdfb149afa179907027cad218a057c412fd8"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "547c458f4804f7381b4c6fafc218b89f02e451d9",
+  "tested_commit": "55404d4d7c7df6266dbc1350fc5582980a3785d6",
+  "reviewed_commit": "f4c8b790236b2f54cec133f798a98014852e2600",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

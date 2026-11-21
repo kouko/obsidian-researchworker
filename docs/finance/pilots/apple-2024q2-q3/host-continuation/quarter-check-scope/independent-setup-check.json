@@ -1,0 +1,9 @@
+{
+  "initial_scope_two_questions": true,
+  "main_scope_three_questions_unchanged": true,
+  "all_imported_original_review_files_byte_identical": true,
+  "baseline_normal_publish_complete_for_two_substantively_verified_questions": true,
+  "baseline_zero_gaps_and_no_analysis_update": true,
+  "q3_arrival_exactly_two_new_original_input_files": true,
+  "all_preexisting_baseline_paths_and_bytes_preserved_after_arrival": true
+}

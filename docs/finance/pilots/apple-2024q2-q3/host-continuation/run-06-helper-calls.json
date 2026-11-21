@@ -1,0 +1,38 @@
+[
+  {
+    "call": "research_store.recover('/private/tmp/finance-host-public-20261116/cases/clean', 'run-05-clean-interrupt', action='resume')",
+    "case": "clean",
+    "action": "resume",
+    "result": {
+      "status": "checkpoint",
+      "review": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/review.json",
+      "run": "run-05-clean-interrupt"
+    }
+  },
+  {
+    "call": "research_store.recover('/private/tmp/finance-host-public-20261116/cases/clean', 'run-05-clean-interrupt', action='rollback')",
+    "case": "clean",
+    "action": "rollback",
+    "result": {
+      "status": "rolled_back",
+      "review": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-clean-q3/review.json",
+      "run": "run-05-clean-interrupt"
+    }
+  },
+  {
+    "call": "research_store.recover('/private/tmp/finance-host-public-20261116/cases/useredit', 'run-05-useredit-interrupt', action='resume')",
+    "case": "useredit",
+    "action": "resume",
+    "error_type": "ValueError",
+    "error": "Publication conflict: user edited investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md",
+    "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/finance-host-public-20261116/run-06-recover.py\", line 41, in <module>\n    try:call['result']=m.recover(root,c['run_id'],action=action)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/finance-host-public-20261116/package/scripts/research_store.py\", line 615, in recover\n    _require(_bytes(root, ref) == encoded[ref], \"Publication conflict: user edited \" + ref)\n  File \"/private/tmp/finance-host-public-20261116/package/scripts/research_store.py\", line 19, in _require\n    raise ValueError(message)\nValueError: Publication conflict: user edited investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md\n"
+  },
+  {
+    "call": "research_store.recover('/private/tmp/finance-host-public-20261116/cases/useredit', 'run-05-useredit-interrupt', action='rollback')",
+    "case": "useredit",
+    "action": "rollback",
+    "error_type": "ValueError",
+    "error": "Publication conflict: user edited investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md",
+    "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/finance-host-public-20261116/run-06-recover.py\", line 41, in <module>\n    try:call['result']=m.recover(root,c['run_id'],action=action)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/finance-host-public-20261116/package/scripts/research_store.py\", line 615, in recover\n    _require(_bytes(root, ref) == encoded[ref], \"Publication conflict: user edited \" + ref)\n  File \"/private/tmp/finance-host-public-20261116/package/scripts/research_store.py\", line 19, in _require\n    raise ValueError(message)\nValueError: Publication conflict: user edited investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md\n"
+  }
+]

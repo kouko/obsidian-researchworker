@@ -1,0 +1,11 @@
+{
+  "case": "useredit",
+  "path": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-05-useredit-q3/investment-case-progress.md",
+  "before_sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+  "after_sha256": "70ad6a336f4c1cf311ccdf058ab06492135bd7a6ce27f6f77d853adf84d29fb1",
+  "appended_text": "\n\nUser edit simulation between independent host invocations: preserve my wording and do not replace this note during recovery.\n",
+  "original_draft": "/private/tmp/finance-host-public-20261116/cases/useredit/investing/.research-runs/run-05-useredit-interrupt/draft/investment-case-progress.md",
+  "original_draft_sha256": "3c55fb49c7c7650ceaeb18097716d78abe168f9c3076eda9ddf3c5ced4abbabc",
+  "performed_by": "W3 fixture preparer as explicit user-edit simulation between actual CLI sessions",
+  "journal_untouched": true
+}

@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "discovery_deterministic": true,
+  "reusable_units": 4,
+  "gaps": [],
+  "observations": [
+    {
+      "record": "aapl/2024Q3/run-07-q3",
+      "field": "last_attempt",
+      "value": "2026-11-16T02:34:37.927015+00:00"
+    }
+  ],
+  "original_bytes_preserved": true,
+  "last_success_not_advanced": true,
+  "initial_verification_error": "AssertionError: final audit incorrectly required observations to be empty; actual observation is the legitimate last_attempt, not an unfinished publication. Corrected audit checks observation type; no managed changes or republish."
+}

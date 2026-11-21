@@ -1,0 +1,29 @@
+OpenAI Codex v0.169.0
+--------
+workdir: /private/tmp/finance-host-public-20261116
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: low
+reasoning summaries: none
+session id: 01a1e20f-7954-7d90-8a15-596f70f1a2cb
+--------
+user
+This is a bounded public host feasibility check. Do not read any files or tools or configuration. Reply exactly HOST_REQUEST_OK. Do not change anything.
+
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+codex
+HOST_REQUEST_OK
+hook: Stop
+hook: Stop Completed
+tokens used
+15,789
+HOST_REQUEST_OK

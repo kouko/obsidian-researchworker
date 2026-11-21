@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "authored_at": "2026-11-16",
+  "fiscal_quarter": "2006Q1",
+  "period_end": "2005-12-31",
+  "cutoff": "2006-02-03T23:59:59-05:00",
+  "status": "partial-research",
+  "original": {
+    "accession": "0001104659-06-005910",
+    "filing_date": "2006-02-03",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000110465906005910/a06-3798_110q.htm",
+    "units": "USD million except weeks",
+    "values": {
+      "revenue": 5749,
+      "prior_revenue": 3490,
+      "gross_profit": 1564,
+      "operating_income": 750,
+      "net_income": 565,
+      "cfo": 283,
+      "cash_ppe_additions": 82,
+      "current_weeks": 14,
+      "prior_weeks": 13,
+      "nand_prepayment_paid_in_quarter": 750,
+      "nand_prepayment_contract_total": 1250,
+      "ipod_revenue": 2906,
+      "mac_revenue": 1724
+    },
+    "locators": [
+      "Statements of operations and cash flows",
+      "Note 1 fiscal calendar",
+      "Long-term supply agreements",
+      "MD&A product revenue table and Intel transition risk paragraphs"
+    ],
+    "full_html_retained_locally": false,
+    "raw_html_sha256": null
+  },
+  "calculations": {
+    "cfo_minus_cash_ppe_proxy_usd_million": 201,
+    "cfo_to_net_income_percent": "50.09",
+    "ipod_share_of_revenue_percent": "50.55",
+    "reported_revenue_growth_percent": "64.73"
+  },
+  "interpretation_limits": [
+    "Do not normalize CFO by adding back prepayments without a full working-capital and future-purchase reconciliation",
+    "14 versus 13 weeks prevents a comparable-week growth claim",
+    "Quarter-end balances and subsequent Intel announcements are different observation dates",
+    "Later stock-option investigations and restatements are excluded from this cutoff, not treated as known then"
+  ],
+  "reading_coverage": "Selected statements, fiscal-calendar note, supply prepayments, product revenue and Intel transition passages; not the entire filing",
+  "period_research_complete": false,
+  "verified_full_document_reading": false,
+  "independent_research_review": "pending",
+  "remaining": [
+    "Eligible supporting 2005 annual and governance documents",
+    "Complete required notes, risks and legal coverage",
+    "Independent competition and market evidence",
+    "Historical price, corporate actions and valuation",
+    "Operating scenarios and independent challenge"
+  ]
+}

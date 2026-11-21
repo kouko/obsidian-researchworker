@@ -1,7 +1,7 @@
 {
   "name": "obsidian-finance",
   "version": "0.1.0",
-  "description": "Optional SEC filing and financial-observation acquisition with source evidence and publication cutoffs.",
+  "description": "Optional SEC evidence acquisition and folder-grounded agent research continuation with source cutoffs and protected checkpoints.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",
   "repository": "https://github.com/kouko/obsidian-researchworker",
@@ -9,12 +9,12 @@
   "keywords": ["sec", "edgar", "financial-data", "provenance"],
   "interface": {
     "displayName": "obsidian-finance",
-    "shortDescription": "SEC filing and financial-observation data packages",
-    "longDescription": "Acquire public SEC filing metadata and companyfacts into separate source-linked runs with publication cutoffs. One data-only skill; no investment recommendations or automatic vault updates.",
+    "shortDescription": "SEC evidence and folder-grounded equities research",
+    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research to continue work in managed version-1 equities folders while preserving reports and edits. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
-    "defaultPrompt": ["Acquire Apple's SEC financial observations for a date range and publication cutoff."],
+    "defaultPrompt": ["Continue research in my designated managed equities folder at my specified assessment cutoff; discover required work, preserve prior reports and edits, and report evidence gaps and conditional horizon judgments."],
     "websiteURL": "https://github.com/kouko/obsidian-researchworker"
   }
 }

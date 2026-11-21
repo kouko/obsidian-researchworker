@@ -1,0 +1,162 @@
+{
+  "record_kind": "proposed_research_state_fixture_not_runtime_schema",
+  "asset_id": "sec-cik-0000320193",
+  "quarter": "2024Q2",
+  "analysis_version": "q2-forecast-supplement-v1",
+  "analysis_mode": "historical_reconstruction",
+  "analysis_as_of": "2024-05-03T23:59:59-04:00",
+  "authored_at": "2026-11-15",
+  "method_version": "q2-to-june-conditional-v1",
+  "forecast_target": "2024Q3",
+  "financial_original_accession": "0000320193-24-000069",
+  "source_observation": "retrospectively retrieved; publication dates checked, archived 2024 bytes unavailable",
+  "dependencies": [
+    {
+      "id": "financial-q2",
+      "kind": "financial_original",
+      "version": "0000320193-24-000069",
+      "available_at": "2024-05-03",
+      "artifact": "../data/quarter-packs.json",
+      "selector": "2024Q2.metrics only, excluding display-table formatting",
+      "projection_digest": "a1bdb6b083d2565e720ab03bb1a8553d4c0e2a2ceb2b5d7826d3023e21d82c82",
+      "consumers": [
+        "financial-analysis",
+        "business-analysis",
+        "forecast",
+        "valuation",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "prior-june",
+      "kind": "financial_original",
+      "version": "0000320193-23-000077",
+      "available_at": "2023-08-04",
+      "artifact": "reported-inputs.json",
+      "selector": "prior_june_products, prior_june_regions, prior_june_total, prior_june_net_income",
+      "projection_digest": "e014c8bbecaa743c4aa1d97d009efaa80191de9717ca206202d77dd7220156f3",
+      "consumers": [
+        "forecast",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "financial-q2-support",
+      "kind": "financial_original",
+      "version": "0000320193-24-000069",
+      "available_at": "2024-05-03",
+      "artifact": "reported-inputs.json",
+      "selector": "observed_q2_products.current/prior, observed_q2_regions.current/prior, q2_opex, q2_tax, q2_pretax, q2_product_gross_margin_reported, q2_service_gross_margin_reported",
+      "projection_digest": "71cfec334f4ea3770ae176a3a1a6ec3035ee9d9771663da3af58683b5a4a3a08",
+      "consumers": [
+        "business-analysis",
+        "forecast",
+        "valuation",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "ttm-q2",
+      "kind": "derived_financial",
+      "version": "earnings-exit-multiple-diagnostic-1",
+      "source_cutoff": "2024-05-03T23:59:59-04:00",
+      "artifact": "../valuation-v1/calculations.json",
+      "selector": "2024Q2.ttm_net_income_usd, integer USD; divide by one million in forecast",
+      "projection_digest": "bde21d3ee7d818ec83ddbe987fa5fb9b098afbfc04909853fa4c3e473295d1e7",
+      "consumers": [
+        "forecast",
+        "valuation",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "management-outlook",
+      "kind": "secondary_management_report",
+      "version": "may-2-call-reported-v1",
+      "available_at": "2024-05-02",
+      "artifact": "management-outlook.json",
+      "selector": "entire compact outlook record",
+      "projection_digest": "5db8bc0320d10a958e9a97bf6da8351c86de7c7008e93b1c1f44026aecd4bb3a",
+      "consumers": [
+        "forecast",
+        "valuation",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "price-q2",
+      "kind": "market_observation",
+      "version": "AAPL-close-2024-05-03",
+      "available_at": "2024-05-03",
+      "availability_resolution": "dated close; intraday publication time not verified",
+      "artifact": "../valuation-v1/price-evidence.json",
+      "selector": "2024Q2.price: date, used_value, unit, field, timezone only; vendor Yahoo and listing AAPL are part of version identity",
+      "projection_digest": "20c22f6ba84b8d907c636e5df9a94af99b6736996fadae10c4d164cad4581351",
+      "consumers": [
+        "valuation",
+        "synthesis"
+      ]
+    },
+    {
+      "id": "forecast-method",
+      "kind": "research_method",
+      "version": "q2-to-june-conditional-v1",
+      "available_at": null,
+      "artifact": "assumptions.json",
+      "selector": "all explicit local assumptions",
+      "projection_digest": "e9506bac5d56dbca0d123638918a5a6b1fde19d0bd4aea4bf0e296d3c28266f0",
+      "consumers": [
+        "forecast",
+        "valuation",
+        "synthesis"
+      ]
+    }
+  ],
+  "completeness": {
+    "reported_financials": "selected_fields_verified",
+    "management_outlook": "secondary_report_verified",
+    "conditional_next_quarter_forecast": "illustrative",
+    "external_consensus": "missing",
+    "five_year_operating_forecast": "missing",
+    "peer_valuation": "missing",
+    "recommendation": "insufficient_evidence"
+  },
+  "work_items": [
+    {
+      "id": "operating-evidence-q2",
+      "status": "authored_and_checked",
+      "outputs": [
+        "2024Q2-營運預測補充.md",
+        "reported-inputs.json",
+        "management-outlook.json",
+        "assumptions.json",
+        "calculations.json"
+      ]
+    },
+    {
+      "id": "independent-competitive-evidence",
+      "status": "missing",
+      "outputs": []
+    },
+    {
+      "id": "five-year-forecast-calibration",
+      "status": "missing",
+      "outputs": []
+    },
+    {
+      "id": "update-engine",
+      "status": "not_implemented",
+      "outputs": []
+    }
+  ],
+  "execution_state": {
+    "run_id": null,
+    "claimed_by": null,
+    "claimed_at": null,
+    "completed_outputs": [],
+    "last_successful_checkpoint": null,
+    "retry_count": null
+  },
+  "update_policy_status": "draft_examples_only",
+  "mtime_role": "candidate scan hint only; never evidence completeness or source eligibility"
+}

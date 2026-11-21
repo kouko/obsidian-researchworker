@@ -1,0 +1,198 @@
+{
+  "passed": true,
+  "source_invocation": "/private/tmp/finance-host-public-20261116/package/skills/finance-research/SKILL.md",
+  "actual_helper": "/private/tmp/finance-host-public-20261116/package/scripts/research_store.py",
+  "helper_digest": "fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526",
+  "deterministic_discovery": true,
+  "required_questions": [
+    "growth",
+    "identity"
+  ],
+  "reusable_units": 4,
+  "gaps": [],
+  "observations": [
+    {
+      "record": "aapl/2024Q3/run-07-q3",
+      "field": "last_attempt",
+      "value": "2026-11-16T02:34:37.927015+00:00"
+    }
+  ],
+  "quarter_checks": [
+    {
+      "quarter": "2024Q2",
+      "fiscal": {
+        "year": 2024,
+        "period": "Q2",
+        "period_end": "2024-03-30",
+        "original_accession": "0000320193-24-000069"
+      },
+      "publication": "2024-05-03",
+      "results": [
+        "-4.305327090978109578641022396558269011770",
+        "46.57807455400923385452822496226020076471",
+        "44.26167278248766291281791724661520941415",
+        "2.31640177152157094171030771564499135056"
+      ],
+      "citations": [
+        "https://www.sec.gov/Archives/edgar/data/320193/000032019324000069/aapl-20240330.htm"
+      ],
+      "checks": "saved outputs/checks/source coverage/counterevidence reviewed; arithmetic independently recomputed; no live URL request"
+    },
+    {
+      "quarter": "2024Q3",
+      "fiscal": {
+        "year": 2024,
+        "period": "Q3",
+        "period_end": "2024-06-29",
+        "original_accession": "0000320193-24-000081"
+      },
+      "publication": "2024-08-02",
+      "results": [
+        "4.865704121178038314363607467266525667200",
+        "46.25715518145889923872366718351073131492",
+        "44.51630255388339425651307505165226108537",
+        "1.74085262757550498221059213185847022955"
+      ],
+      "citations": [
+        "https://www.sec.gov/Archives/edgar/data/320193/000032019324000081/aapl-20240629.htm"
+      ],
+      "checks": "saved outputs/checks/source coverage/counterevidence reviewed; arithmetic independently recomputed; no live URL request"
+    }
+  ],
+  "method": {
+    "version": 1,
+    "id": "growth-method",
+    "kind": "method",
+    "identity": "v3-authorship-corrected",
+    "authored_at": "2026-11-16T02:08:46.931664+00:00",
+    "projection": {
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected"
+    },
+    "content_ref": "investing/assets/equities/aapl/data/growth-method-v3.txt",
+    "content_digest": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36"
+  },
+  "all_preexisting_root_bytes_preserved": true,
+  "managed_matches_supplied_before_run08": true,
+  "managed_file_count": 46,
+  "package_unchanged_during_verification": true,
+  "package_hashes": {
+    "LICENSE": "e17772825607fa517d61baf4c8dab4598a17e425fc1a5bd0d265bb48242b5679",
+    "PROVENANCE.md": "05e599c4c69185789c47f8c39ca342407d413a72e2c46e45a70bf7c2476e1af6",
+    "README.md": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967",
+    "scripts/research_store.py": "fd0cede6aae38590bc09a07bc7935e87bd5986e1350f2c64fe35e7db6aba8526",
+    "scripts/assess_work.py": "cfe0948609ebb6c1c687ed37f64a0ae2b750af8e00df2f879e91cace9c1d8653",
+    "scripts/work_assessment.py": "caa2ca6e4b15308110e0e7ae7b1ef59386f5d9c210da2a3a3577f4d99e07aaae",
+    ".claude-plugin/plugin.json": "c7df28319bf07dd251674f6e49f8f8df85eebeb182ccfadb41a2a26a2640fb92",
+    ".codex-plugin/plugin.json": "c6f11270d53df6ce6034576eb0a47588b34392e93abaa362658d361de2c5e708",
+    "scripts/__pycache__/research_store.cpython-312.pyc": "a68517662a1a28f036d9779e555ee4668f06b7721d0840a728f47e1de6719447",
+    "scripts/__pycache__/research_store.cpython-315.pyc": "b0d9c27c1968b944c2830115c7133dfa8dffd52dcade51145860af2917dd9ad4",
+    "skills/finance-research/SKILL.md": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e",
+    "skills/sec-data/SKILL.md": "1b9e251091905acecc7a2575ac093f7dcb76c13ecc6f4625ea5f65fa95bf1923",
+    "skills/finance-research/references/research-method.md": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163",
+    "skills/sec-data/scripts/acquire.py": "971c1b821f9aa22963c4437cfe002f4a60c01b294b21fe0eae737208e3fdf653",
+    "skills/sec-data/scripts/fiscal_quarter.py": "d904603ed3f59eb7335f9cf1e34a7ce58468b32e20b44c7b7c36474cdb904950",
+    "skills/sec-data/scripts/sec_client.py": "544d50cd226a241ba08165a3ba142c4ee313bc24e26b7e248ed194985aea727a"
+  },
+  "root_before": {
+    "run-07-before-discovery.json": "716210f5c7ac43372869433f6fcb5197b0c04d6bfd2debb56d6e914e7cb3fdac",
+    "SETUP-output.txt": "448b0d8495026c827055f4bd1ec080e7e8e33bda54ca4e78de294f908358d231",
+    "run-07-publication.json": "9e72c0a6675a93e2359d83278e41f1cfca56743f914b18dd666a6ec4aa89b69d",
+    "before-run-08.json": "8f746192b4338cb774955c5b0c3be49723618f96fe68580fdea66ae5392ad322",
+    "run-07-execute.py": "3a0daf60881421aad956d1239cd4b28843dcd705c12fcaa785cb1bcc44fde324",
+    "SCOPE.md": "c3207268702611a36656bd9c60393286d104059b2fbc60ecab91af9fe6d6b168",
+    "run-07-after-discovery.json": "67bad0d7757b29fc7e898561b8e14d11fa4e0944388d88679680dd0a967634ed",
+    "run-07-final-verification.json": "79d4bcc08542dc58f38be194a1a2d445a6573374c7b2f133b1cba7e4239c80df",
+    "after-run-07.json": "8f746192b4338cb774955c5b0c3be49723618f96fe68580fdea66ae5392ad322",
+    "arrival-added.json": "bed299a800c3d58e881f02d2fd20cddb8283b21b381bdbe343a6063f6f95886c",
+    "independent-setup-check.json": "53a38de2a7148e360b0c55af5daedcccc920c9cadbbe2183d4bd1487900b910e",
+    "SETUP.py": "02a81b4330fc1cbfdcb23001d1fcd529cb0661b613a7265b7c3cf62102715cd7",
+    "run-07-publication-before.json": "c3b3c10ac2289e90c34c781e4368ebff6d7fa88ddadf3bc6c27234d1b316784b",
+    "run-08-discovery.json": "67bad0d7757b29fc7e898561b8e14d11fa4e0944388d88679680dd0a967634ed",
+    "arrival-discovery.json": "716210f5c7ac43372869433f6fcb5197b0c04d6bfd2debb56d6e914e7cb3fdac",
+    "run-07-report.md": "0d326e6712ac1a455dad357b9da81ac01315021da4269b8fa5f960a6a12bd9df",
+    "baseline-before-publication.json": "b0b16686a4a783e57ccc387151caadd0e4d966c88832856ee0b874b2d09a43ce",
+    "arrival-before.json": "565727b65b83e0cd8c834a01e3859ff8a34afb95de28b4f9e161708125e9b52e",
+    "baseline-discovery.json": "4d9ece1e017c0e8fd44bd220b121fad29cd6fe9f3a78af29e582ea550e8195fc",
+    "run-07-preservation.json": "e989931079e5aa9e629a821ed3a30d7cf29dc573d13077392a28a0ed8b7d25f3",
+    "run-07-root-before.json": "016a19c282772bf526101e190eb3b0b17d7c262579d73983959a1bc4f89f2e47",
+    "before-run-07.json": "8858c269daa166bea9ab54da90c1046d098b8158a82a34d73ae84e0cf6a182fb",
+    "run-07-proposal.json": "a5abbed0daf3abcf0b879eeb42cd256ab7784e68d6e816a7ff250aacfdfc8428",
+    "baseline-publication.json": "e66cf5d16e8d4a1c875b55441ae1570541f601fbb6c07e286ade7cb59fa880d0",
+    "investing/research.json": "e0c09022ebbaeb56662cb3802ce34cbe06e10649158c14e264a0ae806e976894",
+    "investing/.research-runs/run-07/request.json": "3f2da809d0492f1605ad8d5339e2d1fbdafebc46272c1c3014b93c078e5ebbfb",
+    "investing/.research-runs/run-07/journal.json": "ab68583c24dcdb426b572e51fc6be607a8f96a2b51f382c6359f38f821653c0b",
+    "investing/.research-runs/run-07/completion.json": "0c1f6815fc333601173e44bb5fbfcf6fccaa37d34bf446fe4779f17884e16f43",
+    "investing/.research-runs/bounded-baseline-q2/request.json": "370f015e1df4172155ac5adb32936bc9151514045d3b55f49679a16a08a6904b",
+    "investing/.research-runs/bounded-baseline-q2/journal.json": "c5581c1c92405059958bf769186cf99308ddc903c8bb8fc7ea07b1c19e627781",
+    "investing/.research-runs/bounded-baseline-q2/completion.json": "b04696f92c3d8de098e80fc350617a8b1f3daa1d62a3d179e7eabaf7d5dbacdc",
+    "investing/.research-runs/run-07/draft/identity-check.json": "763806a83ea1e7b0bab6d94592653d6300031840712fea705fab28254003071a",
+    "investing/.research-runs/run-07/draft/identity.md": "231c59e5933d2b29dd6dc663c8f83b8af8ad4bbd4d2037a872acf258a7451a41",
+    "investing/.research-runs/run-07/draft/calculations.json": "887d430181766a29ed88c99a805cdf5624bf7478d7557df315494f198c51022e",
+    "investing/.research-runs/run-07/draft/source-check.json": "4b68a0a41298cd2d0c5241d40c3e17cdd1c1293ab0049f5ca87745d4cee5fadf",
+    "investing/.research-runs/run-07/draft/growth-check.json": "bf73635a3196888d583fa87a0e7545174f2f87c3907274a8f31555d52596f4de",
+    "investing/.research-runs/run-07/draft/growth.md": "c3210c5b3657006d6727edccf27cd321d46acc33332e18a348e1e512943ae5e0",
+    "investing/.research-runs/run-07/draft/method-check.json": "3139677d70f333a50c1dd22644e3a914116e959020e0059a4821ee65352f616b",
+    "investing/.research-runs/bounded-baseline-q2/draft/identity-check.json": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+    "investing/.research-runs/bounded-baseline-q2/draft/identity.md": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+    "investing/.research-runs/bounded-baseline-q2/draft/calculations.json": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+    "investing/.research-runs/bounded-baseline-q2/draft/source-check.json": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+    "investing/.research-runs/bounded-baseline-q2/draft/growth-check.json": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+    "investing/.research-runs/bounded-baseline-q2/draft/growth.md": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+    "investing/.research-runs/bounded-baseline-q2/draft/method-check.json": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+    "investing/assets/equities/aapl/asset.json": "0f101271a355af8fa68aee88e92291f8749a41201fc737f2d5238ae46447e749",
+    "investing/assets/equities/aapl/data/2024Q3.json": "73c449ed301b494d1e217c21f2572fe80321d968d20388917292bc1cd95f6d27",
+    "investing/assets/equities/aapl/data/2024Q2.json": "16a11699075432efc42f15ef37113da65e72d07be41eda49f74a373c7a3fa021",
+    "investing/assets/equities/aapl/data/growth-method-v3.txt": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/identity-check.json": "763806a83ea1e7b0bab6d94592653d6300031840712fea705fab28254003071a",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/identity.md": "231c59e5933d2b29dd6dc663c8f83b8af8ad4bbd4d2037a872acf258a7451a41",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/calculations.json": "887d430181766a29ed88c99a805cdf5624bf7478d7557df315494f198c51022e",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/source-check.json": "4b68a0a41298cd2d0c5241d40c3e17cdd1c1293ab0049f5ca87745d4cee5fadf",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/growth-check.json": "bf73635a3196888d583fa87a0e7545174f2f87c3907274a8f31555d52596f4de",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/growth.md": "c3210c5b3657006d6727edccf27cd321d46acc33332e18a348e1e512943ae5e0",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/pending.json": "d68a2196f33438a1ede6d02e4b0a254fdd274f99eca3ef866b4447be2eef36e6",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/review.json": "0c1f6815fc333601173e44bb5fbfcf6fccaa37d34bf446fe4779f17884e16f43",
+    "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-07-q3/method-check.json": "3139677d70f333a50c1dd22644e3a914116e959020e0059a4821ee65352f616b",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/identity-check.json": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/identity.md": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/calculations.json": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/source-check.json": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/growth-check.json": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/growth.md": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/pending.json": "5a3d488c2fdad509d48eedf6c03904c1b5e8f35380dd57946e15f92dd5381822",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/review.json": "b04696f92c3d8de098e80fc350617a8b1f3daa1d62a3d179e7eabaf7d5dbacdc",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-08-02-bounded-baseline-q2/method-check.json": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f",
+    "investing/assets/equities/aapl/data/analysis/growth-method.json": "c193a6f82e7f1dddbfb2df528ab464fc49b9e65b5d182b24510e608b984ebbb2",
+    "investing/assets/equities/aapl/data/sources/2024Q3.json": "762ce134559241c1bd06641dbd97dcde39e0bd4c286aa51e1c5ee8d9e5b57da9",
+    "investing/assets/equities/aapl/data/sources/2024Q2.json": "c3e0eda712df5ab28bbd95f87458bdb074684a0825db97bcd7874af9f3f918f7",
+    "imports/original-q2-review/identity-check.json": "8e4b2be9b69c246233991bb92e2cf1b5fd4a5f480aea85a7ab96df459c57f13b",
+    "imports/original-q2-review/identity.md": "e2899eba964ded78b907b6bed1433ecee68578061f08ddf69b3c62aedfeb90a4",
+    "imports/original-q2-review/calculations.json": "3b3691e65bd3b30357927129e503a52b9077e7221ba9fcd71b409b2cf56ecfe6",
+    "imports/original-q2-review/source-check.json": "838a4ccdf5804c9367e122e76f709ad25ee404cc001c9221d73e048f42838f72",
+    "imports/original-q2-review/growth-check.json": "24b460b899a151fcab260a64905a10d726b28ce1a6591fe94538f2ede18c34b2",
+    "imports/original-q2-review/growth.md": "d9c469d87dd5ae00432c62fb1ce9d312363a34378fdd3950a01f30f5dc1d6731",
+    "imports/original-q2-review/pending.json": "3609e56468f3749eebab72111eeb71a8e53f37ff8cfb2f84cb8c5702677446f5",
+    "imports/original-q2-review/review.json": "a4c9dd1f3110fe5c6e3a14f95f521e74852235cc0f1c9a7c7172f465f89fe2eb",
+    "imports/original-q2-review/method-check.json": "0dd0ad2da9edb1f814821978a12824a0e5001b675652ff15f89161ff6c5b032f"
+  },
+  "external_attempted_this_run": false,
+  "external_freshness": "unverified",
+  "last_attempt_advanced": false,
+  "last_success_advanced": false,
+  "publication_called": false,
+  "imported_investment_case_still_required_and_incomplete": true,
+  "A-G": "unchanged; not completed or reassessed by this bounded check",
+  "final_verification": {
+    "preexisting_root_bytes_preserved": true,
+    "package_bytes_preserved": true,
+    "unexpected_concurrent_additions": [
+      "independent-run-08-check.json",
+      "after-run-08.json"
+    ],
+    "initial_final_audit_error": "AssertionError: strict additions allowlist found two concurrently created root artifacts; no original bytes changed",
+    "agent_created_files": [
+      "run-08-discovery.json",
+      "run-08-verification.json",
+      "run-08-report.md"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "applied": {
+    "version": 1,
+    "id": "growth-method",
+    "kind": "method",
+    "identity": "v3-authorship-corrected",
+    "authored_at": "2026-11-16T02:08:46.931664+00:00",
+    "projection": {
+      "method": "revenue-yoy-and-gross-margin-v3-authorship-corrected"
+    },
+    "content_ref": "investing/assets/equities/aapl/data/growth-method-v3.txt",
+    "content_digest": "c6d790cca884a1b91e02aecb267a09fcdde953921deae0b7cd6c98eeb15d3d36"
+  },
+  "generic_method_hashes": {
+    "README.md": "d1acb354b02ca6cf40fd431afbbe8d66b3dd9493592f1d08dff5d289e8597967",
+    "skills/finance-research/SKILL.md": "ffafb2723fd6d36336aecb813e2cf31511ce8da3236380dfe010c7c5b61e496e",
+    "skills/finance-research/references/research-method.md": "4693d6bdc2dc5c08f90652495d9b75c979cd0f3f3b143bf1e1f3d0e576e24163"
+  },
+  "content_digest_verified": true,
+  "substantive_contract": "Recomputed revenue YoY and both margins from original-quarter amounts; unit and counterevidence reconciliation; bounded identity and reading exclusions",
+  "actual_authorship_not_economic_availability": true
+}

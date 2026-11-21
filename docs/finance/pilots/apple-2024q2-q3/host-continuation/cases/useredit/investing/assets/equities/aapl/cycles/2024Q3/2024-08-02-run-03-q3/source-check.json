@@ -1,0 +1,11 @@
+{
+  "external_attempted": false,
+  "external_success": false,
+  "retained_prior_check": "investing/assets/equities/aapl/cycles/2024Q3/2024-08-02-run-01-q3/source-check.json",
+  "read_coverage": [
+    "investing/assets/equities/aapl/data/2024Q3.json: four growth inputs and table_rows"
+  ],
+  "limitations": [
+    "No new Q3 original reading or identity research; prior page success is not new success."
+  ]
+}

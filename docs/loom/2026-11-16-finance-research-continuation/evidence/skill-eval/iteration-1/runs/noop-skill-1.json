@@ -1,0 +1,28 @@
+{
+  "run": "noop-skill-1",
+  "helper_sha": "56d276a15bfaf44b949d90612c0f0dfa9d80a6b3",
+  "skill_revision": "v1",
+  "initial_hashes": {
+    "investing/assets/equities/aapl/asset.json": "37cd78c6a34e7405fe7e77ec369c88be10621f404993c75ab8671a9937aec9d1",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/analysis.md": "f44e85c4b8ea2addc796f8beab6600e801d767ccd26c800dce6d88fdaa5eb4e6",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/review.json": "1fdc64a82fd75a71c2481826cd1fd8d908adce350d4bb0fb047dd9e921cb8674",
+    "investing/assets/equities/aapl/cycles/2024Q2/2024-05-03-r1/verification.json": "0ef52f49bcf40b8c012bc1ceb77b8442da6bfa526184e6308b611d1a11329170",
+    "investing/assets/equities/aapl/data/price.txt": "d7439bee24773bcbfa2d0a97947ee36227b10d1022b1a55847e928965bb6bfde",
+    "investing/assets/equities/aapl/data/sources/future.json": "514f64065852f1d6f4231869182878da17ee92470507f4fd5e0d0cf467c50f83",
+    "investing/assets/equities/aapl/data/sources/price.json": "ffc6b3b08f827040b0f078ec38d7ef1768838b98bd74b15ca8e4c21501352188",
+    "investing/research.json": "e387e7a42e17280a7e21f49a7a25258d1571c619512ace12221375d95c16a800"
+  },
+  "created_hashes": {},
+  "changed_originals": {},
+  "created_contents": {},
+  "publication_attempts": [],
+  "operator_artifacts": {
+    "result.md": "# Operator result\n\n- Checked `/private/tmp/finance-skill-trials/noop-skill-1`, latest mode, cutoff `2024-08-31T23:59:59+00:00`, offline with the supplied finance-research skill and reference.\n- Discovery reports `no_analysis_update`: saved `aapl/2024Q2/r1` question `valuation` is locally reusable; no structural gaps or unfinished-run observations. No analysis was regenerated or review published; ROOT was left unchanged.\n- This no-work finding is limited to the configured single price dependency and saved output/check identities. Eligible `price-v1` is dated 2024-05-03 (10 USD); `future-price` dated 2024-09-02 (12 USD) is excluded after cutoff. Latest mode did not rewrite the saved 2024-05-03 review.\n- Source freshness is **unverified**: zero external attempts, no external success established, and no current SEC or market coverage claim.\n- Substantive limitation: the entire saved analysis reads `analysis`, raw evidence reads `raw`, and verification consists of recorded true flags. These synthetic placeholders do not establish valuation reasoning, calculation/citation quality, original filing reading, or an investment case. No method manifest is declared; no short/medium/long horizon judgments are present. Local mechanical completion is not analytical completion or advisory sufficiency. Substantive continuation would need actual evidence and analysis; the available synthetic material cannot supply it offline.\n- No host installation or real investment proof was tested. No errors observed.\n",
+    "commands.md": "# Actual commands and observations\n\n1. `cat /private/tmp/finance-research-continuation/obsidian-finance/skills/finance-research/SKILL.md`\n   - Exit 0. Read supplied workflow, including bounded unchanged-work and freshness rules.\n2. `cat /private/tmp/finance-research-continuation/obsidian-finance/README.md /private/tmp/finance-research-continuation/obsidian-finance/skills/finance-research/references/research-method.md`\n   - Exit 0. Read helper contracts and evidence/completion method.\n3. `ls -la /private/tmp/finance-skill-trials/noop-skill-1; rg -n 'def discover|applied|method' /private/tmp/finance-research-continuation/obsidian-finance/scripts/research_store.py`\n   - Exit 0. ROOT contains investing; located actual discovery API and analysis-input handling.\n4. Executed the following via `/private/tmp/finance-validation-env/bin/python -`:\n\n```python\nimport sys,json\nfrom pathlib import Path\nsys.path.insert(0,'/private/tmp/finance-research-continuation/obsidian-finance/scripts')\nimport research_store\nroot=Path('/private/tmp/finance-skill-trials/noop-skill-1')\nprint(json.dumps(research_store.discover(root,'latest','2024-08-31T23:59:59+00:00'),indent=2))\nprint('\\nFILES')\nfor p in sorted(root.rglob('*')):\n if p.is_file(): print(p.relative_to(root))\n```\n\nExit 0: scope supplied_local_evidence; external_freshness unverified; status complete; decision no_analysis_update for aapl/2024Q2/r1; valuation reusable; gaps and observations empty; future price excluded after_cutoff. Listed eight local files.\n\n5. Executed the following via the same Python:\n\n```python\nfrom pathlib import Path\nroot=Path('/private/tmp/finance-skill-trials/noop-skill-1')\nfor p in sorted(root.rglob('*')):\n if p.is_file(): print('\\n'+str(p.relative_to(root))+'\\n'+p.read_text())\n```\n\nExit 0. Inspected all eight files: one configured valuation question, placeholder analysis/raw data, digest-bound check flags, saved Q2 identity, eligible and future price revisions. No declared method inputs or horizon judgments.\n\n6. Used apply_patch to create result.md and commands.md in the authorized RESULT directory only. No ROOT writes, network requests, installations, external services, publication or recovery calls. No errors or guard blocks observed.\n"
+  },
+  "timing": {
+    "total_tokens": null,
+    "duration_ms": null,
+    "reason": "Native completion did not expose these fields; no estimates invented"
+  }
+}
