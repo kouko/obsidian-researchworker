@@ -240,6 +240,14 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
             review_id_yaml="checkpoint", status_yaml="partial", findings=financial_text,
             source_and_comparison=pack["source_url"], unresolved="Synthesis is pending.")
         current = saved["units"]["financial"]
+        comparator_metadata = f"{base}/data/sources/filing-2024Q2.json"
+        comparator = json.loads((tmp_path / comparator_metadata).read_text())
+        original = b"<html><title>Public pilot filing evidence fixture</title></html>"
+        original_path = f"{base}/data/filing-2024Q2.html"
+        (tmp_path / original_path).write_bytes(original)
+        comparator.update(original_ref=original_path, original_digest=hashlib.sha256(original).hexdigest())
+        put(tmp_path, comparator_metadata, comparator)
+        current["consumed"]["filing-2024Q2"] = dict(version=comparator["identity"], projection=comparator["projection"])
         check = json.loads((tmp_path / current["verification"]).read_text())
         check["output_digest"] = digest(content)
         output = f"{base}/cycles/{quarter}/{cutoff[:10]}-checkpoint/financial.md"
@@ -260,7 +268,8 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         published = module._markdown.record(saved_text, "review")[1]
         after = module.publication_snapshot(tmp_path)
         assert baseline.items() <= after.items()
-        assert {path for path in after.keys() - baseline.keys() if path.endswith(".json")} == set()
+        assert all(f"/cycles/{quarter}/data/raw/" in path
+                   for path in after.keys() - baseline.keys() if path.endswith(".json"))
     else:
         published = json.loads(saved_text)
     assert published["research"] == saved["research"]
@@ -274,8 +283,74 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
     assert all(p.read_bytes() == value for p, value in before.items())
     if storage == "markdown":
         assert dict(record="aapl/2024Q3/checkpoint", work="financial") in repeat["reusable"]
+        quarter_root = tmp_path / base / "cycles" / quarter
+        isolated = tmp_path / "standalone" / "copied-quarter"
+        shutil.copytree(quarter_root, isolated)
+        portable = published["quarter_evidence"]
+        assert portable["version"] == 1
+        local_inputs = portable["units"]["financial"]["sources"]
+        assert {"filing-2024Q2", "filing-2024Q3"} == local_inputs.keys()
+        assert all(ref.startswith("data/sources/") for ref in local_inputs.values())
+        assert published["units"]["financial"]["output"]["path"] == f"{cutoff[:10]}-checkpoint/financial.md"
+        assert not any(path.name == "review.json" for path in isolated.glob("data/**/*"))
+        validation = load().verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md")
+        assert validation["status"] == "verified"
+        assert {record["record"] for record in validation["reusable"]} == {"aapl/2024Q3/checkpoint"}
+        _, registration = module._markdown.record(
+            (isolated / local_inputs["filing-2024Q2"]).read_text(), "source-registration")
+        assert registration["fiscal"]["original_accession"] == comparator["fiscal"]["original_accession"]
+        assert (isolated / registration["original_ref"]).read_bytes() == original
+
+        # A second vault assembled from just this quarter (plus configuration)
+        # must not start a Q2 cycle for a copied Q2 comparator.
+        local_vault = tmp_path / "quarter-owned"
+        for config in ("investing/research.json", base + "/asset.json"):
+            put(local_vault, config, json.loads((tmp_path / config).read_text()))
+        shutil.copytree(quarter_root, local_vault / base / "cycles" / quarter)
+        local_readback = load().discover(local_vault, "latest", cutoff)
+        assert {item["record"] for item in local_readback["decisions"]} == {"aapl/2024Q3/checkpoint"}
+        assert {item["work"] for item in local_readback["reusable"]} == {"financial", "competition"}
+
+        # A newer accession version cannot replace the frozen local older copy.
+        late_cutoff = "2024-10-01T23:59:59+00:00"
+        later_projection = dict(saved["units"]["financial"]["consumed"]["filing-2024Q3"]["projection"],
+                                revision="later supplemental disclosure")
+        later_identity = source(tmp_path, base, "filing-2024Q3", "filing-2024Q3-later", late_cutoff,
+                                later_projection, saved["fiscal"])
+        assert dict(record="aapl/2024Q3/checkpoint", work="financial") in load().discover(
+            tmp_path, "historical", cutoff)["reusable"]
+        assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in load().discover(
+            tmp_path, "latest", late_cutoff)["reusable"]
+        assert module.verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md") == validation
+
+        later = module._rebase_review(published, f"{base}/cycles/{quarter}", portable=False)
+        later.update(id="amended", cutoff=late_cutoff, predecessor="checkpoint")
+        amended = content.replace(cutoff, late_cutoff).replace("review_id: checkpoint", "review_id: amended")
+        refreshed = later["units"]["financial"]
+        refreshed["consumed"]["filing-2024Q3"] = later_identity
+        refreshed.pop("candidate_notes")
+        refreshed["output"].update(path=f"{base}/cycles/{quarter}/{late_cutoff[:10]}-amended/financial.md",
+                                   digest=digest(amended))
+        refreshed["verification"]["output_digest"] = digest(amended)
+        amended_result = module.publish(tmp_path, asset, later, {"financial.md": amended},
+                                       module.publication_snapshot(tmp_path), "amended",
+                                       complete=False, storage="markdown")
+        local_amended = f"{late_cutoff[:10]}-amended/review.md"
+        assert amended_result["review"].endswith(local_amended)
+        _, amended_record = module._markdown.record((quarter_root / local_amended).read_text(), "review")
+        later_sources = amended_record["quarter_evidence"]["units"]["financial"]["sources"]
+        assert later_sources["filing-2024Q2"] == local_inputs["filing-2024Q2"]
+        assert later_sources["filing-2024Q3"] != local_inputs["filing-2024Q3"]
+        assert module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md") == validation
+        assert dict(record="aapl/2024Q3/amended", work="financial") in module.verify_quarter(
+            quarter_root, local_amended)["reusable"]
+
+        original_copy = isolated / registration["original_ref"]
+        original_copy.unlink()
+        with pytest.raises(ValueError, match="quarter evidence"):
+            module.verify_quarter(isolated, f"{cutoff[:10]}-checkpoint/review.md")
         (tmp_path / ordinary).write_text("Changed note")
-        changed = load().discover(tmp_path, "latest", cutoff)
+        changed = load().discover(tmp_path, "historical", cutoff)
         assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in changed["reusable"]
         assert dict(record="aapl/2024Q3/checkpoint", work="competition") in changed["reusable"]
 
@@ -532,7 +607,7 @@ status: partial
     assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in after["reusable"]
     current = module.publication_snapshot(tmp_path)
     assert all(current[path] == checksum for path, checksum in previous.items())
-    assert not any(path.endswith(".json") for path in current.keys() - previous.keys())
+    assert all("/data/raw/" in path for path in current.keys() - previous.keys() if path.endswith(".json"))
     if scenario == "edited-output":
         (tmp_path / quarter / "2024-08-31-r2/analysis.md").write_text("Edited")
         assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} not in load().discover(

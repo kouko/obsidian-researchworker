@@ -135,6 +135,24 @@ The helper generates `review.md` from the review template. Reopen with fresh
 discovery and confirm the saved unit is visible. If publication stops, keep
 the draft and restart from the last validated review using a fresh run ID.
 
+### Quarter-owned evidence and portable reviews
+
+A new Markdown publication saves the exact consumed source versions and
+method contents under the selected quarter's `data/` directory, including
+prior-period inputs cited in a comparison. Keep the source's original fiscal
+identity and actual publication time. An original filing separate from its
+extraction is registered with `original_ref` and `original_digest`. Do not
+rewrite the extracted JSON or HTML. A cited previous conclusion goes into
+`research.adopted_conclusions` as an `excerpt`, `origin`, and `revision`,
+without copying the predecessor notebook.
+
+To verify an independently copied quarter, use
+`research_store.verify_quarter(quarter_root, "run-directory/review.md")`.
+This checks the saved work and exact local sources, methods, dates, and
+hashes against that review's captured configuration. Fix a missing or
+changed local input at its source or save a new review with verified
+evidence. Verification does not fetch a replacement from the original vault.
+
 ## 3. Acquire and execute only the required work
 
 Separate locally reusable work from new quarters, changed dependencies, missing

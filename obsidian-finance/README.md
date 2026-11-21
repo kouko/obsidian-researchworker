@@ -585,3 +585,26 @@ legacy write interface remains available to older callers.
   interruption or conflicting publisher leaves a draft for inspection.
   Re-run discovery and prepare a fresh publication; legacy recovery remains
   a separate operation.
+
+
+### Copy and verify a quarter
+
+A portable Markdown review keeps its bound inputs under
+`cycles/{YYYYQn}/data/`. Source registrations and method registrations are
+Markdown. Raw evidence keeps its original format and bytes. A source
+registration can bind both the reviewed extraction (`raw_ref` and
+`raw_digest`) and the original filing (`original_ref` and
+`original_digest`). Register both when citing an extraction whose original
+filing is distinct. Comparison sources keep their real fiscal identity.
+They do not create cycles in the destination.
+
+Copy the whole quarter folder, then call
+`verify_quarter(quarter_root, "run-directory/review.md")`. Operational
+references are quarter-relative. Verification checks the captured
+configuration, rendered outputs and local evidence, including their hashes
+and historical cutoff. A missing local file fails verification even if the
+original vault is accessible. Cross-quarter links describe provenance, and
+previous research notes stay in their original folders. Save a cited prior
+conclusion with `excerpt`, `origin`, and `revision` in
+`research.adopted_conclusions`. The verifier does not judge the financial
+conclusions.

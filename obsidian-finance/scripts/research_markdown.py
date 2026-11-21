@@ -1,6 +1,7 @@
 """Obsidian properties and versioned Markdown records for the research pilot."""
 
 from datetime import date, datetime
+import json
 from pathlib import Path
 import re
 from string import Template
@@ -140,19 +141,50 @@ def record(text, role, **expected):
     return props, _mapping(matches[0])
 
 
-def render_review(asset, quarter, review):
+def _dump(record):
     yaml = _yaml()
+
     class Dumper(yaml.SafeDumper):
         def ignore_aliases(self, data):
             return True
 
+    return yaml.dump(record, sort_keys=False, allow_unicode=True, Dumper=Dumper)
+
+
+def render_registration(asset, role, record):
+    template = Path(__file__).parents[1] / f"skills/finance-research/templates/{role}-registration.md"
+    title = f"{record['id']} {record['identity']}"
+    # One scalar per placeholder; quoted escapes protect metadata written by agents.
+    context = {
+        "title": title.replace("\n", " "),
+        "title_yaml": json.dumps(title, ensure_ascii=False),
+        "asset_id_yaml": json.dumps(asset, ensure_ascii=False),
+        f"{role}_id_yaml": json.dumps(record["id"], ensure_ascii=False),
+        f"{role}_version_yaml": json.dumps(record["identity"], ensure_ascii=False),
+        f"{role}_record": _dump(record).rstrip("\n"),
+    }
+    if role == "source":
+        available = record.get("available_at")
+        context["available_at_properties"] = "available_at: " + json.dumps(available) + "\n" if available else ""
+        origin = record.get("origin_reference", record["raw_ref"])
+        context["source_link_and_basis"] = f"[Local source](../raw/{Path(record['raw_ref']).name})\n\nOrigin: {origin}"
+        if "original_ref" in record:
+            context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{Path(record['original_ref']).name})"
+    else:
+        origin = record.get("origin_reference", record["content_ref"])
+        context["method_and_limits"] = f"[Local method](../materials/{Path(record['content_ref']).name})\n\nOrigin: {origin}"
+    rendered = Template(template.read_text(encoding="utf-8")).substitute(context)
+    parse_note(rendered, role + "-registration")
+    return rendered
+
+
+def render_review(asset, quarter, review):
     title = f"{asset} {quarter} Research review"
     props = dict(finance_schema=1, finance_role="review", title=title, asset_id=asset,
                  fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
     if review.get("predecessor") is not None:
         props["predecessor"] = review["predecessor"]
-    options = dict(sort_keys=False, allow_unicode=True, Dumper=Dumper)
     template = Path(__file__).parents[1] / "skills/finance-research/templates/review.md"
     return Template(template.read_text(encoding="utf-8")).substitute(
-        title=title, properties=yaml.dump(props, **options), record=yaml.dump(review, **options))
+        title=title, properties=_dump(props), record=_dump(review))
