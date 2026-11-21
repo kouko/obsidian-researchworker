@@ -360,7 +360,8 @@ def _candidate_evidence_valid(root, base, quarter, cutoff, unit, sources):
     return True
 
 
-def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_units=None):
+def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
+             invalid_units=None, ignore_ancestor_note_edits=False):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
@@ -414,9 +415,10 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
                         unusable.add(rid)
                     if invalid_units is not None:
                         invalid_units[path] = damaged
-                    for qid, reason in damaged.items():
-                        gaps.append(dict(record=path, evidence="quarter-unit:" + qid,
-                            reason=reason, recovery="Restore the exact local evidence or recompute the affected unit"))
+                    for qid, error in damaged.items():
+                        kind = "quarter-candidate-edit:" if isinstance(error, _StaleCandidateNote) else "quarter-unit:"
+                        gaps.append(dict(record=path, evidence=kind + qid,
+                            reason=str(error), recovery="Restore the exact local evidence or recompute the affected unit"))
                 else:
                     for unit in review["units"].values():
                         output = unit.get("output", {})
@@ -525,7 +527,20 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *, invalid_
         tip = leaves[0]
         while tip in unusable:
             tip = saved[tip][1].get("predecessor")
-        return [eligible[tip]] if tip in eligible else []
+        if tip not in eligible:
+            return []
+        if ignore_ancestor_note_edits:
+            ancestor_paths = set()
+            ancestor = saved[tip][1].get("predecessor")
+            while ancestor is not None:
+                path, older = saved[ancestor]
+                ancestor_paths.add(path)
+                ancestor = older.get("predecessor")
+            # An edited ordinary note still invalidates historical analysis;
+            # it cannot block appending from a successor that no longer needs it.
+            gaps[gaps_start:] = [gap for gap in gaps[gaps_start:]
+                if not (gap["record"] in ancestor_paths and gap["evidence"].startswith("quarter-candidate-edit:"))]
+        return [eligible[tip]]
     except (ValueError, FileNotFoundError) as error:
         gaps.append(dict(record=base + "/cycles/" + quarter, evidence="reviews", reason=str(error), recovery="Repair review metadata or provide the requested cutoff review; preserve existing research"))
         return []
@@ -1051,6 +1066,10 @@ class _QuarterMaterialError(ValueError):
     """A bound quarter file or completion claim failed its local checks."""
 
 
+class _StaleCandidateNote(_QuarterMaterialError):
+    """An ordinary research note was edited after a review cited it."""
+
+
 def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     """Replay exact quarter-local bindings, optionally recording individual material failures."""
     manifest = stored["quarter_evidence"]
@@ -1092,13 +1111,13 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
     def read(path):
         return _bytes(folder, path, quarter_relative=True)
 
-    def checked(path, checksum):
+    def checked(path, checksum, *, mismatch=_QuarterMaterialError):
         try:
             payload = read(path)
         except (OSError, ValueError) as error:
             raise _QuarterMaterialError(f"cannot read quarter evidence {path}: {error}") from error
         if sha256(payload).hexdigest() != checksum:
-            raise _QuarterMaterialError("quarter evidence digest mismatch: " + path)
+            raise mismatch("quarter evidence digest mismatch: " + path)
         return payload
 
     def registration(ref, folder_name, kind):
@@ -1142,15 +1161,6 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                                  for field in _ANALYSIS_FIELDS - {"version"}),
                          "quarter evidence method identity mismatch: " + mid)
                 checked(_evidence_path(record["content_ref"], "materials"), record["content_digest"])
-            for note in unit.get("candidate_notes", []):
-                path = note["path"]
-                _require(len(Path(path).parts) == 1 and path.endswith(".md"),
-                         "invalid quarter candidate note path")
-                payload = checked(path, note["digest"])
-                source = unit_sources[note["source_id"]]
-                if (note["claim"] not in payload.decode("utf-8") or note["source_version"] != source["version"]
-                        or note["source_available_at"] != source["available_at"]):
-                    raise _QuarterMaterialError("quarter candidate note claim or source changed: " + path)
             if "output" in unit:
                 output = unit["output"]
                 _require(len(Path(output["path"]).parts) == 2 and output["path"].endswith(".md"),
@@ -1164,10 +1174,29 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                 _require(set(_required(question, quarter)) <= consumed.keys()
                          and set(question.get("required_analysis", [])) <= methods.keys(),
                          "quarter analysis lacks required captured inputs: " + qid)
+            stale_note = None
+            for note in unit.get("candidate_notes", []):
+                path = note["path"]
+                _require(len(Path(path).parts) == 1 and path.endswith(".md"),
+                         "invalid quarter candidate note path")
+                source = unit_sources[note["source_id"]]
+                if (note["source_version"] != source["version"]
+                        or note["source_available_at"] != source["available_at"]):
+                    raise _QuarterMaterialError("quarter candidate note source identity mismatch: " + path)
+                try:
+                    payload = checked(path, note["digest"], mismatch=_StaleCandidateNote)
+                except _StaleCandidateNote as error:
+                    stale_note = error
+                else:
+                    if note["claim"] not in payload.decode("utf-8"):
+                        raise _QuarterMaterialError("quarter candidate note claim changed: " + path)
+            if stale_note is not None:
+                raise stale_note
         except _QuarterMaterialError as error:
             if damaged is None:
                 raise
-            damaged[qid] = str(error)
+            damaged[qid] = error
+            item.pop("completion_evidence", None)
             if "output" in unit:
                 item["status"] = "complete"
         for sid, source in unit_sources.items():
@@ -1238,7 +1267,8 @@ def _publish_markdown(root, asset, review, files, expected, run_id, complete):
         gaps = []
         entries = _managed_directories(root, cycle)
         cutoff = _adapter._core._instant(review["cutoff"])
-        leaves = _reviews(root, base, quarter, cutoff, "latest", gaps) if entries else []
+        leaves = (_reviews(root, base, quarter, cutoff, "latest", gaps, ignore_ancestor_note_edits=True)
+                  if entries else [])
         _, draft_targets = _markdown_drafts(root)
         inherited = [gap for gap in gaps if gap["record"] not in draft_targets]
         if entries and not leaves and not inherited:

@@ -372,6 +372,40 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in changed["reusable"]
         assert dict(record="aapl/2024Q3/checkpoint", work="competition") in changed["reusable"]
 
+        with pytest.raises(ValueError, match="quarter evidence"):
+            module.verify_quarter(quarter_root, f"{cutoff[:10]}-checkpoint/review.md")
+        follow_up = module._rebase_review(amended_record, f"{base}/cycles/{quarter}", portable=False)
+        follow_up.update(id="follow-up", predecessor="amended")
+        stale_predecessor = dict(follow_up, predecessor="checkpoint")
+        with pytest.raises(ValueError, match="Publication conflict"):
+            module.publish(tmp_path, asset, stale_predecessor, {}, module.publication_snapshot(tmp_path),
+                           "wrong-parent", complete=False, storage="markdown")
+        checkpoint_output = quarter_root / published["units"]["financial"]["output"]["path"]
+        checkpoint_bytes = checkpoint_output.read_bytes()
+        checkpoint_output.write_bytes(b"Corrupt saved output")
+        with pytest.raises(ValueError, match="Publication conflict"):
+            module.publish(tmp_path, asset, follow_up, {}, module.publication_snapshot(tmp_path),
+                           "corrupt-past", complete=False, storage="markdown")
+        checkpoint_output.write_bytes(checkpoint_bytes)
+
+        stale_citation = json.loads(json.dumps(follow_up))
+        stale_citation["id"] = "stale-citation"
+        stale_text = amended.replace("review_id: amended", "review_id: stale-citation")
+        stale_unit = stale_citation["units"]["financial"]
+        stale_unit["output"].update(path=f"{base}/cycles/{quarter}/{late_cutoff[:10]}-stale-citation/financial.md",
+                                    digest=digest(stale_text))
+        stale_unit["verification"]["output_digest"] = digest(stale_text)
+        stale_unit["candidate_notes"] = [dict(saved["units"]["financial"]["candidate_notes"][0],
+            source_version=later_identity["version"], source_available_at=late_cutoff)]
+        with pytest.raises(ValueError, match="candidate evidence must be independently cutoff eligible and frozen"):
+            module.publish(tmp_path, asset, stale_citation, {"financial.md": stale_text},
+                           module.publication_snapshot(tmp_path), "stale-citation", complete=False, storage="markdown")
+
+        appended = module.publish(tmp_path, asset, follow_up, {}, module.publication_snapshot(tmp_path),
+                                  "follow-up", complete=False, storage="markdown")
+        assert appended["review"].endswith("/review.md")
+        assert module.verify_quarter(quarter_root, appended["review"].split(f"/{quarter}/", 1)[1])["status"] == "verified"
+
         # Ambiguous saved source identities must not be accepted as one
         # unit's local file damage even if that unit already has a gap.
         conflict = json.loads(json.dumps(published))
