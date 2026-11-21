@@ -94,3 +94,17 @@ A separate Obsidian 1.15.1 vault parsed all six actual Q3 analysis and review
 notes with the expected numeric schema, role, issuer, quarter, timestamp
 text and partial status. The check used Obsidian CLI `properties` in
 `/private/tmp/Finance Rendering Check`.
+
+## Follow-up saves after an abandoned draft
+
+Three new conversations each continued from the verified published Q3 review
+in a copy of the simulated interrupted folder. All three wrote an actual
+successor while keeping the abandoned draft and each prior file byte-identical.
+Apple added its services gross margin (74.62 to 74.00 percent), JPM added
+quarterly total interest expense (+4.83 percent), and XOM quantified the US
+upstream contribution to the upstream decline (744 of 916 million USD).
+Independent verification found 20/20 digests across the new records and an
+existing predecessor for each. Apple used a quarter-relative marker path for
+its predecessor, while JPM and XOM used the previous review ID. The guide
+did not pin an encoding. Standardize that field before relying on unattended
+processing. Logs and saved test cases: `/private/tmp/finance-text-resume`.
