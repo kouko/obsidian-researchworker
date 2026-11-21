@@ -1,5 +1,12 @@
 # Historical SEC filer selection — acceptance test evidence
 
+## Re-run on 2026-11-21, at 229c722
+
+- Fresh detached clone at `229c7220267768dad49c9a2831a2be0197074556`. The documented CLI entry loaded with `--help` and exited 0. The same six real-response offline invocations as below passed with unchanged CIK, accession and cutoff. The four original HTML digests, filing dates, filer identities and fiscal periods were checked again.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest obsidian-finance/tests/test_acquire.py obsidian-finance/tests/test_research_continuation.py -q -p no:cacheprovider -k 'historical_filer or invalid_cik_preflight or explicit_cik or quarter_unresolved or public_pilot_adjacent_quarters_and_competition_cutoffs'` returned `25 passed, 85 deselected in 1.74s`. The separate XOM 2024 adjacent-quarter continuation rerun also passed, again using SEC original HTML and staged research records.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest obsidian-finance/tests/test_acquire.py -q -p no:cacheprovider -k 'current_original_across_succession or same_accession_requires_consistent or shared_accession_metadata_conflict or shared_accession_requires_consistent_document_and_form'` returned `11 passed, 84 deselected in 0.19s`. In the successful crossing fixture the manifest retains the successor CIK, predecessor CIK and SEC succession URL, and the run completes with only the selected fact. Two shared-accession basename mismatches, one nominated and one unnominated, and an unnominated `10-Q/A` versus `10-Q` mismatch each return exit 1, report conflicting filing metadata and produce no completion marker.
+- The separate live 2026 dual-filer limitation below remains. Recomputed SHA-256 on the archived original and rechecked the two differently scoped CIK declarations. No live request was made on this rerun.
+
 ## Re-run on 2026-11-21, at 23fa5f6
 
 - Fresh clone at `23fa5f6e6fb240fe754b801ca49a2ac97a9e1ddd`. The README's source CLI entry loaded with `python3 obsidian-finance/skills/sec-data/scripts/acquire.py --help` and exited 0.
