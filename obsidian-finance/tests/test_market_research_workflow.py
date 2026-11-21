@@ -128,12 +128,14 @@ def test_eu_aggregate_withholds_quarter_until_third_month_is_eligible():
 
 
 def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
+    (tmp_path / ".obsidian").mkdir()
     q2 = sample_record(
         "semiconductors", "2024Q2", "2024-08-05", "sia-q2-initial",
         SIA_Q2, "sales", "billion USD", 149.9,
     )
     forecast = dict(version="wsts-spring-2024", target_period="2024", scope="worldwide",
                     metric="sales", unit="billion USD", value=611.0, source_ids=["wsts-spring"])
+    q2["market_name"] = "Worldwide semiconductor sales"
     q2["forecasts"] = [forecast]
     q2["sources"]["wsts-spring"] = dict(
         url="https://www.wsts.org/76/103/WSTS-Semiconductor-Market-Forecast-Spring-2024",
@@ -156,9 +158,16 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
         forecast=carried, actual=quarter_actual, sources=q3["sources"],
     ))
     assert comparison["reason"] == "noncomparable-actual"
-    q3["actuals"] = [quarter_actual]
+    q3["actuals"] = [quarter_actual, dict(quarter_actual, scope="North America")]
     q3["forecasts"] = [carried]
     q3["comparisons"] = [comparison]
+    altered = dict(q3, forecasts=[dict(carried, value=612.0)])
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "publish", str(tmp_path)],
+        input=json.dumps(altered), text=True, capture_output=True,
+    )
+    assert result.returncode != 0
+    assert "changed a carried-forward forecast" in result.stderr
     run_market("publish", tmp_path, record=q3)
     updated = run_market("resume", tmp_path, "semiconductors", "2024Q3")["record"]
     assert updated["comparisons"] == [comparison]
@@ -171,6 +180,19 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
     scored = run_market("compare", "2025-02-07", record=comparison_input)
     assert scored["forecast_version"] == "wsts-spring-2024"
     assert scored["actual_version"] == "sia-2024"
+
+    refreshed = dict(
+        q3, revision=2, cutoff="2025-02-07", sources=later_sources,
+        actuals=[quarter_actual, dict(annual_actual, scope="North America"), annual_actual],
+        comparisons=[scored],
+    )
+    run_market("publish", tmp_path, record=refreshed)
+    assert run_market("resume", tmp_path, "semiconductors", "2024Q3")["record"][
+        "comparisons"
+    ] == [scored]
+    assert run_market("resume", tmp_path, "semiconductors", "2024Q3", "--cutoff", "2024-11-05")[
+        "record"
+    ]["comparisons"] == [comparison]
     assert scored["error"] == pytest.approx(16.6)
 
 
