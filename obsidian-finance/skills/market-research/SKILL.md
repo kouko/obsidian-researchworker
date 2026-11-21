@@ -21,12 +21,18 @@ Resolve the helper at `../../scripts/market_research.py` relative to this
 file. Inspect [the data contract](references/record.md) before invoking it.
 
 Call `resume VAULT MARKET QUARTER` through the helper for the requested and
-previous quarter. Use `--cutoff CUTOFF` for historical selection. Read each
-returned review and linked Markdown notes. Report any recovery issues and
-continue from the valid record if one exists. Published partial research is
-resumable. An interrupted write can block resume and citation. Run
-`recover VAULT` and retry after recovery succeeds. If recovery reports a
-conflict, preserve the notes and recovery files and report the affected paths.
+previous quarter. For historical research run `resume` with
+`--cutoff CUTOFF` and use the returned `record` as the sole research evidence
+from the saved quarter. The returned `review` path and its links lead to
+the current notes for navigation. Treat their contents as current, even when
+the helper selected an earlier record. If `record` is null, report the gap.
+Published partial research is resumable.
+
+An interrupted write can block resume and citation. Report the block without
+writing during a read-only request. `recover VAULT` is vault-wide and takes
+no `--destination`. Run it only for an authorized pending update after
+confirming the affected study. If recovery reports a conflict, preserve the
+notes and recovery files and report the affected paths.
 
 Use the user's chosen full market name and naming language on first
 publication. Later sessions reuse the saved name and language. Use the

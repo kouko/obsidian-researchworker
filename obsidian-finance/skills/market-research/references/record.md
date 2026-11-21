@@ -79,7 +79,8 @@ A minimal publication example:
 An Obsidian vault is a directory containing `.obsidian`. The default study
 folder is `investing/industries/<market>/`. For another location use the
 same vault-relative `--destination <study-folder>` on publish, resume,
-and cite. The filename prefix uses the saved full market name and naming
+and cite. Recovery acts on the vault and accepts no destination option.
+The filename prefix uses the saved full market name and naming
 language. For example, a Traditional Chinese study includes:
 
 | Note | Path relative to the study |
@@ -100,9 +101,17 @@ unowned frontmatter and user text outside each managed body.
 Use the next consecutive `revision` and a cutoff at least as late as
 the last publication. Updates reuse the note paths and preserve material
 changes inside the affected notes. The `review` path in the command result
-points to the quarter overview. Resume and citation can be blocked after
-an interrupted update. Run `recover VAULT`; if recovery reports a conflict,
-retain the notes and recovery artifacts and report the affected paths.
+points to the quarter overview as it exists now. When `resume --cutoff`
+selects an earlier version, use only the returned `record` as saved-quarter
+evidence. Use the overview path and its links for navigation. A null
+`record` means there is no saved version for the requested cutoff.
+
+Resume and citation can be blocked after an interrupted update. Report the
+block on read-only requests. Only run `recover VAULT` for an authorized
+pending batch after confirming the affected study. The command acts on the
+vault's pending transaction, which may belong to a different study from
+the one requested. If recovery reports a conflict, retain the notes and
+recovery artifacts and report the affected paths.
 
 The older explicit-root API still reads revision-directory records. Vault
 lookups can also read matching older snapshots without modifying them.
