@@ -88,6 +88,8 @@ def _registered_metadata(root, reference):
              and props.get(kind + "_id") == record.get("id")
              and props.get(kind + "_version") == record.get("identity"),
              "Markdown research registration identity mismatch")
+    if kind == "source" and "available_at" in props:
+        _require(props["available_at"] == record.get("available_at"), "Markdown source availability mismatch")
     return record
 
 

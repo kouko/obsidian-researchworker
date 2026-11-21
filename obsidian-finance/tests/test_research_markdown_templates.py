@@ -84,3 +84,12 @@ def test_role_template_rejects_invalid_obsidian_values(role, property_edit):
     assert property_edit[0] in note
     with pytest.raises(ValueError, match="invalid"):
         codec.parse_note(note.replace(*property_edit, 1), role)
+
+
+def test_review_render_round_trips_shared_source_data():
+    shared = {"value": 124, "unit": "USD"}
+    review = dict(id="r1", cutoff="2024-08-31T23:59:59+00:00", publication={"complete": False},
+                  units={"financial": {"projection": shared}, "identity": {"projection": shared}})
+    markdown = load()._markdown
+    _, restored = markdown.record(markdown.render_review("aapl", "2024Q3", review), "review")
+    assert restored == review

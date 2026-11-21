@@ -94,9 +94,18 @@ def _mapping(text):
 
 
 def declares_role(text, role):
-    frontmatter = text.split("---", 2)
-    return (len(frontmatter) >= 2 and frontmatter[0] == ""
-            and re.search(r"(?m)^finance_role:\s*['\"]?" + re.escape(role) + r"['\"]?([ \t]+#.*)?[ \t]*\r?$", frontmatter[1]) is not None)
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return False
+    key = r"""(?:finance_role|'finance_role'|"finance_role")"""
+    value = re.escape(role)
+    marker = re.compile(rf"""{key}[ \t]*:[ \t]*(?:{value}|'{value}'|"{value}")(?:[ \t]+#.*)?[ \t]*""")
+    for line in lines[1:]:
+        if line == "---":
+            break
+        if marker.fullmatch(line):
+            return True
+    return False
 
 
 def parse_note(text, role, **expected):
@@ -133,13 +142,17 @@ def record(text, role, **expected):
 
 def render_review(asset, quarter, review):
     yaml = _yaml()
+    class Dumper(yaml.SafeDumper):
+        def ignore_aliases(self, data):
+            return True
+
     title = f"{asset} {quarter} Research review"
     props = dict(finance_schema=1, finance_role="review", title=title, asset_id=asset,
                  fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
     if review.get("predecessor") is not None:
         props["predecessor"] = review["predecessor"]
-    options = dict(sort_keys=False, allow_unicode=True)
+    options = dict(sort_keys=False, allow_unicode=True, Dumper=Dumper)
     template = Path(__file__).parents[1] / "skills/finance-research/templates/review.md"
     return Template(template.read_text(encoding="utf-8")).substitute(
-        title=title, properties=yaml.safe_dump(props, **options), record=yaml.safe_dump(review, **options))
+        title=title, properties=yaml.dump(props, **options), record=yaml.dump(review, **options))

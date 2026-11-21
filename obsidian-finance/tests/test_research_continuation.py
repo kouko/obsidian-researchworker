@@ -99,9 +99,17 @@ def test_discover_markdown_scope_and_source_registration(tmp_path):
                 "asset_id": asset, "source_id": record["id"], "source_version": record["identity"],
             }, source.with_suffix(".md").name)
 
+    overview = tmp_path / "investing/index.md"
+    overview.write_text(overview.read_text().replace("finance_role:", '"finance_role":', 1))
     migrated = module.discover(tmp_path, "latest", CUTOFF)
     assert migrated["reusable"] == initial["reusable"]
     assert migrated["excluded"] == initial["excluded"]
+    source = next((tmp_path / f"investing/assets/equities/{assets[0]}/data/sources").glob("original-*.md"))
+    content = source.read_text().replace("finance_role:", 'available_at: "2024-09-01"\nfinance_role:', 1)
+    source.write_text(content)
+    with pytest.raises(ValueError, match="Markdown source availability mismatch"):
+        module.discover(tmp_path, "latest", CUTOFF)
+
 
 
 def test_markdown_method_preserves_retained_apple_dependencies(tmp_path):
