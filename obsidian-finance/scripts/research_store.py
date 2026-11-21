@@ -239,6 +239,39 @@ def _completion_valid(check, output_digest):
             and output_digest == check.get("output_digest"))
 
 
+def _current_method(root, base, quarter, identity):
+    """Choose the newest authored version, coalescing equivalent located copies."""
+    reference = base + "/data/analysis/" + identity
+    candidates = []
+    for extension in (".md", ".json"):
+        try:
+            candidates.append((False, _registered_metadata(root, reference + extension)))
+        except FileNotFoundError:
+            continue
+        break
+    for path in _metadata_paths(root, base + "/cycles/" + quarter + "/data/analysis"):
+        metadata = _registered_metadata(root, path)
+        if metadata.get("id") == identity:
+            candidates.append((True, metadata))
+    if not candidates:
+        raise FileNotFoundError(reference)
+
+    authored = [(_adapter._core._instant(record["authored_at"]), localized, record)
+                for localized, record in candidates]
+    newest = max(timestamp for timestamp, _, _ in authored)
+    versions = [(localized, record) for timestamp, localized, record in authored if timestamp == newest]
+    localized, selected = versions[0]
+    if len(versions) > 1:
+        location_fields = {"content_ref", "origin_reference"}
+        selected_metadata = {key: val for key, val in selected.items() if key not in location_fields}
+        for _, record in versions:
+            comparable = {key: val for key, val in record.items() if key not in location_fields}
+            _require(_adapter._core._same_json(comparable, selected_metadata)
+                     and sha256(_bytes(root, record["content_ref"])).hexdigest() == record["content_digest"],
+                     "ambiguous quarter method version: " + identity)
+    return localized, selected
+
+
 def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
     """Local analysis authorship is not economic publication eligibility."""
     fields = _ANALYSIS_FIELDS
@@ -250,25 +283,7 @@ def _analysis_valid(root, base, quarter, required, consumed, record, gaps):
         if frozen is not None:
             _analysis_identity(frozen)
         try:
-            reference = base + "/data/analysis/" + identity
-            localized = False
-            try:
-                try:
-                    metadata = _registered_metadata(root, reference + ".md")
-                except FileNotFoundError:
-                    metadata = _registered_metadata(root, reference + ".json")
-            except FileNotFoundError:
-                localized = True
-                candidates = [_registered_metadata(root, ref) for ref in
-                              _metadata_paths(root, base + "/cycles/" + quarter + "/data/analysis")]
-                candidates = [entry for entry in candidates if entry.get("id") == identity]
-                if not candidates:
-                    raise
-                newest = max(_adapter._core._instant(entry["authored_at"]) for entry in candidates)
-                versions = [entry for entry in candidates
-                            if _adapter._core._instant(entry["authored_at"]) == newest]
-                _require(len(versions) == 1, "ambiguous quarter method version: " + identity)
-                metadata = versions[0]
+            localized, metadata = _current_method(root, base, quarter, identity)
             _require(metadata.get("id") == identity and metadata.get("kind") in ("method", "assumption"), "local analysis identity/kind")
             _require(not {"available_at", "fiscal", "raw_ref"} & metadata.keys(), "economic evidence cannot be a local analysis input")
             _adapter._timestamp(metadata["authored_at"])

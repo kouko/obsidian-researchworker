@@ -488,7 +488,10 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
     assert all(p.read_bytes() == value for p, value in before.items())
 
 
-@pytest.mark.parametrize("scenario", ["publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis"])
+@pytest.mark.parametrize("scenario", [
+    "publish", "interrupt", "race", "mixed-race", "edited-output", "operating-output", "not-analysis",
+    "method-copy", "method-conflict", "method-newer",
+])
 def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
     asset = two_issuers(tmp_path)[0]
     base = f"investing/assets/equities/{asset}"
@@ -503,6 +506,28 @@ def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch
         method="Read retained source", assumptions=[], changes="Partial update", gaps=["Synthesis pending"],
         horizons={h: dict(judgment="insufficient_evidence", evidence=[], invalidation_triggers=[])
                   for h in ("short", "medium", "long")}))
+    if scenario.startswith("method-"):
+        local = tmp_path / quarter
+        directory = local / "data/analysis"
+        directory.mkdir(parents=True)
+        payload = local / "data/materials/comparison.txt"
+        payload.parent.mkdir(parents=True)
+        payload.write_text("Retained observed inputs and definitions")
+        authored = dict(version=1, id="comparison", identity="v2", kind="method",
+                        authored_at="2026-04-02T00:00:00+00:00", projection={"units": "USD"},
+                        content_ref="data/materials/comparison.txt", content_digest=digest(payload.read_text()))
+        registered = directory / "authored-comparison.md"
+        registered.write_text(module._markdown.render_registration(asset, "method", authored))
+        frozen = {key: authored[key] for key in module._ANALYSIS_FIELDS - {"version"}}
+        frozen.update(version=authored["identity"], content_ref=quarter + "/" + authored["content_ref"])
+        saved["units"]["credit"]["analysis_inputs"] = {"comparison": frozen}
+        if scenario == "method-newer":
+            older_ref = f"{base}/data/comparison.txt"
+            older_text = "Legacy method definition"
+            (tmp_path / older_ref).write_text(older_text)
+            put(tmp_path, f"{base}/data/analysis/comparison.json",
+                dict(authored, identity="v1", authored_at="2026-04-01T00:00:00+00:00",
+                     content_ref=older_ref, content_digest=digest(older_text)))
     previous = module.publication_snapshot(tmp_path)
     output = f"""---
 finance_schema: 1
@@ -603,6 +628,22 @@ status: partial
     result = publish()
     assert result["review"].endswith("/review.md")
     assert (tmp_path / result["review"]).is_file()
+    if scenario.startswith("method-"):
+        snapshot = module.verify_quarter(local, "2024-08-31-r2/review.md")
+        assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in snapshot["reusable"]
+    if scenario == "method-conflict":
+        # Both same-time registrations have valid hashes but genuinely
+        # different versions and contents. Neither should win by filename.
+        conflict_text = "A different calculation convention"
+        conflict_payload = local / "data/materials/conflicting.txt"
+        conflict_payload.write_text(conflict_text)
+        registered.write_text(module._markdown.render_registration(asset, "method", dict(
+            authored, identity="conflicting", content_ref="data/materials/conflicting.txt",
+            content_digest=digest(conflict_text))))
+        with pytest.raises(ValueError, match="ambiguous quarter method version"):
+            load().discover(tmp_path, "latest", CUTOFF)
+        assert module.verify_quarter(local, "2024-08-31-r2/review.md") == snapshot
+        return
     after = load().discover(tmp_path, "latest", CUTOFF)
     assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in after["reusable"]
     current = module.publication_snapshot(tmp_path)

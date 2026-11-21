@@ -118,12 +118,23 @@ Use quarter-relative payload paths such as `data/raw/filing.html` in these
 registrations.
 Use the source and method templates, including their fenced metadata blocks.
 Reuse an existing legacy JSON registration unchanged when applicable.
-For a new method or assumption that has explanatory content, keep it in
-Markdown with the method-registration template and register its actual
-version; never create a JSON or TOML method file, helper cache, journal or
-verification sidecar. Files already supplied in a data-native JSON format
-may be retained as economic evidence. A format requirement is not a reason
-to change the original evidence bytes.
+Every newly authored Markdown note, including a draft or calculation note,
+uses its bundled role template and flat Obsidian frontmatter. Put a new
+method or assumption's human-readable procedure, assumptions, and limits
+in the body of its method-registration note. Save the exact applied method
+payload separately as UTF-8 plain text (`data/materials/<name>.txt`) in this
+quarter. In the registration's fenced record, set `content_ref` to that
+quarter-relative payload path and `content_digest` to the SHA-256 of its
+exact bytes. Bind the same payload and digest in the unit's `analysis_inputs`,
+using the research-root-relative path in the publication proposal. The helper
+captures the quarter-relative reference in the saved review. Do not save a
+second bare Markdown note as the payload.
+
+Do not create JSON or TOML method files, helper caches, journals, or
+verification sidecars. Retain externally supplied and legacy input bytes
+in their original format, including evidence supplied as data-native JSON
+or a pre-existing Markdown payload. This format rule applies to new
+authorship, not to exact copies of existing inputs.
 When deciding whether bounded analysis is reusable, check the exact
 configured research question. A verified, explicitly scoped answer may be
 a reusable unit within a partial review; broader unanswered questions
@@ -180,8 +191,9 @@ Keep economic source identity, publication/observation time, raw hash, relevant
 typed projection, units and fiscal identity separate. Preserve later comparative
 rows as excluded evidence at an earlier cutoff. Store local method/assumption
 metadata with actual authorship and content digest, separately from economic
-sources. Generic methods remain here; local files contain private assumptions
-and compact applied-version manifests, not a duplicate policy manual.
+sources. Generic methods remain in the skill. Keep local explanations in
+the method-registration note and use the plain-text payload for the compact
+applied-version content actually bound to the analysis.
 
 ### Select the analysis framework
 

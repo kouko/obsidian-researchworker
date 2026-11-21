@@ -567,9 +567,18 @@ legacy write interface remains available to older callers.
 - Within the selected `cycles/<YYYYQq>/` directory, register research inputs
   under `data/sources/` and authored methods under `data/analysis/`. Use the
   bundled templates with a matching source or method identity and version.
-  Payload paths in quarter registrations are relative to the quarter directory. The fenced YAML record
-  uses the same version-1 field names as the legacy reader. Keep evidence bytes
-  in their original format. Distinct source versions may coexist.
+  Payload paths in quarter registrations are relative to the quarter directory.
+  The fenced YAML record uses the same version-1 field names as the legacy
+  reader. Keep evidence bytes in their original format. Distinct source
+  versions may coexist.
+- Every newly authored Markdown note uses its bundled role template and
+  flat Obsidian frontmatter. For a new method or assumption, put the
+  explanation and limits in the method-registration note. Save the compact
+  applied method payload separately as UTF-8 `data/materials/<name>.txt`.
+  Register its quarter-relative `content_ref` and SHA-256 `content_digest`.
+  Use the research-root-relative path to the same bytes and the same digest
+  in the citing unit's `analysis_inputs` publication proposal. Preserve the
+  original bytes and format of copied external or legacy payloads.
 
 - An optional marked asset note in the asset directory uses a flat Obsidian
   property header and a fenced asset-entry record. Its identity must match
