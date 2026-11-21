@@ -111,6 +111,20 @@ corresponding note roles. Choose the matching analysis template:
 [technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
 Use the same role for partial work and drafts, with their respective status.
 Substitute YAML properties as typed scalars and remove all placeholders.
+Save a new source registration as `data/sources/<revision>.md` and a new
+method or assumption registration as `data/analysis/<method-id>.md`.
+Use the source and method templates, including their fenced metadata blocks.
+Reuse an existing legacy JSON registration unchanged when applicable.
+For a new method or assumption that has explanatory content, keep it in
+Markdown with the method-registration template and register its actual
+version; never create a JSON or TOML method file, helper cache, journal or
+verification sidecar. Files already supplied in a data-native JSON format
+may be retained as economic evidence. A format requirement is not a reason
+to change the original evidence bytes.
+When deciding whether bounded analysis is reusable, check the exact
+configured research question. A verified, explicitly scoped answer may be
+a reusable unit within a partial review; broader unanswered questions
+remain pending. State the scope before saving the unit.
 A unique, valid marked asset entry supersedes legacy asset configuration.
 Keep the existing legacy identity if both are present.
 
@@ -252,7 +266,10 @@ saved = research_store.publish(
 Use `complete=True` only after all configured required work is substantively
 checked and reusable and required gaps are empty. The helper's structural
 acceptance never supplies the research judgment. Re-run discovery after saving;
-confirm valid independent units are reusable and unresolved work stays pending.
+confirm valid independent units are reusable and unresolved work stays pending. Compare the new
+path set with the pre-analysis snapshot and report any newly written
+management JSON or TOML as a format failure. Existing registered evidence
+in its original JSON format is permitted.
 Do not advance `last_success` through local publication. Report actual external
 attempts and successful verification separately.
 
