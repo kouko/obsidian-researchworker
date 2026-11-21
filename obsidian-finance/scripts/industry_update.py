@@ -116,9 +116,13 @@ def inspect(vault, paths):
 def _exchange_function():
     libc = ctypes.CDLL(None, use_errno=True)
     if sys.platform == "darwin":
+        # renameatx_np(int, const char *, int, const char *, unsigned int):
+        # https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/stdio.h
         function = getattr(libc, "renameatx_np", None)
         flags = 0x00000002  # RENAME_SWAP
     elif sys.platform.startswith("linux"):
+        # https://man7.org/linux/man-pages/man2/rename.2.html
+        # https://github.com/torvalds/linux/blob/master/include/uapi/linux/fs.h
         function = getattr(libc, "renameat2", None)
         flags = 2  # RENAME_EXCHANGE
     else:
@@ -246,13 +250,15 @@ def _finish(root, stage_name, changes):
         os.rmdir(stage_name, dir_fd=root)
 
 
-def apply(vault, expected, intended):
-    """Apply exact-byte updates, leaving a pending journal on interruption."""
+def apply(vault, expected, intended, *, check_scope=None):
+    """Check scope and exact bytes under lock before starting a journal."""
     if set(expected) != set(intended):
         raise UpdateConflict("Every write requires an expected value")
     with _locked_vault(vault, write=True) as root:
         if _read(root, _PENDING) is not None:
             raise UpdateConflict("Industry update pending; recover before applying")
+        if check_scope is not None:
+            check_scope()
         changes = {}
         for path, after in intended.items():
             before = expected[path]

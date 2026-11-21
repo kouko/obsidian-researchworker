@@ -201,3 +201,50 @@ def test_cli_read_barrier_refuses_resume_and_cite_until_recovery(tmp_path, monke
     assert json.loads(market_cli("recover", tmp_path).stdout) == {"recovered": True}
     recovered = json.loads(market_cli("resume", tmp_path, "phones", "2024Q3").stdout)
     assert recovered["record"]["revision"] == 2
+
+
+def test_first_publish_rechecks_study_identity_under_write_lock(tmp_path, monkeypatch):
+    import industry_update
+
+    (tmp_path / ".obsidian").mkdir()
+    stale = dict(record(), market_name="Stale Display")
+    winner = dict(record(quarter="2024Q2"), market_name="First Display", language="ja")
+    apply = industry_update.apply
+
+    def competing_publish(vault, expected, intended, **options):
+        monkeypatch.setattr(industry_update, "apply", apply)
+        publish(tmp_path, winner)
+        return apply(vault, expected, intended, **options)
+
+    monkeypatch.setattr(industry_update, "apply", competing_publish)
+    with pytest.raises(ValueError, match="Study identity"):
+        publish(tmp_path, stale)
+
+    root = tmp_path / "investing/industries/phones"
+    assert len(list(root.glob("*.md"))) == 1
+    assert not (root / "2024Q3").exists()
+    assert resume(tmp_path, "phones", "2024Q2")["record"]["revision"] == 1
+
+
+@pytest.mark.parametrize("defect", ["duplicate-forecast", "conflicting-actual", "forged-error"])
+def test_industry_publish_rejects_invalid_forecast_comparisons(tmp_path, defect):
+    (tmp_path / ".obsidian").mkdir()
+    candidate = dict(record(), market_name="Phones")
+    forecast = {
+        "version": "f1", "scope": "worldwide", "metric": "shipments",
+        "unit": "million units", "target_period": "2024Q3", "value": 100,
+        "source_ids": ["release-v1"],
+    }
+    actual = dict(forecast, version="a1", value=101)
+    candidate.update(forecasts=[forecast], actuals=[actual], comparisons=[{
+        "status": "compared", "forecast_version": "f1", "actual_version": "a1", "error": 1.0,
+    }])
+    if defect == "duplicate-forecast":
+        candidate["forecasts"].append(forecast.copy())
+    elif defect == "conflicting-actual":
+        candidate["actuals"].append(dict(actual, value=110))
+    else:
+        candidate["comparisons"][0]["error"] = 50
+    failed = market_cli("publish", tmp_path, record=candidate, check=False)
+    assert failed.returncode != 0
+    assert not (tmp_path / "investing").exists()

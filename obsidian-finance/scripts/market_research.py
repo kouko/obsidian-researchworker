@@ -365,6 +365,7 @@ def _record_from_version(study, quarter, version, loaded):
     if companies:
         record["companies"] = companies
     _validate(record, study.identifier, quarter, version["revision"])
+    _validate_industry_outlook(record)
     return record
 
 
@@ -433,8 +434,61 @@ def _part_body(study, role, current, history, earlier, scope):
     return _pack_history("\n\n".join(sections), history, scope)
 
 
+_OBSERVATION_SERIES = ("scope", "metric", "unit", "target_period")
+
+
 def _observation_identity(row):
-    return tuple(row.get(key) for key in ("scope", "metric", "unit", "target_period", "version"))
+    return (row.get("version"), *(row.get(key) for key in _OBSERVATION_SERIES))
+
+
+def _observations_by_identity(record, field):
+    observations = {}
+    for item in record.get(field, []):
+        version = item.get("version")
+        if not isinstance(version, str) or not version.strip():
+            raise ValueError(f"Each {field} observation needs an exact version")
+        if any(not isinstance(item.get(key), str) or not item[key].strip()
+               for key in _OBSERVATION_SERIES) or not _number(item.get("value")):
+            raise ValueError(f"Invalid {field} measurement or target: {version}")
+        identity = _observation_identity(item)
+        if identity in observations:
+            raise ValueError(f"Duplicate {field} identity: {identity}")
+        observations[identity] = item
+    return observations
+
+
+def _validate_industry_outlook(record):
+    forecasts = _observations_by_identity(record, "forecasts")
+    actuals = _observations_by_identity(record, "actuals")
+    sources, cutoff = record["sources"], record["cutoff"]
+    pairs = set()
+    for submitted in record.get("comparisons", []):
+        if not isinstance(submitted, dict):
+            raise ValueError("Expected an exact forecast comparison")
+        forecast_id = submitted.get("forecast_version")
+        matches = [key for key in forecasts if key[0] == forecast_id]
+        if len(matches) != 1:
+            raise ValueError(f"Comparison forecast is unknown or ambiguous: {forecast_id}")
+        key, = matches
+        forecast = forecasts[key]
+        if submitted.get("status") == "compared":
+            actual_id = submitted.get("actual_version")
+            actual = actuals.get((actual_id, *key[1:]))
+            if actual is None or not _number(submitted.get("error")):
+                raise ValueError(f"Comparison requires an exact actual and numeric error: {actual_id}")
+            outcomes = [compare_forecast(forecast, actual, sources, cutoff)]
+        else:
+            actual_id = None
+            outcomes = []
+            if not any(actual_key[1:] == key[1:] for actual_key in actuals):
+                outcomes.append(compare_forecast(forecast, None, sources, cutoff))
+                if actuals:
+                    mismatched = next(iter(actuals.values()))
+                    outcomes.append(compare_forecast(forecast, mismatched, sources, cutoff))
+        pair = forecast_id, actual_id
+        if pair in pairs or submitted not in outcomes:
+            raise ValueError(f"Comparison does not match its exact inputs: {forecast_id}")
+        pairs.add(pair)
 
 
 def _check_version_identity(record, history):
@@ -447,7 +501,41 @@ def _check_version_identity(record, history):
             for item in record.get(field, []):
                 key = _observation_identity(item)
                 if key in old_items and item != old_items[key]:
-                    raise ValueError(f"{field} version was rebound: {key[-1]}")
+                    raise ValueError(f"{field} version was rebound: {key}")
+
+
+def _previous_quarter(quarter):
+    number = _quarter_number(quarter)
+    if number > 1:
+        return f"{quarter[:4]}Q{number - 1}"
+    year = int(quarter[:4])
+    return f"{year - 1:04d}Q4" if year else None
+
+
+def _check_carry_forward(study, record, destination):
+    compared_ids = {comparison["forecast_version"] for comparison in record.get("comparisons", [])}
+    previous = _previous_quarter(record["quarter"])
+    if not compared_ids or previous is None:
+        return
+    cutoff = _boundary(record["cutoff"])
+    history, _ = _available_records(study.vault, study.identifier, previous, destination)
+    prior = {}
+    for old, _ in history:
+        if _boundary(old["cutoff"]) <= cutoff:
+            for forecast in old.get("forecasts", []):
+                version = forecast.get("version")
+                if version in compared_ids:
+                    prior.setdefault(version, []).append((forecast, old["sources"]))
+    for forecast in record.get("forecasts", []):
+        version = forecast["version"]
+        if version in prior and not any(
+            earlier == forecast and all(
+                sources.get(source_id) == record["sources"].get(source_id)
+                for source_id in forecast["source_ids"]
+            )
+            for earlier, sources in prior[version]
+        ):
+            raise ValueError(f"Comparison changed a carried-forward forecast or release: {version}")
 
 
 def _plan_industry_publication(study, record):
@@ -530,15 +618,23 @@ def publish(root, record, *, destination=None):
     if not _in_vault(root, destination, record):
         return _publish_legacy(root, record)
     _validate(record, record.get("market"), record.get("quarter"), record.get("revision"))
+    _validate_industry_outlook(record)
     vault = Path(root).resolve()
     with update.read_barrier(vault):
         study = notes.identify_study(vault, record["market"], name=record.get("market_name"),
                                      language=record.get("language"), destination=destination)
+        _check_carry_forward(study, record, destination)
         overview, changes = _plan_industry_publication(study, record)
     expected = {_relative(study, path): before.encode() if before is not None else None
                 for path, (before, _) in changes.items()}
     intended = {_relative(study, path): after.encode() for path, (_, after) in changes.items()}
-    update.apply(vault, expected, intended)
+    def check_scope():
+        current = notes.identify_study(vault, study.identifier, name=study.name,
+                                       language=study.language, destination=destination)
+        if current != study:
+            raise update.UpdateConflict(f"Study identity changed before publication: {study.path}")
+
+    update.apply(vault, expected, intended, check_scope=check_scope)
     return overview
 
 
