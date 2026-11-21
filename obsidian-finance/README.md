@@ -542,7 +542,9 @@ the eligible predecessor-chain leaf defines the saved view.
 preconditions, journal integrity, saved draft/output bytes and current source,
 method and assumption dependencies before adopting unfinished work. Repeating
 a successful resume returns the same saved result if its files and original
-preconditions still match. `action="rollback"` appends a validated
+preconditions still match. Runs staged before ordinary-note hashing was
+removed still use their original saved snapshot policy during recovery.
+Later runs use the managed-only snapshot policy. `action="rollback"` appends a validated
 `withdrawn.json` for a committed review, or `abandoned.json` for unfinished
 publication; the prior eligible view becomes visible while all reports,
 drafts and failure evidence stay on disk. Rollback refuses edits, unexpected

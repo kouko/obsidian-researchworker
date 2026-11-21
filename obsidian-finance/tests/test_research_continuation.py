@@ -491,7 +491,7 @@ def test_publication_snapshot_leaves_role_mentions_in_ordinary_notes_unprotected
     expected = module.publication_snapshot(tmp_path)
     assert path not in expected
     (tmp_path / path).write_text("# Changed ordinary note")
-    module._preconditions(tmp_path, expected)
+    assert module.publication_snapshot(tmp_path) == expected
 
 
 def test_source_declared_new_quarters_without_saved_conversation(tmp_path):
@@ -948,8 +948,8 @@ def test_legacy_recovery_refuses_markdown_descendant_appearing_after_snapshot(tm
         locks.append(path)
         return quarter_lock(root, path)
 
-    def sync_after_preflight(root, expected, target):
-        preflight(root, expected, target)
+    def sync_after_preflight(root, expected, target, **kwargs):
+        preflight(root, expected, target, **kwargs)
         # A sync client does not take the tool's lock. Its newly arrived
         # descendant must still prevent withdrawing the legacy parent.
         if not (root / child_dir).exists():

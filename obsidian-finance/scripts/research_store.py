@@ -865,7 +865,7 @@ def _encoded(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, allow_nan=False).encode("utf-8")
 
 
-def publication_snapshot(root, *, _exclude=None):
+def publication_snapshot(root, *, _exclude=None, _legacy_all_files=False):
     """Capture exact managed bytes before analysis; run journals are excluded."""
     result = {}
     def visit(reference):
@@ -879,11 +879,12 @@ def publication_snapshot(root, *, _exclude=None):
             finally:
                 os.close(fd)
             if stat.S_ISDIR(kind):
-                _require(not _QUARTER_NOTE.fullmatch(path), "Publication conflict: expected regular quarter note: " + path)
+                _require(_legacy_all_files or not _QUARTER_NOTE.fullmatch(path),
+                         "Publication conflict: expected regular quarter note: " + path)
                 visit(path)
             else:
                 payload = _bytes(root, path)
-                if not _ordinary_quarter_note(path, payload):
+                if _legacy_all_files or not _ordinary_quarter_note(path, payload):
                     result[path] = sha256(payload).hexdigest()
     try:
         visit("investing")
@@ -892,9 +893,9 @@ def publication_snapshot(root, *, _exclude=None):
     return result
 
 
-def _preconditions(root, expected, target=None):
+def _preconditions(root, expected, target=None, *, legacy_all_files=False):
     _require(isinstance(expected, dict) and expected, "publication preconditions required")
-    current = publication_snapshot(root, _exclude=target)
+    current = publication_snapshot(root, _exclude=target, _legacy_all_files=legacy_all_files)
     changes = sorted(path for path in set(expected) | set(current) if expected.get(path) != current.get(path))
     _require(not changes, "Publication conflict; preserve user files/draft and reassess: " + ", ".join(changes))
 
@@ -1469,7 +1470,7 @@ def _publish_legacy(root, asset, review, files, expected, run_id, complete, quar
                   if path.startswith(base + "/data/sources/") or path.startswith(base + "/data/analysis/")}
     requirements = _unique(_asset_metadata(root, base)["questions"])
     review = dict(review, provenance=provenance, requirements=requirements, publication=dict(run=run_id, complete=complete))
-    request = dict(version=1, asset=asset, review=review, files=files, expected=expected,
+    request = dict(version=1, asset=asset, review=review, files=files, expected=expected, snapshot_scope="managed",
                    previous=previous, complete=complete)
     run = "investing/.research-runs/" + run_id
     _mkdir(root, "investing/.research-runs")
@@ -1502,7 +1503,7 @@ def _recover(root, run_id, *, action, new_target):
             os.close(_open(root, cycle, True))
         except FileNotFoundError:
             # Older recovery journals may predate creation of the quarter.
-            _preconditions(root, request["expected"], target)
+            _recovery_preconditions(root, request, target)
             _mkdir(root, cycle)
         with _quarter_lock(root, cycle):
             _require(_adapter._core._same_json(_recovery_request(root, run), request),
@@ -1521,7 +1522,14 @@ def _recovery_request(root, run):
     data = _adapter._json(raw.decode("utf-8"))
     _require(isinstance(data, dict) and type(data.get("version")) is int and data["version"] == 1,
              "unsupported recovery request")
+    _require("snapshot_scope" not in data or data["snapshot_scope"] == "managed",
+             "unsupported recovery snapshot scope")
     return data
+
+
+def _recovery_preconditions(root, request, target):
+    # An unmarked version-1 journal predates the ordinary note exemption.
+    _preconditions(root, request["expected"], target, legacy_all_files="snapshot_scope" not in request)
 
 
 def _guard_descendants(root, asset, quarter, parent):
@@ -1548,7 +1556,7 @@ def _guard_descendants(root, asset, quarter, parent):
 
 def _apply_recovery(root, run_id, request, quarter, target, action, new_target):
     run = "investing/.research-runs/" + run_id
-    _preconditions(root, request["expected"], target)
+    _recovery_preconditions(root, request, target)
     staged = run + "/draft"
     _mkdir(root, staged)
     for name, content in request["files"].items():
@@ -1586,7 +1594,7 @@ def _apply_recovery(root, run_id, request, quarter, target, action, new_target):
     if action == "rollback":
         if present:
             _guard_descendants(root, request["asset"], quarter, request["review"]["id"])
-        _preconditions(root, request["expected"], target)
+        _recovery_preconditions(root, request, target)
         _mkdir(root, target)
         marker = "withdrawn.json" if "review.json" in present else "abandoned.json"
         _write_new(root, target + "/" + marker, _encoded(dict(version=1, run=run_id,
@@ -1604,7 +1612,7 @@ def _apply_recovery(root, run_id, request, quarter, target, action, new_target):
             continue
         if reference.rsplit("/", 1)[1] not in present:
             _write_new(root, reference, content)
-    _preconditions(root, request["expected"], target)
+    _recovery_preconditions(root, request, target)
     for reference, content in encoded.items():
         if not reference.endswith("/review.json"):
             _require(_bytes(root, reference) == content, "Publication conflict: proposed output edited: " + reference)
