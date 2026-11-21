@@ -5,9 +5,11 @@ Non-Apple records below are invented mechanical fixtures, not issuer facts.
 The Apple case copies retained public pilot inputs and authored partial prose.
 Verification files are author self-check fixtures, never independent approval.
 """
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 from pathlib import Path
+from string import Template
 
 import pytest
 
@@ -103,7 +105,8 @@ def test_cold_multi_issuer_calendars_repeat_and_amendment(tmp_path):
     assert all((tmp_path / r).exists() for r in ["investing/assets/equities/" + a + "/cycles" for a in assets])
 
 
-def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path):
+@pytest.mark.parametrize("storage", ["legacy", "markdown"])
+def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storage):
     pilot = Path(__file__).parents[2] / "docs/finance/pilots/apple-2024q2-q3"
     packs = json.loads((pilot / "data/quarter-packs.json").read_text())
     evidence = json.loads((pilot / "competition-v1/evidence.json").read_text())
@@ -161,17 +164,53 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path):
             invalidation_triggers=["Revised IDC estimate or new original filing"])
             for h in ("short", "medium", "long")}))
     module = load()
-    result = module.publish(tmp_path, asset, saved, {}, module.publication_snapshot(tmp_path), "public-pilot", complete=False)
+    files = {}
+    if storage == "markdown":
+        template = pilot.parents[3] / "obsidian-finance/skills/finance-research/templates/financial-analysis.md"
+        content = Template(template.read_text()).substitute(
+            title_yaml="Apple quarterly financial checkpoint", title="Apple quarterly financial checkpoint",
+            asset_id_yaml=asset, fiscal_quarter_yaml=quarter, as_of_yaml=json.dumps(cutoff),
+            review_id_yaml="checkpoint", status_yaml="partial", findings=financial_text,
+            source_and_comparison=pack["source_url"], unresolved="Synthesis is pending.")
+        current = saved["units"]["financial"]
+        check = json.loads((tmp_path / current["verification"]).read_text())
+        check["output_digest"] = digest(content)
+        output = f"{base}/cycles/{quarter}/{cutoff[:10]}-checkpoint/financial.md"
+        current.update(output=dict(path=output, digest=digest(content)), verification=check)
+        ordinary = f"{base}/cycles/{quarter}/observations.md"
+        claim = "The original filing is available for the third quarter."
+        (tmp_path / ordinary).write_text(claim)
+        notes = module.discover(tmp_path, "latest", cutoff, candidate_for=(asset, quarter))["candidate_notes"]
+        assert notes == [{"path": ordinary, "digest": digest(claim)}]
+        current["candidate_notes"] = [dict(notes[0], claim=claim, source_id="filing-" + quarter,
+                                           source_version="filing-" + quarter, source_available_at=pack["cutoff"])]
+        files["financial.md"] = content
+    baseline = module.publication_snapshot(tmp_path)
+    result = module.publish(tmp_path, asset, saved, files, baseline, "public-pilot", complete=False, storage=storage)
     assert result["status"] == "checkpoint"
-    published = json.loads((tmp_path / result["review"]).read_text())
+    saved_text = (tmp_path / result["review"]).read_text()
+    if storage == "markdown":
+        published = module._markdown.record(saved_text, "review")[1]
+        after = module.publication_snapshot(tmp_path)
+        assert baseline.items() <= after.items()
+        assert {path for path in after.keys() - baseline.keys() if path.endswith(".json")} == set()
+    else:
+        published = json.loads(saved_text)
     assert published["research"] == saved["research"]
     assert published["predecessor"] == "pilot" and published["publication"]["complete"] is False
     assert published["provenance"][base + "/data/sources/idc-1.json"]["available_at"] == evidence["idc"][1]["published_at"]
     before = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
     repeat = load().discover(tmp_path, "latest", evidence["cutoffs"]["2024Q3"])
-    assert module.recover(tmp_path, "public-pilot") == result
+    if storage == "legacy":
+        assert module.recover(tmp_path, "public-pilot") == result
     assert load().discover(tmp_path, "latest", evidence["cutoffs"]["2024Q3"]) == repeat
     assert all(p.read_bytes() == value for p, value in before.items())
+    if storage == "markdown":
+        assert dict(record="aapl/2024Q3/checkpoint", work="financial") in repeat["reusable"]
+        (tmp_path / ordinary).write_text("Changed note")
+        changed = load().discover(tmp_path, "latest", cutoff)
+        assert dict(record="aapl/2024Q3/checkpoint", work="financial") not in changed["reusable"]
+        assert dict(record="aapl/2024Q3/checkpoint", work="competition") in changed["reusable"]
 
 
 def test_source_declared_new_quarters_without_saved_conversation(tmp_path):
@@ -302,3 +341,160 @@ def test_individually_unreviewed_quarters_remain_visible(tmp_path, position, sta
     if state == "interrupted":
         assert any(g["evidence"].startswith("publication:interrupted-") for g in result["gaps"])
     assert all(p.read_bytes() == value for p, value in before.items())
+
+
+@pytest.mark.parametrize("scenario", ["publish", "interrupt", "race", "mixed-race", "edited-output"])
+def test_markdown_pilot_append_and_preserve_ordinary_notes(tmp_path, monkeypatch, scenario):
+    asset = two_issuers(tmp_path)[0]
+    base = f"investing/assets/equities/{asset}"
+    quarter = f"{base}/cycles/2024Q2"
+    ordinary = tmp_path / quarter / "Observations.md"
+    ordinary.write_text("# Keep this note")
+    module = load()
+    assert {"record": f"{asset}/2024Q2/r1", "work": "credit"} in module.discover(tmp_path, "latest", CUTOFF)["reusable"]
+
+    saved = json.loads((tmp_path / quarter / "2024-08-01-r1/review.json").read_text())
+    saved.update(id="r2", predecessor="r1", cutoff=CUTOFF, research=dict(
+        method="Read retained source", assumptions=[], changes="Partial update", gaps=["Synthesis pending"],
+        horizons={h: dict(judgment="insufficient_evidence", evidence=[], invalidation_triggers=[])
+                  for h in ("short", "medium", "long")}))
+    previous = module.publication_snapshot(tmp_path)
+    output = f"""---
+finance_schema: 1
+finance_role: financial-analysis
+title: Updated analysis
+asset_id: {asset}
+fiscal_quarter: 2024Q2
+as_of: "{CUTOFF}"
+review_id: r2
+status: partial
+---
+
+# Updated analysis
+"""
+    saved["units"]["credit"].update(
+        output=dict(path=quarter + "/2024-08-31-r2/analysis.md", digest=digest(output)),
+        verification=dict(version=1, output_digest=digest(output),
+                          checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
+                          unresolved=[]))
+    def publish():
+        return module.publish(tmp_path, asset, saved, {"analysis.md": output}, previous,
+                              "pilot", complete=False, storage="markdown")
+
+    if scenario == "interrupt":
+        def interrupt(*args):
+            raise RuntimeError("interrupt before marker")
+
+        monkeypatch.setattr(module, "_link_staged", interrupt)
+        with pytest.raises(RuntimeError, match="interrupt before marker"):
+            publish()
+        interrupted = load().discover(tmp_path, "latest", CUTOFF)
+        assert {"record": f"{asset}/2024Q2/r1", "work": "credit"} in interrupted["reusable"]
+        assert any("Unfinished Markdown draft" in gap["reason"] for gap in interrupted["gaps"])
+        assert (tmp_path / "investing/.research-drafts/pilot/analysis.md").is_file()
+        assert not (tmp_path / quarter / "2024-08-31-r2/review.md").exists()
+        restarted = json.loads(json.dumps(saved))
+        restarted["id"] = "retry"
+        retry_output = output.replace("review_id: r2", "review_id: retry")
+        retry_unit = restarted["units"]["credit"]
+        retry_unit["output"].update(path=quarter + "/2024-08-31-retry/analysis.md", digest=digest(retry_output))
+        retry_unit["verification"]["output_digest"] = digest(retry_output)
+        monkeypatch.undo()
+        resolution = module.publish(tmp_path, asset, restarted, {"analysis.md": retry_output},
+                                    module.publication_snapshot(tmp_path), "retry",
+                                    complete=False, storage="markdown")
+        assert resolution["review"].endswith("-retry/review.md")
+        assert {"record": f"{asset}/2024Q2/retry", "work": "credit"} in load().discover(
+            tmp_path, "latest", CUTOFF)["reusable"]
+        return
+    if scenario in ("race", "mixed-race"):
+        other = json.loads(json.dumps(saved))
+        other["id"] = "r3"
+        other_output = output.replace("review_id: r2", "review_id: r3")
+        other_unit = other["units"]["credit"]
+        other_unit["output"].update(path=quarter + "/2024-08-31-r3/analysis.md", digest=digest(other_output))
+        other_unit["verification"]["output_digest"] = digest(other_output)
+        storage = "markdown"
+        if scenario == "mixed-race":
+            storage = "legacy"
+            check = other_unit["verification"]
+            other_unit["verification"] = quarter + "/2024-08-31-r3/check.json"
+            other_output_files = {"analysis.md": other_output, "check.json": json.dumps(check)}
+        else:
+            other_output_files = {"analysis.md": other_output}
+        lock_calls = []
+        quarter_lock = module._quarter_lock
+
+        def track_lock(root, cycle):
+            lock_calls.append(cycle)
+            return quarter_lock(root, cycle)
+
+        monkeypatch.setattr(module, "_quarter_lock", track_lock)
+        with ThreadPoolExecutor(max_workers=2) as threads:
+            calls = [threads.submit(publish), threads.submit(
+                module.publish, tmp_path, asset, other, other_output_files, previous,
+                "pilot-other", complete=False, storage=storage)]
+        assert sum(call.exception() is None for call in calls) == 1
+        if scenario == "mixed-race":
+            assert lock_calls == [quarter, quarter]
+            assert sum((tmp_path / quarter / d / f).is_file()
+                       for d, f in (("2024-08-31-r2", "review.md"), ("2024-08-31-r3", "review.json"))) == 1
+            assert module.discover(tmp_path, "latest", CUTOFF)["reusable"]
+            return
+        assert any("preserve user files/draft" in str(call.exception()) for call in calls)
+        assert len(list((tmp_path / quarter).glob("*/review.md"))) == 1
+        assert (tmp_path / "investing/.research-drafts/pilot/analysis.md").is_file()
+        assert (tmp_path / "investing/.research-drafts/pilot-other/analysis.md").is_file()
+        return
+    result = publish()
+    assert result["review"].endswith("/review.md")
+    assert (tmp_path / result["review"]).is_file()
+    after = load().discover(tmp_path, "latest", CUTOFF)
+    assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} in after["reusable"]
+    current = module.publication_snapshot(tmp_path)
+    assert all(current[path] == checksum for path, checksum in previous.items())
+    assert not any(path.endswith(".json") for path in current.keys() - previous.keys())
+    if scenario == "edited-output":
+        (tmp_path / quarter / "2024-08-31-r2/analysis.md").write_text("Edited")
+        assert {"record": f"{asset}/2024Q2/r2", "work": "credit"} not in load().discover(
+            tmp_path, "latest", CUTOFF)["reusable"]
+
+
+@pytest.mark.parametrize("case", ["ordinary", "marked", "malformed", "duplicate"])
+def test_markdown_pilot_asset_entry_precedence(tmp_path, monkeypatch, case):
+    asset = two_issuers(tmp_path)[0]
+    base = tmp_path / "investing/assets/equities" / asset
+    module = load()
+    legacy = base.joinpath("asset.json").read_bytes()
+    if case == "ordinary":
+        def unavailable():
+            pytest.fail("legacy discovery must not require YAML")
+
+        monkeypatch.setattr(module._markdown, "_yaml", unavailable)
+        (base / "Overview.md").write_text("---\ntitle: Personal note\n---\n# Personal note\n")
+    else:
+        properties = ("---\nfinance_schema: 1\nfinance_role: asset-entry\n"
+                      f"title: Reordered questions\nasset_id: {asset}\n---\n\n# Reordered questions\n")
+        data = json.loads(legacy)
+        data["questions"] = data["questions"][:1]
+        fence = chr(96) * 3
+        body = f"\n## Research record\n\n{fence}finance-asset-entry\n{json.dumps(data)}\n{fence}\n"
+        text = properties + body
+        if case == "malformed":
+            text = text.replace("finance_schema: 1", "finance_schema: unsupported")
+        (base / "Overview.md").write_text(text)
+        if case == "duplicate":
+            (base / "Second.md").write_text(text)
+    if case in ("malformed", "duplicate"):
+        with pytest.raises(ValueError, match="invalid Obsidian properties|duplicate Markdown asset"):
+            module.discover(tmp_path, "latest", CUTOFF)
+    else:
+        if case == "marked":
+            # Existing reviews use all old question IDs. A marked entry must
+            # supply the current metadata rather than silently falling back.
+            assert len(module._asset_metadata(tmp_path, f"investing/assets/equities/{asset}")["questions"]) == 1
+            with pytest.raises(ValueError, match="unknown saved unit"):
+                module.discover(tmp_path, "latest", CUTOFF)
+        else:
+            assert len(module.discover(tmp_path, "latest", CUTOFF)["reusable"]) == 12
+    assert base.joinpath("asset.json").read_bytes() == legacy

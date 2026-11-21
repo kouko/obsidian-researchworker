@@ -555,3 +555,26 @@ files and draft, inspect the conflict and reassess before starting a new run.
 Do not edit run journals or completion files to force a success. These are
 local mechanics; actual agent continuation and fresh-host research behavior
 require separate verification.
+
+## Isolated Apple Markdown continuation pilot
+
+Use this format on disposable fixture copies. Python needs PyYAML for the pilot
+only; existing JSON runs remain readable without it. The pilot reads legacy
+watchlist, source, and method records. It does not migrate old files or change
+the default writer for existing callers.
+
+- An optional marked asset note in the asset directory uses a flat Obsidian
+  property header and a fenced asset-entry record. Its identity must match
+  any existing legacy asset metadata. Duplicate or malformed marked entries
+  fail.
+- Pass a selected asset and quarter through the candidate-discovery argument.
+  Read relevant returned notes and check their claims against the original
+  evidence. Frozen notes record the exact claim, note hash, source version,
+  and proven availability. Edited notes invalidate dependent work.
+- The existing publication helper accepts Markdown mode for the pilot's
+  financial output. It renders a versioned review note, embeds verification,
+  retains old outputs, and writes no management JSON for new pilot runs.
+- The final review appears after its output is written and verified. An
+  interruption or conflicting publisher leaves a draft for inspection.
+  Re-run discovery and prepare a fresh publication; legacy recovery remains
+  a separate operation.

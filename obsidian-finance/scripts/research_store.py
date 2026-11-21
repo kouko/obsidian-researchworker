@@ -1,5 +1,7 @@
 """Bounded investing discovery and append publication; see README's v1 contract."""
 
+from contextlib import contextmanager
+import fcntl
 import importlib.util
 import json
 import os
@@ -12,6 +14,11 @@ from datetime import date, datetime, time
 _spec = importlib.util.spec_from_file_location("assess_work", Path(__file__).with_name("assess_work.py"))
 _adapter = importlib.util.module_from_spec(_spec)
 exec(compile(_spec.loader.get_source("assess_work"), _spec.origin, "exec"), _adapter.__dict__)
+
+
+_markdown_spec = importlib.util.spec_from_file_location("research_markdown", Path(__file__).with_name("research_markdown.py"))
+_markdown = importlib.util.module_from_spec(_markdown_spec)
+_markdown_spec.loader.exec_module(_markdown)
 
 
 def _require(value, message):
@@ -65,6 +72,52 @@ def _object(root, reference):
     _require(isinstance(data, dict) and type(data.get("version")) is int and data["version"] == 1,
              "unsupported metadata: supply version-1 investing metadata; existing notes remain unchanged")
     return data
+
+
+def _managed_directories(root, path):
+    """Skip regular notes while preserving unsafe paths and legacy diagnostics."""
+    entries = []
+    fd = _open(root, path, True)
+    try:
+        for name in sorted(os.listdir(fd)):
+            if name.endswith(".md") and stat.S_ISREG(os.stat(name, dir_fd=fd, follow_symlinks=False).st_mode):
+                continue
+            entries.append(name)
+    finally:
+        os.close(fd)
+    return entries
+
+
+def _asset_metadata(root, base):
+    marked = []
+    for name in _names(root, base):
+        if name.endswith(".md"):
+            note = _bytes(root, base + "/" + name).decode("utf-8")
+            if _markdown.is_asset_entry(note):
+                marked.append(note)
+    _require(len(marked) <= 1, "duplicate Markdown asset entries")
+    if not marked:
+        return _object(root, base + "/asset.json")
+    asset = base.rsplit("/", 1)[1]
+    _, record = _markdown.record(marked[0], "asset-entry", asset_id=asset)
+    _require(type(record.get("version")) is int and record["version"] == 1
+             and record.get("id") == asset and _adapter._text(record.get("issuer")),
+             "Markdown asset identity mismatch")
+    try:
+        legacy = _object(root, base + "/asset.json")
+    except FileNotFoundError:
+        return record
+    _require(legacy.get("id") == asset and legacy.get("issuer") == record["issuer"],
+             "Markdown and legacy asset identities differ")
+    return record
+
+
+def _verification(root, unit):
+    value = unit["verification"]
+    if isinstance(value, dict):
+        _require(type(value.get("version")) is int and value["version"] == 1, "invalid inline verification version")
+        return value
+    return _object(root, value)
 
 
 def _unique(items, key="id"):
@@ -173,18 +226,90 @@ def _analysis_valid(root, base, required, consumed, record, gaps):
     return valid
 
 
+def _note_references(root, base, quarter):
+    path = base + "/cycles/" + quarter
+    try:
+        fd = _open(root, path, True)
+    except FileNotFoundError:
+        return []
+    try:
+        return [path + "/" + name for name in sorted(os.listdir(fd))
+                if name.endswith(".md") and name != "index.md"
+                and stat.S_ISREG(os.stat(name, dir_fd=fd, follow_symlinks=False).st_mode)]
+    finally:
+        os.close(fd)
+
+
+def _candidate_evidence_valid(root, base, quarter, cutoff, unit, sources):
+    references = unit.get("candidate_notes", [])
+    _require(isinstance(references, list), "candidate notes must be a list")
+    if not references:
+        return True
+    allowed = set(_note_references(root, base, quarter))
+    for citation in references:
+        _require(isinstance(citation, dict) and all(_adapter._text(citation.get(key))
+                 for key in ("path", "digest", "claim", "source_id", "source_version", "source_available_at")),
+                 "incomplete candidate note evidence")
+        source_id = _id(citation["source_id"])
+        source = sources.get(source_id, {})
+        fiscal = source.get("fiscal", {})
+        published = _available(source.get("available_at"), cutoff)
+        bound = unit.get("consumed", {}).get(source_id, {})
+        if (citation["path"] not in allowed or not published or published > cutoff
+                or f"{fiscal.get('year', '')}{fiscal.get('period', '')}" != quarter
+                or citation["source_available_at"] != source["available_at"]
+                or citation["source_version"] != source.get("version")
+                or bound.get("version") != source.get("version")
+                or not _adapter._core._same_json(bound.get("projection"), source.get("projection"))):
+            return False
+        content = _bytes(root, citation["path"])
+        if sha256(content).hexdigest() != citation["digest"] or citation["claim"] not in content.decode("utf-8"):
+            return False
+    return True
+
+
 def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
     try:
-        directories = _names(root, base + "/cycles/" + quarter)
+        directories = _managed_directories(root, base + "/cycles/" + quarter)
     except FileNotFoundError:
         _require(proposed is not None, "missing quarter directory")
         directories = []
     for directory in directories:
         _id(directory)
         path = base + "/cycles/" + quarter + "/" + directory
+        try:
+            markdown = _bytes(root, path + "/review.md").decode("utf-8")
+        except FileNotFoundError:
+            pass
+        else:
+            try:
+                asset = base.rsplit("/", 1)[1]
+                props, review = _markdown.record(markdown, "review", asset_id=asset, fiscal_quarter=quarter)
+                rid = _id(review["id"])
+                complete = review.get("publication", {}).get("complete")
+                _require(type(review.get("version")) is int and review["version"] == 1
+                         and type(complete) is bool
+                         and props.get("status") == ("complete" if complete else "partial")
+                         and props.get("predecessor") == review.get("predecessor")
+                         and props.get("review_id") == rid and props.get("as_of") == review["cutoff"]
+                         and _target(asset, review)[1] == path, "Markdown review identity mismatch")
+                _require(not {"review.json", "pending.json", "withdrawn.json", "abandoned.json"} &
+                         set(_names(root, path)), "conflicting Markdown and legacy review")
+                for unit in review["units"].values():
+                    output = unit.get("output", {})
+                    if output.get("path", "").startswith(path + "/"):
+                        _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest")
+                                 and _completion_valid(_verification(root, unit), output["digest"]),
+                                 "published Markdown output is changed, incomplete or unverified")
+                _require(rid not in saved, "duplicate review identity")
+                saved[rid] = (path, review)
+            except (FileNotFoundError, ValueError, KeyError, TypeError) as error:
+                gaps.append(dict(record=path, evidence="reviews", reason="Invalid Markdown review: " + str(error),
+                    recovery="Preserve the draft and resume from the prior valid record"))
+            continue
         try:
             pending = _object(root, path + "/pending.json")
         except FileNotFoundError:
@@ -267,7 +392,7 @@ def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None):
                         _require(sha256(_bytes(root, output["path"])).hexdigest() == output.get("digest"),
                                  "Future review output changed or incomplete")
                         _require("verification" in unit, "Future review completion evidence missing")
-                        check = _object(root, unit["verification"])
+                        check = _verification(root, unit)
                         _require(_completion_valid(check, output["digest"]),
                                  "Future review completion evidence invalid or unbound")
             parents = {pair[1].get("predecessor") for pair in saved.values()}
@@ -292,7 +417,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
     for asset in assets:
         records_start = len(records)
         base = "investing/assets/equities/" + asset
-        metadata = _object(root, base + "/asset.json")
+        metadata = _asset_metadata(root, base)
         _require(metadata.get("id") == asset and _adapter._text(metadata.get("issuer")), "asset identity mismatch")
         issuer = metadata["issuer"]
         questions = _unique(metadata["questions"])
@@ -326,6 +451,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
             source["version"] = source.pop("identity", None)
             local.append(source)
         selected_sources = _source_versions(local, cutoff)
+        by_source = {source["id"]: source for source in selected_sources}
         for source in selected_sources:
             sid = source["id"]
             source["id"] = asset + ":" + sid
@@ -394,7 +520,7 @@ def _snapshot(root, cutoff, mode, proposed=None):
                         item["output"] = output
                     if "verification" in unit:
                         try:
-                            check = _object(root, unit["verification"])
+                            check = _verification(root, unit)
                         except FileNotFoundError:
                             check = {}
                         complete = _completion_valid(check, item.get("output", {}).get("digest"))
@@ -413,6 +539,12 @@ def _snapshot(root, cutoff, mode, proposed=None):
                         # Preserve the saved completion claim for the assessor's
                         # invalidation action, but withdraw its reusable evidence.
                         item.pop("completion_evidence", None)
+                    saved_cutoff = _adapter._core._instant(saved["cutoff"])
+                    if not _candidate_evidence_valid(root, base, quarter, saved_cutoff, unit, by_source):
+                        item.pop("completion_evidence", None)
+                        gaps.append(dict(record=asset + "/" + quarter + "/" + saved["id"],
+                            evidence="candidate:" + qid, reason="Candidate note or bound source changed or is not cutoff eligible",
+                            recovery="Check the original source and the saved claim before reusing dependent analysis"))
                     if "requirements" in saved and not _adapter._core._same_json(saved["requirements"].get(qid), question):
                         item.pop("completion_evidence", None)
                         gaps.append(dict(record=asset + "/" + quarter + "/" + saved["id"], evidence="requirements:" + qid,
@@ -492,7 +624,7 @@ def publication_snapshot(root, *, _exclude=None):
     def visit(reference):
         for name in _names(root, reference):
             path = reference + "/" + name
-            if path == "investing/.research-runs" or path == _exclude:
+            if path in ("investing/.research-runs", "investing/.research-drafts", _exclude):
                 continue
             fd = _open(root, path)
             try:
@@ -568,7 +700,7 @@ def _validate_proposal(root, request, staged):
         _require(isinstance(judgment, dict) and _adapter._text(judgment.get("judgment"))
                  and _adapter._strings(judgment.get("evidence")) and _adapter._strings(judgment.get("invalidation_triggers")), "incomplete horizon judgment")
     base = "investing/assets/equities/" + asset
-    metadata = _object(root, base + "/asset.json")
+    metadata = _asset_metadata(root, base)
     questions = _unique(metadata["questions"])
     _require(isinstance(review.get("units"), dict) and review["units"].keys() <= questions.keys(), "unknown unit")
     for qid, unit in review["units"].items():
@@ -580,7 +712,7 @@ def _validate_proposal(root, request, staged):
             _require(frozen is None or _adapter._core._same_json(frozen.get(qid), questions[qid]), "reused unit changes declared dependencies")
         for field in ("output", "verification"):
             ref = unit.get(field, {}).get("path") if field == "output" else unit.get(field)
-            if ref and ref.startswith(target + "/"):
+            if isinstance(ref, str) and ref.startswith(target + "/"):
                 name = ref[len(target) + 1:]
                 _require(name in files, "missing staged output/check")
                 replacement = staged + "/" + name
@@ -588,18 +720,139 @@ def _validate_proposal(root, request, staged):
                     unit[field]["path"] = replacement
                 else:
                     unit[field] = replacement
-    snapshot, _ = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
-    result = _adapter.assess(snapshot, "latest", review["cutoff"])
+    snapshot, gaps = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
     record = asset + "/" + quarter + "/" + review["id"]
+    _require(not any(gap["record"] == record and gap["evidence"].startswith("candidate:") for gap in gaps),
+             "candidate evidence must be independently cutoff eligible and frozen")
+    result = _adapter.assess(snapshot, "latest", review["cutoff"])
     reusable = {item["work"] for item in result["reusable"] if item["record"] == record}
     _require(not request["complete"] or reusable == questions.keys(), "incomplete units or changed dependencies; save an explicit checkpoint or recompute")
     _require(not request["complete"] or not research["gaps"], "unresolved research gaps remain pending")
     return result
 
 
-def publish(root, asset, review, files, expected, run_id, *, complete=True):
+def _publish_markdown(root, asset, review, files, expected, run_id, complete):
+    _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
+    _require(all(isinstance(name, str) and re.fullmatch(r"[a-zA-Z0-9_-]+\.md", name)
+                 and name != "review.md" and isinstance(content, str)
+                 for name, content in files.items()), "Markdown analysis filenames required")
+    quarter, target = _target(asset, review)
+    base = "investing/assets/equities/" + asset
+    _require(asset in _object(root, "investing/research.json")["assets"], "asset outside configured scope")
+    _require(isinstance(expected, dict) and expected, "publication preconditions required")
+    for content in files.values():
+        props, _ = _markdown.parse_note(content, "financial-analysis", asset_id=asset,
+            fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
+        _require(props.get("status") in ("complete", "partial"), "invalid analysis status")
+
+    stage = "investing/.research-drafts/" + run_id
+    _mkdir(root, stage, exclusive=True)
+    for name, content in files.items():
+        _write_new(root, stage + "/" + name, content.encode("utf-8"))
+
+    cycle = base + "/cycles/" + quarter
+    _mkdir(root, cycle)
+    with _quarter_lock(root, cycle):
+        _preconditions(root, expected)
+        gaps = []
+        entries = _managed_directories(root, cycle)
+        cutoff = _adapter._core._instant(review["cutoff"])
+        leaves = _reviews(root, base, quarter, cutoff, "latest", gaps) if entries else []
+        _, draft_targets = _markdown_drafts(root)
+        inherited = [gap for gap in gaps if gap["record"] not in draft_targets]
+        if entries and not leaves and not inherited:
+            _require(review.get("predecessor") is None, "initial review cannot have predecessor")
+        elif entries:
+            _require(not inherited and len(leaves) == 1 and review.get("predecessor") == leaves[0][1]["id"],
+                     "Publication conflict: predecessor changed or unfinished legacy state")
+        else:
+            _require(review.get("predecessor") is None, "initial review cannot have predecessor")
+        previous = leaves[0][1] if leaves else {}
+        try:
+            legacy_runs = _names(root, "investing/.research-runs")
+        except FileNotFoundError:
+            legacy_runs = []
+        for previous_run in legacy_runs:
+            try:
+                request = _object(root, "investing/.research-runs/" + _id(previous_run) + "/request.json")
+            except FileNotFoundError:
+                continue
+            if request["asset"] == asset and _target(asset, request["review"])[0] == quarter:
+                legacy_target = _target(asset, request["review"])[1]
+                try:
+                    legacy_names = set(_names(root, legacy_target))
+                except FileNotFoundError:
+                    legacy_names = set()
+                _require(bool(legacy_names & {"review.json", "withdrawn.json", "abandoned.json"}),
+                         "Unfinished legacy publication; preserve files for legacy recovery")
+        _require(review.get("last_success") == previous.get("last_success"),
+                 "local publication cannot advance last successful external verification")
+        for qid, unit in review.get("units", {}).items():
+            output_path = unit.get("output", {}).get("path", "")
+            if output_path.startswith(target + "/"):
+                name = output_path[len(target) + 1:]
+                _require(name in files and isinstance(unit.get("verification"), dict)
+                         and _completion_valid(_verification(root, unit), unit["output"].get("digest"))
+                         and sha256(files[name].encode("utf-8")).hexdigest() == unit["output"]["digest"],
+                         "new Markdown output lacks valid inline verification: " + qid)
+
+        provenance = {path: _object(root, path) for path in expected
+                      if path.startswith(base + "/data/sources/") or path.startswith(base + "/data/analysis/")}
+        requirements = _unique(_asset_metadata(root, base)["questions"])
+        saved = dict(review, provenance=provenance, requirements=requirements,
+                     publication=dict(run=run_id, complete=complete))
+        request = dict(asset=asset, review=saved, files=files, previous=previous, complete=complete)
+        _validate_proposal(root, request, stage)
+        content = _markdown.render_review(asset, quarter, saved)
+        _, roundtrip = _markdown.record(content, "review", asset_id=asset, fiscal_quarter=quarter)
+        _require(_encoded(roundtrip) == _encoded(saved), "Markdown review does not round-trip")
+        _write_new(root, stage + "/review.md", content.encode("utf-8"))
+        _mkdir(root, target, exclusive=True)
+        for name in files:
+            staged_bytes = _bytes(root, stage + "/" + name)
+            _require(staged_bytes == files[name].encode("utf-8"), "staged analysis changed")
+            _write_new(root, target + "/" + name, staged_bytes)
+        _preconditions(root, expected, target)
+        _require(all(_bytes(root, target + "/" + name) == files[name].encode("utf-8") for name in files)
+                 and _bytes(root, stage + "/review.md") == content.encode("utf-8"), "staged review changed")
+        _link_staged(root, stage, target, "review.md")
+    return dict(status="complete" if complete else "checkpoint", review=target + "/review.md", run=run_id)
+
+
+@contextmanager
+def _quarter_lock(root, cycle):
+    fd = _open(root, cycle, True)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _link_staged(root, stage, target, name):
+    """Commit a flushed marker without linking the editable draft to it."""
+    commit = ".publication-marker"
+    _write_new(root, stage + "/" + commit, _bytes(root, stage + "/" + name))
+    source = _open(root, stage, True)
+    try:
+        destination = _open(root, target, True)
+        try:
+            os.link(commit, name, src_dir_fd=source, dst_dir_fd=destination, follow_symlinks=False)
+            os.fsync(destination)
+            os.unlink(commit, dir_fd=source)
+            os.fsync(source)
+        finally:
+            os.close(destination)
+    finally:
+        os.close(source)
+
+
+def publish(root, asset, review, files, expected, run_id, *, complete=True, storage="legacy"):
     """Save one append-only review, completion last; recover using its run ID."""
     _id(run_id)
+    _require(storage in ("legacy", "markdown"), "unsupported research storage")
+    if storage == "markdown":
+        return _publish_markdown(root, asset, review, files, expected, run_id, complete)
     _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
     _require(all(isinstance(name, str) and re.fullmatch(r"[a-zA-Z0-9_-]+\.(md|json)", name)
                  and name not in ("review.json", "pending.json", "withdrawn.json", "abandoned.json")
@@ -608,11 +861,27 @@ def publish(root, asset, review, files, expected, run_id, *, complete=True):
     quarter, target = _target(asset, review)
     base = "investing/assets/equities/" + asset
     _require(asset in _object(root, "investing/research.json")["assets"], "asset outside configured scope")
+    cycle = base + "/cycles/" + quarter
+    _mkdir(root, cycle)
+    with _quarter_lock(root, cycle):
+        _preconditions(root, expected)
+        return _publish_legacy(root, asset, review, files, expected, run_id, complete, quarter, target)
+
+
+def _publish_legacy(root, asset, review, files, expected, run_id, complete, quarter, target):
+    base = "investing/assets/equities/" + asset
     try:
-        entries = _names(root, base + "/cycles/" + quarter)
+        entries = _managed_directories(root, base + "/cycles/" + quarter)
     except FileNotFoundError:
         entries = []
     _require(target.rsplit("/", 1)[1] not in entries, "review destination already exists; recover its recorded run")
+    for entry in entries:
+        directory = base + "/cycles/" + quarter + "/" + _id(entry)
+        try:
+            _bytes(root, directory + "/review.md")
+        except FileNotFoundError:
+            continue
+        raise ValueError("Existing Markdown history requires storage='markdown' for new publication")
     previous = {}
     if entries:
         leaves = _reviews(root, base, quarter, _adapter._core._instant(review["cutoff"]), "latest", [])
@@ -625,7 +894,7 @@ def publish(root, asset, review, files, expected, run_id, *, complete=True):
     # The frozen metadata and raw hashes keep provenance even after future revisions.
     provenance = {path: _object(root, path) for path in expected
                   if path.startswith(base + "/data/sources/") or path.startswith(base + "/data/analysis/")}
-    requirements = _unique(_object(root, base + "/asset.json")["questions"])
+    requirements = _unique(_asset_metadata(root, base)["questions"])
     review = dict(review, provenance=provenance, requirements=requirements, publication=dict(run=run_id, complete=complete))
     request = dict(version=1, asset=asset, review=review, files=files, expected=expected,
                    previous=previous, complete=complete)
@@ -727,7 +996,35 @@ def _recover(root, run_id, *, action, new_target):
         raise ValueError("Cannot recover publication; preserve journal and draft: " + str(error)) from error
 
 
-def discover(root, mode, cutoff):
+def _markdown_drafts(root):
+    gaps, targets = [], set()
+    try:
+        drafts = _names(root, "investing/.research-drafts")
+    except FileNotFoundError:
+        drafts = []
+    for run_id in drafts:
+        stage = "investing/.research-drafts/" + _id(run_id)
+        try:
+            raw = _bytes(root, stage + "/review.md")
+            props, record = _markdown.record(raw.decode("utf-8"), "review")
+            _, target = _target(props["asset_id"], record)
+            if record["publication"]["run"] == run_id:
+                try:
+                    published = _bytes(root, target + "/review.md")
+                except FileNotFoundError:
+                    targets.add(target)
+                else:
+                    if published == raw:
+                        continue
+        except (FileNotFoundError, ValueError, KeyError, TypeError, UnicodeError):
+            pass
+        gaps.append(dict(record=stage, evidence="publication:" + run_id,
+            reason="Unfinished Markdown draft retained; no completed view advanced",
+            recovery="Inspect the draft and retry from the previous valid record"))
+    return gaps, targets
+
+
+def discover(root, mode, cutoff, *, candidate_for=None):
     """Derive accepted assessment input from saved metadata, without writes.
 
     Unsupported/ambiguous layouts raise ValueError with existing data preserved.
@@ -740,6 +1037,15 @@ def discover(root, mode, cutoff):
         _require(not any(p.is_symlink() for p in (boundary, *boundary.parents)), "symlink root")
         snapshot, gaps = _snapshot(boundary, _adapter._core._instant(cutoff), mode)
         result = _adapter.assess(snapshot, mode, cutoff)
+        if candidate_for is not None:
+            asset, quarter = candidate_for
+            _require(_id(asset) in _object(boundary, "investing/research.json")["assets"], "asset outside configured scope")
+            _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
+            base = "investing/assets/equities/" + asset
+            result["candidate_notes"] = [
+                dict(path=path, digest=sha256(_bytes(boundary, path)).hexdigest())
+                for path in _note_references(boundary, base, quarter)
+            ]
         try:
             runs = _names(boundary, "investing/.research-runs")
         except FileNotFoundError:
@@ -769,6 +1075,8 @@ def discover(root, mode, cutoff):
             gaps.append(dict(record=run, evidence="publication:" + run_id,
                 reason="Unfinished publication retained; no completed view advanced",
                 recovery="Use recover(root, run_id) to revalidate/resume or action='rollback' to abandon; preserve drafts"))
+        draft_gaps, _ = _markdown_drafts(boundary)
+        gaps.extend(draft_gaps)
         if gaps:
             result["gaps"].extend(gaps)
             result["status"] = "partial"
