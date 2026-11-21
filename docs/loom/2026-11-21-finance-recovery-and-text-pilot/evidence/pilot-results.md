@@ -89,3 +89,8 @@ acquisition and production publication integrity until there is a verified
 replacement for contested writes. The pilot did not replace the shipped
 helper, test unattended batch research end-to-end, or produce complete
 investment research.
+
+A separate Obsidian 1.15.1 vault parsed all six actual Q3 analysis and review
+notes with the expected numeric schema, role, issuer, quarter, timestamp
+text and partial status. The check used Obsidian CLI `properties` in
+`/private/tmp/Finance Rendering Check`.
