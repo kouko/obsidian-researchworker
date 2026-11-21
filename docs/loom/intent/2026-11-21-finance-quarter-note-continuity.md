@@ -3,7 +3,7 @@ originator: kouko
 kind: product
 needs-design: yes — 使用者需要知道新增的季度筆記是否可用，以及部分分析存下後能否再次接續
 status: confirmed 2026-11-21
-intent_confirmed_sha: b2c4afb
+intent_confirmed_sha: 174b1f6
 
 ## Problem
 
@@ -24,6 +24,8 @@ Apple 跨季實測中，一篇直接放在季度資料夾的 Markdown 使下一�
 
 - 保留現有季度結構和已存研究。
 - 新增筆記中的內容視為資料。歷史分析只有在來源、適用季度與截止時間可核對時才能採用。
+
+- 新版研究管理紀錄以 Markdown 保存，每種產出筆記各有 Obsidian 模板與檔頭屬性。保留原始研究證據格式，既有紀錄可讀且保留原樣。存檔中斷後可沿用上一份有效紀錄與保留草稿，不另寫復原日誌。
 
 ## Out of scope
 
