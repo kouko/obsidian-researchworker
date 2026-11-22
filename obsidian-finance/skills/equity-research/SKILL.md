@@ -317,9 +317,11 @@ repairing an omission, re-evaluate and check the affected unit as a new version;
 do not attach new identities to an unchanged output to manufacture coverage.
 
 Construct version-1 review metadata using the README contract, proposal output
-paths for changed reports, inline verification, the current eligible predecessor and the exact source-declared
-fiscal identity. Preserve unchanged units verbatim; changed inputs require new
-analysis/checks, not attaching new dependency identities to an old output.
+paths for changed reports, inline verification, the current eligible
+predecessor and the exact source-declared fiscal identity. When several scoped
+questions share a report role, use one proposed filename and reference it from
+each unit. Reverify every unit that cites a changed shared report. Preserve
+unchanged units for reports whose content and dependencies still qualify.
 Include method, assumptions, changes, gaps and all three horizon judgments:
 
 The exact envelope types matter: `research.method` and `research.changes` are

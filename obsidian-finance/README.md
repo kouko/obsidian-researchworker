@@ -224,9 +224,12 @@ and inline verification. Use plain ASCII proposal keys, such as
 `financial-analysis.md`, and construct their root-relative proposal output paths
 as `investing/assets/equities/<asset-id>/cycles/<YYYYQq>/<cutoff-date>-<review-id>/<key>`.
 These paths identify inputs to the helper. The helper rewrites each new output
-reference to its stable quarterly path. Copy unchanged units from the saved
-progress record with their existing output references. Use the current review
-ID as the predecessor, when present.
+reference to its stable quarterly path. Several scoped questions in one role
+may share a report. Supply the file once, reference its proposal path from each
+unit, and reverify each of those units when the shared report changes. For
+reports whose content and dependencies still qualify, copy unchanged units
+from the saved progress record with their existing output references. Use the
+current review ID as the predecessor, when present.
 
 ```python
 saved = research_store.publish(
