@@ -3,11 +3,11 @@ originator: kouko
 kind: product
 needs-design: yes — 新增可單獨使用的分析入口與可保存的分析結果，現有季度研究規格未涵蓋這個入口
 status: confirmed 2026-12-04
-intent_confirmed_sha: d2c842d
+intent_confirmed_sha: 6e7cc34
 
 ## Problem
 
-想在兩次財報之間查看個股的價格趨勢與成交量變化時，現有財務研究外掛的技術分析入口仍在季度研究裡。現成的離線指標工具可算出數值，但歷史截止時間與結果引用仍需另外核對。
+想在兩次財報之間查看個股的價格趨勢與成交量變化時，現有財務研究外掛的技術分析入口仍在季度研究裡。現成的離線指標工具可算出數值，但歷史截止時間與結果引用仍需另外核對。此變更原先的存檔規格也缺少筆記語言規則。
 
 ## Proposed outcome
 
