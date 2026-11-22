@@ -20,7 +20,7 @@ ROLES = {
        for role in ("financial-analysis", "operating-analysis", "industry-and-competition",
                     "forward-forecast", "valuation-and-risk", "technical-analysis", "synthesis")},
 }
-TEMPLATES = Path(__file__).parents[1] / "skills/finance-research/templates"
+TEMPLATES = Path(__file__).parents[1] / "skills/equity-research/templates"
 VALUES = {
     "title_yaml": '"Apple Research"',
     "asset_id_yaml": '"aapl"',

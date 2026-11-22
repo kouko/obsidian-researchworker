@@ -233,7 +233,7 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
     module = load()
     files = {}
     if storage == "markdown":
-        template = pilot.parents[3] / "obsidian-finance/skills/finance-research/templates/financial-analysis.md"
+        template = pilot.parents[3] / "obsidian-finance/skills/equity-research/templates/financial-analysis.md"
         content = Template(template.read_text()).substitute(
             title_yaml="Apple quarterly financial checkpoint", title="Apple quarterly financial checkpoint",
             asset_id_yaml=asset, fiscal_quarter_yaml=quarter, as_of_yaml=json.dumps(cutoff),

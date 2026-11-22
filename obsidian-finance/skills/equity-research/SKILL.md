@@ -1,9 +1,9 @@
 ---
-name: finance-research
-description: Continue investment research from a designated folder, including missing work and conditional horizon judgments. 投資研究接續・投資調査。
+name: equity-research
+description: Start or continue quarterly equity research for U.S.-listed companies in a managed Obsidian folder, including missing analysis and conditional investment judgments. 美股公司季度研究・跨季接續。
 ---
 
-# Folder-grounded investment research
+# Quarterly equity research
 
 Continue the research that the selected folder actually needs, preserving prior
 reports and user edits. This skill supplies agent instructions, not a scheduler
