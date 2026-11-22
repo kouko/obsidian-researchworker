@@ -4,6 +4,7 @@ Market revenue and shipments are sourced pilot observations, not live queries or
 fresh conversations. See the Loom runtime replay for host-specific evidence.
 """
 
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -43,14 +44,14 @@ def sample_record(market, quarter, cutoff, identity, url, metric, unit, value):
                 pending=["Revisit the growth comparison next quarter."])
 
 
-def test_skill_package_lists_market_entry_and_issuer_reference():
-    skill = PACKAGE / "skills" / "market-research" / "SKILL.md"
-    assert "\nname: market-research\n" in skill.read_text()
+def test_skill_package_lists_industry_entry_and_issuer_reference():
+    skill = PACKAGE / "skills" / "industry-research" / "SKILL.md"
+    assert "\nname: industry-research\n" in skill.read_text()
     for host in ("codex", "claude"):
         metadata = json.loads((PACKAGE / f".{host}-plugin" / "plugin.json").read_text())
         assert "quarterly market research" in metadata["description"].lower()
     issuer_reference = PACKAGE / "skills/equity-research/references/industry-and-competition.md"
-    assert "market-research" in issuer_reference.read_text()
+    assert "industry-research" in issuer_reference.read_text()
 
 
 def test_two_market_workflow_resumes_in_new_processes(tmp_path):
@@ -142,7 +143,7 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
         published_at="2024-06-04", version="wsts-spring", observation_period="2024",
         locator="2024 Forecast",
     )
-    run_market("publish", tmp_path, record=q2)
+    prior_note = Path(run_market("publish", tmp_path, record=q2)["review"])
     prior = run_market("resume", tmp_path, "semiconductors", "2024Q2")["record"]
     carried = prior["forecasts"][0]
     assert carried == forecast
@@ -168,6 +169,20 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
     )
     assert result.returncode != 0
     assert "changed a carried-forward forecast" in result.stderr
+
+    saved_prior = prior_note.read_text()
+    prior_note.write_text(saved_prior.replace("industry-research-data", "unreadable"))
+    mixed_sources = dict(q3, forecasts=[dict(carried, source_ids=[
+        "wsts-spring", "sia-q3-initial",
+    ])])
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "publish", str(tmp_path)],
+        input=json.dumps(mixed_sources), text=True, capture_output=True,
+    )
+    assert result.returncode != 0
+    assert "Cannot verify prior forecast wsts-spring-2024" in result.stderr
+    prior_note.write_text(saved_prior)
+
     run_market("publish", tmp_path, record=q3)
     updated = run_market("resume", tmp_path, "semiconductors", "2024Q3")["record"]
     assert updated["comparisons"] == [comparison]
@@ -226,6 +241,10 @@ def test_industry_notes_keep_two_corrections_and_original_citations(tmp_path):
     current = run_market("resume", tmp_path, "smartphones", "2024Q3")
     assert current["record"]["revision"] == 3
     assert current["record"]["pending"]
+    overview.write_text(overview.read_text().replace('"revision": 3', '"revision": "broken"'))
+    recovered = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert recovered["record"]["revision"] == 2
+    assert recovered["issues"] == ["r3: Industry quarter revisions must be contiguous"]
 
 
 def test_industry_resume_keeps_legacy_and_prior_forecast_versions(tmp_path):
@@ -286,6 +305,62 @@ def test_industry_explicit_vault_destination_discovery(tmp_path):
     assert run_market("resume", tmp_path, "smartphones", "2024Q3")["review"] is None
 
 
+@pytest.mark.parametrize("scoped_keys", [False, True], ids=["prototype", "released"])
+def test_legacy_industry_history_survives_prose_edit_and_checks_available_scope(tmp_path, scoped_keys):
+    (tmp_path / ".obsidian").mkdir()
+    donor = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    donor["market_name"] = "Smartphones"
+    overview = Path(run_market("publish", tmp_path, record=donor)["review"])
+    recipient = dict(donor, market="tablets", market_name="Tablets")
+    other_overview = Path(run_market("publish", tmp_path, record=recipient)["review"])
+    fence = "\n```industry-research-data\n"
+    end = "\n```"
+    references = {}
+
+    def read_envelope(note):
+        visible, _, tail = note.read_text().partition(fence)
+        encoded, _, after = tail.partition(end)
+        return visible, json.loads(encoded), after
+
+    def write_legacy(note, visible, envelope, after):
+        # The saved digest describes the prose before the manual edit.
+        packed = json.dumps({"hash": "0" * 64, "data": envelope["data"]})
+        note.write_text(visible + fence + packed + end + after)
+
+    for note in overview.parent.glob("*.md"):
+        if note == overview:
+            continue
+        visible, envelope, after = read_envelope(note)
+        history = {}
+        for key, item in envelope["data"].items():
+            payload = [envelope["scope"], item] if scoped_keys else item
+            encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            references[key] = hashlib.sha256(encoded.encode()).hexdigest()
+            history[references[key]] = item
+        envelope["data"] = history
+        write_legacy(note, visible, envelope, after)
+    visible, envelope, after = read_envelope(overview)
+    for revision in envelope["data"]:
+        for part in revision["parts"]:
+            part["version"] = references[part["version"]]
+    write_legacy(overview, visible + "\nPersonal edit.", envelope, after)
+
+    saved = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert saved["record"]["claims"] == donor["claims"]
+    assert saved["issues"] == []
+    if scoped_keys:
+        marker = "<!-- industry-research:start -->"
+        for target in other_overview.parent.glob("*.md"):
+            origin = overview.parent / target.name.replace("Tablets", "Smartphones")
+            identity = target.read_text().partition(marker)[0]
+            body = origin.read_text().partition(marker)[2]
+            target.write_text(identity + marker + body)
+        assert run_market("cite", tmp_path, "tablets", "2024Q3", "market-total", "2024-10-31") is None
+
+
 def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_path):
     (tmp_path / ".obsidian").mkdir()
     baseline = sample_record(
@@ -308,9 +383,13 @@ def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_pat
 
     before = overview.read_text()
     changed = before.replace("Worldwide market, calendar quarters.", "Manual change in analysis.")
-    overview.write_text(changed)
+    changed = changed.replace("<!-- industry-research:end -->",
+                              "A manual addition after the history block.\n<!-- industry-research:end -->")
+    edited_bytes = changed.replace("\n", "\r\n").encode()
+    overview.write_bytes(edited_bytes)
     readback = run_market("resume", tmp_path, "smartphones", "2024Q3")
-    assert readback["record"] is None
-    assert readback["issues"] == ["Industry note content conflicts with saved history"]
-    assert run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31") is None
-    assert overview.read_text() == changed
+    assert readback["record"]["claims"] == baseline["claims"]
+    assert readback["issues"] == []
+    cited = run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31")
+    assert cited["claim"] == baseline["claims"]["market-total"]
+    assert overview.read_bytes() == edited_bytes

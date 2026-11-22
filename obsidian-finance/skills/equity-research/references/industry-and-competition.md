@@ -37,7 +37,7 @@ insufficient.
 ## Adopt quarterly market evidence
 
 When the user designates a saved quarterly industry or market study,
-use [market-research](../../market-research/SKILL.md) to retrieve the exact
+use [industry-research](../../industry-research/SKILL.md) to retrieve the exact
 claim and eligible source versions at the issuer assessment cutoff. Pass the
 selected vault to the market helper's `cite` command. Use its returned claim
 and source versions as the citation evidence. The returned overview link

@@ -15,3 +15,4 @@ okf_version: "0.2"
 ## practice
 
 - [measure-search-parity-at-the-real-entry](measure-search-parity-at-the-real-entry.md) — When claiming two search/query engines behave the same, measure parity through the shipped entry point against the real engine and record replayable literal keywords — never from a fake's assumed grammar, regex, or prose claims.
+- [read-editable-notes-without-hash-gates](read-editable-notes-without-hash-gates.md) — Read user-editable Obsidian prose as it exists now. Validate the research fields a claim depends on and detect conflicting edits during the current write.

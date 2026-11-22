@@ -294,23 +294,28 @@ def _history_scope(study, quarter, role, company=None):
 
 
 def _history(text, scope):
-    visible, marker, trailing = notes.managed_body(text).partition(_HISTORY_START)
-    if not marker or not trailing.endswith(_HISTORY_END):
-        raise ValueError("Missing industry note history")
-    envelope = json.loads(trailing[:-len(_HISTORY_END)])
-    if (
-        not isinstance(envelope, dict) or set(envelope) != {"hash", "data"}
-        or envelope["hash"] != _key([scope, visible, envelope["data"]])
+    body = notes.managed_body(text).replace("\r\n", "\n")
+    _, marker, trailing = body.partition(_HISTORY_START)
+    encoded, end, after = trailing.partition(_HISTORY_END)
+    if not marker or not end or (after and not after.startswith("\n")) or _HISTORY_START in trailing:
+        raise ValueError("Missing or ambiguous industry note history")
+    envelope = json.loads(encoded)
+    if not isinstance(envelope, dict) or set(envelope) not in (
+        {"scope", "data"}, {"hash", "data"},
     ):
-        raise ValueError("Industry note content conflicts with saved history")
-    return envelope["data"]
+        raise ValueError("Invalid industry note history")
+    # Legacy envelopes have no explicit scope. Their note path, properties,
+    # and linked revisions still have to agree with the requested study.
+    if "scope" in envelope and envelope["scope"] != scope:
+        raise ValueError("Industry note history belongs to a different study or note")
+    return envelope["data"], "hash" in envelope
 
 
 def _pack_history(visible, data, scope):
     visible = visible.rstrip()
     if _HISTORY_START in visible:
         raise ValueError("Unexpected history marker in research text")
-    envelope = {"hash": _key([scope, visible, data]), "data": data}
+    envelope = {"scope": scope, "data": data}
     return visible + _HISTORY_START + _canonical_json(envelope) + _HISTORY_END
 
 
@@ -334,12 +339,10 @@ def _decode_parts(study, quarter, version, loaded):
         if text is None:
             raise ValueError(f"Missing linked industry note: {path}")
         scope = _history_scope(study, quarter, role, company)
-        items = _history(text, scope)
-        if not isinstance(items, dict) or any(
-            key != _key([scope, item]) for key, item in items.items()
-        ):
+        items, legacy = _history(text, scope)
+        if not isinstance(items, dict):
             raise ValueError(f"Invalid material history in {path}")
-        loaded[identity] = items, text
+        loaded[identity] = items, text, legacy
 
 
 def _record_from_version(study, quarter, version, loaded):
@@ -355,7 +358,13 @@ def _record_from_version(study, quarter, version, loaded):
         if identity in roles:
             raise ValueError("Duplicate linked industry note")
         roles.add(identity)
-        item = loaded[identity][0][ref["version"]]
+        items, _, legacy = loaded[identity]
+        key = ref["version"]
+        item = items[key]
+        if legacy:
+            scope = _history_scope(study, quarter, role, company)
+            if key not in (_key([scope, item]), _key(item)):
+                raise ValueError(f"Legacy industry history does not match the referenced note: {role}")
         if role == "company":
             companies.append({"company": company, "name": ref["name"], "body": item["body"]})
         else:
@@ -374,20 +383,20 @@ def _quarter_history(study, quarter, *, issues=None):
     text = _read_note(study, overview)
     if text is None:
         return overview, text, [], {}, []
-    index = _history(text, _history_scope(study, quarter, "overview"))
+    index, _ = _history(text, _history_scope(study, quarter, "overview"))
     if not isinstance(index, list) or not index:
         raise ValueError("Invalid industry quarter index")
-    if [entry["revision"] for entry in index] != list(range(1, len(index) + 1)):
-        raise ValueError("Industry quarter revisions must be contiguous")
     loaded, records = {}, []
-    for entry in index:
+    for revision, entry in enumerate(index, 1):
         try:
+            if not isinstance(entry, dict) or entry.get("revision") != revision:
+                raise ValueError("Industry quarter revisions must be contiguous")
             _decode_parts(study, quarter, entry, loaded)
             records.append(_record_from_version(study, quarter, entry, loaded))
         except (ValueError, OSError, AttributeError, KeyError, TypeError) as error:
             if issues is None:
                 raise
-            issues.append(f"r{entry['revision']}: {error}")
+            issues.append(f"r{revision}: {error}")
     return overview, text, index, loaded, records
 
 
@@ -512,13 +521,22 @@ def _previous_quarter(quarter):
     return f"{year - 1:04d}Q4" if year else None
 
 
+def _saved_overview_cutoff(study, quarter):
+    try:
+        text = _read_note(study, _note_for(study, quarter, "overview"))
+        if text is not None:
+            return _boundary(notes.parse_note(text).get("as_of"))
+    except (ValueError, OSError):
+        return None
+
+
 def _check_carry_forward(study, record, destination):
     compared_ids = {comparison["forecast_version"] for comparison in record.get("comparisons", [])}
     previous = _previous_quarter(record["quarter"])
     if not compared_ids or previous is None:
         return
     cutoff = _boundary(record["cutoff"])
-    history, _ = _available_records(study.vault, study.identifier, previous, destination)
+    history, issues = _available_records(study.vault, study.identifier, previous, destination)
     prior = {}
     for old, _ in history:
         if _boundary(old["cutoff"]) <= cutoff:
@@ -526,8 +544,18 @@ def _check_carry_forward(study, record, destination):
                 version = forecast.get("version")
                 if version in compared_ids:
                     prior.setdefault(version, []).append((forecast, old["sources"]))
+    prior_cutoff = _saved_overview_cutoff(study, previous) if issues else None
     for forecast in record.get("forecasts", []):
         version = forecast["version"]
+        if issues and version in compared_ids and version not in prior:
+            # Require a new forecast basis throughout. Attaching a newer
+            # context source must not make an old forecast eligible.
+            sources = [record["sources"][key] for key in forecast["source_ids"]]
+            if prior_cutoff is None or not all(
+                _provenance_available(source) and _boundary(source["published_at"]) > prior_cutoff
+                for source in sources
+            ):
+                raise ValueError(f"Cannot verify prior forecast {version} for {previous}: {issues[0]}")
         if version in prior and not any(
             earlier == forecast and all(
                 sources.get(source_id) == record["sources"].get(source_id)
@@ -565,7 +593,7 @@ def _plan_industry_publication(study, record):
         if company:
             ref.update(company=company, name=name)
         references.append(ref)
-        history, verified_text = histories.get((role, company), ({}, None))
+        history, verified_text, _ = histories.get((role, company), ({}, None, False))
         old_text = _read_note(study, path)
         if old_text != verified_text and (
             old_text is None or verified_text is None
