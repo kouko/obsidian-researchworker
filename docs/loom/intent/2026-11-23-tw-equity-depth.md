@@ -3,7 +3,7 @@ originator: kouko
 kind: product
 needs-design: yes — 研究者打開總覽、分項筆記及來源時，需要可直接閱讀與核對的內容
 status: confirmed 2026-11-23
-intent_confirmed_sha: e197c29
+intent_confirmed_sha: 6b5e84a
 publication: automatic — authorized 2026-11-23 by kouko
 
 ## Problem
