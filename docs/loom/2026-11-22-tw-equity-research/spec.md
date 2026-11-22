@@ -1,6 +1,6 @@
 # Taiwan quarterly equity research — spec
 intent: 2026-11-22-tw-equity-research@0bcc3bb
-confirmed-behavior: 2026-11-23 @268ec3d
+confirmed-behavior: 2026-11-23 @48e4624
 pre-build-review: required — new public skill and external disclosure inputs
 
 ## Requirements
@@ -42,7 +42,7 @@ REQ-6 — US continuity
 
 ## Current state evidence
 
-- Forward — [US equity skill](../../../obsidian-finance/skills/equity-research/SKILL.md#quarterly-equity-research).
+- Forward — [US equity skill](../../../obsidian-finance/skills/equity-research-us/SKILL.md#quarterly-equity-research).
 - Reverse — [finance package guide](../../../obsidian-finance/README.md) describes quarterly publication.
 - Error — [quarterly notes spec](../2026-11-22-equity-quarterly-notes/spec.md) describes update and recovery.
 - Data — [research store](../../../obsidian-finance/scripts/research_store.py) defines report roles and stable names.

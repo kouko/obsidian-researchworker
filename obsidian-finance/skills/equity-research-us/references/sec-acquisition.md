@@ -18,7 +18,7 @@ The compatible alternative accepts an inclusive observation end-date range with
 `--period-start`, `--period-end` and required `--as-of`. Do not mix quarter and
 range selectors. All explicit dates are ISO dates; future cutoffs are invalid.
 
-Resolve `scripts/acquire.py` relative to the loaded equity-research skill directory, then run
+Resolve `scripts/acquire.py` relative to the loaded equity-research-us skill directory, then run
 it with Python 3.11 or later. The runtime uses only the standard library.
 Use the host-provided skill directory when available; for example,
 `CLAUDE_SKILL_DIR` is a Claude-specific path aid, not a portable requirement.

@@ -26,7 +26,7 @@ Compare the repository's saved research workflow and Taiwan evidence requirement
 
 ## Evidence
 
-- [Equity research skill](../../../../obsidian-finance/skills/equity-research/SKILL.md), especially source acquisition, templates, cutoff checks and forecast comparison.
+- [Equity research skill](../../../../obsidian-finance/skills/equity-research-us/SKILL.md), especially source acquisition, templates, cutoff checks and forecast comparison.
 - [Research store](../../../../obsidian-finance/scripts/research_store.py), for existing asset and quarter record boundaries.
 - [Taiwan intent draft](../../intent/2026-11-22-tw-equity-research.md), for monthly updates, disclosure requirements, source priorities and the first-release market.
 

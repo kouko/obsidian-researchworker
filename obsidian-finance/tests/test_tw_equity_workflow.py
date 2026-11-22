@@ -46,7 +46,7 @@ def test_skill_entry_exposes_the_packaged_workflow():
     for name in (".codex-plugin", ".claude-plugin"):
         manifest = json.loads((PACKAGE / name / "plugin.json").read_text())
         assert "tw-equity-research" in json.dumps(manifest)
-    assert (PACKAGE / "skills/equity-research/SKILL.md").is_file()
+    assert (PACKAGE / "skills/equity-research-us/SKILL.md").is_file()
 
 
 def test_report_keeps_monthly_and_filed_figures_with_separate_sources(workflow, acquired):

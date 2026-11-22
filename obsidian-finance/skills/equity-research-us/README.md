@@ -1,4 +1,4 @@
-# equity-research
+# equity-research-us
 
 ## Quick start
 

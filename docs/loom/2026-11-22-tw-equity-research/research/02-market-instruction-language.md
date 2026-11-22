@@ -16,7 +16,7 @@ Choose the authoring language of common and market-specific instructions. Treat 
 
 ## Findings
 
-- The [existing equity skill](../../../../obsidian-finance/skills/equity-research/SKILL.md) already combines English instructions with a multilingual description. The [industry note contract](../../../../obsidian-finance/skills/industry-research/references/record.md) provides a precedent for localized note text and stable metadata.
+- The [existing equity skill](../../../../obsidian-finance/skills/equity-research-us/SKILL.md) already combines English instructions with a multilingual description. The [industry note contract](../../../../obsidian-finance/skills/industry-research/references/record.md) provides a precedent for localized note text and stable metadata.
 - English throughout keeps instruction review uniform, but Taiwan-specific terms and their source labels still need original Traditional Chinese to prevent mismatches.
 - Writing Taiwan-specific analytical guidance in Traditional Chinese places rules and original terminology together. English remains suitable for common storage and verification contracts and for the existing US guidance. This requires maintaining one authoritative text per market and reviewing changes in the language of that text.
 - Translating all instructions into multiple languages adds parallel versions without an identified need for such duplication.
