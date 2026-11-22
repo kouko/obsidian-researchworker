@@ -21,3 +21,9 @@ Both quarterly overviews were saved as `complete` through the installed skill an
 ## TSMC verified pair
 
 Both quarterly overviews were saved as `complete`, with eight stable report files per quarter. Independent verification against the installed package returned `verified` for both, with seven reusable research units and zero gaps each. Q3 records the Q2 forecast note as the origin of its carried scenario, discloses the replay authoring date, and separately compares the company's published USD guidance with the comparable USD result. Reports are in `/private/tmp/tw-six-tsmc-vault`.
+
+## Delta verified publications and live finding
+
+Both quarters initially saved as partial while official individual trading data were missing from the sandboxed run. After providing the original TWSE daily quotes and dated valuation snapshots and both issuer conference PDFs, the same eight paths per quarter were updated to `complete`. Independent verification of the resulting pair returned `verified`, seven reusable units and zero gaps each. Q3 bound two references to the Q2 final report versions, checked by content hash, with replay scenarios distinguished from a contemporaneous forecast.
+
+The Delta run also found a readiness defect with tampered or incomplete input: blank announcement bodies could pass the source gate if the aggregate status still said available. The six observed acquisition manifests contain nonblank texts and matching retained payloads. The negative case requires a repair and rerunning verification against the final package before sign-off.

@@ -107,11 +107,41 @@ def test_failed_disclosure_is_distinct_from_verified_empty_search(workflow, acqu
 def test_post_quarter_body_must_be_reviewed_for_relevance(workflow, acquired):
     acquired["material_disclosures"] = {
         "status": "available",
-        "entries": [{"status": "needs_quarter_relevance_review", "relevance": "post_quarter"}],
+        "entries": [{
+            "status": "needs_quarter_relevance_review",
+            "relevance": "post_quarter",
+            "body": "季後發布的更正本文",
+        }],
     }
 
     assert not workflow.assess(acquired)["quarterly_source_gate"]
     assert workflow.assess(acquired, reviewed_post_quarter=[0])["quarterly_source_gate"]
+
+
+@pytest.mark.parametrize(("relevance", "status", "body"), [
+    ("quarter", "detail_unavailable", ""),
+    ("quarter", "available", " \n\t"),
+    ("quarter", "detail_unavailable", "只有標題"),
+    ("post_quarter", "needs_quarter_relevance_review", ""),
+    ("post_quarter", "available", "季後發布的更正本文"),
+])
+def test_disclosure_without_usable_full_text_cannot_pass(
+    workflow, acquired, relevance, status, body,
+):
+    acquired["material_disclosures"] = {
+        "status": "available", "entries": [
+            {"relevance": relevance, "status": status, "body": body},
+        ],
+    }
+
+    result = workflow.assess(acquired, reviewed_post_quarter=[0])
+
+    assert not result["quarterly_source_gate"]
+    assert "material_disclosure:0" in result["gaps"]
+
+
+def test_successful_empty_disclosure_search_passes(workflow, acquired):
+    assert workflow.assess(acquired)["quarterly_source_gate"]
 
 
 def test_current_month_observation_does_not_meet_historical_gate(workflow, acquired):

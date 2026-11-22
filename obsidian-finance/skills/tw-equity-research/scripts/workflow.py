@@ -54,10 +54,17 @@ def assess(acquired, *, filed_ntd_thousands=None, filed_scope=None,
         gaps.append("quarterly_filing")
 
     disclosures = acquired["material_disclosures"]
-    if disclosures["status"] not in {"available", "none_found"}:
+    entries = disclosures["entries"]
+    if disclosures["status"] != ("available" if entries else "none_found"):
         gaps.append("material_disclosures")
-    for index, item in enumerate(disclosures["entries"]):
-        if item["status"] == "needs_quarter_relevance_review" and index not in reviewed_post_quarter:
+    expected_status = {"quarter": "available", "post_quarter": "needs_quarter_relevance_review"}
+    for index, item in enumerate(entries):
+        relevance = item.get("relevance")
+        body = item.get("body")
+        if (relevance not in expected_status or item.get("status") != expected_status[relevance]
+                or not isinstance(body, str) or not body.strip()):
+            gaps.append(f"material_disclosure:{index}")
+        elif relevance == "post_quarter" and index not in reviewed_post_quarter:
             gaps.append(f"post_quarter_disclosure:{index}")
     quarterly_source_gate = not gaps
     annual_source_gate = None
