@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-12-04-standalone-technical-analysis",
-  "content_digest": "9d15b5b6d5f76ee5559426a1fb95e3796fe84542",
+  "content_digest": "1181ee86f23a7539d13e3c56d84faf2002f11747",
   "executions": [
     {
       "kind": "package-tests",
@@ -27,48 +27,31 @@
   ],
   "verdicts": [
     {
-      "reviewer": "code_review",
+      "reviewer": "locale_code",
       "vendor": "openai",
       "model": "Codex host model unreported",
       "lens": "code",
       "verdict": "PASS",
       "reviewed_sha": "820afef9e2c5657fc71b69a1663dd27c242ccbca",
-      "review_target_sha": "060a0dcbb22dd4611d184e92abb4b10ff562f287",
-      "findings": [],
-      "notes": [
-        "Fixed: The original excluded-session reproduction now records the gap and withholds SMA20, volume ratio, and directional outlook.",
-        "Fixed: Both added SDK references were opened and checked against the cited APIs.",
-        "The four focused suites passed all 27 tests."
-      ]
+      "review_target_sha": "251055b083da38c4dffdd8ae04694bbf329df63a",
+      "findings": []
     },
     {
-      "reviewer": "skill_review",
+      "reviewer": "locale_skill",
       "vendor": "openai",
       "model": "Codex host model unreported",
       "lens": "skill",
       "verdict": "PASS",
       "reviewed_sha": "820afef9e2c5657fc71b69a1663dd27c242ccbca",
-      "review_target_sha": "060a0dcbb22dd4611d184e92abb4b10ff562f287",
-      "findings": [],
-      "dimension_scores": {
-        "omission": "PASS",
-        "ambiguity": "PASS",
-        "inconsistency": "PASS",
-        "incorrect-fact": "PASS",
-        "missing-population": "PASS",
-        "user-judgment-leak": "PASS",
-        "deletion-first": "PASS"
-      },
-      "notes": [
-        "Fixed: the historical replay and save examples both explicitly use the eligible local snapshot and its offset-aware cutoff. Independent acceptance verified exact replay and historical note publication."
-      ]
+      "review_target_sha": "251055b083da38c4dffdd8ae04694bbf329df63a",
+      "findings": []
     }
   ],
   "findings": [],
   "selection": null,
-  "intent_confirmed_sha": "0f12486",
-  "tested_commit": "a720144f27874f141d21be522c48ccb668c2e5bb",
-  "reviewed_commit": "a2e2528d78146310416868166fcc10672c0636c0",
+  "intent_confirmed_sha": "6e7cc34",
+  "tested_commit": "251055b083da38c4dffdd8ae04694bbf329df63a",
+  "reviewed_commit": "a8cfe6cb87d7ff0fe14f42b585f3896f592aab84",
   "acceptance_status": [
     {
       "acceptance": 1,
