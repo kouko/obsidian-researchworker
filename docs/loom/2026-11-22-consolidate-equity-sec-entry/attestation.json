@@ -1,0 +1,63 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-22-consolidate-equity-sec-entry",
+  "content_digest": "dfddcc221cf9fcf553f2a9544dc4f8b65f731d0b",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "The relocated scripts are byte-identical and existing tests already exercise CLI success, partial and failed acquisition, missing or invalid contact, terminal echo, symlink safeguards and output contracts at the new paths."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "sec_closing_code",
+      "lens": "code",
+      "verdict": "PASS",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "c17269cf6ce2a5286714046ce488c53432e1719c",
+      "review_target_sha": "6959aa9c27f93bb77677aaf8062f92337b06a207",
+      "findings": []
+    },
+    {
+      "reviewer": "sec_closing_skill",
+      "lens": "skill",
+      "verdict": "PASS",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "c17269cf6ce2a5286714046ce488c53432e1719c",
+      "review_target_sha": "6959aa9c27f93bb77677aaf8062f92337b06a207",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "093b696",
+  "tested_commit": "e0036ee631acccd4544b8ac1fb16c27afba3680f",
+  "reviewed_commit": "6959aa9c27f93bb77677aaf8062f92337b06a207",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
