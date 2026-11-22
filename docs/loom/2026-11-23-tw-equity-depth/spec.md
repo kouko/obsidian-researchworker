@@ -1,7 +1,7 @@
 # Taiwan equity research depth — spec
 intent: 2026-11-23-tw-equity-depth@dcc22e22ae30a8fe41a0a484ff84e39e3d599e30
 pre-build-review: required — The persisted quarter format is a compatibility contract for portable verification, continuation, and conflict protection.
-confirmed-behavior: 2026-11-23 @b38ac20
+confirmed-behavior: 2026-11-23 @e9cd339
 
 ## Requirements
 
@@ -9,13 +9,13 @@ REQ-1 — Readable quarter and supporting notes
   WHEN a Taiwan quarter is saved, the skill shall provide a readable Obsidian overview with the cutoff, main conclusions, material gaps and report links, give every emitted Markdown research note readable properties and prose, and retain machine records in separately traceable non-Markdown research data → Acceptance #1
 
 REQ-2 — Analysis depth
-  WHEN a Taiwan report section is written, the skill shall answer its research question using traceable point-in-time sources, calculations or reasoning, limitations and evidence that would change the conclusion where applicable → Acceptance #2
+  WHEN a Taiwan report section is written, the skill shall state its research question, show the traceable evidence and reasoning for each material finding, explain material limitations and update conditions, and mark a required finding as pending if the evidence cannot support it → Acceptance #2
 
 REQ-3 — Installed replay
   WHEN the finished skill is validated, the project shall check the TSMC Q3 reading sample and independently replay two consecutive quarters for each of Hon Hai, TSMC and Delta, verifying all six reports, three transitions and Obsidian reading behavior → Acceptance #3
 
 REQ-4 — Traceable continuation
-  WHEN a researcher opens or updates a quarter, the skill shall preserve access to prior sources, forecast and correction versions, protect simultaneous edits, and keep existing Taiwan and US quarterly research readable and resumable → Acceptance #4
+  WHEN a researcher opens or updates a quarter, the skill shall preserve prior sources and forecast and correction versions, keep existing Taiwan and US notes readable, report missing or mismatched companion evidence without reusing affected findings, and protect simultaneous edits and the last coherent saved state during an interrupted update → Acceptance #4
 
 ## Design decision
 
@@ -45,3 +45,5 @@ REQ-4 — Traceable continuation
 | Open the quarter | Open the overview in Obsidian | Conclusions, cutoff, gaps and navigation to the seven analyses |
 | Review evidence | Follow links from an analysis or its evidence note | The source version and locator, which facts are supported, and the limits of the interpretation |
 | Continue the research | Open an earlier quarter or update a quarter with new evidence | Date-appropriate prior findings and revisions at stable paths, with conflicts surfaced before any overwrite |
+| Review incomplete analysis | Open a section whose required evidence is missing | The supported findings, the specific pending conclusion and what new evidence would resolve it |
+| Recover research | Reopen after an interrupted write, or continue a quarter whose companion evidence cannot be validated | The readable notes and an explicit gap for affected reuse; recovery restores a coherent saved state or stops with existing files protected |
