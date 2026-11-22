@@ -1,0 +1,94 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-12-04-standalone-technical-analysis",
+  "content_digest": "9d15b5b6d5f76ee5559426a1fb95e3796fe84542",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-12-04-standalone-technical-analysis/evidence/probes/test_session_gap.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-12-04-standalone-technical-analysis/evidence/probes/test_session_gap.py",
+      "result": "pass",
+      "command_digest": "1885edb6661d6f619daa2de2395b3f78acd8987257daf515574c2236d39e88ba"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-12-04-standalone-technical-analysis/evidence/probes/test_weekend_session.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-12-04-standalone-technical-analysis/evidence/probes/test_weekend_session.py",
+      "result": "pass",
+      "command_digest": "2694f453b414f6bbe21eaf66fc87daaff22c2ad77fd62f9d6eccc118ecf61dcb"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "code_review",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "820afef9e2c5657fc71b69a1663dd27c242ccbca",
+      "review_target_sha": "060a0dcbb22dd4611d184e92abb4b10ff562f287",
+      "findings": [],
+      "notes": [
+        "Fixed: The original excluded-session reproduction now records the gap and withholds SMA20, volume ratio, and directional outlook.",
+        "Fixed: Both added SDK references were opened and checked against the cited APIs.",
+        "The four focused suites passed all 27 tests."
+      ]
+    },
+    {
+      "reviewer": "skill_review",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "lens": "skill",
+      "verdict": "PASS",
+      "reviewed_sha": "820afef9e2c5657fc71b69a1663dd27c242ccbca",
+      "review_target_sha": "060a0dcbb22dd4611d184e92abb4b10ff562f287",
+      "findings": [],
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS",
+        "missing-population": "PASS",
+        "user-judgment-leak": "PASS",
+        "deletion-first": "PASS"
+      },
+      "notes": [
+        "Fixed: the historical replay and save examples both explicitly use the eligible local snapshot and its offset-aware cutoff. Independent acceptance verified exact replay and historical note publication."
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "0f12486",
+  "tested_commit": "a720144f27874f141d21be522c48ccb668c2e5bb",
+  "reviewed_commit": "a2e2528d78146310416868166fcc10672c0636c0",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    }
+  ]
+}
