@@ -49,7 +49,7 @@ former resume skill without migrating them. For a single research note, use
 
 The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 provides
 [`sec-data`](obsidian-finance/skills/sec-data/README.md) for source-linked SEC
-acquisition and [`finance-research`](obsidian-finance/skills/finance-research/README.md)
+acquisition and [`equity-research`](obsidian-finance/skills/equity-research/README.md)
 for agent-led continuation from a designated managed version-1 equities folder.
 Research discovers required work, reuses valid analysis and saves protected
 checkpoints; horizon judgments remain conditional or insufficient when evidence

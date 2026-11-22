@@ -49,7 +49,7 @@ def test_skill_package_lists_industry_entry_and_issuer_reference():
     for host in ("codex", "claude"):
         metadata = json.loads((PACKAGE / f".{host}-plugin" / "plugin.json").read_text())
         assert "quarterly market research" in metadata["description"].lower()
-    issuer_reference = PACKAGE / "skills/finance-research/references/industry-and-competition.md"
+    issuer_reference = PACKAGE / "skills/equity-research/references/industry-and-competition.md"
     assert "industry-research" in issuer_reference.read_text()
 
 
