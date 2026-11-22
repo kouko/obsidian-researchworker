@@ -70,7 +70,8 @@ def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update
     def publish(rid, cutoff, title, finding, company, predecessor=None, expected=None):
         review = dict(source_review, id=rid, cutoff=cutoff, research=dict(
             method="Retained public evidence", assumptions=[], changes="Updated credit assessment",
-            gaps=["Synthesis pending"], horizons={h: dict(judgment="insufficient_evidence",
+                gaps=[{"reason": "Synthesis pending", "evidence": "Quarter disclosure"}] if taiwan
+                else ["Synthesis pending"], horizons={h: dict(judgment="insufficient_evidence",
                 evidence=[], invalidation_triggers=[]) for h in ("short", "medium", "long")}))
         if predecessor:
             review["predecessor"] = predecessor
@@ -109,6 +110,7 @@ status: partial
     overview = tmp_path / first["review"]
     if taiwan:
         assert "finance-quarter-overview" not in overview.read_text()
+        assert "Synthesis pending" in overview.read_text()
         companion, = (overview.parent / "data" / "reviews").glob("*.json")
         assert list((overview.parent / "data" / "sources").glob("*.json"))
         assert module.verify_quarter(overview.parent, overview.name)["status"] == "verified"

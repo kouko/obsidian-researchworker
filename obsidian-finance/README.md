@@ -234,10 +234,15 @@ result = research_store.discover(
 )
 ```
 
-Use a marked `investing/index.md` and a marked asset entry to establish scope.
+For US research, use a marked `investing/index.md` and a marked asset entry to
+establish scope. For a new Taiwan-only research folder, keep these Markdown
+entry notes readable and put scope in `investing/research.json` and
+`investing/assets/equities/twse-<ticker>/asset.json` using the
+[version-1 metadata fields](#read-only-saved-folder-discovery-metadata-v1).
 Save one stable overview and one note per completed or partial report role
 directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
-reports and contains the current progress record. It uses `00 Research Overview`;
+reports and links to the current progress record in Taiwan output. The US
+overview uses `00 Research Overview`;
 analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
 The final report uses `99 Investment Synthesis`. The Taiwan skill uses the
 same role numbers with Traditional Chinese report names. For example,
@@ -692,15 +697,15 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
 - `investing/index.md` with role `research-overview` supplies the tracked assets.
   An ordinary unmarked overview leaves the legacy watchlist in effect.
 - Within the selected `cycles/<YYYYQq>/` directory, register research inputs
-  under `data/sources/` and authored methods under `data/analysis/`. Use the
-  bundled templates with a matching source or method identity and version.
-  Payload paths in quarter registrations are relative to the quarter directory.
-  The fenced YAML record uses the same version-1 field names as the legacy
-  reader. Keep evidence bytes in their original format. Distinct source
-  versions may coexist.
-- Every newly authored Markdown note uses its bundled role template and
-  flat Obsidian frontmatter. For a new method or assumption, put the
-  explanation and limits in the method-registration note. Save the compact
+  under `data/sources/` and authored methods under `data/analysis/`. Use
+  version-1 `.json` for new Taiwan registrations and the bundled
+  fenced-YAML templates for US Markdown registrations. Both require matching
+  source or method identities and version fields. Payload paths start at the
+  quarter directory. Keep evidence bytes in their original format. Distinct
+  source versions may coexist.
+- Research notes use flat Obsidian properties. Explain the method and its
+  limits in the readable analysis, or in the US method-registration note.
+  Save the compact
   applied method payload separately as UTF-8 `data/materials/<name>.txt`.
   Register its quarter-relative `content_ref` and SHA-256 `content_digest`.
   Use the research-root-relative path to the same bytes and the same digest
@@ -735,9 +740,10 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
 
 ### Copy and verify a quarter
 
-A portable Markdown review keeps its bound inputs under
-`cycles/{YYYYQn}/data/`. Source registrations and method registrations are
-Markdown. Raw evidence keeps its original format and bytes. A source
+A portable review keeps its bound inputs under
+`cycles/{YYYYQn}/data/`. New Taiwan source and method registrations are JSON.
+US and previously saved Taiwan registrations may be Markdown. Raw evidence
+keeps its original format and bytes. A source
 registration can bind both the reviewed extraction (`raw_ref` and
 `raw_digest`) and the original filing (`original_ref` and
 `original_digest`). Register both when citing an extraction whose original

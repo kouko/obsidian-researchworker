@@ -233,7 +233,17 @@ def render_quarter_overview(asset, quarter, review, title, report_links, *, reco
             if isinstance(judgment := horizons.get(key, {}).get("judgment"), str)
             and judgment not in ("", "insufficient_evidence")
         ]
-        gaps = research.get("gaps", []) + research.get("supplemental_gaps", [])
+        gaps = []
+        for key in ("gaps", "supplemental_gaps"):
+            items = research.get(key, [])
+            if not isinstance(items, list):
+                items = [] if items is None else [items]
+            for item in items:
+                if isinstance(item, dict):
+                    item = " · ".join(item[field].strip() for field in ("evidence", "reason", "recovery")
+                                      if isinstance(item.get(field), str) and item[field].strip())
+                gaps.append(item if isinstance(item, str) and item.strip()
+                            else "有一項待補證據，詳細內容請見研究紀錄。")
         def list_items(items, empty):
             return "\n".join("- " + " ".join(item.split()) for item in items
                              if isinstance(item, str) and item.strip()) or empty
