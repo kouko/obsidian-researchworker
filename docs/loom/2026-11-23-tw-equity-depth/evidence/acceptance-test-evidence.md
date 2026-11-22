@@ -1,8 +1,8 @@
 # Taiwan equity research depth — acceptance test evidence
 
-Tried on 2026-11-23, in a clean copy of the project at cded465.
+Tried on 2026-11-23, in a clean copy of the project at 6c878d5.
 
-The isolated Codex profile at `/private/tmp/tw-depth-cded465/profile` loaded `obsidian-finance` 0.1.0 through the local marketplace. The fresh issuer logs at `/private/tmp/tw-depth-cded465/{2330,2317,2308}.jsonl` record use of the installed Taiwan skill. I compared the installed store and skill with the checkout and found identical bytes. The clean source copy beneath the same replay root was used for focused package tests. No full package-suite execution is attributed to this review. The automated package suite runs as a separate pre-acceptance check.
+The initial run at `cded465` is documented in sections 1–9. The final run at `6c878d5` is documented in the dated section below. The isolated Codex profiles loaded `obsidian-finance` 0.1.0 through the local marketplace. I checked the final installed scripts and Taiwan skill against the clean source copy, excluding generated Python caches. The clean source copy was used for focused package tests. No full package-suite execution is attributed to this review. The automated package suite runs as a separate pre-acceptance check.
 
 ## 1. Readable quarter and supporting notes
 
@@ -59,3 +59,14 @@ The isolated Codex profile at `/private/tmp/tw-depth-cded465/profile` loaded `ob
 ## 9. Recover research
 
 - The focused tests removed or corrupted saved evidence and exercised recovery with the conflicting inputs. The deliberate source-loss case confirmed that a companion's valid structure does not authorize writing over the prior overview when a bound source vanished. The combination of focused tests and artifact reading covers the separate ability to read the prose while withholding unsupported reuse.
+
+## Re-run on 2026-11-23, at 6c878d5
+
+- 1: re-tested — Ran `python3 /private/tmp/tw-depth-6c878d5/verify_notes.py` and recursively inspected all 54 Markdown files, including the six navigation notes. The script verified each overview and its local targets. None of the Markdown files contained machine-data fences.
+- 2: re-tested — Re-read the final evidence bindings and independently recomputed the Delta Q3 industry comparison from the filed revenue pairs (150,317,577 / 112,203,112; 989,918,318 / 759,692,143; and 2,058,949,127 / 1,854,569,119, in thousands TWD). The growth rates round to 33.97%, 30.31% and 11.02%. The final Delta Q3 industry note reports that order, links the three filings, and explains that the supply-chain comparison does not establish like-for-like market share, competition or pricing power.
+- 3: re-tested — Fresh sessions in `/private/tmp/tw-depth-6c878d5/{2330,2317,2308}.jsonl` all ended in `turn.completed`. Each set of two reports independently verified 7 roles with eight numbered notes per quarter. All three current Q3 records point to the exact Q2 forecast path and digest. The accepted supplemental-gap counts are TSMC 5/5, Hon Hai 8/7, and Delta 7/6 (Q2/Q3).
+- 4: re-tested — The unchanged installed continuation and recovery paths were exercised again from the clean source copy. `test_research_continuation.py -k 'fixed_quarter or snapshot'` passed 18 tests, and the interrupted-quarter source probe passed once.
+- 5: re-tested — Opened the final installed Delta Q3 vault at `/private/tmp/tw-depth-6c878d5/2308/investing` with Obsidian 1.15.1. Reading view showed the overview gap heading and the Industry and Competition link. Following that link rendered the comparison table and the corrected ranking, 33.97% above 30.31% and 11.02%. All six final note sets also passed static rendering and local link checks.
+- 6–7: re-tested — Current source and prior forecast references resolved in all six quarters, including both Hon Hai synthesis sections. The three Q3 record bindings match their actual Q2 files.
+- 8: re-tested — The installed TSMC fixture at `/private/tmp/tw-depth-6c878d5/2330/.structured-gap-test.json` treated a missing conference attachment as required for the simulated question. Complete publication was rejected, partial publication verified, and the overview rendered all three fields in order: evidence, reason, and recovery. The focused fixture independently checked that a structured required gap remains visible in the overview.
+- 9: re-tested — The final interrupted-source probe still prevents replacement of the prior overview when the pending quarter lacks one of its referenced source records.
