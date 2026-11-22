@@ -2,7 +2,8 @@
 originator: kouko
 kind: engineering
 needs-design: no — 入口改名及 Python 執行指引沿用現有研究行為
-status: open
+status: confirmed 2026-11-23
+intent_confirmed_sha: 3bbb5fd
 
 ## Problem
 
