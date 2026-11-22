@@ -1,6 +1,6 @@
 # Standalone stock technical analysis — spec
-intent: 2026-12-04-standalone-technical-analysis@ebd3301
-confirmed-behavior: 2026-12-04 @f494be6
+intent: 2026-12-04-standalone-technical-analysis@a3c05a9
+confirmed-behavior: 2026-12-04 @b17c004
 pre-build-review: required — a new skill, a network data source, and a persisted research format cross package and vault boundaries
 
 ## Requirements

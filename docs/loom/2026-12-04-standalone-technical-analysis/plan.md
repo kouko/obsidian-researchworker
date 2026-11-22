@@ -1,6 +1,6 @@
 # Standalone stock technical analysis — plan
-intent: 2026-12-04-standalone-technical-analysis@ebd3301
-spec: docs/loom/2026-12-04-standalone-technical-analysis/spec.md@731d31a
+intent: 2026-12-04-standalone-technical-analysis@a3c05a9
+spec: docs/loom/2026-12-04-standalone-technical-analysis/spec.md@64888b6
 charter: 1.1
 
 The standalone skill owns the new entry point. Use evidence and note protection from quarterly research as design references. Keep the existing quarterly entry point and storage contract intact.
