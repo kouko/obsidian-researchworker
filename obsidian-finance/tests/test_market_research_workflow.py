@@ -143,7 +143,7 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
         published_at="2024-06-04", version="wsts-spring", observation_period="2024",
         locator="2024 Forecast",
     )
-    run_market("publish", tmp_path, record=q2)
+    prior_note = Path(run_market("publish", tmp_path, record=q2)["review"])
     prior = run_market("resume", tmp_path, "semiconductors", "2024Q2")["record"]
     carried = prior["forecasts"][0]
     assert carried == forecast
@@ -169,6 +169,20 @@ def test_prior_outlook_round_trip_and_target_horizon_comparison(tmp_path):
     )
     assert result.returncode != 0
     assert "changed a carried-forward forecast" in result.stderr
+
+    saved_prior = prior_note.read_text()
+    prior_note.write_text(saved_prior.replace("industry-research-data", "unreadable"))
+    mixed_sources = dict(q3, forecasts=[dict(carried, source_ids=[
+        "wsts-spring", "sia-q3-initial",
+    ])])
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "publish", str(tmp_path)],
+        input=json.dumps(mixed_sources), text=True, capture_output=True,
+    )
+    assert result.returncode != 0
+    assert "Cannot verify prior forecast wsts-spring-2024" in result.stderr
+    prior_note.write_text(saved_prior)
+
     run_market("publish", tmp_path, record=q3)
     updated = run_market("resume", tmp_path, "semiconductors", "2024Q3")["record"]
     assert updated["comparisons"] == [comparison]
@@ -371,10 +385,11 @@ def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_pat
     changed = before.replace("Worldwide market, calendar quarters.", "Manual change in analysis.")
     changed = changed.replace("<!-- industry-research:end -->",
                               "A manual addition after the history block.\n<!-- industry-research:end -->")
-    overview.write_text(changed)
+    edited_bytes = changed.replace("\n", "\r\n").encode()
+    overview.write_bytes(edited_bytes)
     readback = run_market("resume", tmp_path, "smartphones", "2024Q3")
     assert readback["record"]["claims"] == baseline["claims"]
     assert readback["issues"] == []
     cited = run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31")
     assert cited["claim"] == baseline["claims"]["market-total"]
-    assert overview.read_text() == changed
+    assert overview.read_bytes() == edited_bytes

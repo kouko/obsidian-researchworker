@@ -294,7 +294,8 @@ def _history_scope(study, quarter, role, company=None):
 
 
 def _history(text, scope):
-    _, marker, trailing = notes.managed_body(text).partition(_HISTORY_START)
+    body = notes.managed_body(text).replace("\r\n", "\n")
+    _, marker, trailing = body.partition(_HISTORY_START)
     encoded, end, after = trailing.partition(_HISTORY_END)
     if not marker or not end or (after and not after.startswith("\n")) or _HISTORY_START in trailing:
         raise ValueError("Missing or ambiguous industry note history")
@@ -547,10 +548,10 @@ def _check_carry_forward(study, record, destination):
     for forecast in record.get("forecasts", []):
         version = forecast["version"]
         if issues and version in compared_ids and version not in prior:
-            # A documented release newer than the saved overview establishes
-            # that this is not the exact forecast and evidence saved there.
+            # Require a new forecast basis throughout. Attaching a newer
+            # context source must not make an old forecast eligible.
             sources = [record["sources"][key] for key in forecast["source_ids"]]
-            if prior_cutoff is None or not any(
+            if prior_cutoff is None or not all(
                 _provenance_available(source) and _boundary(source["published_at"]) > prior_cutoff
                 for source in sources
             ):
