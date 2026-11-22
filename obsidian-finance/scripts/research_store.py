@@ -454,6 +454,27 @@ def _fixed_record(notes):
     _require("quarter-overview" in notes, "missing fixed quarterly overview")
     path, raw, props = notes["quarter-overview"]
     _, review = _markdown.record(raw.decode("utf-8"), "quarter-overview")
+    for field in ("publication", "reports", "research", "requirements", "units", "quarter_evidence"):
+        _require(isinstance(review.get(field), dict), "quarterly overview requires a mapping for " + field)
+    _require(all(isinstance(question, dict) for question in review["requirements"].values()),
+             "invalid quarterly overview requirement")
+    bindings = review["quarter_evidence"].get("units")
+    _require(isinstance(bindings, dict) and bindings.keys() == review["units"].keys(),
+             "invalid quarterly overview evidence mappings")
+    paths = set()
+    for qid, unit in review["units"].items():
+        _require(isinstance(unit, dict) and isinstance(unit.get("analysis_inputs", {}), dict)
+                 and isinstance(unit.get("consumed", {}), dict), "invalid quarterly overview unit: " + qid)
+        _candidate_citations(unit)
+        _require(isinstance(bindings[qid], dict) and isinstance(bindings[qid].get("methods"), dict),
+                 "invalid quarterly overview method bindings: " + qid)
+        for method in unit.get("analysis_inputs", {}).values():
+            _analysis_identity(method)
+        if "output" in unit:
+            output = unit["output"]
+            _require(isinstance(output, dict) and _adapter._text(output.get("path")),
+                     "invalid quarterly overview output: " + qid)
+            paths.add(output["path"])
     reports = {role: Path(note[0]).name for role, note in notes.items() if role != "quarter-overview"}
     _require(type(review.get("version")) is int and review["version"] == 1
              and review["id"] == props["review_id"] and review["cutoff"] == props["as_of"]
@@ -466,7 +487,6 @@ def _fixed_record(notes):
         _require(name == f"{prefix} - {_REPORT_LABELS[role]}.md" and report_props["status"] != "draft"
                  and _adapter._core._instant(report_props["as_of"]) <= _adapter._core._instant(review["cutoff"]),
                  "invalid report identity or cutoff: " + name)
-    paths = {unit["output"]["path"] for unit in review["units"].values() if "output" in unit}
     _require(paths <= set(reports.values()), "quarterly overview refers to an unowned output")
     return path, review
 
@@ -1399,6 +1419,7 @@ def verify_quarter(folder, review):
             prefix = path.name.removesuffix(" - 00 Research Overview.md")
             _require(prefix.startswith(quarter + " "), "fixed overview quarter mismatch")
             notes = {"quarter-overview": (path.name, raw, props)}
+            _require(isinstance(stored.get("reports"), dict), "quarterly overview requires a mapping for reports")
             for role, filename in stored["reports"].items():
                 _require(role in _markdown.ANALYSIS_ROLES
                          and filename == f"{prefix} - {_REPORT_LABELS[role]}.md", "invalid fixed report link")
@@ -1612,7 +1633,7 @@ def _quarter_prefix(quarter, ticker, company_name):
     return f"{quarter} {ticker.upper()} {company}"
 
 
-def _retain_revision(old, content, unit, reason):
+def _retain_revision(old, content, units, reason):
     if old is None:
         return content
     _, old_bytes, props = old
@@ -1623,8 +1644,9 @@ def _retain_revision(old, content, unit, reason):
     prior_body, _, history = previous.partition(delimiter)
     if prior_body.strip() == current.strip():
         return content.rstrip() + "\n" + delimiter + history if history else content
-    consumed = unit.get("consumed", {})
-    sources = ", ".join(f"{sid} ({value['version']})" for sid, value in sorted(consumed.items()))
+    source_versions = {(sid, value["version"]) for unit in units
+                       for sid, value in unit.get("consumed", {}).items()}
+    sources = ", ".join(f"{sid} ({version})" for sid, version in sorted(source_versions))
     prior = "\n".join("> " + line for line in prior_body.strip().splitlines())
     return (content.rstrip() + "\n" + delimiter + "\n"
             + f"### Previous report as of {props['as_of']} ({props['review_id']})\n\n"
@@ -1662,8 +1684,11 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
             _require(review.get("predecessor") is None, "initial quarter cannot have a predecessor")
     _require(review.get("last_success") == previous.get("last_success"),
              "local publication cannot advance last successful external verification")
-    previous_outputs = {unit["output"]["path"]: unit for unit in previous.get("units", {}).values()
-                        if "output" in unit}
+    previous_units = previous.get("units", {})
+    previous_outputs = {}
+    for unit in previous_units.values():
+        if "output" in unit:
+            previous_outputs.setdefault(unit["output"]["path"], []).append(unit)
     saved = _adapter._json(_encoded(review).decode("utf-8"))
     saved.update(requirements=_unique(issuer["questions"]), publication=dict(run=run_id, complete=complete))
     proposal = dict(asset=asset, review=saved, files=files, previous=previous, complete=complete)
@@ -1677,39 +1702,47 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
 
     reports = {role: Path(note[0]).name for role, note in notes.items() if role != "quarter-overview"}
     intended = {}
-    used = set()
+    proposed_paths = {}
+    retained_outputs = []
     roles = set()
-    for unit in saved["units"].values():
+    for qid, unit in saved["units"].items():
         if "output" not in unit:
             continue
         output = unit["output"]
         path = output["path"]
         if not path.startswith(target + "/"):
-            _require(path in previous_outputs and unit == previous_outputs[path], "unowned quarterly report reference")
+            _require(unit == previous_units.get(qid), "unowned quarterly report reference")
+            retained_outputs.append(output)
             continue
         name = path[len(target) + 1:]
-        _require(name in files and name not in used, "missing or shared proposed analysis")
-        used.add(name)
+        _require(name in files, "missing proposed analysis")
         content = files[name]
-        props, _ = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
-            fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
-        role = props["finance_role"]
-        _require(role not in roles and props["status"] in ("partial", "complete"), "duplicate or draft quarterly report")
-        roles.add(role)
         verification = unit.get("verification")
         _require(isinstance(verification, dict)
                  and _completion_valid(verification, output["digest"])
                  and sha256(content.encode("utf-8")).hexdigest() == output["digest"],
                  "new report lacks matching inline verification")
-        filename = reports.setdefault(role, f"{prefix} - {_REPORT_LABELS[role]}.md")
-        path = cycle + "/" + filename
-        content = _retain_revision(notes.get(role), content, previous_outputs.get(path, {}), review["research"]["changes"])
-        intended[path] = content.encode("utf-8")
+        if name not in proposed_paths:
+            props, _ = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
+                fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
+            role = props["finance_role"]
+            _require(role not in roles and props["status"] in ("partial", "complete"),
+                     "duplicate or draft quarterly report")
+            roles.add(role)
+            filename = reports.setdefault(role, f"{prefix} - {_REPORT_LABELS[role]}.md")
+            path = cycle + "/" + filename
+            content = _retain_revision(notes.get(role), content, previous_outputs.get(path, []),
+                                       review["research"]["changes"])
+            intended[path] = content.encode("utf-8")
+            proposed_paths[name] = path
+        path = proposed_paths[name]
         output.update(path=path, digest=sha256(intended[path]).hexdigest())
         verification["output_digest"] = output["digest"]
-    _require(used == files.keys(), "unreferenced proposed reports")
-    _require(len({unit["output"]["path"] for unit in saved["units"].values() if "output" in unit})
-             == sum("output" in unit for unit in saved["units"].values()), "multiple units claim one report")
+    _require(proposed_paths.keys() == files.keys(), "unreferenced proposed reports")
+    for output in retained_outputs:
+        if output["path"] in intended:
+            _require(output["digest"] == sha256(intended[output["path"]]).hexdigest(),
+                     "re-verify every unit retained in a changed shared report")
     saved["reports"] = reports
     portable, evidence = _capture_quarter(root, asset, issuer["issuer"], cycle, saved, expected)
     overview = cycle + f"/{prefix} - 00 Research Overview.md"

@@ -45,7 +45,7 @@ def unit(root, directory, name, content, consumed):
                 verification=directory + "/" + name + "-check.json", consumed=consumed)
 
 
-@pytest.mark.parametrize("update", ["normal", "interrupted", "edited", "duplicate-role"])
+@pytest.mark.parametrize("update", ["normal", "interrupted", "edited", "duplicate-role", "shared-report"])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
     asset = two_issuers(tmp_path)[0]
     cycle = f"investing/assets/equities/{asset}/cycles/2024Q2"
@@ -82,6 +82,8 @@ status: partial
             verification=dict(version=1, output_digest=digest(body),
                 checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
                 unresolved=[]))}
+        if update == "shared-report":
+            review["units"]["governance"] = dict(review["units"]["credit"], consumed={})
         return module.publish(tmp_path, asset, review, {"analysis.md": body},
             expected if expected is not None else module.publication_snapshot(tmp_path),
             rid, complete=False, storage="quarterly",
@@ -137,6 +139,9 @@ status: partial
     assert old.read_bytes() == original
     view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in view["reusable"]
+    if update == "shared-report":
+        assert {"record": f"{asset}/2024Q2/fixed2", "work": "governance"} in view["reusable"]
+        assert list((tmp_path / cycle).glob("*Financial Analysis.md")) == [note]
     before = note.read_bytes()
     historical = module.discover(tmp_path, "historical", first_cutoff, storage="quarterly")
     assert not any("/fixed2" in item["record"] for item in historical["reusable"])
