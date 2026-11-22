@@ -1,6 +1,6 @@
 # Standalone stock technical analysis — spec
-intent: 2026-12-04-standalone-technical-analysis@a3c05a9
-confirmed-behavior: 2026-12-04 @b17c004
+intent: 2026-12-04-standalone-technical-analysis@71811c5
+confirmed-behavior: 2026-12-04 @87361af
 pre-build-review: required — a new skill, a network data source, and a persisted research format cross package and vault boundaries
 
 ## Requirements
@@ -15,7 +15,7 @@ REQ-3 — Data eligibility
   IF a bar is incomplete, available only after the cutoff, or unverifiable for a historical cutoff, THEN the skill shall exclude it from supported findings and identify any conclusions limited by the resulting coverage → Acceptance #3
 
 REQ-4 — Conversation and note
-  WHEN the user requests the analysis, the skill shall present the result in conversation and shall save it as a separate Obsidian note on request → Acceptance #4
+  WHEN the user requests the analysis, the skill shall present the result in conversation and save it as a separate Obsidian note on request, using the user's current conversation language unless an output language is explicitly requested and preserving dates, values, and sources in either case → Acceptance #4
 
 REQ-5 — Three dated outlooks
   The skill shall report separate short-, medium-, and long-term technical evidence and conclusions, each with its stated length, actual observed start and end dates, explicit forward outlook start and end dates, and an evidence-gap explanation where a conclusion is unsupported → Acceptance #5
@@ -50,5 +50,5 @@ REQ-5 — Three dated outlooks
 | Latest analysis | Request technical analysis for a single U.S. ticker | A report based on completed daily sessions, with key technical evidence and dated outlooks for all three horizons |
 | Historical or local analysis | Supply a local snapshot, and a historical cutoff when applicable | The same report format using eligible data, with the observed period and forward dates shown separately |
 | Missing inputs | Request a horizon with incomplete coverage, or fetch when the provider or dependency is unavailable | A clear gap on affected results, with local data or isolated setup instructions offered as applicable |
-| Save | Ask to save the analysis to Obsidian | A separate note with the three dated conclusions, evidence, and chart when data supports it |
+| Save | Ask to save the analysis to Obsidian | A separate note with headings, findings, and revision conditions in the current conversation language, or in the explicitly requested note language, with the three dated conclusions, evidence, and chart when data supports it |
 | Typical edge case | Use a cutoff during a session or during an incomplete trading week | The report uses completed periods, identifies the last included period, and retains any affected horizon with an explicit limitation |
