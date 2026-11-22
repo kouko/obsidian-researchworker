@@ -1,10 +1,10 @@
 # Stable equity quarterly notes — acceptance test evidence
 
-Tried on 2026-11-22, in a clean copy of the project at ce9c48ffc71bc69248bc1399e087bc7b990988b3.
+Tried on 2026-11-22, in a clean copy of the project at 9dee71a7d8cb21287428f181c4cf8c7162b22ce0.
 
 ## Setup
 
-Extracted the exact commit using `git archive` into an empty directory. The isolated Codex plugin marketplace install and app-server skill inventory exposed enabled equity and industry research entries. Byte-compared installed equity instructions and the research store, Markdown and update helpers against the extracted commit. Executed the installed helper directly under Python with PyYAML and followed the skill's documented quarterly discovery/publication workflow. The isolated vault used fabricated fixture evidence and did not contact SEC or send data externally. Skill discovery verifies installation only. No Codex model was used to test natural-language activation.
+Extracted the exact commit using `git archive` into an empty directory. Reinstalled into a fresh isolated Codex home. The app-server skill inventory exposed enabled equity and industry research entries. Byte-compared installed equity instructions and the research store, Markdown and update helpers against the extracted commit. Executed the installed helper directly under Python with PyYAML and followed the skill's documented quarterly discovery/publication workflow. The isolated vault used fabricated fixture evidence and did not contact SEC or send data externally. Skill discovery verifies installation only. No Codex model was used to test natural-language activation.
 
 ## 1. Stable same-quarter paths and overview links
 
@@ -31,12 +31,21 @@ localized title switched; dated original/source retained; historical gap left pr
 next-quarter discovery retained Q1 credit and exposed Q2 work; Q2 saved separately
 ```
 
+The targeted `edited-history` variant in Section 4 republishes after a human changed the old report. It checks that the edited text survives and is explicitly marked unverified without inheriting the previous verified filing source or prior cutoff.
+
 ## 4. Interrupted update and preservation of human edits
 
 Ran the targeted integration cases in the exact clean archive:
 
 ```sh
-python3 -m pytest -q -p no:cacheprovider obsidian-finance/tests/test_research_continuation.py::test_fixed_quarter_updates_and_historical_read
+python3 -m pytest -q -p no:cacheprovider obsidian-finance/tests/test_research_continuation.py::test_fixed_quarter_updates_and_historical_read obsidian-finance/tests/test_industry_update.py::test_retained_displaced_notes_do_not_block_future_publications
 ```
 
-The interruption case injected a failure immediately after the child report exchange and before the new overview, checked that the saved overview bytes did not change, observed a pending-update error on discovery, recovered the interrupted write and reopened the same report. The edit case checked that a mid-operation user edit caused a publication conflict and preserved the exact edited report bytes and previously saved overview. Other variants exercised a normal update, duplicate-role detection and shared-report verification. Output: `5 passed in 1.12s`.
+The interruption case injected a failure immediately after the child report exchange and before the new overview. It checked that the saved overview bytes did not change and observed a pending-update error on discovery. Recovery through the industry workflow was a no-op. Equity recovery rejected both the wrong quarter and the wrong issuer, preserving the overview. Recovery using the correct issuer and quarter succeeded once, then returned no further work. An interrupted industry update was unaffected by equity recovery and recovered through its own entry point. The stale edit case preserved exact edited bytes and the previously saved overview. The displaced-report regression verified that the hidden recovery copy preserves edits made through an open handle to the original file after replacement and does not block a later publication. Output: `7 passed in 1.42s`.
+
+## Re-run on 2026-11-22, at 9dee71a7d8cb21287428f181c4cf8c7162b22ce0
+
+- 1: re-tested — both same-quarter writes and the encoded overview links.
+- 2: re-tested — ordered names and the later language and company label change.
+- 3: re-tested — complete Q1/Q2 scenario and both normal and manually edited revision provenance.
+- 4: re-tested — stale edit, scoped and cross-workflow recovery, plus late edits to the displaced copy.
