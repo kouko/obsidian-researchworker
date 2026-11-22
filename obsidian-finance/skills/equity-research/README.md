@@ -1,8 +1,8 @@
-# finance-research
+# equity-research
 
 ## Quick start
 
-Continue investment research in a designated managed version-1 equities folder.
+Start or continue quarterly research on a U.S.-listed company in a managed version-1 equities folder.
 
 Example request: “Continue the quarterly research in this folder using the saved assessment scope.”
 

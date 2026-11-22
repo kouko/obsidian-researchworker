@@ -178,7 +178,7 @@ def _dump(record):
 
 
 def render_registration(asset, role, record):
-    template = Path(__file__).parents[1] / f"skills/finance-research/templates/{role}-registration.md"
+    template = Path(__file__).parents[1] / f"skills/equity-research/templates/{role}-registration.md"
     title = f"{record['id']} {record['identity']}"
     # One scalar per placeholder; quoted escapes protect metadata written by agents.
     context = {
@@ -211,6 +211,6 @@ def render_review(asset, quarter, review):
                  status="complete" if review["publication"]["complete"] else "partial")
     if review.get("predecessor") is not None:
         props["predecessor"] = review["predecessor"]
-    template = Path(__file__).parents[1] / "skills/finance-research/templates/review.md"
+    template = Path(__file__).parents[1] / "skills/equity-research/templates/review.md"
     return Template(template.read_text(encoding="utf-8")).substitute(
         title=title, properties=_dump(props), record=_dump(review))

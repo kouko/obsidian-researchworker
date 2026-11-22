@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "obsidian-finance",
     "shortDescription": "SEC evidence, equities and quarterly market research",
-    "longDescription": "Use sec-data for source-linked SEC acquisition and finance-research to continue work in managed version-1 equities folders while preserving reports and edits. Use market-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
+    "longDescription": "Use sec-data for source-linked SEC acquisition and equity-research to start or continue quarterly research on U.S.-listed companies in managed version-1 equities folders while preserving reports and edits. Use market-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],

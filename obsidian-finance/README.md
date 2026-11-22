@@ -1,7 +1,7 @@
 # Obsidian Finance
 
 Optional `obsidian-finance` 0.1.0 provides `sec-data` for public SEC filing
-metadata/financial observations and `finance-research` for agent-led research
+metadata/financial observations and `equity-research` for agent-led research
 continuation from a designated folder. The package also provides
 `market-research` for quarterly industry and market studies. It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
@@ -22,7 +22,7 @@ from live SEC access. Partial checkpoints retain unresolved research.
 Use [sec-data](skills/sec-data/README.md) for a public issuer’s filings and
 reported financial observations. Choose the fiscal-quarter selector if the
 issuer’s fiscal calendar matters, or use the observation-end date range when
-you already know the dates. Use [finance-research](skills/finance-research/README.md)
+you already know the dates. Use [equity-research](skills/equity-research/README.md)
 to continue analysis in an existing managed research folder. Use
 [market-research](skills/market-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
@@ -167,17 +167,17 @@ Neither establishes installed-host skill execution or complete financial researc
 
 ## Folder-grounded agent research
 
-The [finance-research skill](skills/finance-research/SKILL.md) guides the host
+The [equity-research skill](skills/equity-research/SKILL.md) guides the host
 agent through scoped discovery, applicable source checks, actual affected
 analysis and append-only publication/recovery using the APIs below. It is
 separate from download-only `sec-data`; no command wrapper, scheduler or general
 workflow engine is added. The persisted asset questions define the research
 scope; the caller supplies the root, mode and assessment cutoff rather than a
 new hand-written work list each time. Unsupported old notes are preserved.
-The current saved-folder adapter manages equities; ETF, commodity and FX
+The current workflow supports U.S.-listed company equities; ETF, commodity and FX
 continuation have not been validated as supported asset workflows.
 
-Its [research method](skills/finance-research/references/research-method.md)
+Its [research method](skills/equity-research/references/research-method.md)
 requires source-bound reasoning, opposing evidence, explicit analysis horizons
 and actual original-section reading coverage with unread exclusions. Retaining
 filing HTML or checking selected numbers does not establish complete SEC reading
