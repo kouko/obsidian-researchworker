@@ -107,6 +107,20 @@ status: partial
     note = tmp_path / cycle / f"2024Q2 {ticker} {saved_company} - {financial_label}.md"
     assert note.is_file()
     overview = tmp_path / first["review"]
+    if taiwan:
+        assert "finance-quarter-overview" not in overview.read_text()
+        companion, = (overview.parent / "data" / "reviews").glob("*.json")
+        assert list((overview.parent / "data" / "sources").glob("*.json"))
+        assert module.verify_quarter(overview.parent, overview.name)["status"] == "verified"
+        contents = companion.read_bytes()
+        companion.write_bytes(b"{}")
+        with pytest.raises(ValueError, match="evidence digest mismatch"):
+            module.verify_quarter(overview.parent, overview.name)
+        view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+        assert any("evidence digest mismatch" in gap["reason"] for gap in view["gaps"])
+        assert "## 分項研究" in overview.read_text()
+        assert "Original conclusion" in note.read_text()
+        companion.write_bytes(contents)
     args = ("fixed2", CUTOFF, "Update", "Revised conclusion", "Renamed Bank", "fixed1")
     if update == "duplicate-role":
         duplicate = note.with_name("2024Q2 BANK Duplicate - 01 Financial Analysis.md")
@@ -154,6 +168,14 @@ status: partial
             with pytest.raises(ValueError, match="outside the selected quarter"):
                 module.recover_quarterly(tmp_path, wrong_asset, wrong_quarter)
             assert overview.read_bytes() == before
+        if taiwan:
+            pending, = set(companion.parent.glob("*.json")) - {companion}
+            pending_bytes = pending.read_bytes()
+            pending.unlink()
+            with pytest.raises(FileNotFoundError):
+                module.recover_quarterly(tmp_path, asset, "2024Q2")
+            assert overview.read_bytes() == before
+            pending.write_bytes(pending_bytes)
         assert module.recover_quarterly(tmp_path, asset, "2024Q2") is True
         assert module.recover_quarterly(tmp_path, asset, "2024Q2") is False
 

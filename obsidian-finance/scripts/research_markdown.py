@@ -217,12 +217,32 @@ def render_review(asset, quarter, review):
         title=title, properties=_dump(props), record=_dump(review))
 
 
-def render_quarter_overview(asset, quarter, review, title, report_links):
+def render_quarter_overview(asset, quarter, review, title, report_links, *, record_path=None):
     props = dict(finance_schema=1, finance_role="quarter-overview", title=title,
                  asset_id=asset, fiscal_quarter=quarter, as_of=review["cutoff"],
                  review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
     links = "\n".join(f"- [{label}]({path})" for label, path in report_links)
+    if record_path is not None:
+        props["research_record"] = record_path
+        research = review["research"]
+        horizons = research.get("horizons", {})
+        conclusions = [
+            f"**{label}**　{judgment}"
+            for key, label in (("short", "短期"), ("medium", "中期"), ("long", "長期"))
+            if isinstance(judgment := horizons.get(key, {}).get("judgment"), str)
+            and judgment not in ("", "insufficient_evidence")
+        ]
+        gaps = research.get("gaps", []) + research.get("supplemental_gaps", [])
+        def list_items(items, empty):
+            return "\n".join("- " + " ".join(item.split()) for item in items
+                             if isinstance(item, str) and item.strip()) or empty
+        return ("---\n" + _dump(props) + "---\n\n# " + title
+                + "\n\n資料截至 " + review["cutoff"]
+                + "\n\n## 本季判斷\n\n" + list_items(conclusions, "請參閱各分項的研究判斷。")
+                + "\n\n## 分項研究\n\n" + links
+                + "\n\n## 待補證據\n\n" + list_items(gaps, "本次未列出待補證據。")
+                + f"\n\n[研究紀錄]({record_path})\n")
     return ("---\n" + _dump(props) + "---\n\n# " + title + "\n\n" + links
             + "\n\n## Research record\n\n```finance-quarter-overview\n"
             + _dump(review) + "```\n")

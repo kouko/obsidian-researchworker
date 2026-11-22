@@ -214,6 +214,16 @@ Real fresh-host continuation remains a separate verification requirement.
 
 ## Fixed quarterly notes
 
+The [Taiwan equity skill](skills/tw-equity-research/SKILL.md) writes Traditional
+Chinese research notes using its [role frameworks](skills/tw-equity-research/references/analysis-framework.md).
+New Taiwan overviews show dated findings, gaps and report links. The
+`research_record` property references a quarter-local immutable JSON record
+in `data/reviews/`. Machine source and method registrations can use
+quarter-local JSON under `data/sources/` and `data/analysis/`. Their raw and
+method paths start at the quarter folder. Existing inline Taiwan and US
+overviews remain readable. Copy the quarter folder with its `data/` folder
+to retain portable verification.
+
 The equity skill uses the `research_store` Python API with
 `storage="quarterly"`. Select the fiscal quarter from company evidence and
 assess at the requested cutoff:

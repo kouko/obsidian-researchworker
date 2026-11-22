@@ -107,23 +107,29 @@ def _object(root, reference):
 
 
 def _registered_metadata(root, reference):
-    if reference.endswith(".json"):
-        return _object(root, reference)
     path = Path(reference)
-    _require(path.suffix == ".md" and path.parent.name in ("sources", "analysis"),
+    if path.suffix == ".json" and (len(path.parts) != 9 or path.parts[4] != "cycles"
+                                  or _report_labels(path.parts[3]) is not _TW_REPORT_LABELS):
+        return _object(root, reference)
+    _require(path.suffix in (".md", ".json") and path.parent.name in ("sources", "analysis"),
              "unsupported research registration")
     asset = path.parts[3]
     kind = "source" if path.parent.name == "sources" else "method"
     payload = _bytes(root, reference)
     if len(path.parts) == 9 and path.parts[4] == "cycles" and re.fullmatch(r"[0-9a-f]{64}", path.stem):
         _require(sha256(payload).hexdigest() == path.stem, "quarter registration digest mismatch")
-    props, record = _markdown.record(payload.decode("utf-8"), kind + "-registration", asset_id=asset)
-    _require(type(record.get("version")) is int and record["version"] == 1
-             and props.get(kind + "_id") == record.get("id")
-             and props.get(kind + "_version") == record.get("identity"),
-             "Markdown research registration identity mismatch")
-    if kind == "source" and "available_at" in props:
-        _require(props["available_at"] == record.get("available_at"), "Markdown source availability mismatch")
+    if path.suffix == ".json":
+        record = _adapter._json(payload.decode("utf-8"))
+        _require(isinstance(record, dict) and type(record.get("version")) is int
+                 and record["version"] == 1, "invalid quarter registration")
+    else:
+        props, record = _markdown.record(payload.decode("utf-8"), kind + "-registration", asset_id=asset)
+        _require(type(record.get("version")) is int and record["version"] == 1
+                 and props.get(kind + "_id") == record.get("id")
+                 and props.get(kind + "_version") == record.get("identity"),
+                 "Markdown research registration identity mismatch")
+        if kind == "source" and "available_at" in props:
+            _require(props["available_at"] == record.get("available_at"), "Markdown source availability mismatch")
     if len(path.parts) == 9 and path.parts[4] == "cycles":
         cycle = "/".join(path.parts[:6])
         fields = ("raw_ref", "original_ref") if kind == "source" else ("content_ref",)
@@ -465,10 +471,33 @@ def _fixed_notes(root, cycle, asset, quarter):
     return notes
 
 
-def _fixed_record(notes):
+def _overview_record(folder, text):
+    props, _ = _markdown.parse_note(text, "quarter-overview")
+    if "research_record" not in props:
+        return _markdown.record(text, "quarter-overview")
+    reference = props["research_record"]
+    _require(props["asset_id"].startswith("twse-") and isinstance(reference, str)
+             and re.fullmatch(r"data/reviews/[0-9a-f]{64}\.json", reference),
+             "invalid quarterly overview evidence reference")
+    payload = _bytes(folder, reference, quarter_relative=True)
+    _require(sha256(payload).hexdigest() == Path(reference).stem,
+             "quarterly overview evidence digest mismatch")
+    container = _adapter._json(payload.decode("utf-8"))
+    _require(isinstance(container, dict)
+             and container.get("asset_id") == props["asset_id"]
+             and container.get("quarter") == props["fiscal_quarter"],
+             "quarterly overview evidence belongs to another quarter or issuer")
+    review = container.get("review")
+    _require(isinstance(review, dict) and review.get("id") == props["review_id"]
+             and review.get("cutoff") == props["as_of"],
+             "quarterly overview evidence version mismatch")
+    return props, review
+
+
+def _fixed_record(notes, folder):
     _require("quarter-overview" in notes, "missing fixed quarterly overview")
     path, raw, props = notes["quarter-overview"]
-    _, review = _markdown.record(raw.decode("utf-8"), "quarter-overview")
+    _, review = _overview_record(folder, raw.decode("utf-8"))
     for field in ("publication", "reports", "research", "requirements", "units", "quarter_evidence"):
         _require(isinstance(review.get(field), dict), "quarterly overview requires a mapping for " + field)
     _require(all(isinstance(question, dict) for question in review["requirements"].values()),
@@ -516,7 +545,7 @@ def _fixed_reviews(root, base, quarter, cutoff, mode, gaps, proposed, invalid_un
         notes = _fixed_notes(root, cycle, asset, quarter)
         if not notes:
             return []
-        path, review = _fixed_record(notes)
+        path, review = _fixed_record(notes, Path(root) / cycle)
         instant = _adapter._core._instant(review["cutoff"])
         if instant > cutoff or (mode == "historical" and instant != cutoff):
             gaps.append(dict(record=path, evidence="historical review",
@@ -1189,7 +1218,8 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected):
     for reference in expected:
         for folder in registrations:
             legacy = reference.startswith(base + "/data/" + folder + "/")
-            local = re.fullmatch(re.escape(base) + r"/cycles/[0-9]{4}Q[1-4]/data/" + folder + r"/[^/]+\.md", reference)
+            local = re.fullmatch(re.escape(base) + r"/cycles/[0-9]{4}Q[1-4]/data/" + folder
+                                 + r"/[^/]+\.(?:md|json)", reference)
             if not (legacy or local):
                 continue
             try:
@@ -1219,11 +1249,13 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected):
         return destination
 
     def bind(role, registration):
-        note = _markdown.render_registration(asset, role, registration)
-        payload = note.encode("utf-8")
+        if _report_labels(asset) is _TW_REPORT_LABELS:
+            payload, suffix = _encoded(registration), "json"
+        else:
+            payload, suffix = _markdown.render_registration(asset, role, registration).encode("utf-8"), "md"
         digest = sha256(payload).hexdigest()
         prefix = "sources" if role == "source" else "analysis"
-        reference = f"data/{prefix}/{digest}.md"
+        reference = f"data/{prefix}/{digest}.{suffix}"
         files[reference] = payload
         return reference
 
@@ -1331,6 +1363,11 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
 
     def registration(ref, folder_name, kind):
         payload = checked(_evidence_path(ref, folder_name), Path(ref).stem, error_type=_QuarterInputError)
+        if Path(ref).suffix == ".json":
+            metadata = _adapter._json(payload.decode("utf-8"))
+            _require(isinstance(metadata, dict) and type(metadata.get("version")) is int
+                     and metadata["version"] == 1, "invalid quarter evidence registration")
+            return metadata
         props, metadata = _markdown.record(payload.decode("utf-8"), kind + "-registration", asset_id=asset)
         _require(type(metadata.get("version")) is int and metadata["version"] == 1
                  and props[kind + "_id"] == metadata["id"]
@@ -1432,7 +1469,7 @@ def verify_quarter(folder, review):
     if not path.is_absolute() and len(path.parts) == 1 and path.name.endswith(overview_suffixes):
         try:
             raw = _bytes(folder, path.name, quarter_relative=True)
-            props, stored = _markdown.record(raw.decode("utf-8"), "quarter-overview")
+            props, stored = _overview_record(folder, raw.decode("utf-8"))
             asset, quarter = props["asset_id"], props["fiscal_quarter"]
             labels = _report_labels(asset)
             suffix = f" - {labels['quarter-overview']}.md"
@@ -1448,7 +1485,7 @@ def verify_quarter(folder, review):
                 report_props, _ = _markdown.parse_note(report_raw.decode("utf-8"), role,
                                                        asset_id=asset, fiscal_quarter=quarter)
                 notes[role] = (filename, report_raw, report_props)
-            _, stored = _fixed_record(notes)
+            _, stored = _fixed_record(notes, folder)
             result = _verify_quarter_evidence(folder, asset, quarter, stored)
             return dict(verification=result, status="verified", reusable=result["reusable"], gaps=result["gaps"])
         except (OSError, ValueError, KeyError, TypeError) as error:
@@ -1707,7 +1744,7 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
         prefix = _quarter_prefix(quarter, ticker, company_name) if not notes else None
         previous = {}
         if notes:
-            overview, portable = _fixed_record(notes)
+            overview, portable = _fixed_record(notes, root / cycle)
             previous = _rebase_review(portable, cycle, portable=False)
             prefix = Path(overview).name.removesuffix(overview_suffix)
             _require(review["id"] != previous["id"]
@@ -1786,8 +1823,14 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
     _require(isinstance(title, str) and title.strip() and not any(c in title for c in "\r\n"),
              "invalid quarterly overview title")
     links = [(label, quote(reports[role])) for role, label in labels.items() if role in reports]
-    overview_text = _markdown.render_quarter_overview(asset, quarter, portable, title, links)
-    _markdown.record(overview_text, "quarter-overview")
+    reference = None
+    if labels is _TW_REPORT_LABELS:
+        payload = _encoded(dict(asset_id=asset, quarter=quarter, review=portable))
+        reference = f"data/reviews/{sha256(payload).hexdigest()}.json"
+        evidence[reference] = payload
+    overview_text = _markdown.render_quarter_overview(asset, quarter, portable, title, links,
+                                                      record_path=reference)
+    _markdown.parse_note(overview_text, "quarter-overview")
     intended[overview] = overview_text.encode("utf-8")
 
     observed = {path: raw for path, raw, _ in notes.values()}
@@ -1828,6 +1871,8 @@ def recover_quarterly(root, asset, quarter):
             _require(path.name.startswith(quarter + " ")
                      and path.name.endswith(f" - {labels[props['finance_role']]}.md"),
                      "Pending write does not match its report role")
+            if props["finance_role"] == "quarter-overview":
+                _overview_record(root / cycle, intended.decode("utf-8"))
 
     return _update.recover(root, namespace="equity", check_scope=check_scope)
 
