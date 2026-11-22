@@ -4,6 +4,7 @@ Market revenue and shipments are sourced pilot observations, not live queries or
 fresh conversations. See the Loom runtime replay for host-specific evidence.
 """
 
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -288,6 +289,62 @@ def test_industry_explicit_vault_destination_discovery(tmp_path):
     assert run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31",
                       "--destination", alternate)["sources"]["idc-q3-initial"]["url"] == IDC_Q3
     assert run_market("resume", tmp_path, "smartphones", "2024Q3")["review"] is None
+
+
+@pytest.mark.parametrize("scoped_keys", [False, True], ids=["prototype", "released"])
+def test_legacy_industry_history_survives_prose_edit_and_checks_available_scope(tmp_path, scoped_keys):
+    (tmp_path / ".obsidian").mkdir()
+    donor = sample_record(
+        "smartphones", "2024Q3", "2024-10-14", "idc-q3-initial",
+        IDC_Q3, "shipments", "million units", 316.1,
+    )
+    donor["market_name"] = "Smartphones"
+    overview = Path(run_market("publish", tmp_path, record=donor)["review"])
+    recipient = dict(donor, market="tablets", market_name="Tablets")
+    other_overview = Path(run_market("publish", tmp_path, record=recipient)["review"])
+    fence = "\n```industry-research-data\n"
+    end = "\n```"
+    references = {}
+
+    def read_envelope(note):
+        visible, _, tail = note.read_text().partition(fence)
+        encoded, _, after = tail.partition(end)
+        return visible, json.loads(encoded), after
+
+    def write_legacy(note, visible, envelope, after):
+        # The saved digest describes the prose before the manual edit.
+        packed = json.dumps({"hash": "0" * 64, "data": envelope["data"]})
+        note.write_text(visible + fence + packed + end + after)
+
+    for note in overview.parent.glob("*.md"):
+        if note == overview:
+            continue
+        visible, envelope, after = read_envelope(note)
+        history = {}
+        for key, item in envelope["data"].items():
+            payload = [envelope["scope"], item] if scoped_keys else item
+            encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            references[key] = hashlib.sha256(encoded.encode()).hexdigest()
+            history[references[key]] = item
+        envelope["data"] = history
+        write_legacy(note, visible, envelope, after)
+    visible, envelope, after = read_envelope(overview)
+    for revision in envelope["data"]:
+        for part in revision["parts"]:
+            part["version"] = references[part["version"]]
+    write_legacy(overview, visible + "\nPersonal edit.", envelope, after)
+
+    saved = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert saved["record"]["claims"] == donor["claims"]
+    assert saved["issues"] == []
+    if scoped_keys:
+        marker = "<!-- industry-research:start -->"
+        for target in other_overview.parent.glob("*.md"):
+            origin = overview.parent / target.name.replace("Tablets", "Smartphones")
+            identity = target.read_text().partition(marker)[0]
+            body = origin.read_text().partition(marker)[2]
+            target.write_text(identity + marker + body)
+        assert run_market("cite", tmp_path, "tablets", "2024Q3", "market-total", "2024-10-31") is None
 
 
 def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_path):

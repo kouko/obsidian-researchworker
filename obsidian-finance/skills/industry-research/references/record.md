@@ -113,11 +113,11 @@ evidence. Use the overview path and its links for navigation. A null
 `record` means no usable saved version was found for the requested cutoff.
 Report relevant `issues`, even if an earlier usable version was returned.
 Only carry forward an eligible forecast returned in a complete record.
-If prior history is unreadable, a new comparison can use original releases
-published after the previous overview's recorded cutoff. Leave comparisons
-that depend on unavailable history pending. Editing visible prose does not
-invalidate a saved record. An explicit same-quarter publication regenerates
-the managed body.
+If prior history is unreadable, a new comparison must cite at least one
+eligible original release published after the previous overview's recorded
+cutoff. Leave comparisons that depend on unavailable history pending.
+Editing visible prose does not invalidate a saved record. An explicit
+same-quarter publication regenerates the managed body.
 
 Resume and citation can be blocked after an interrupted update. Report the
 block on read-only requests. Only run `recover VAULT` for an authorized

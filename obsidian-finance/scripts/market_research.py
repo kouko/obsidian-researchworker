@@ -307,7 +307,7 @@ def _history(text, scope):
     # and linked revisions still have to agree with the requested study.
     if "scope" in envelope and envelope["scope"] != scope:
         raise ValueError("Industry note history belongs to a different study or note")
-    return envelope["data"]
+    return envelope["data"], "hash" in envelope
 
 
 def _pack_history(visible, data, scope):
@@ -338,10 +338,10 @@ def _decode_parts(study, quarter, version, loaded):
         if text is None:
             raise ValueError(f"Missing linked industry note: {path}")
         scope = _history_scope(study, quarter, role, company)
-        items = _history(text, scope)
+        items, legacy = _history(text, scope)
         if not isinstance(items, dict):
             raise ValueError(f"Invalid material history in {path}")
-        loaded[identity] = items, text
+        loaded[identity] = items, text, legacy
 
 
 def _record_from_version(study, quarter, version, loaded):
@@ -357,7 +357,13 @@ def _record_from_version(study, quarter, version, loaded):
         if identity in roles:
             raise ValueError("Duplicate linked industry note")
         roles.add(identity)
-        item = loaded[identity][0][ref["version"]]
+        items, _, legacy = loaded[identity]
+        key = ref["version"]
+        item = items[key]
+        if legacy:
+            scope = _history_scope(study, quarter, role, company)
+            if key not in (_key([scope, item]), _key(item)):
+                raise ValueError(f"Legacy industry history does not match the referenced note: {role}")
         if role == "company":
             companies.append({"company": company, "name": ref["name"], "body": item["body"]})
         else:
@@ -376,7 +382,7 @@ def _quarter_history(study, quarter, *, issues=None):
     text = _read_note(study, overview)
     if text is None:
         return overview, text, [], {}, []
-    index = _history(text, _history_scope(study, quarter, "overview"))
+    index, _ = _history(text, _history_scope(study, quarter, "overview"))
     if not isinstance(index, list) or not index:
         raise ValueError("Invalid industry quarter index")
     loaded, records = {}, []
@@ -541,10 +547,10 @@ def _check_carry_forward(study, record, destination):
     for forecast in record.get("forecasts", []):
         version = forecast["version"]
         if issues and version in compared_ids and version not in prior:
-            # Releases strictly newer than the saved overview could not
-            # have been sources for a forecast in that overview.
+            # A documented release newer than the saved overview establishes
+            # that this is not the exact forecast and evidence saved there.
             sources = [record["sources"][key] for key in forecast["source_ids"]]
-            if prior_cutoff is None or not all(
+            if prior_cutoff is None or not any(
                 _provenance_available(source) and _boundary(source["published_at"]) > prior_cutoff
                 for source in sources
             ):
@@ -586,7 +592,7 @@ def _plan_industry_publication(study, record):
         if company:
             ref.update(company=company, name=name)
         references.append(ref)
-        history, verified_text = histories.get((role, company), ({}, None))
+        history, verified_text, _ = histories.get((role, company), ({}, None, False))
         old_text = _read_note(study, path)
         if old_text != verified_text and (
             old_text is None or verified_text is None
