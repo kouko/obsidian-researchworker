@@ -1,6 +1,22 @@
 # Deep quarterly equity notes — acceptance test evidence
 
-Tried on 2026-11-23, in a clean copy of the project at a041bbc5624336f6d644636300a89060b4b825e9.
+Tried on 2026-11-23, in a clean copy of the project at 333083b4085a26473362ddb0635a26f14e0cb657.
+
+## Re-run 2026-11-23 — matching legacy origin context
+
+- Extracted the tested update with `git archive`, installed the package into a fresh isolated Codex home, and confirmed the app server recognizes the enabled US equity skill. Replayed Q1 and Q2 with the same original Fastenal evidence in a new isolated copy.
+- Opened every registration actually referenced by the two new manifests and checked both visible information and local reader links. All five capture instances retained specific authored context: Q1's calculation denominators, its year-over-year source basis in both quarters, Q2's split-adjustment and working-capital method, and Q2's original scope of 139 eligible observations. All local reader links in those capture bodies resolved.
+- The replay again measured 1,126 → 340 and 3,739 → 382 machine-record lines, verified six reusable units per copied quarter, preserved all 19 Q1 files during Q2, and excluded Q2 at the earlier cutoff. Rendered the published operating note's Mermaid as SVG in the simulated-DOM harness.
+- The focused command in §4 with `or legacy_capture` appended to the test selector returned `31 passed, 58 deselected in 5.86s`. Rerun artifacts: `/private/tmp/deep-acceptance-final/`.
+
+## Re-run 2026-11-23 — 062ee0e259457ed5fe05adb0eb4ed41c582c45f0
+
+- Extracted the exact updated commit into a separate directory and installed into a separate empty Codex home. The app server listed the enabled US equity skill. Reran the two-quarter replay against a fresh copy of the original Fastenal vault.
+- Reopened registration files referenced by the new quarter manifests, not inactive registration files. The Q1 method capture contained the original authored comparison basis, flow-versus-balance distinction and time windows under “Original research context.” The Q1 and Q2 captured source notes and the Q2 method capture had no such context. The human-authored origin notes describe selection of the original filing's comparison column, cutoffs, split adjustment and working-capital analysis. This is a missing reader-visible part, even though verified raw links remain. The source/method lookup selects the first eligible candidate, which may be an old generated capture without reader prose.
+- Repeated the exact YAML count, discovery, portable reads, report correspondence and Q1 byte-preservation checks in §§2–4. Counts and outcomes are unchanged. Mermaid 11.4.1 rendered the SVG from the rerun's actual Q2 note. Focused command in §4 returned `30 passed, 58 deselected in 2.15s`.
+- Re-run artifacts: `/private/tmp/deep-acceptance-rerun/`.
+
+## Initial run 2026-11-23 — a041bbc5624336f6d644636300a89060b4b825e9
 
 ## 1. Readable Markdown notes
 
