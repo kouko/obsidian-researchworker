@@ -1,0 +1,63 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-22-equity-earnings-call-evidence",
+  "content_digest": "a8a666b6f6632e8dee192e0b26c904a6b1fb1115",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Only research guidance changed; cutoff eligibility, source precedence, and claim attribution require semantic judgment and have no changed executable surface for an adversarial program."
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "40da2c93940689828659b8f31dba783156ac51ff",
+      "review_target_sha": "7fc647c111b95882a82d0bfaeed7353c70d9cd74",
+      "reviewer": "call_closing_code",
+      "lens": "code"
+    },
+    {
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "40da2c93940689828659b8f31dba783156ac51ff",
+      "review_target_sha": "7fc647c111b95882a82d0bfaeed7353c70d9cd74",
+      "reviewer": "call_closing_skill",
+      "lens": "skill"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "0c18b9a",
+  "tested_commit": "4b4d1385f3a742dd73b6546246dbcb21a5ea0b17",
+  "reviewed_commit": "7fc647c111b95882a82d0bfaeed7353c70d9cd74",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

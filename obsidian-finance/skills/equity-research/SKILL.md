@@ -203,6 +203,11 @@ full investment case. Read notes, risks, MD&A and governance/proxy material when
 claims depend on them; do not claim a mandatory word-for-word full reading was
 performed or user-required when it was not.
 
+When management commentary or analyst Q&A could change the analysis, use
+[earnings-call-sources.md](references/earnings-call-sources.md) to look up
+optional evidence for the issuer and fiscal quarter. Continue independently
+supported work when call material is unavailable.
+
 Keep economic source identity, publication/observation time, raw hash, relevant
 typed projection, units and fiscal identity separate. Preserve later comparative
 rows as excluded evidence at an earlier cutoff. Store local method/assumption
