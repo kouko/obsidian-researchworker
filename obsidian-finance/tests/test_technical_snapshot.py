@@ -69,6 +69,14 @@ def test_excludes_incomplete_and_future_sessions(payload):
     result = validate_snapshot(payload, CUTOFF)
     assert result["bars"] == []
     assert len(result["exclusions"]) == 2
+    assert result["missing_completed_sessions"] == ["2026-07-06"]
+
+
+def test_completed_but_ineligible_row_is_a_known_gap(payload):
+    payload["bars"][0]["available_at"] = "2026-07-06T15:00:00-04:00"
+    result = validate_snapshot(payload, CUTOFF)
+    assert result["bars"] == []
+    assert result["missing_completed_sessions"] == ["2026-07-06"]
 
 
 def test_rejects_invalid_prices_and_duplicates(payload):

@@ -172,10 +172,12 @@ def validate_snapshot(payload, cutoff):
         exclusions.append("Snapshot lacks a capture or publication evidence reference.")
     if available_at > cutoff:
         exclusions.append("Snapshot version was available after the analysis cutoff.")
+    missing_completed_sessions = set(metadata.get("missing_completed_sessions", ()))
     if not exclusions:
         for bar, session_close, bar_available_at in ordered:
             day = bar["date"]
-            if _calendar_date(day, "Bar date").weekday() >= 5:
+            is_weekday = _calendar_date(day, "Bar date").weekday() < 5
+            if not is_weekday:
                 exclusions.append(f"{day}: weekend is not a U.S. equity trading session.")
             elif not bar["complete"] or session_close > cutoff:
                 exclusions.append(f"{day}: trading session was incomplete at cutoff.")
@@ -185,7 +187,12 @@ def validate_snapshot(payload, cutoff):
                 exclusions.append(f"{day}: bar availability is inconsistent with session close or snapshot capture.")
             else:
                 eligible.append(bar)
+                continue
+            if is_weekday and session_close <= cutoff:
+                missing_completed_sessions.add(day)
         exclusions.extend(metadata.get("fetch_exclusions", ()))
+    if missing_completed_sessions:
+        metadata["missing_completed_sessions"] = sorted(missing_completed_sessions)
     return {
         **metadata,
         "snapshot_id": hashlib.sha256(identity.encode("utf-8")).hexdigest(),

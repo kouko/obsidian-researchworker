@@ -36,6 +36,9 @@ that package download and network access are available. Leave system Python,
 conda base and user-wide configuration untouched. If setup cannot run, give
 the reason and use a local snapshot when available.
 
+See the [yfinance daily history API](https://ranaroussi.github.io/yfinance/reference/yfinance.price_history.html)
+and the [exchange-calendars quick start](https://github.com/gerrymanoim/exchange_calendars#quick-start).
+
 Set `SKILL_DIR` to this skill's absolute directory and use a new temporary
 path. The import check establishes setup; a successful acquisition separately
 establishes data availability for the requested symbol.
@@ -54,11 +57,13 @@ python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT"
 
 Use the user's symbol in place of `AAPL`. Do not treat failed acquisition or
 an empty output file as evidence. Latest reports default to the snapshot's
-availability timestamp. For historical replay, use:
+availability timestamp. For historical replay, set `TA_HISTORICAL_SNAPSHOT`
+to the eligible local snapshot and `TA_HISTORICAL_CUTOFF` to the user's
+requested cutoff, including its timezone offset. Then use:
 
 ```sh
-python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT" \
-  --cutoff '2024-02-29T16:30:00-05:00'
+python3 "$SKILL_DIR/scripts/report.py" "$TA_HISTORICAL_SNAPSHOT" \
+  --cutoff "$TA_HISTORICAL_CUTOFF"
 ```
 
 For local input, use a snapshot JSON object with `ticker`, listing `timezone`
@@ -103,6 +108,12 @@ python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT" \
   --vault "$TA_VAULT" --note 'investing/AAPL technical analysis.md'
 ```
 
-Set `TA_VAULT` to the actual absolute vault path. Do not add destination
-arguments for conversation-only analysis. When saving a historical analysis,
-pass the same explicit `--cutoff` used for its conclusions.
+Set `TA_VAULT` to the actual absolute vault path. For a conversation-only
+analysis, use the commands in Choose the data. To save a historical analysis,
+use the same local snapshot and cutoff as the report:
+
+```sh
+python3 "$SKILL_DIR/scripts/report.py" "$TA_HISTORICAL_SNAPSHOT" \
+  --cutoff "$TA_HISTORICAL_CUTOFF" \
+  --vault "$TA_VAULT" --note 'investing/AAPL historical technical analysis.md'
+```
