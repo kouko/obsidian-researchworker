@@ -1,6 +1,6 @@
 # Standalone stock technical analysis — plan
-intent: 2026-12-04-standalone-technical-analysis@a3c05a9
-spec: docs/loom/2026-12-04-standalone-technical-analysis/spec.md@64888b6
+intent: 2026-12-04-standalone-technical-analysis@71811c5
+spec: docs/loom/2026-12-04-standalone-technical-analysis/spec.md@39769fc
 charter: 1.1
 
 The standalone skill owns the new entry point. Use evidence and note protection from quarterly research as design references. Keep the existing quarterly entry point and storage contract intact.
@@ -24,7 +24,7 @@ The standalone skill owns the new entry point. Use evidence and note protection 
 
 **W2-01 Publish dated outlooks and evidence**  after: W1-01, W1-02  acceptance: 2, 4, 5
 - Files: `obsidian-finance/skills/technical-analysis/scripts/report.py` (entry), `obsidian-finance/tests/test_technical_report.py`
-- Test: A2 positive: note-links-exact-source-and-method; boundary: partial-evidence. A4 positive: separate-note-with-chart; negative: collision-symlink-and-partial-write. A5 positive: three-dated-outlooks; boundary: month-end-leap-year-and-insufficient-long-history.
+- Test: A2 positive: note-links-exact-source-and-method; boundary: partial-evidence. A4 positive: localized-note-with-chart; negative: collision-symlink-and-partial-write. A5 positive: three-dated-outlooks; boundary: month-end-leap-year-and-insufficient-long-history.
 - Risk: REQ-2/4/5 agent-decided — separate evidence and outlook dates. Confine output to the designated vault, reuse no-clobber staging patterns, and publish the note after its assets are ready.
 
 **W3-01 Verify the shipped skill entry point**  after: W2-01  acceptance: 1, 3, 4, 5
@@ -41,6 +41,8 @@ The standalone skill owns the new entry point. Use evidence and note protection 
 
 ① — what — 你確認先按離線首版規劃嗎？
 ② — behaviour — 這三個預設長度和呈現方式符合你的意思嗎？
+① — what — 確認把這項語言規則納入首版嗎？
+② — behaviour — 這三種存檔行為符合你的預期嗎？
 
 ## Risks
 
@@ -48,3 +50,5 @@ The standalone skill owns the new entry point. Use evidence and note protection 
 2. Pattern labels and numerical indicators do not establish future outcomes. Require dated evidence and conditional outlooks, and keep a horizon present when evidence is too sparse.
 3. Reuse confinement and staging patterns in `research_store.py` and `industry_update.py` with cleanup scoped to newly created report assets. Test concurrent collisions and escaping symlinks for note and attachments; verify existing files survive.
 4. Installation and public entry behavior may vary by host. Record the tested package versions and host, and distinguish source regressions, live acquisition, and a fresh-session skill invocation.
+
+5. Localize presentation in the agent using the same verified report values, then publish the Markdown through the guarded writer with reproducible evidence and chart links. Verify Traditional Chinese, Japanese, and an explicit English override.
