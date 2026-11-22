@@ -1,4 +1,5 @@
 """Check revenue comparability and the quarterly disclosure source gate."""
+# concern: Mixed reporting scopes and missing disclosure bodies can make a quarter appear complete or comparable.
 
 import importlib.util
 from pathlib import Path
