@@ -21,6 +21,16 @@ ROLES = {
                     "forward-forecast", "valuation-and-risk", "technical-analysis", "synthesis")},
 }
 TEMPLATES = Path(__file__).parents[1] / "skills/equity-research/templates"
+
+
+def test_equity_skill_uses_fixed_quarter_publication_and_recovery():
+    skill = (TEMPLATES.parent / "SKILL.md").read_text()
+    assert skill.count('storage="quarterly"') == 2
+    assert "run-directory/review.md" not in skill
+    assert "recover_quarterly(root)" in skill
+    assert "2024Q3 AAPL Apple - 00 Research Overview.md" in skill
+
+
 VALUES = {
     "title_yaml": '"Apple Research"',
     "asset_id_yaml": '"aapl"',
