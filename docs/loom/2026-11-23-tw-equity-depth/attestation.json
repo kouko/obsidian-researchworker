@@ -1,0 +1,66 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-tw-equity-depth",
+  "content_digest": "88e71d8917f5d8ec4c58cc747b5cb578d1e42d13",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-23-tw-equity-depth/evidence/probes/test_interrupted_quarter_source.py -q -p no:cacheprovider",
+      "artifact": "docs/loom/2026-11-23-tw-equity-depth/evidence/probes/test_interrupted_quarter_source.py",
+      "result": "pass",
+      "command_digest": "765daeb60c856129748a6c25b3ee00d0764b4ad0a2fe5585c7e4adbb8d7feb42"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "/root/depth_close_code",
+      "vendor": "codex",
+      "model": "inherited",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "a599baa3a38aba8d251a647b5a90d3f83210485c",
+      "review_target_sha": "45f3160d6b355a3768c2db637c6fb081f3b8c6ed"
+    },
+    {
+      "reviewer": "/root/depth_close_skill",
+      "vendor": "codex",
+      "model": "inherited",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": [],
+      "reviewed_sha": "a599baa3a38aba8d251a647b5a90d3f83210485c",
+      "review_target_sha": "45f3160d6b355a3768c2db637c6fb081f3b8c6ed"
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "6b5e84a",
+  "tested_commit": "6c878d5",
+  "reviewed_commit": "45f3160d6b355a3768c2db637c6fb081f3b8c6ed",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
