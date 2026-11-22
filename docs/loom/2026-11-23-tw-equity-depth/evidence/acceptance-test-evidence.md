@@ -7,7 +7,7 @@ The isolated Codex profile at `/private/tmp/tw-depth-cded465/profile` loaded `ob
 ## 1. Readable quarter and supporting notes
 
 - How I tried it: Ran `python3 /private/tmp/tw-depth-cded465/verify_notes.py` against the installed output. Read all six overviews as notes and checked the visible judgments, cutoff, gaps, and seven analysis links. Parsed the properties, rendered the Markdown, checked local link targets, and followed the separate JSON reference for portable verification.
-- What came back: The quarter folders contain 48 fixed reader-facing notes. The overview properties hold compact identifiers and cutoffs. The detailed research records live separately under `data/reviews`. Every quarter exposes its applicable evidence gaps and report links.
+- What came back: The quarter folders contain 48 fixed reader-facing notes. A separate recursive scan counted 18 Markdown files for each issuer, including both navigational notes, and found a prose heading, valid local link targets and no inline machine-data fence in all 54 files. The overview properties hold compact identifiers and cutoffs. The detailed research records live separately under `data/reviews`. Every quarter exposes its applicable evidence gaps and report links.
 - Evidence: Obsidian 1.15.1 Reading view on the generated Delta Q3 overview displayed the headings and clickable financial-analysis link. The opened note displayed its financial tables and the balance-sheet and cash-flow heading. The observed trial used `/private/tmp/tw-depth-cded465/2308/investing/assets/equities/twse-2308/cycles/2025Q3`. The independent script verifies the complete set rather than relying on this single native visual check.
 
 ## 2. Analysis depth
