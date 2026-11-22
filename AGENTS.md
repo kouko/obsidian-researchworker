@@ -1,0 +1,7 @@
+# Obsidian ResearchWorker
+
+1. **Read editable research notes as they are.** On resumption, assess the current claims and their sources. Do not require a stored hash for ordinary notes. Before overwriting a note, check for and preserve edits made since the current operation read it. See the [editable-note convention](docs/loom/memory/read-editable-notes-without-hash-gates.md) for source integrity and interrupted-write recovery.
+2. **Preserve user data.** Keep existing vault notes and settings when changing, renaming, or removing a skill. Obtain explicit authorization for deletion, replacement, or migration outside normal editing requested by the user. See [product principles](PRINCIPLES.md).
+3. **Respect historical cutoffs.** Record the source version, actual publication time, and relevant fiscal period. Use information published after the cutoff only in a later assessment or a separately labeled retrospective comparison. See the [equity research guide](obsidian-finance/skills/equity-research/SKILL.md).
+4. **Keep public entry points consistent.** When renaming or removing a skill, check package metadata, current documentation, references from other skills, template paths, and tests. See [product principles](PRINCIPLES.md).
+5. **Verify through the shipped entry point.** Report source checks, installed plugin state, and fresh-session behavior according to the evidence for each. Use the package test command in [repo defaults](docs/loom/KICKOFF-DEFAULTS.md).
