@@ -47,7 +47,7 @@ def unit(root, directory, name, content, consumed):
 
 @pytest.mark.parametrize("update", [
     "normal", "interrupted", "edited", "edited-before-read", "duplicate-role", "shared-report",
-    "substituted-capture",
+    "substituted-capture", "legacy-capture",
 ])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
     asset = two_issuers(tmp_path)[0]
@@ -56,16 +56,28 @@ def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update
     original = old.read_bytes()
     source_review = json.loads(original)
     module = load()
-    if update == "normal":
+    if update in {"normal", "legacy-capture"}:
         base = tmp_path / cycle / "../.."
         metadata = base / "data/sources/original-2024Q2.json"
         record = json.loads(metadata.read_text())
+        if update == "legacy-capture":
+            record["raw_ref"] = "data/raw/original.json"
+            put(tmp_path, f"{cycle}/{record['raw_ref']}", record["projection"])
+            author = f"{cycle}/data/sources/issuer-original.md"
+            old_note = module._markdown.render_registration(
+                asset, "source", dict(record, origin_reference=author))
+            old_capture = f"{cycle}/data/sources/{digest(old_note)}.md"
+            (tmp_path / old_capture).parent.mkdir(exist_ok=True)
+            (tmp_path / old_capture).write_text(old_note)
+            assert Path(old_capture).name < Path(author).name
+        else:
+            author = str(metadata.with_suffix(".md").relative_to(tmp_path))
         props = dict(finance_schema=1, finance_role="source-registration", title="Filed statements",
                      asset_id=asset, source_id=record["id"], source_version=record["identity"])
         body = "\n\n## Original and applicability\n\nCompare matching quarters only. [Prior basis](../missing.md)\n"
         note = "---\n" + module._markdown._dump(props) + "---\n\n# Filed statements\n\n"
         note += "## Research record\n\n```finance-source-registration\n" + module._markdown._dump(record) + "```"
-        metadata.with_suffix(".md").write_text(note + body)
+        (tmp_path / author).write_text(note + body)
         metadata.unlink()
 
     def publish(rid, cutoff, title, finding, company, predecessor=None, expected=None):
@@ -112,10 +124,14 @@ status: partial
     bindings = stored["quarter_evidence"]["units"]
     sid = "filing-2024Q2"
     ref = bindings["credit"]["sources"][sid]
-    if update == "normal":
+    if update in {"normal", "legacy-capture"}:
         captured = (tmp_path / cycle / ref).read_text()
         assert "Compare matching quarters only. Prior basis" in captured.split("## Research record")[0]
         assert "../missing.md" not in captured
+        if update == "legacy-capture":
+            assert (tmp_path / old_capture).read_text() == old_note
+            assert module.verify_quarter(overview.parent, overview.name)["status"] == "verified"
+            return
     if update == "shared-report":
         assert bindings["governance"]["sources"][sid] == ref
     if update == "substituted-capture":

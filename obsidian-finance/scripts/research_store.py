@@ -1202,13 +1202,21 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
         files[destination] = payload
         return destination
 
-    def bind(role, registration, origin):
-        path = Path(origin)
-        narrative = ()
+    def read_narrative(role, reference):
+        path = Path(reference)
         if path.suffix == ".md":
             captured = len(path.parts) == 9 and path.parts[4] == "cycles" and re.fullmatch(r"[0-9a-f]{64}", path.stem)
-            narrative = _markdown.registration_context(
-                _bytes(root, origin).decode("utf-8"), role + "-registration", captured=bool(captured))
+            return _markdown.registration_context(
+                _bytes(root, reference).decode("utf-8"), role + "-registration", captured=bool(captured))
+        return ()
+
+    def bind(role, registration, origin, matches):
+        narrative = read_narrative(role, origin)
+        authored = registration["origin_reference"]
+        if not narrative and authored != origin and any(ref == authored for ref, _ in matches):
+            # Use prose only from the documented original among already checked
+            # matches. The selected capture still supplies the binding metadata.
+            narrative = read_narrative(role, authored)
         note = _markdown.render_registration(asset, role, registration, narrative=narrative)
         payload = note.encode("utf-8")
         digest = sha256(payload).hexdigest()
@@ -1240,7 +1248,7 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
             if "original_ref" in source or "original_digest" in source:
                 record["origin_original_ref"] = source.get("origin_original_ref", source["original_ref"])
                 record["original_ref"] = copy_payload(source["original_ref"], source["original_digest"], "raw")
-            reference = bind("source", record, origin)
+            reference = bind("source", record, origin, options)
             links["sources"][sid] = reference
             if compact:
                 identity["capture_digest"] = Path(reference).stem
@@ -1257,7 +1265,7 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
                 provenance[method.get("origin_reference", origin)] = method
             content_ref = copy_payload(method["content_ref"], method["content_digest"], "materials")
             method = dict(method, origin_reference=method.get("origin_reference", origin), content_ref=content_ref)
-            links["methods"][mid] = dict(reference=bind("method", method, origin), content_ref=content_ref,
+            links["methods"][mid] = dict(reference=bind("method", method, origin, options), content_ref=content_ref,
                                          origin_content_ref=frozen["content_ref"])
         if isinstance(unit.get("verification"), str):
             unit["verification"] = _verification(root, unit)
