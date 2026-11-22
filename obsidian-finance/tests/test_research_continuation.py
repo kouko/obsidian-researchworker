@@ -56,6 +56,17 @@ def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update
     original = old.read_bytes()
     source_review = json.loads(original)
     module = load()
+    if update == "normal":
+        base = tmp_path / cycle / "../.."
+        metadata = base / "data/sources/original-2024Q2.json"
+        record = json.loads(metadata.read_text())
+        props = dict(finance_schema=1, finance_role="source-registration", title="Filed statements",
+                     asset_id=asset, source_id=record["id"], source_version=record["identity"])
+        body = "\n\n## Original and applicability\n\nCompare matching quarters only. [Prior basis](../missing.md)\n"
+        note = "---\n" + module._markdown._dump(props) + "---\n\n# Filed statements\n\n"
+        note += "## Research record\n\n```finance-source-registration\n" + module._markdown._dump(record) + "```"
+        metadata.with_suffix(".md").write_text(note + body)
+        metadata.unlink()
 
     def publish(rid, cutoff, title, finding, company, predecessor=None, expected=None):
         review = dict(source_review, id=rid, cutoff=cutoff, research=dict(
@@ -101,6 +112,10 @@ status: partial
     bindings = stored["quarter_evidence"]["units"]
     sid = "filing-2024Q2"
     ref = bindings["credit"]["sources"][sid]
+    if update == "normal":
+        captured = (tmp_path / cycle / ref).read_text()
+        assert "Compare matching quarters only. Prior basis" in captured.split("## Research record")[0]
+        assert "../missing.md" not in captured
     if update == "shared-report":
         assert bindings["governance"]["sources"][sid] == ref
     if update == "substituted-capture":
@@ -225,6 +240,7 @@ status: partial
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in verified["reusable"]
     if update == "normal":
         _, compact = module._markdown.record(overview.read_text(), "quarter-overview")
+        assert compact["quarter_evidence"]["units"]["credit"]["sources"][sid] == ref
         credit = compact["units"]["credit"]
         credit["output"]["path"] = cycle + "/" + credit["output"]["path"]
         retained = {key: compact[key] for key in ("version", "fiscal", "cutoff", "research", "units")}

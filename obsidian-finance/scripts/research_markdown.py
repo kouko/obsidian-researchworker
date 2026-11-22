@@ -1,7 +1,7 @@
 """Obsidian properties and versioned Markdown records for the research pilot."""
 
 from datetime import date, datetime
-from html import escape
+from html import escape, unescape
 import json
 from pathlib import Path
 import re
@@ -163,11 +163,15 @@ def render_draft(properties, body):
 
 def record(text, role, **expected):
     props, body = parse_note(text, role, **expected)
-    pattern = r"(?m)^## Research record\r?\n\r?\n\x60{3}finance-" + role + r"\r?\n([\s\S]*?)\r?\n\x60{3}\r?$"
-    matches = re.findall(pattern, body)
+    matches = re.findall(_record_pattern(role), body)
     if len(matches) != 1:
         raise ValueError("expected one " + role + " record")
     return props, _mapping(matches[0])
+
+
+def _record_pattern(role):
+    return (r"(?m)^## Research record\r?\n\r?\n\x60{3}finance-" + role
+            + r"\r?\n([\s\S]*?)\r?\n\x60{3}\r?$")
 
 
 def _dump(record):
@@ -185,7 +189,30 @@ def _visible_text(value):
     return re.sub(r"([\\`*_{}\[\]()#+!|~])", r"\\\1", escape(text, quote=False))
 
 
-def render_registration(asset, role, record):
+_SOURCE_CONTEXT_HEADING = "## Original research context"
+
+
+def registration_context(text, role, *, captured):
+    """Return author prose without moving its relative link targets."""
+    _, body = parse_note(text, role)
+    prose = re.sub(_record_pattern(role), "", body)
+    if captured:
+        _, marker, context = prose.partition(_SOURCE_CONTEXT_HEADING + "\n\n")
+        if not marker:
+            return ()
+        context = context.partition("\n## ")[0]
+        # Undo our own display escaping. Rendering reapplies it after rebasing.
+        return tuple(unescape(re.sub(r"\\([\\`*_{}\[\]()#+!|~])", r"\1", line[2:]))
+                     for line in context.splitlines() if line.startswith("> "))
+    prose = re.sub(r"(?m)^#{1,6} .*\n", "", prose)
+    prose = re.sub(r"!?\[([^\]\n]*)\]\([^\n)]*\)", r"\1", prose)
+    prose = re.sub(r"!?\[\[([^|\]\n]*)(?:\|([^\]\n]*))?\]\]",
+                   lambda match: match[2] or match[1], prose)
+    return tuple(" ".join(section.split()) for section in re.split(r"\n\s*\n", prose.strip())
+                 if section.strip())
+
+
+def render_registration(asset, role, record, *, narrative=()):
     template = Path(__file__).parents[1] / f"skills/equity-research-us/templates/{role}-registration.md"
     title = f"{record['id']} {record['identity']}"
     # One scalar per placeholder; quoted escapes protect metadata written by agents.
@@ -208,14 +235,26 @@ def render_registration(asset, role, record):
             f"Recorded availability: {availability}.\n\n"
             f"[Local source](../raw/{quote(Path(record['raw_ref']).name)}) · Origin: {_visible_text(origin)}"
         )
+        fiscal = record.get("fiscal", {})
+        if isinstance(fiscal, dict) and fiscal.get("period_end"):
+            context["source_link_and_basis"] += (
+                f"\n\nReporting period ended {_visible_text(fiscal['period_end'])}."
+            )
         if "original_ref" in record:
             context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{quote(Path(record['original_ref']).name)})"
     else:
         origin = record.get("origin_reference", record["content_ref"])
         context["method_and_limits"] = (
-            "Use this captured method to repeat the applied procedure or inspect its assumptions.\n\n"
+            f"Use this captured {_visible_text(record.get('kind', 'method'))} to repeat the "
+            "applied procedure or inspect its assumptions.\n\n"
             f"[Local method](../materials/{quote(Path(record['content_ref']).name)}) · Origin: {_visible_text(origin)}"
         )
+        if record.get("authored_at"):
+            context["method_and_limits"] += f"\n\nRecorded authorship: {_visible_text(record['authored_at'])}."
+    if narrative:
+        body_key = "source_link_and_basis" if role == "source" else "method_and_limits"
+        quoted = "\n>\n".join(f"> {_visible_text(paragraph)}" for paragraph in narrative)
+        context[body_key] += f"\n\n{_SOURCE_CONTEXT_HEADING}\n\n{quoted}"
     rendered = Template(template.read_text(encoding="utf-8")).substitute(context)
     parse_note(rendered, role + "-registration")
     return rendered

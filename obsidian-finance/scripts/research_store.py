@@ -1202,8 +1202,14 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
         files[destination] = payload
         return destination
 
-    def bind(role, registration):
-        note = _markdown.render_registration(asset, role, registration)
+    def bind(role, registration, origin):
+        path = Path(origin)
+        narrative = ()
+        if path.suffix == ".md":
+            captured = len(path.parts) == 9 and path.parts[4] == "cycles" and re.fullmatch(r"[0-9a-f]{64}", path.stem)
+            narrative = _markdown.registration_context(
+                _bytes(root, origin).decode("utf-8"), role + "-registration", captured=bool(captured))
+        note = _markdown.render_registration(asset, role, registration, narrative=narrative)
         payload = note.encode("utf-8")
         digest = sha256(payload).hexdigest()
         prefix = "sources" if role == "source" else "analysis"
@@ -1234,7 +1240,7 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
             if "original_ref" in source or "original_digest" in source:
                 record["origin_original_ref"] = source.get("origin_original_ref", source["original_ref"])
                 record["original_ref"] = copy_payload(source["original_ref"], source["original_digest"], "raw")
-            reference = bind("source", record)
+            reference = bind("source", record, origin)
             links["sources"][sid] = reference
             if compact:
                 identity["capture_digest"] = Path(reference).stem
@@ -1251,7 +1257,7 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
                 provenance[method.get("origin_reference", origin)] = method
             content_ref = copy_payload(method["content_ref"], method["content_digest"], "materials")
             method = dict(method, origin_reference=method.get("origin_reference", origin), content_ref=content_ref)
-            links["methods"][mid] = dict(reference=bind("method", method), content_ref=content_ref,
+            links["methods"][mid] = dict(reference=bind("method", method, origin), content_ref=content_ref,
                                          origin_content_ref=frozen["content_ref"])
         if isinstance(unit.get("verification"), str):
             unit["verification"] = _verification(root, unit)
