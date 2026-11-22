@@ -98,9 +98,38 @@ def validate_snapshot(payload, cutoff):
         "adjustment": _text_field(payload, "adjustment"),
         "available_at": available_at.isoformat(),
     }
-    for field in ("exchange", "currency", "source_version", "evidence"):
+    for field in (
+        "exchange", "currency", "source_version", "evidence",
+        "session_calendar", "session_calendar_version",
+    ):
         if payload.get(field) is not None:
             metadata[field] = _text_field(payload, field)
+    if "request_started_at" in payload:
+        request_started_at = parse_timestamp(payload["request_started_at"], "request_started_at")
+        if request_started_at > available_at:
+            raise ValueError("request_started_at must precede snapshot availability.")
+        metadata["request_started_at"] = request_started_at.isoformat()
+    if "latest_expected_session" in payload:
+        latest_expected_session = _text_field(payload, "latest_expected_session")
+        expected_date = date.fromisoformat(latest_expected_session)
+        if expected_date.isoformat() != latest_expected_session:
+            raise ValueError("latest_expected_session must have the YYYY-MM-DD form.")
+        metadata["latest_expected_session"] = latest_expected_session
+    if "fetch_settings" in payload:
+        settings = payload["fetch_settings"]
+        if not isinstance(settings, dict) or any(
+            not isinstance(key, str) or type(value) not in (str, bool, int)
+            for key, value in settings.items()
+        ):
+            raise ValueError("fetch_settings must be an object of string, integer or Boolean values.")
+        metadata["fetch_settings"] = dict(settings)
+    if "fetch_exclusions" in payload:
+        fetch_exclusions = payload["fetch_exclusions"]
+        if not isinstance(fetch_exclusions, list) or any(
+            not isinstance(item, str) for item in fetch_exclusions
+        ):
+            raise ValueError("fetch_exclusions must be a list of strings.")
+        metadata["fetch_exclusions"] = list(fetch_exclusions)
 
     rows = payload.get("bars")
     if not isinstance(rows, list):
@@ -136,6 +165,7 @@ def validate_snapshot(payload, cutoff):
                 exclusions.append(f"{day}: bar availability is inconsistent with session close or snapshot capture.")
             else:
                 eligible.append(bar)
+        exclusions.extend(metadata.get("fetch_exclusions", ()))
     return {
         **metadata,
         "snapshot_id": hashlib.sha256(identity.encode("utf-8")).hexdigest(),
