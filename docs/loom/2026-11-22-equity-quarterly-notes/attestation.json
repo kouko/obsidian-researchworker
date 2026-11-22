@@ -1,0 +1,74 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-22-equity-quarterly-notes",
+  "content_digest": "7b2e9c3e745f215eb6f4acc1255145e752eed726",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-22-equity-quarterly-notes/evidence/probes/test_fixed_quarter_bad_units.py",
+      "artifact": "docs/loom/2026-11-22-equity-quarterly-notes/evidence/probes/test_fixed_quarter_bad_units.py",
+      "result": "pass",
+      "command_digest": "0a14c6fc956bfdb811dd15c653db6f11e7287e7ee0077eeaf2aa0685d2d75ed5"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "quarter_close_code",
+      "lens": "code",
+      "verdict": "PASS",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "59b6528fb40507c4a2d613879c7b6175914e4658",
+      "review_target_sha": "6be3876c71e8645e4f99bbc3a9623c8d49834688",
+      "findings": []
+    },
+    {
+      "reviewer": "quarter_close_skill",
+      "lens": "skill",
+      "verdict": "PASS_WITH_NOTES",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "59b6528fb40507c4a2d613879c7b6175914e4658",
+      "review_target_sha": "6be3876c71e8645e4f99bbc3a9623c8d49834688",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "ambiguity",
+          "anchor": "obsidian-finance/skills/equity-research/SKILL.md:353",
+          "text": "nitpick (non-blocking): The wording can imply that recovery artifacts live in the quarter folder, but the helper writes them at the vault root.",
+          "fix": "State in the skill and README that recovery artifacts are at the vault root and replay is limited to the selected company and quarter."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "867fa72",
+  "tested_commit": "9dee71a7d8cb21287428f181c4cf8c7162b22ce0",
+  "reviewed_commit": "6be3876c71e8645e4f99bbc3a9623c8d49834688",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}
