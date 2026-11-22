@@ -1,12 +1,12 @@
 # Taiwan quarterly equity research — spec
-intent: 2026-11-22-tw-equity-research@5fe05ea
-confirmed-behavior: 2026-11-22 @f6d93c5
+intent: 2026-11-22-tw-equity-research@0bcc3bb
+confirmed-behavior: 2026-11-23 @268ec3d
 pre-build-review: required — new public skill and external disclosure inputs
 
 ## Requirements
 
 REQ-1 — Quarterly continuity
-  WHEN the user starts or resumes research on a TWSE-listed issuer, the skill shall maintain one editable set of numbered Traditional Chinese notes per quarter, with acceptance covering three issuers across three consecutive quarters each and both transitions per issuer → Acceptance #1
+  WHEN the user starts or resumes research on a TWSE-listed issuer, the skill shall maintain one editable set of numbered Traditional Chinese notes per quarter, with acceptance covering three issuers across two consecutive quarters each and one transition per issuer → Acceptance #1
 
 REQ-2 — Monthly updates
   WHEN monthly revenue is public before the filing, the skill shall show available months and compare them only with a prior forecast published before comparable actuals and matching period, scope and currency, keeping quarter-only forecasts intact and indicating when a monthly comparison is unavailable → Acceptance #2
@@ -32,7 +32,7 @@ REQ-6 — US continuity
 - Agent-decided — use stable quarterly paths and dated revision history, following the current equity format. Preserve concurrent user edits and record conflicts for retry.
 - Agent-decided — compare publication time against the requested cutoff and exclude later revisions. Distinguish retrieval failures from a successful search that found no disclosure. Search MOPS and issuer IR for conference materials, shareholder-meeting documents and material-disclosure attachments. Missing supplementary sources leave dependent claims pending.
 - Agent-decided — prefer published transcripts and available captions. Use local timestamped machine transcription as fallback with the recording URL and transcription status. Read needed PDF pages including visual content and check material values against the original units and columns. Verify management numerical guidance against official slides or announcements when available.
-- Agent-decided — select nine issuer-quarter cases in the plan using source coverage and variation in conference material availability.
+- Agent-decided — select six issuer-quarter cases in the plan using source coverage and variation in conference material availability.
 
 ## Alternatives considered
 
