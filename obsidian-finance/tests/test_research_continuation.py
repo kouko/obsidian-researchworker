@@ -47,6 +47,7 @@ def unit(root, directory, name, content, consumed):
 
 @pytest.mark.parametrize("update", [
     "normal", "interrupted", "edited", "edited-before-read", "duplicate-role", "shared-report",
+    "substituted-capture",
 ])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
     asset = two_issuers(tmp_path)[0]
@@ -85,7 +86,7 @@ status: partial
                 checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
                 unresolved=[]))}
         if update == "shared-report":
-            review["units"]["governance"] = dict(review["units"]["credit"], consumed={})
+            review["units"]["governance"] = dict(review["units"]["credit"])
         return module.publish(tmp_path, asset, review, {"analysis.md": body},
             expected if expected is not None else module.publication_snapshot(tmp_path),
             rid, complete=False, storage="quarterly",
@@ -95,6 +96,49 @@ status: partial
     first = publish("fixed1", first_cutoff, "初版", "Original conclusion", "Example / Bank")
     note = next((tmp_path / cycle).glob("*Financial Analysis.md"))
     overview = tmp_path / first["review"]
+    _, stored = module._markdown.record(overview.read_text(), "quarter-overview")
+    assert "fixture_value" not in overview.read_text()
+    bindings = stored["quarter_evidence"]["units"]
+    sid = "filing-2024Q2"
+    ref = bindings["credit"]["sources"][sid]
+    if update == "shared-report":
+        assert bindings["governance"]["sources"][sid] == ref
+    if update == "substituted-capture":
+        quarter_root = tmp_path / cycle
+        capture = quarter_root / ref
+        original_capture = capture.read_text()
+        capture.unlink()
+        with pytest.raises(ValueError, match=sid):
+            module.verify_quarter(quarter_root, overview.name)
+        discovered = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+        assert {"record": f"{asset}/2024Q2/fixed1", "work": "credit"} not in discovered["reusable"]
+        assert any(sid in gap["reason"] and "original-2024Q2" in gap["reason"]
+                   for gap in discovered["gaps"])
+        capture.write_text(original_capture)
+        _, registration = module._markdown.record(original_capture, "source-registration")
+        isolated = tmp_path / "portable-quarter"
+        shutil.copytree(quarter_root, isolated)
+        changed = dict(registration, projection={"fixture_value": 11, "unit": "fixture"})
+        altered_note = module._markdown.render_registration(asset, "source", changed)
+        changed_ref = (isolated / ref).with_name(digest(altered_note) + ".md")
+        changed_ref.write_text(altered_note)
+        isolated_overview = isolated / overview.name
+        isolated_overview.write_text(overview.read_text().replace(ref, changed_ref.relative_to(isolated).as_posix()))
+        with pytest.raises(ValueError, match="source projection mismatch"):
+            module.verify_quarter(isolated, overview.name)
+        registration["identity"] = "substitute"
+        registration["available_at"] = "2024-08-02"
+        replacement = module._markdown.render_registration(asset, "source", registration)
+        substitute = capture.with_name(digest(replacement) + ".md")
+        substitute.write_text(replacement)
+        overview.write_text(overview.read_text().replace(ref, substitute.relative_to(quarter_root).as_posix()))
+        with pytest.raises(ValueError, match=sid):
+            module.verify_quarter(quarter_root, overview.name)
+        discovered = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+        assert {"record": f"{asset}/2024Q2/fixed1", "work": "credit"} not in discovered["reusable"]
+        assert any(sid in gap["reason"] and "original-2024Q2" in gap["reason"]
+                   for gap in discovered["gaps"])
+        return
     args = ("fixed2", CUTOFF, "Update", "Revised conclusion", "Renamed Bank", "fixed1")
     if update == "duplicate-role":
         duplicate = note.with_name("2024Q2 BANK Duplicate - 01 Financial Analysis.md")
@@ -179,6 +223,17 @@ status: partial
     assert note.read_bytes() == before
     verified = module.verify_quarter(tmp_path / cycle, overview.name)
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in verified["reusable"]
+    if update == "normal":
+        _, compact = module._markdown.record(overview.read_text(), "quarter-overview")
+        credit = compact["units"]["credit"]
+        credit["output"]["path"] = cycle + "/" + credit["output"]["path"]
+        retained = {key: compact[key] for key in ("version", "fiscal", "cutoff", "research", "units")}
+        retained.update(id="fixed3", predecessor="fixed2")
+        module.publish(tmp_path, asset, retained, {}, module.publication_snapshot(tmp_path),
+                       "fixed3", complete=False, storage="quarterly", company_name="Example Bank", ticker="BANK")
+        assert note.read_bytes() == before
+        verified = module.verify_quarter(tmp_path / cycle, overview.name)
+        assert {"record": f"{asset}/2024Q2/fixed3", "work": "credit"} in verified["reusable"]
 
 
 def two_issuers(root):
