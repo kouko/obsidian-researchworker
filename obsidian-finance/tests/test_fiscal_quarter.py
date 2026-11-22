@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parents[1] / 'skills/equity-research/scripts'))
+sys.path.insert(0, str(Path(__file__).parents[1] / 'skills/equity-research-us/scripts'))
 
 
 def declaration(period='Q3', end='2024-06-29'):

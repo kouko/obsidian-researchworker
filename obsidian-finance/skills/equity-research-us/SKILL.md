@@ -1,5 +1,5 @@
 ---
-name: equity-research
+name: equity-research-us
 description: Start or continue quarterly equity research for U.S.-listed companies in a managed Obsidian folder, including missing analysis and conditional investment judgments. 美股公司季度研究・跨季接續。
 ---
 
@@ -16,7 +16,12 @@ and completion rules if the saved scope or meaning is uncertain. Resolve paths
 from the loaded skill directory: the package README is `../../README.md`, the
 helper is `../../scripts/research_store.py`. Read the README's version-1
 contracts before constructing metadata or calling publication/recovery. Use
-Python 3.11+ with PyYAML for Markdown metadata. No research-store CLI exists.
+Python 3.11+ with PyYAML for Markdown metadata. Prefer `uv run` for running
+bundled Python scripts and helpers (for example,
+`uv run --isolated --no-project --with pyyaml python` for Markdown work).
+Use `uvx` for a standalone Python CLI when needed. If uv is unavailable, use
+an existing Python environment with the required dependencies. The SEC
+acquisition script only needs the standard library. No research-store CLI exists.
 
 ## 1. Establish the boundary
 

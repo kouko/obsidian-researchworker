@@ -1,6 +1,6 @@
 # SEC acquisition provenance
 
-`skills/equity-research/scripts/sec_client.py` is a narrow adaptation of
+`skills/equity-research-us/scripts/sec_client.py` is a narrow adaptation of
 `investing-toolkit/skills/data-markets/scripts/sec_edgar_client.py` from
 [kouko/monkey-skills](https://github.com/kouko/monkey-skills), inspected at
 commit `c66424d387584c8ddb8c9dd109d15bfbd08b6802` (2026-11-15).
