@@ -9,6 +9,8 @@ from pathlib import Path
 import re
 from hashlib import sha256
 import stat
+from tempfile import TemporaryDirectory
+from urllib.parse import quote
 from datetime import date, datetime, time
 
 _spec = importlib.util.spec_from_file_location("assess_work", Path(__file__).with_name("assess_work.py"))
@@ -19,6 +21,21 @@ exec(compile(_spec.loader.get_source("assess_work"), _spec.origin, "exec"), _ada
 _markdown_spec = importlib.util.spec_from_file_location("research_markdown", Path(__file__).with_name("research_markdown.py"))
 _markdown = importlib.util.module_from_spec(_markdown_spec)
 _markdown_spec.loader.exec_module(_markdown)
+
+_update_spec = importlib.util.spec_from_file_location("industry_update", Path(__file__).with_name("industry_update.py"))
+_update = importlib.util.module_from_spec(_update_spec)
+_update_spec.loader.exec_module(_update)
+
+_REPORT_LABELS = {
+    "quarter-overview": "00 Research Overview",
+    "financial-analysis": "01 Financial Analysis",
+    "operating-analysis": "02 Operating Analysis",
+    "industry-and-competition": "03 Industry and Competition",
+    "forward-forecast": "04 Forward Forecast",
+    "valuation-and-risk": "05 Valuation and Risk",
+    "technical-analysis": "06 Technical Analysis",
+    "synthesis": "99 Investment Synthesis",
+}
 
 
 def _require(value, message):
@@ -409,8 +426,105 @@ def _candidate_sources_valid(base, quarter, cutoff, unit, sources):
     return True
 
 
+def _fixed_notes(root, cycle, asset, quarter):
+    notes = {}
+    try:
+        names = _names(root, cycle)
+    except FileNotFoundError:
+        return notes
+    for name in names:
+        if not name.endswith(".md"):
+            continue
+        path = cycle + "/" + name
+        raw = _bytes(root, path)
+        text = raw.decode("utf-8", errors="replace")
+        for role, label in _REPORT_LABELS.items():
+            if not _markdown.declares_role(text, role):
+                continue
+            props, _ = _markdown.parse_note(text, role, asset_id=asset, fiscal_quarter=quarter)
+            _require(role not in notes, "duplicate quarterly note role: " + role)
+            suffix = " - " + label + ".md"
+            _require(name.startswith(quarter + " ") and name.endswith(suffix),
+                     "invalid fixed quarterly filename: " + name)
+            notes[role] = (path, raw, props)
+    return notes
+
+
+def _fixed_record(notes):
+    _require("quarter-overview" in notes, "missing fixed quarterly overview")
+    path, raw, props = notes["quarter-overview"]
+    _, review = _markdown.record(raw.decode("utf-8"), "quarter-overview")
+    for field in ("publication", "reports", "research", "requirements", "units", "quarter_evidence"):
+        _require(isinstance(review.get(field), dict), "quarterly overview requires a mapping for " + field)
+    _require(all(isinstance(question, dict) for question in review["requirements"].values()),
+             "invalid quarterly overview requirement")
+    bindings = review["quarter_evidence"].get("units")
+    _require(isinstance(bindings, dict) and bindings.keys() == review["units"].keys(),
+             "invalid quarterly overview evidence mappings")
+    paths = set()
+    for qid, unit in review["units"].items():
+        _require(isinstance(unit, dict) and isinstance(unit.get("analysis_inputs", {}), dict)
+                 and isinstance(unit.get("consumed", {}), dict), "invalid quarterly overview unit: " + qid)
+        _candidate_citations(unit)
+        _require(isinstance(bindings[qid], dict) and isinstance(bindings[qid].get("methods"), dict),
+                 "invalid quarterly overview method bindings: " + qid)
+        for method in unit.get("analysis_inputs", {}).values():
+            _analysis_identity(method)
+        if "output" in unit:
+            output = unit["output"]
+            _require(isinstance(output, dict) and _adapter._text(output.get("path")),
+                     "invalid quarterly overview output: " + qid)
+            paths.add(output["path"])
+    reports = {role: Path(note[0]).name for role, note in notes.items() if role != "quarter-overview"}
+    _require(type(review.get("version")) is int and review["version"] == 1
+             and review["id"] == props["review_id"] and review["cutoff"] == props["as_of"]
+             and type(review["publication"]["complete"]) is bool
+             and props["status"] == ("complete" if review["publication"]["complete"] else "partial")
+             and review["reports"] == reports, "quarterly overview and reports disagree")
+    prefix = Path(path).name.removesuffix(" - 00 Research Overview.md")
+    for role, name in reports.items():
+        report_props = notes[role][2]
+        _require(name == f"{prefix} - {_REPORT_LABELS[role]}.md" and report_props["status"] != "draft"
+                 and _adapter._core._instant(report_props["as_of"]) <= _adapter._core._instant(review["cutoff"]),
+                 "invalid report identity or cutoff: " + name)
+    _require(paths <= set(reports.values()), "quarterly overview refers to an unowned output")
+    return path, review
+
+
+def _fixed_reviews(root, base, quarter, cutoff, mode, gaps, proposed, invalid_units):
+    if proposed is not None:
+        return [proposed]
+    asset = base.rsplit("/", 1)[1]
+    cycle = base + "/cycles/" + quarter
+    try:
+        notes = _fixed_notes(root, cycle, asset, quarter)
+        if not notes:
+            return []
+        path, review = _fixed_record(notes)
+        instant = _adapter._core._instant(review["cutoff"])
+        if instant > cutoff or (mode == "historical" and instant != cutoff):
+            gaps.append(dict(record=path, evidence="historical review",
+                reason="No complete saved report state for the requested earlier cutoff",
+                recovery="Inspect the dated report revisions and rebuild only from eligible local sources"))
+            return []
+        damaged = {}
+        _verify_quarter_evidence(Path(root) / cycle, asset, quarter, review, damaged=damaged)
+        if invalid_units is not None:
+            invalid_units[path] = damaged
+        for qid, error in damaged.items():
+            gaps.append(dict(record=path, evidence="quarter-unit:" + qid,
+                reason=str(error), recovery="Recheck the affected report or its exact quarter data"))
+        return [(path, _rebase_review(review, cycle, portable=False))]
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        gaps.append(dict(record=cycle, evidence="quarterly overview", reason=str(error),
+            recovery="Preserve existing notes and resolve the missing or inconsistent quarterly record"))
+        return []
+
+
 def _reviews(root, base, quarter, cutoff, mode, gaps, proposed=None, *,
-             invalid_units=None, repairable_gaps=None):
+             invalid_units=None, repairable_gaps=None, quarterly=False):
+    if quarterly:
+        return _fixed_reviews(root, base, quarter, cutoff, mode, gaps, proposed, invalid_units)
     gaps_start = len(gaps)
     saved = {}
     withdrawn = set()
@@ -679,7 +793,7 @@ def _source_catalog(root, base, issuer, quarters, gaps):
     return list(by_key.values()), native
 
 
-def _snapshot(root, cutoff, mode, proposed=None, *, candidate_for=None):
+def _snapshot(root, cutoff, mode, proposed=None, *, candidate_for=None, quarterly=False):
     config = _research_config(root)
     _require(isinstance(config.get("assets"), list) and config["assets"], "missing asset scope")
     assets = [_id(asset) for asset in config["assets"]]
@@ -739,7 +853,8 @@ def _snapshot(root, cutoff, mode, proposed=None, *, candidate_for=None):
             candidate = proposed[2:] if proposed is not None and proposed[:2] == (asset, quarter) else None
             _require(candidate is None or quarter not in ambiguous_initial, "ambiguous original filing identity")
             invalid_units = {}
-            reviews = (_reviews(root, base, quarter, cutoff, mode, gaps, candidate, invalid_units=invalid_units)
+            reviews = (_reviews(root, base, quarter, cutoff, mode, gaps, candidate,
+                                invalid_units=invalid_units, quarterly=quarterly)
                        if quarter in quarters else [])
             if not reviews and quarter in ambiguous_initial:
                 quarantined.update(initial_sources[quarter])
@@ -771,7 +886,8 @@ def _snapshot(root, cutoff, mode, proposed=None, *, candidate_for=None):
                     if candidate_for == (asset, quarter):
                         for citation in _candidate_citations(unit):
                             adopted_claims.append(dict(record=asset + "/" + quarter + "/" + saved["id"], work=qid,
-                                review_path=path + ("/review.md" if path in invalid_units else "/review.json"),
+                                review_path=path if quarterly else path + (
+                                    "/review.md" if path in invalid_units else "/review.json"),
                                 dependent_work=_dependent_work(questions, qid),
                                 **{key: citation[key] for key in _CITATION_FIELDS}))
                     if qid in invalid_units.get(path, {}):
@@ -959,7 +1075,7 @@ def _rollback_valid(root, target, marker):
         return False
 
 
-def _validate_proposal(root, request, staged, *, output_suffix=""):
+def _validate_proposal(root, request, staged, *, output_suffix="", quarterly=False):
     asset, review, files = request["asset"], json.loads(json.dumps(request["review"])), request["files"]
     quarter, target = _target(asset, review)
     _require(type(review.get("version")) is int and review["version"] == 1, "review version")
@@ -1001,7 +1117,8 @@ def _validate_proposal(root, request, staged, *, output_suffix=""):
                     unit[field]["path"] = replacement + output_suffix
                 else:
                     unit[field] = replacement
-    snapshot, gaps, _ = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest", (asset, quarter, target, review))
+    snapshot, gaps, _ = _snapshot(root, _adapter._core._instant(review["cutoff"]), "latest",
+                                   (asset, quarter, target, review), quarterly=quarterly)
     record = asset + "/" + quarter + "/" + review["id"]
     _require(not any(gap["record"] == record and gap["evidence"].startswith("candidate:") for gap in gaps),
              "candidate evidence must be independently cutoff eligible and frozen")
@@ -1218,7 +1335,8 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
         try:
             if "output" in unit:
                 output = unit["output"]
-                _require(len(Path(output["path"]).parts) == 2 and output["path"].endswith(".md"),
+                parts = Path(output["path"]).parts
+                _require(len(parts) == (1 if "reports" in stored else 2) and output["path"].endswith(".md"),
                          "invalid quarter analysis output path")
                 payload = checked(output["path"], output["digest"])
                 check = unit["verification"]
@@ -1291,8 +1409,29 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
 
 
 def verify_quarter(folder, review):
-    """Verify a copied quarter and one relative run/review.md without a vault."""
+    """Verify a copied quarter and its relative overview or dated review."""
     path = Path(review)
+    if not path.is_absolute() and len(path.parts) == 1 and path.name.endswith(" - 00 Research Overview.md"):
+        try:
+            raw = _bytes(folder, path.name, quarter_relative=True)
+            props, stored = _markdown.record(raw.decode("utf-8"), "quarter-overview")
+            asset, quarter = props["asset_id"], props["fiscal_quarter"]
+            prefix = path.name.removesuffix(" - 00 Research Overview.md")
+            _require(prefix.startswith(quarter + " "), "fixed overview quarter mismatch")
+            notes = {"quarter-overview": (path.name, raw, props)}
+            _require(isinstance(stored.get("reports"), dict), "quarterly overview requires a mapping for reports")
+            for role, filename in stored["reports"].items():
+                _require(role in _markdown.ANALYSIS_ROLES
+                         and filename == f"{prefix} - {_REPORT_LABELS[role]}.md", "invalid fixed report link")
+                report_raw = _bytes(folder, filename, quarter_relative=True)
+                report_props, _ = _markdown.parse_note(report_raw.decode("utf-8"), role,
+                                                       asset_id=asset, fiscal_quarter=quarter)
+                notes[role] = (filename, report_raw, report_props)
+            _, stored = _fixed_record(notes)
+            result = _verify_quarter_evidence(folder, asset, quarter, stored)
+            return dict(verification=result, status="verified", reusable=result["reusable"], gaps=result["gaps"])
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise ValueError("Cannot verify quarter evidence: " + str(error)) from error
     _require(not path.is_absolute() and len(path.parts) == 2 and path.name == "review.md",
              "provide the quarter-relative run/review.md")
     _id(path.parts[0])
@@ -1477,14 +1616,210 @@ def _link_new_bytes(root, stage, target, name, payload):
         os.close(source)
 
 
-def publish(root, asset, review, files, expected, run_id, *, complete=True, storage="legacy"):
+def _optional_bytes(root, reference):
+    try:
+        return _bytes(root, reference)
+    except FileNotFoundError:
+        return None
+
+
+def _quarter_prefix(quarter, ticker, company_name):
+    _require(isinstance(ticker, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.-]*", ticker),
+             "invalid quarterly ticker")
+    _require(isinstance(company_name, str), "company name required")
+    company = re.sub(r'[<>:"/\\|?*#\[\]^%\x00-\x1f\x7f]', "-", company_name)
+    company = " ".join(company.split()).strip(" .-")
+    _require(company and len(company.encode("utf-8")) <= 120, "invalid quarterly company name")
+    return f"{quarter} {ticker.upper()} {company}"
+
+
+def _retain_revision(old, content, units, reason):
+    if old is None:
+        return content
+    _, old_bytes, props = old
+    delimiter = "\n## Revision history\n"
+    _require(delimiter not in content, "revision history is retained from the saved report")
+    _, previous = _markdown.parse_note(old_bytes.decode("utf-8"), props["finance_role"])
+    _, current = _markdown.parse_note(content, props["finance_role"])
+    previous_digest = sha256(old_bytes).hexdigest()
+    verified = [unit for unit in units
+                if unit["output"].get("digest") == previous_digest
+                and isinstance(unit.get("verification"), dict)
+                and _completion_valid(unit["verification"], previous_digest)]
+    if not verified:
+        # Keep all editable text, including any older history an editor may
+        # have changed, without attesting to the provenance of its contents.
+        quoted = "\n".join("> " + line for line in previous.strip().splitlines())
+        return (content.rstrip() + "\n" + delimiter + "\n"
+                + "### Previous editable report (unverified)\n\n"
+                + f"Reason for update: {reason}\n\n" + quoted + "\n")
+    prior_body, _, history = previous.partition(delimiter)
+    if prior_body.strip() == current.strip():
+        return content.rstrip() + "\n" + delimiter + history if history else content
+    source_versions = {(sid, value["version"]) for unit in verified
+                       for sid, value in unit.get("consumed", {}).items()}
+    sources = ", ".join(f"{sid} ({version})" for sid, version in sorted(source_versions))
+    prior = "\n".join("> " + line for line in prior_body.strip().splitlines())
+    return (content.rstrip() + "\n" + delimiter + "\n"
+            + f"### Previous report as of {props['as_of']} ({props['review_id']})\n\n"
+            + f"Sources: {sources or 'None recorded'}\n\nReason: {reason}\n\n"
+            + prior + "\n" + ("\n" + history if history else ""))
+
+
+def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
+                       company_name, ticker, overview_title):
+    _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
+    _require(all(re.fullmatch(r"[a-zA-Z0-9_-]+\.md", name) and isinstance(content, str)
+                 for name, content in files.items()), "plain proposal filenames and UTF-8 text required")
+    _require(asset in _research_config(root)["assets"], "asset outside configured scope")
+    quarter, target = _target(asset, review)
+    cycle = target.rsplit("/", 1)[0]
+    base = cycle.rsplit("/", 2)[0]
+    issuer = _asset_metadata(root, base)
+    root = Path(root).absolute()
+    _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
+    _preconditions(root, expected)
+    with _update.read_barrier(root, namespace="equity"):
+        notes = _fixed_notes(root, cycle, asset, quarter)
+        prefix = _quarter_prefix(quarter, ticker, company_name) if not notes else None
+        previous = {}
+        if notes:
+            overview, portable = _fixed_record(notes)
+            previous = _rebase_review(portable, cycle, portable=False)
+            prefix = Path(overview).name.removesuffix(" - 00 Research Overview.md")
+            _require(review["id"] != previous["id"]
+                     and review.get("predecessor") == previous["id"]
+                     and _adapter._core._instant(previous["cutoff"]) <= _adapter._core._instant(review["cutoff"])
+                     and previous["fiscal"] == review["fiscal"],
+                     "publication conflict: stale predecessor, fiscal identity or cutoff")
+        else:
+            _require(review.get("predecessor") is None, "initial quarter cannot have a predecessor")
+    _require(review.get("last_success") == previous.get("last_success"),
+             "local publication cannot advance last successful external verification")
+    previous_units = previous.get("units", {})
+    previous_outputs = {}
+    for unit in previous_units.values():
+        if "output" in unit:
+            previous_outputs.setdefault(unit["output"]["path"], []).append(unit)
+    saved = _adapter._json(_encoded(review).decode("utf-8"))
+    saved.update(requirements=_unique(issuer["questions"]), publication=dict(run=run_id, complete=complete))
+    proposal = dict(asset=asset, review=saved, files=files, previous=previous, complete=complete)
+    draft_root = "investing/.research-drafts"
+    _mkdir(root, draft_root)
+    with TemporaryDirectory(prefix="quarterly-", dir=root / draft_root) as temporary:
+        stage = Path(temporary).relative_to(root).as_posix()
+        for name, content in files.items():
+            _write_new(root, stage + "/" + name, content.encode("utf-8"))
+        _validate_proposal(root, proposal, stage, quarterly=True)
+
+    reports = {role: Path(note[0]).name for role, note in notes.items() if role != "quarter-overview"}
+    intended = {}
+    proposed_paths = {}
+    retained_outputs = []
+    roles = set()
+    for qid, unit in saved["units"].items():
+        if "output" not in unit:
+            continue
+        output = unit["output"]
+        path = output["path"]
+        if not path.startswith(target + "/"):
+            _require(unit == previous_units.get(qid), "unowned quarterly report reference")
+            retained_outputs.append(output)
+            continue
+        name = path[len(target) + 1:]
+        _require(name in files, "missing proposed analysis")
+        content = files[name]
+        verification = unit.get("verification")
+        _require(isinstance(verification, dict)
+                 and _completion_valid(verification, output["digest"])
+                 and sha256(content.encode("utf-8")).hexdigest() == output["digest"],
+                 "new report lacks matching inline verification")
+        if name not in proposed_paths:
+            props, _ = _markdown.parse_note(content, _markdown.ANALYSIS_ROLES, asset_id=asset,
+                fiscal_quarter=quarter, as_of=review["cutoff"], review_id=review["id"])
+            role = props["finance_role"]
+            _require(role not in roles and props["status"] in ("partial", "complete"),
+                     "duplicate or draft quarterly report")
+            roles.add(role)
+            filename = reports.setdefault(role, f"{prefix} - {_REPORT_LABELS[role]}.md")
+            path = cycle + "/" + filename
+            content = _retain_revision(notes.get(role), content, previous_outputs.get(path, []),
+                                       review["research"]["changes"])
+            intended[path] = content.encode("utf-8")
+            proposed_paths[name] = path
+        path = proposed_paths[name]
+        output.update(path=path, digest=sha256(intended[path]).hexdigest())
+        verification["output_digest"] = output["digest"]
+    _require(proposed_paths.keys() == files.keys(), "unreferenced proposed reports")
+    for output in retained_outputs:
+        if output["path"] in intended:
+            _require(output["digest"] == sha256(intended[output["path"]]).hexdigest(),
+                     "re-verify every unit retained in a changed shared report")
+    saved["reports"] = reports
+    portable, evidence = _capture_quarter(root, asset, issuer["issuer"], cycle, saved, expected)
+    overview = cycle + f"/{prefix} - 00 Research Overview.md"
+    title = overview_title or (notes["quarter-overview"][2]["title"] if notes
+                               else f"{prefix} Research Overview")
+    _require(isinstance(title, str) and title.strip() and not any(c in title for c in "\r\n"),
+             "invalid quarterly overview title")
+    links = [(_REPORT_LABELS[role], quote(reports[role])) for role in _REPORT_LABELS if role in reports]
+    overview_text = _markdown.render_quarter_overview(asset, quarter, portable, title, links)
+    _markdown.record(overview_text, "quarter-overview")
+    intended[overview] = overview_text.encode("utf-8")
+
+    observed = {path: raw for path, raw, _ in notes.values()}
+    for path in intended:
+        if path in expected:
+            _require(path in observed, "quarter report would overwrite an unowned note: " + path)
+
+    def prepare_evidence():
+        _preconditions(root, expected)
+        for reference, payload in evidence.items():
+            destination = cycle + "/" + reference
+            _mkdir(root, destination.rsplit("/", 1)[0])
+            previous_bytes = _optional_bytes(root, destination)
+            if previous_bytes is None:
+                _write_new(root, destination, payload)
+            else:
+                _require(previous_bytes == payload, "quarter evidence conflicts with an existing file: " + destination)
+
+    _update.apply(root, {path: observed.get(path) for path in intended}, intended,
+                  check_scope=prepare_evidence, namespace="equity")
+    return dict(status="complete" if complete else "checkpoint", review=overview, run=run_id)
+
+
+def recover_quarterly(root, asset, quarter):
+    """Resume an interrupted write only for the requested asset fiscal quarter."""
+    cycle = Path("investing/assets/equities") / _id(asset) / "cycles" / _id(quarter)
+    _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
+    root = Path(root).absolute()
+    _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
+
+    def check_scope(changes):
+        for reference, (_, intended) in changes.items():
+            path = Path(reference)
+            _require(path.parent == cycle, "Pending writes are outside the selected quarter")
+            props, _ = _markdown.parse_note(intended.decode("utf-8"), _REPORT_LABELS.keys(),
+                                           asset_id=asset, fiscal_quarter=quarter)
+            _require(path.name.startswith(quarter + " ")
+                     and path.name.endswith(f" - {_REPORT_LABELS[props['finance_role']]}.md"),
+                     "Pending write does not match its report role")
+
+    return _update.recover(root, namespace="equity", check_scope=check_scope)
+
+
+def publish(root, asset, review, files, expected, run_id, *, complete=True, storage="legacy",
+            company_name=None, ticker=None, overview_title=None):
     """Save one append-only review, completion last; recover using its run ID."""
     _id(run_id)
-    _require(storage in ("legacy", "markdown"), "unsupported research storage")
+    _require(storage in ("legacy", "markdown", "quarterly"), "unsupported research storage")
     if isinstance(review.get("units"), dict):
         review = dict(review, units={qid: _without_candidate_digests(unit) for qid, unit in review["units"].items()})
     if storage == "markdown":
         return _publish_markdown(root, asset, review, files, expected, run_id, complete)
+    if storage == "quarterly":
+        return _publish_quarterly(root, asset, review, files, expected, run_id, complete,
+                                  company_name, ticker, overview_title)
     _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
     _require(all(isinstance(name, str) and re.fullmatch(r"[a-zA-Z0-9_-]+\.(md|json)", name)
                  and name not in ("review.json", "pending.json", "withdrawn.json", "abandoned.json")
@@ -1711,12 +2046,22 @@ def _markdown_drafts(root):
     return gaps, targets
 
 
-def discover(root, mode, cutoff, *, candidate_for=None):
+def discover(root, mode, cutoff, *, candidate_for=None, storage="legacy"):
     """Derive accepted assessment input from saved metadata, without writes.
 
     Unsupported/ambiguous layouts raise ValueError with existing data preserved.
     Recorded completion checks are attestations, never analytical approval.
     """
+    _require(storage in ("legacy", "quarterly"), "unsupported discovery storage")
+    if storage == "quarterly":
+        boundary = Path(root).absolute()
+        _require(not any(p.is_symlink() for p in (boundary, *boundary.parents)), "symlink root")
+        with _update.read_barrier(boundary, namespace="equity"):
+            return _discover(boundary, mode, cutoff, candidate_for, quarterly=True)
+    return _discover(root, mode, cutoff, candidate_for, quarterly=False)
+
+
+def _discover(root, mode, cutoff, candidate_for, *, quarterly):
     try:
         _adapter._require(mode in ("historical", "latest"), "mode")
         _adapter._timestamp(cutoff)
@@ -1728,7 +2073,7 @@ def discover(root, mode, cutoff, *, candidate_for=None):
             _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
             candidate_for = (asset, quarter)
         snapshot, gaps, adopted_claims = _snapshot(boundary, _adapter._core._instant(cutoff), mode,
-                                                   candidate_for=candidate_for)
+                                                   candidate_for=candidate_for, quarterly=quarterly)
         result = _adapter.assess(snapshot, mode, cutoff)
         if candidate_for is not None:
             base = "investing/assets/equities/" + asset
@@ -1736,6 +2081,11 @@ def discover(root, mode, cutoff, *, candidate_for=None):
             result["candidate_notes"] = [dict(path=path) for path in note_paths]
             result["adopted_claims"] = [dict(claim, note_present=claim["path"] in note_paths)
                                         for claim in adopted_claims]
+        if quarterly:
+            if gaps:
+                result["gaps"].extend(gaps)
+                result["status"] = "partial"
+            return result
         try:
             runs = _names(boundary, "investing/.research-runs")
         except FileNotFoundError:

@@ -170,7 +170,8 @@ Neither establishes installed-host skill execution or complete financial researc
 
 The [equity-research skill](skills/equity-research/SKILL.md) guides the host
 agent through scoped discovery, applicable source checks, actual affected
-analysis and append-only publication/recovery using the APIs below. Its bundled
+analysis and safe in-place updates of its [fixed quarterly notes](#fixed-quarterly-notes).
+Its bundled
 SEC CLI acquires required missing evidence. The persisted asset questions define the research
 scope; the caller supplies the root, mode and assessment cutoff rather than a
 new hand-written work list each time. Unsupported old notes are preserved.
@@ -192,6 +193,73 @@ repair. The skill and helpers provide instructions and bounded local mechanics;
 those trials do not prove installed-host execution, live source coverage,
 calibrated returns or completion of the broader financial research program.
 Real fresh-host continuation remains a separate verification requirement.
+
+## Fixed quarterly notes
+
+The equity skill uses the `research_store` Python API with
+`storage="quarterly"`. Select the fiscal quarter from company evidence and
+assess at the requested cutoff:
+
+```python
+result = research_store.discover(
+    root, mode, cutoff, candidate_for=(asset_id, quarter), storage="quarterly",
+)
+```
+
+Use a marked `investing/index.md` and a marked asset entry to establish scope.
+Save one stable overview and one note per completed or partial report role
+directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
+reports and contains the current progress record. It uses `00 Research Overview`;
+analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
+The final report uses `99 Investment Synthesis`. For example,
+`2024Q3 AAPL Apple - 01 Financial Analysis.md` can have a Chinese heading and
+body. Later language or company display name changes keep the saved path.
+Existing old-format files stay in place.
+
+Capture `publication_snapshot(root)` before analysis. The helper checks
+managed files against that original snapshot. Prepare the version-1 review
+envelope from the [metadata reference](#read-only-saved-folder-discovery-metadata-v1)
+and supply changed reports as UTF-8 Markdown with their existing role properties
+and inline verification. Use plain ASCII proposal keys, such as
+`financial-analysis.md`, and construct their root-relative proposal output paths
+as `investing/assets/equities/<asset-id>/cycles/<YYYYQq>/<cutoff-date>-<review-id>/<key>`.
+These paths identify inputs to the helper. The helper rewrites each new output
+reference to its stable quarterly path. Several scoped questions in one role
+may share a report. Supply the file once, reference its proposal path from each
+unit, and reverify each of those units when the shared report changes. For
+reports whose content and dependencies still qualify, copy unchanged units
+from the saved progress record with their existing output references. Use the
+current review ID as the predecessor, when present.
+
+```python
+saved = research_store.publish(
+    root, asset_id, review, files, expected, unique_run_id, complete=False,
+    storage="quarterly", ticker="AAPL", company_name="Apple",
+    overview_title="Apple FY2024Q3 研究總覽",
+)
+```
+
+Set `complete=True` only after all required work has been verified. For a
+changed finding, put the reason in `research.changes`. The affected note keeps
+the previous report and its dated source references in its revision history.
+Assess those versions before citing a prior conclusion. An earlier-cutoff
+assessment can report a gap when the retained material is insufficient.
+
+After a pending save is interrupted, use
+`research_store.recover_quarterly(root, asset_id, quarter)` and rediscover.
+This uses the selected equity quarter's `.equity-update.json` and
+`.equity-stage-*` recovery files, so industry updates and other quarters are
+outside its scope. Preserve conflicting edits and the pending record if recovery
+cannot safely proceed. After a successful replacement, hidden
+`.equity-stage-*` folders retain the displaced copies in case an editor that
+had the old file open writes to it. In a conflict, compare the current note
+and the affected quarter's recovery copy. Retention and manual cleanup are
+separate follow-up work.
+
+This format keeps data for each quarter under that quarter's `data/`. To
+verify a copied quarter, pass its overview's basename,
+such as `2024Q3 AAPL Apple - 00 Research Overview.md`, to
+`research_store.verify_quarter(quarter_root, overview_name)`.
 
 ## Read-only local work assessment (prototype v1)
 
@@ -321,6 +389,9 @@ financial-analysis dataset. Existing acquisition remains the separate operation
 documented above.
 
 ## Read-only saved-folder discovery (metadata v1)
+
+The examples below describe the version-1 envelope and older caller layout.
+For the current equity skill, use the [fixed quarterly workflow](#fixed-quarterly-notes).
 
 `scripts/research_store.py` provides `discover(root, mode, cutoff) -> dict`.
 The root is an explicitly selected local research folder containing the managed
@@ -459,6 +530,9 @@ recorded checks do not replace the agent's substantive research and review.
 
 ## Protected local publication and recovery
 
+This section describes the older append-only caller API. For the current
+equity skill, use the [fixed quarterly workflow](#fixed-quarterly-notes).
+
 The same module exposes Python APIs only; it has no publication CLI. These
 operations are for an explicitly authorized managed subtree or isolated copy.
 They do not acquire evidence, perform analysis, certify investment quality or
@@ -572,9 +646,9 @@ require separate verification.
 
 ## Markdown research continuation
 
-Use this format for new skill-managed research. Python needs PyYAML for
-Markdown metadata; existing JSON runs remain readable without it. The helper's
-legacy write interface remains available to older callers.
+The current equity skill uses the [fixed quarterly workflow](#fixed-quarterly-notes).
+Its Markdown metadata requires PyYAML. The detailed format notes here also
+describe the older `storage="markdown"` caller API where noted.
 
 Markdown records use a restricted PyYAML loader and a dumper without aliases.
 The loader rejects anchors, aliases, and duplicate mapping keys. It keeps
@@ -619,7 +693,7 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
   ignored. Standalone verification checks saved claims against their source
   bindings without the live note. Original filings and managed outputs remain
   subject to exact hash checks.
-- The existing publication helper accepts Markdown mode for the
+- The older `storage="markdown"` mode accepts the
   seven analysis roles. It renders a versioned review note, embeds verification,
   retains old outputs, and writes no management JSON for new pilot runs.
 - Staged analysis notes declare draft status. The final review appears after
@@ -641,8 +715,9 @@ registration can bind both the reviewed extraction (`raw_ref` and
 filing is distinct. Comparison sources keep their real fiscal identity.
 They do not create cycles in the destination.
 
-Copy the whole quarter folder, then call
-`verify_quarter(quarter_root, "run-directory/review.md")`. Operational
+Copy the whole quarter folder, then pass the filename of the
+`00 Research Overview.md` note to `verify_quarter`. The older Markdown mode
+instead takes `"run-directory/review.md"`. Operational
 references are quarter-relative. Verification checks the captured
 configuration, rendered outputs and local evidence, including their hashes
 and historical cutoff. A missing local file fails verification even if the

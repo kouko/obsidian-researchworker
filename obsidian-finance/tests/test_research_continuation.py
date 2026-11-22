@@ -45,6 +45,142 @@ def unit(root, directory, name, content, consumed):
                 verification=directory + "/" + name + "-check.json", consumed=consumed)
 
 
+@pytest.mark.parametrize("update", [
+    "normal", "interrupted", "edited", "edited-before-read", "duplicate-role", "shared-report",
+])
+def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
+    asset = two_issuers(tmp_path)[0]
+    cycle = f"investing/assets/equities/{asset}/cycles/2024Q2"
+    old = tmp_path / cycle / "2024-08-01-r1/review.json"
+    original = old.read_bytes()
+    source_review = json.loads(original)
+    module = load()
+
+    def publish(rid, cutoff, title, finding, company, predecessor=None, expected=None):
+        review = dict(source_review, id=rid, cutoff=cutoff, research=dict(
+            method="Retained public evidence", assumptions=[], changes="Updated credit assessment",
+            gaps=["Synthesis pending"], horizons={h: dict(judgment="insufficient_evidence",
+                evidence=[], invalidation_triggers=[]) for h in ("short", "medium", "long")}))
+        if predecessor:
+            review["predecessor"] = predecessor
+        body = f"""---
+finance_schema: 1
+finance_role: financial-analysis
+title: {title}
+asset_id: {asset}
+fiscal_quarter: 2024Q2
+as_of: "{cutoff}"
+review_id: {rid}
+status: partial
+---
+
+# {title}
+
+{finding}
+"""
+        target = f"{cycle}/{cutoff[:10]}-{rid}/analysis.md"
+        review["units"] = {"credit": dict(source_review["units"]["credit"],
+            output=dict(path=target, digest=digest(body)),
+            verification=dict(version=1, output_digest=digest(body),
+                checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
+                unresolved=[]))}
+        if update == "shared-report":
+            review["units"]["governance"] = dict(review["units"]["credit"], consumed={})
+        return module.publish(tmp_path, asset, review, {"analysis.md": body},
+            expected if expected is not None else module.publication_snapshot(tmp_path),
+            rid, complete=False, storage="quarterly",
+            company_name=company, ticker="BANK")
+
+    first_cutoff = "2024-08-12T23:59:59+00:00"
+    first = publish("fixed1", first_cutoff, "初版", "Original conclusion", "Example / Bank")
+    note = next((tmp_path / cycle).glob("*Financial Analysis.md"))
+    overview = tmp_path / first["review"]
+    args = ("fixed2", CUTOFF, "Update", "Revised conclusion", "Renamed Bank", "fixed1")
+    if update == "duplicate-role":
+        duplicate = note.with_name("2024Q2 BANK Duplicate - 01 Financial Analysis.md")
+        duplicate.write_bytes(note.read_bytes())
+        with pytest.raises(ValueError, match="duplicate quarterly note role"):
+            publish(*args)
+        view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+        assert any("duplicate quarterly note role" in gap["reason"] for gap in view["gaps"])
+        return
+    if update == "edited":
+        expected = module.publication_snapshot(tmp_path)
+        note.write_bytes(note.read_bytes() + b"\nA user's added observation.\n")
+        before = note.read_bytes()
+        with pytest.raises(ValueError, match="Publication conflict"):
+            publish(*args, expected=expected)
+        assert note.read_bytes() == before
+        assert "fixed1" in overview.read_text()
+        return
+    if update == "edited-before-read":
+        note.write_bytes(note.read_bytes() + b"\nAn unchecked manual hypothesis.\n")
+        publish(*args)
+        text = note.read_text()
+        assert "Previous editable report (unverified)" in text
+        assert "> An unchecked manual hypothesis." in text
+        assert "Sources: filing-2024Q2" not in text
+        assert f"Previous report as of {first_cutoff}" not in text
+        return
+    if update == "interrupted":
+        exchange = module._update._exchange
+        before = overview.read_bytes()
+
+        def interrupt(*args):
+            exchange(*args)
+            raise RuntimeError("interrupted just after financial note swap")
+
+        monkeypatch.setattr(module._update, "_exchange", interrupt)
+        with pytest.raises(RuntimeError, match="interrupted"):
+            publish(*args)
+        assert overview.read_bytes() == before
+        with pytest.raises(ValueError, match="pending"):
+            module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+        monkeypatch.setattr(module._update, "_exchange", exchange)
+        assert module._update.recover(tmp_path) is False
+        for wrong_asset, wrong_quarter in [(asset, "2024Q1"), ("software-fixture", "2024Q2")]:
+            with pytest.raises(ValueError, match="outside the selected quarter"):
+                module.recover_quarterly(tmp_path, wrong_asset, wrong_quarter)
+            assert overview.read_bytes() == before
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is True
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is False
+
+        industry_note = tmp_path / "industry-note.md"
+        industry_note.write_bytes(b"Original industry note")
+        monkeypatch.setattr(module._update, "_exchange", interrupt)
+        with pytest.raises(RuntimeError, match="interrupted"):
+            module._update.apply(tmp_path, {"industry-note.md": b"Original industry note"},
+                                 {"industry-note.md": b"Updated industry note"})
+        monkeypatch.setattr(module._update, "_exchange", exchange)
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is False
+        assert module._update.recover(tmp_path) is True
+    else:
+        second = publish(*args)
+        assert first["review"] == second["review"]
+    assert first["review"] == f"{cycle}/2024Q2 BANK Example - Bank - 00 Research Overview.md"
+    assert note.name == "2024Q2 BANK Example - Bank - 01 Financial Analysis.md"
+    assert "Original conclusion" in note.read_text() and "Revised conclusion" in note.read_text()
+    assert "filing-2024Q2" in note.read_text() and first_cutoff in note.read_text()
+    assert "Financial%20Analysis.md" in (tmp_path / first["review"]).read_text()
+    assert old.read_bytes() == original
+    view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+    assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in view["reusable"]
+    if update == "shared-report":
+        assert {"record": f"{asset}/2024Q2/fixed2", "work": "governance"} in view["reusable"]
+        assert list((tmp_path / cycle).glob("*Financial Analysis.md")) == [note]
+    before = note.read_bytes()
+    historical = module.discover(tmp_path, "historical", first_cutoff, storage="quarterly")
+    assert not any("/fixed2" in item["record"] for item in historical["reusable"])
+    assert any("earlier cutoff" in gap["reason"] for gap in historical["gaps"])
+    assert note.read_bytes() == before
+    with pytest.raises(ValueError, match="stale predecessor, fiscal identity or cutoff"):
+        publish("backdated", first_cutoff, "Earlier", "Would replace current findings",
+                "Example Bank", "fixed2")
+    assert note.read_bytes() == before
+    verified = module.verify_quarter(tmp_path / cycle, overview.name)
+    assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in verified["reusable"]
+
+
 def two_issuers(root):
     assets = ["bank-fixture", "software-fixture"]
     put(root, "investing/research.json", dict(version=1, assets=assets))

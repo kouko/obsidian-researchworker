@@ -17,6 +17,10 @@ import uuid
 _PENDING = ".industry-update.json"
 _STAGE_PREFIX = ".industry-stage-"
 _DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+_UPDATE_NAMES = {
+    "industry": (_PENDING, _STAGE_PREFIX),
+    "equity": (".equity-update.json", ".equity-stage-"),
+}
 
 
 class UpdateConflict(ValueError):
@@ -97,11 +101,12 @@ def _current(root, path):
 
 
 @contextmanager
-def read_barrier(vault):
+def read_barrier(vault, *, namespace="industry"):
     """Hold the cooperating reader lock while consuming published notes."""
+    pending, _ = _UPDATE_NAMES[namespace]
     with _locked_vault(vault) as root:
-        if _read(root, _PENDING) is not None:
-            raise UpdateConflict("Industry update pending; recover before reading")
+        if _read(root, pending) is not None:
+            raise UpdateConflict(f"{namespace.capitalize()} update pending; recover before reading")
         yield
 
 
@@ -176,11 +181,11 @@ def _unpacked(data):
     return None if data is None else base64.b64decode(data, validate=True)
 
 
-def _journal(data):
+def _journal(data, stage_prefix):
     try:
         record = json.loads(data)
         stage = record["stage"]
-        if not re.fullmatch(r"\.industry-stage-[a-f0-9]{32}", stage):
+        if not re.fullmatch(re.escape(stage_prefix) + r"[a-f0-9]{32}", stage):
             raise ValueError("Invalid staging identity")
         changes = {}
         for path, before, after in record["files"]:
@@ -193,7 +198,7 @@ def _journal(data):
             raise ValueError("Empty journal")
         return stage, changes
     except (KeyError, TypeError, ValueError) as exc:
-        raise UpdateConflict("Malformed pending industry update journal") from exc
+        raise UpdateConflict("Malformed pending note update journal") from exc
 
 
 def _same_inode(left, left_name, right, right_name):
@@ -228,7 +233,7 @@ def _update_one(root, stage, payload, path, before, after):
         os.fsync(stage)
 
 
-def _finish(root, stage_name, changes):
+def _finish(root, stage_name, changes, pending):
     with _directory(stage_name, root) as stage:
         for index, (path, (before, after)) in enumerate(changes.items()):
             _update_one(root, stage, f"{index}.note", path, before, after)
@@ -237,7 +242,7 @@ def _finish(root, stage_name, changes):
                 after if before is None else before
             ):
                 raise UpdateConflict(f"Notes changed before batch publication: {path}")
-        os.unlink(_PENDING, dir_fd=root)
+        os.unlink(pending, dir_fd=root)
         os.fsync(root)
         # An external editor may still hold the displaced inode open. Leave
         # replacements linked so later writes to that inode remain recoverable.
@@ -250,13 +255,14 @@ def _finish(root, stage_name, changes):
         os.rmdir(stage_name, dir_fd=root)
 
 
-def apply(vault, expected, intended, *, check_scope=None):
+def apply(vault, expected, intended, *, check_scope=None, namespace="industry"):
     """Check scope and exact bytes under lock before starting a journal."""
     if set(expected) != set(intended):
         raise UpdateConflict("Every write requires an expected value")
+    pending, stage_prefix = _UPDATE_NAMES[namespace]
     with _locked_vault(vault, write=True) as root:
-        if _read(root, _PENDING) is not None:
-            raise UpdateConflict("Industry update pending; recover before applying")
+        if _read(root, pending) is not None:
+            raise UpdateConflict(f"{namespace.capitalize()} update pending; recover before applying")
         if check_scope is not None:
             check_scope()
         changes = {}
@@ -275,7 +281,7 @@ def apply(vault, expected, intended, *, check_scope=None):
             if any(before is not None for before, _ in changes.values())
             else None
         )
-        stage_name = _STAGE_PREFIX + uuid.uuid4().hex
+        stage_name = stage_prefix + uuid.uuid4().hex
         os.mkdir(stage_name, 0o700, dir_fd=root)
         with _directory(stage_name, root) as stage:
             if native is not None:
@@ -296,20 +302,23 @@ def apply(vault, expected, intended, *, check_scope=None):
                 _write_new(stage, "displaced.json", json.dumps(displaced).encode())
             _write_new(stage, "journal", json.dumps(record).encode())
             os.fsync(stage)
-            os.link("journal", _PENDING, src_dir_fd=stage, dst_dir_fd=root, follow_symlinks=False)
+            os.link("journal", pending, src_dir_fd=stage, dst_dir_fd=root, follow_symlinks=False)
             os.fsync(root)
-        _finish(root, stage_name, changes)
+        _finish(root, stage_name, changes, pending)
 
 
-def recover(vault):
+def recover(vault, *, namespace="industry", check_scope=None):
     """Finish a recognized interrupted batch; retain both sides on conflict."""
+    pending, stage_prefix = _UPDATE_NAMES[namespace]
     with _locked_vault(vault, write=True) as root:
-        data = _read(root, _PENDING)
+        data = _read(root, pending)
         if data is None:
             return False
-        stage, changes = _journal(data)
+        stage, changes = _journal(data, stage_prefix)
         with _directory(stage, root) as directory:
-            if not _same_inode(root, _PENDING, directory, "journal"):
-                raise UpdateConflict("Unrecognized industry staging journal")
-        _finish(root, stage, changes)
+            if not _same_inode(root, pending, directory, "journal"):
+                raise UpdateConflict("Unrecognized note staging journal")
+        if check_scope is not None:
+            check_scope(changes)
+        _finish(root, stage, changes, pending)
         return True

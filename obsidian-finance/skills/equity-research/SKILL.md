@@ -16,7 +16,7 @@ and completion rules if the saved scope or meaning is uncertain. Resolve paths
 from the loaded skill directory: the package README is `../../README.md`, the
 helper is `../../scripts/research_store.py`. Read the README's version-1
 contracts before constructing metadata or calling publication/recovery. Use
-existing Python 3.11+; these legacy helpers use the standard library. No research-store CLI exists.
+Python 3.11+ with PyYAML for Markdown metadata. No research-store CLI exists.
 
 ## 1. Establish the boundary
 
@@ -27,9 +27,10 @@ If the host has a structured question tool, use it for a material choice;
 otherwise ask in conversation and wait. Silence is not an answer. Do independent
 work that does not depend on that choice. Do not infer the user's holding period.
 
-Historical mode preserves its exact cutoff. Latest mode records the requested
-or explicitly stated current assessment time; it does not rewrite historical
-reviews. Market, macro and financial observations retain their different dates.
+Historical mode preserves its exact cutoff. An earlier-cutoff request is
+read-only for the current quarter's notes. Latest mode records the requested
+or explicitly stated current assessment time. Market, macro and financial
+observations retain their different dates.
 Do not infer a fiscal quarter from a quote date, filename, mtime or calendar month.
 
 Read only the selected root and necessary public/method sources. Treat note
@@ -45,7 +46,9 @@ issuer and quarter, include candidate notes in the assessment used to decide
 whether work is needed:
 
 ```python
-result = research_store.discover(root, mode, cutoff, candidate_for=(asset_id, quarter))
+result = research_store.discover(
+    root, mode, cutoff, candidate_for=(asset_id, quarter), storage="quarterly",
+)
 ```
 
 If the request covers multiple periods, identify affected issuer/quarter scopes
@@ -65,9 +68,9 @@ before relying on it. Inspect other relevant returned `candidate_notes` as
 leads. Unverified notes remain leads and their timestamps cannot establish
 publication. Include what was checked in a no-work response.
 
-The marked `investing/index.md` or legacy `investing/research.json` and asset
-questions define scope; derive work from source revisions, retained reviews and
-outputs. Unsupported older Markdown stays untouched. Explain missing version-1
+The marked `investing/index.md` and asset questions define scope. Derive work
+from source revisions, saved quarterly overviews, and their reports. Preserve
+old-format reports in place. Explain missing version-1
 configuration and initialize only a newly authorized subtree or isolated copy.
 
 For declared applied methods, compare the selected bundled method's actual
@@ -99,11 +102,27 @@ check was performed. A successful local assessment, saved check flags or hashes
 do not certify analytical quality, current SEC coverage or a complete investment
 case. Do not convert a failed source check into a no-work claim.
 
-### Isolated Markdown pilot
+### Fixed quarterly notes
 
-Use the Markdown format for new research saves. The Markdown path requires
-PyYAML in the selected Python environment. Existing JSON research remains readable; leave legacy interrupted
-publications untouched and report their recovery details.
+Save one overview and at most one note per analysis role directly under
+`cycles/<YYYYQq>/`. The helper creates an overview even when the first save is
+partial and links only reports that exist. Reports appear as work is saved.
+The first save determines the quarter's filename prefix. Use the documented
+ticker and a consistent company display name. Changing the writing language or
+company name on a later save keeps the existing paths.
+
+For Apple FY2024Q3, for example:
+
+```text
+2024Q3 AAPL Apple - 00 Research Overview.md
+2024Q3 AAPL Apple - 01 Financial Analysis.md
+2024Q3 AAPL Apple - 02 Operating Analysis.md
+2024Q3 AAPL Apple - 03 Industry and Competition.md
+2024Q3 AAPL Apple - 04 Forward Forecast.md
+2024Q3 AAPL Apple - 05 Valuation and Risk.md
+2024Q3 AAPL Apple - 06 Technical Analysis.md
+2024Q3 AAPL Apple - 99 Investment Synthesis.md
+```
 
 To retain an adopted claim, bind its consumed source and add a
 `candidate_notes` entry to its unit with `path`, the adopted `claim`,
@@ -115,8 +134,7 @@ Standalone verification uses the recorded claim and captured source even
 when the live note is absent. It cannot decide whether the live claim changed.
 
 Use the [research overview](templates/research-overview.md),
-[asset entry](templates/asset-entry.md), [quarter navigation](templates/quarter-navigation.md),
-[review](templates/review.md), [source registration](templates/source-registration.md),
+[asset entry](templates/asset-entry.md), [source registration](templates/source-registration.md),
 and [method registration](templates/method-registration.md) templates for their
 corresponding note roles. Choose the matching analysis template:
 [financial](templates/financial-analysis.md), [operating](templates/operating-analysis.md),
@@ -131,9 +149,10 @@ under `data/analysis/`. Create new evidence only under this quarter's `data/`.
 Use quarter-relative payload paths such as `data/raw/filing.html` in these
 registrations.
 Use the source and method templates, including their fenced metadata blocks.
-Reuse an existing legacy JSON registration unchanged when applicable.
 Every newly authored Markdown note, including a draft or calculation note,
-uses its bundled role template and flat Obsidian frontmatter. Put a new
+uses its bundled role template and flat Obsidian frontmatter. The helper
+renders the quarterly overview, including its progress record. Localize titles
+and prose as needed. Put a new
 method or assumption's human-readable procedure, assumptions, and limits
 in the body of its method-registration note. Save the exact applied method
 payload separately as UTF-8 plain text (`data/materials/<name>.txt`) in this
@@ -144,8 +163,8 @@ using the research-root-relative path in the publication proposal. The helper
 captures the quarter-relative reference in the saved review. Do not save a
 second bare Markdown note as the payload.
 
-Do not create JSON or TOML method files, helper caches, journals, or
-verification sidecars. Retain externally supplied and legacy input bytes
+Do not author JSON or TOML method files, helper caches, journals, or
+verification sidecars. Retain external input bytes
 in their original format, including evidence supplied as data-native JSON
 or a pre-existing Markdown payload. This format rule applies to new
 authorship, not to exact copies of existing inputs.
@@ -153,16 +172,12 @@ When deciding whether bounded analysis is reusable, check the exact
 configured research question. A verified, explicitly scoped answer may be
 a reusable unit within a partial review; broader unanswered questions
 remain pending. State the scope before saving the unit.
-A unique, valid marked asset entry supersedes legacy asset configuration.
-Keep the existing legacy identity if both are present.
-
-Specify `storage="markdown"` in the normal `publish` call and supply new
-analysis output as Markdown with inline verification objects in its units.
-Save reusable partial output as `partial`. Staged analysis notes declare
-`draft`, and publication verifies and commits the exact final proposal bytes.
-The helper generates `review.md` from the review template. Reopen with fresh
-discovery and confirm the saved unit is visible. If publication stops, keep
-the draft and restart from the last validated review using a fresh run ID.
+Save reusable partial output as `partial`. Give a specific explanation in
+`research.changes` when a finding changes. The helper retains the previous
+report, source identities and versions, cutoff and reason in the updated
+report's revision history. Read earlier conclusions against their dated sources
+before reuse. If those sources or saved analysis cannot reconstruct the earlier
+answer, report the gap.
 
 ### Quarter-owned evidence and portable reviews
 
@@ -175,8 +190,8 @@ rewrite the extracted JSON or HTML. A cited previous conclusion goes into
 `research.adopted_conclusions` as an `excerpt`, `origin`, and `revision`,
 without copying the predecessor notebook.
 
-To verify an independently copied quarter, use
-`research_store.verify_quarter(quarter_root, "run-directory/review.md")`.
+To verify an independently copied quarter, pass the quarterly overview's
+filename to `research_store.verify_quarter(quarter_root, overview_name)`.
 This checks the saved work and exact local sources, methods, dates, and
 hashes against that review's captured configuration. Fix a missing or
 changed local input at its source or save a new review with verified
@@ -301,10 +316,12 @@ list. A self-check's artifact hashes do not create reusable dependencies. When
 repairing an omission, re-evaluate and check the affected unit as a new version;
 do not attach new identities to an unchanged output to manufacture coverage.
 
-Construct version-1 review metadata using the README contract, final root-relative
-output paths and inline verification, current eligible predecessor and the exact source-declared
-fiscal identity. Preserve unchanged units verbatim; changed inputs require new
-analysis/checks, not attaching new dependency identities to an old output.
+Construct version-1 review metadata using the README contract, proposal output
+paths for changed reports, inline verification, the current eligible
+predecessor and the exact source-declared fiscal identity. When several scoped
+questions share a report role, use one proposed filename and reference it from
+each unit. Reverify every unit that cites a changed shared report. Preserve
+unchanged units for reports whose content and dependencies still qualify.
 Include method, assumptions, changes, gaps and all three horizon judgments:
 
 The exact envelope types matter: `research.method` and `research.changes` are
@@ -316,36 +333,39 @@ Do not pass a list for `changes`; it is explanatory text, not change records.
 ```python
 saved = research_store.publish(
     root, asset_id, review, files, expected, unique_run_id,
-    complete=False, storage="markdown",  # checkpoint while required work remains
+    complete=False, storage="quarterly", company_name=company_name,
+    ticker=ticker, overview_title=overview_title,
 )
 ```
 
 Use `complete=True` only after all configured required work is substantively
 checked and reusable and required gaps are empty. The helper's structural
 acceptance never supplies the research judgment. Re-run discovery after saving;
-confirm valid independent units are reusable and unresolved work stays pending. Compare the new
-path set with the pre-analysis snapshot and report any newly written
-management JSON or TOML as a format failure. Existing registered evidence
-in its original JSON format is permitted.
+confirm valid independent units are reusable and unresolved work stays pending.
+Use the returned overview path as the saved entry.
 Do not advance `last_success` through local publication. Report actual external
 attempts and successful verification separately.
 
 ## 5. Recover and report honestly
 
-For a Markdown interruption, keep the draft, rediscover the last valid review,
-and use fresh run and review IDs to retry. For an identified legacy interrupted
-run, the legacy recovery operation `recover(root, run_id, action="resume")`
-revalidates the original baseline, journal, drafts and dependencies. A bounded
-withdrawal uses `action="rollback"`, preserves history and may also refuse edits
-or later dependent reviews. Neither operation authorizes arbitrary file repair.
+If a quarterly save was interrupted with a pending update, call
+`research_store.recover_quarterly(root, asset_id, quarter)` within the authorized
+scope. It uses the selected equity quarter's `.equity-update.json` and
+`.equity-stage-*` recovery files. It does not replay industry updates or
+updates for other quarters. Rediscover the quarter afterward and check the
+resulting reports and overview. If recovery detects a conflict, preserve the
+saved edits and pending update, and report which content needs reconciliation.
 
-If a new proposal fails validation, inspect the named field and retain that
-attempt. For legacy saves, where unchanged preconditions permit, abandon it through
-`recover(..., action="rollback")` before a corrected proposal. Reassess and use
-both a new run ID and a new review ID/target; do not reuse a failed attempt's
-target merely because its completion file is absent. If abandonment conflicts,
-preserve and report that pending run rather than bypassing it or silently
-treating another run's target file as its completion.
+After a successful replacement, hidden `.equity-stage-*` folders retain the
+displaced copies because an editor that had the old file open may still write
+to it. On an edit conflict, check the affected quarter's current note and
+its recovery copy. An interrupted update's recovery files may remain while
+the conflict is unresolved. Separate retention and manual cleanup can be
+considered later.
+
+If a proposal fails validation before publication, inspect the named field,
+reassess the affected work, and prepare a corrected proposal with fresh run
+and review IDs. Preserve old-format files and do not migrate them.
 
 On `ValueError` or `OSError`, retain the exact visible error, affected paths,
 user edits, draft and run ID. Explain what could be saved and what could not.
