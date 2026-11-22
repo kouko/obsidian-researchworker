@@ -144,6 +144,24 @@ def test_successful_empty_disclosure_search_passes(workflow, acquired):
     assert workflow.assess(acquired)["quarterly_source_gate"]
 
 
+def test_only_documented_post_quarter_exclusions_can_omit_body(workflow, acquired):
+    entry = {"relevance": "post_quarter", "status": "missing_body"}
+    disclosures = acquired["material_disclosures"] = {"status": "missing_body", "entries": [entry]}
+    exclusions = {0: "官方索引標題及日期均指向下一季新任董事會決議"}
+
+    assert not workflow.assess(acquired)["quarterly_source_gate"]
+    assert not workflow.assess(acquired, reviewed_post_quarter=[0])["quarterly_source_gate"]
+    result = workflow.assess(acquired, excluded_post_quarter=exclusions)
+    assert result["quarterly_source_gate"]
+    assert result["excluded_post_quarter"] == exclusions
+
+    disclosures["status"] = "retrieval_failed"
+    assert not workflow.assess(acquired, excluded_post_quarter=exclusions)["quarterly_source_gate"]
+    entry["relevance"] = "quarter"
+    with pytest.raises(ValueError, match="post-quarter"):
+        workflow.assess(acquired, excluded_post_quarter=exclusions)
+
+
 def test_current_month_observation_does_not_meet_historical_gate(workflow, acquired):
     acquired["monthly_revenue"][0]["status"] = "publication_unverified"
 

@@ -112,3 +112,36 @@ def test_latest_observation_does_not_backdate_monthly_revenue(tmp_path):
     assert all(month["status"] == "observed" for month in result["monthly_revenue"])
     assert all(month["observed_at"] == result["cutoff"] for month in result["monthly_revenue"])
     assert all("available_at" not in month for month in result["monthly_revenue"])
+
+
+def test_flagged_quarterly_filing_uses_independently_dated_versions(tmp_path):
+    acquisition = load_acquisition()
+    original_fetch = transport()
+
+    def fetch(url, body=None):
+        raw = original_fetch(url, body)
+        return raw.replace(b"<td></td></tr>", "<td>更正</td></tr>".encode()) if "step=1" in url else raw
+
+    versions = []
+    for name, day in (("original", 11), ("corrected", 26)):
+        pdf = tmp_path / f"{name}.pdf"
+        pdf.write_bytes(f"%PDF-1.4 {name}".encode())
+        versions.append({"ticker": "1611", "quarter": "2025Q3",
+                         "available_at": f"2025-11-{day}T13:24:58+08:00",
+                         "url": f"https://example.com/{name}.pdf",
+                         "publication_url": f"https://example.com/{name}-release",
+                         "publication_evidence": f"Archive identifies {name} PDF and publication timestamp.",
+                         "pdf": pdf})
+
+    out = tmp_path / "output"
+    for day, expected in ((10, None), (20, "original"), (30, "corrected")):
+        report = acquisition.acquire("1611", "2025Q3", f"2025-11-{day}T23:00:00+08:00",
+                                     out, fetch=fetch, filing_history=versions)
+        filing = report["quarterly_filing"]
+        if expected is None:
+            assert filing["status"] == "not_available_at_cutoff"
+        else:
+            assert filing["status"] == "available"
+            assert filing["url"] == f"https://example.com/{expected}.pdf"
+            assert (out / filing["path"]).read_bytes() == f"%PDF-1.4 {expected}".encode()
+            assert expected in (out / filing["publication_path"]).read_text()

@@ -11,7 +11,7 @@ SCOPES = ("consolidated", "individual", "parent-only")
 
 
 def assess(acquired, *, filed_ntd_thousands=None, filed_scope=None,
-           reviewed_post_quarter=(), annual=False):
+           reviewed_post_quarter=(), excluded_post_quarter=None, annual=False):
     period = re.fullmatch(r"([0-9]{4})Q([1-4])", acquired["quarter"])
     if period is None:
         raise ValueError("Expected a quarter in YYYYQn form")
@@ -55,10 +55,21 @@ def assess(acquired, *, filed_ntd_thousands=None, filed_scope=None,
 
     disclosures = acquired["material_disclosures"]
     entries = disclosures["entries"]
-    if disclosures["status"] != ("available" if entries else "none_found"):
+    exclusions = excluded_post_quarter or {}
+    for index, reason in exclusions.items():
+        if (type(index) is not int or not 0 <= index < len(entries)
+                or entries[index].get("relevance") != "post_quarter"
+                or not isinstance(reason, str) or not reason.strip()):
+            raise ValueError("Each post-quarter exclusion requires a valid index and reason")
+    missing_entries = [index for index, item in enumerate(entries) if item.get("status") == "missing_body"]
+    resolved_body_failures = (disclosures["status"] == "missing_body" and missing_entries
+                              and all(index in exclusions for index in missing_entries))
+    if disclosures["status"] != ("available" if entries else "none_found") and not resolved_body_failures:
         gaps.append("material_disclosures")
     expected_status = {"quarter": "available", "post_quarter": "needs_quarter_relevance_review"}
     for index, item in enumerate(entries):
+        if index in exclusions:
+            continue
         relevance = item.get("relevance")
         body = item.get("body")
         if (relevance not in expected_status or item.get("status") != expected_status[relevance]
@@ -81,6 +92,7 @@ def assess(acquired, *, filed_ntd_thousands=None, filed_scope=None,
         "quarterly_source_gate": quarterly_source_gate,
         "annual_source_gate": annual_source_gate,
         "gaps": gaps,
+        "excluded_post_quarter": exclusions,
         "revenue": {
             "monthly_total_ntd_thousands": monthly_total,
             "monthly_scope": monthly_scope,
@@ -99,6 +111,8 @@ def main():
     parser.add_argument("--filed-ntd-thousands", type=int)
     parser.add_argument("--filed-scope", choices=SCOPES)
     parser.add_argument("--reviewed-post-quarter", type=int, action="append", default=[])
+    parser.add_argument("--exclude-post-quarter", nargs=2, metavar=("INDEX", "REASON"),
+                        action="append", default=[])
     parser.add_argument("--annual", action="store_true")
     args = parser.parse_args()
     try:
@@ -107,6 +121,7 @@ def main():
             acquired, filed_ntd_thousands=args.filed_ntd_thousands,
             filed_scope=args.filed_scope,
             reviewed_post_quarter=args.reviewed_post_quarter, annual=args.annual,
+            excluded_post_quarter={int(index): reason for index, reason in args.exclude_post_quarter},
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         parser.error(str(error))

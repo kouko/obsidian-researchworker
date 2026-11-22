@@ -183,6 +183,47 @@ def _filing(fetch, output, ticker, year, number, cutoff):
             "index_url": index, "filename": filename, **_retain(output, pdf, "pdf")}
 
 
+def _dated_quarterly_filing(output, ticker, quarter, cutoff, history):
+    eligible = []
+    for row in history:
+        if row.get("ticker") == ticker and row.get("quarter") == quarter:
+            available = _instant(row["available_at"])
+            if available <= cutoff:
+                eligible.append((available, row))
+    if not eligible:
+        return None
+    latest = max(available for available, _ in eligible)
+    versions = [row for available, row in eligible if available == latest]
+    row = versions[0]
+    if any(version != row for version in versions[1:]):
+        raise AcquisitionError("Conflicting dated quarterly filing versions")
+    for key in ("url", "publication_url"):
+        url = urlsplit(row[key])
+        if url.scheme != "https" or not url.hostname:
+            raise AcquisitionError("Dated quarterly filings require HTTPS source links")
+    evidence = row["publication_evidence"]
+    if not isinstance(evidence, str) or not evidence.strip():
+        raise AcquisitionError("Missing dated quarterly filing publication evidence")
+    with Path(row["pdf"]).open("rb") as stream:
+        pdf = stream.read(MAX_BYTES + 1)
+    if len(pdf) > MAX_BYTES or not pdf.startswith(b"%PDF-"):
+        raise AcquisitionError("Invalid supplied quarterly filing PDF")
+    publication = _retain(output, evidence.encode(), "txt")
+    return {"status": "available", "available_at": latest.isoformat(), "url": row["url"],
+            "provenance": "supplied_dated_source", "publication_url": row["publication_url"],
+            "publication_path": publication["path"], "publication_sha256": publication["sha256"],
+            **_retain(output, pdf, "pdf")}
+
+
+def _quarterly_filing(fetch, output, ticker, year, number, cutoff, history):
+    filing = _status(_filing, fetch, output, ticker, year, number, cutoff)
+    supplied = _dated_quarterly_filing(output, ticker, f"{year}Q{number}", cutoff, history)
+    if supplied is not None and (filing["status"] != "available"
+                                 or _instant(supplied["available_at"]) > _instant(filing["available_at"])):
+        return {"index_url": filing.get("index_url"), **supplied}
+    return filing
+
+
 def _detail(fetch, output, ticker, timestamp, row):
     metadata = row[5]
     parameters = metadata["parameters"]
@@ -247,7 +288,7 @@ def _status(operation, *args):
         return {"status": "retrieval_failed", "error": str(error)}
 
 
-def acquire(ticker, quarter, cutoff, output, *, annual_year=None, monthly_history=(),
+def acquire(ticker, quarter, cutoff, output, *, annual_year=None, monthly_history=(), filing_history=(),
             fetch=fetch_public, observed_at=None):
     if not re.fullmatch(r"[0-9]{4}", ticker):
         raise ValueError("Supply a four-digit TWSE-listed company code")
@@ -278,7 +319,8 @@ def acquire(ticker, quarter, cutoff, output, *, annual_year=None, monthly_histor
     result = {"issuer": f"twse-{ticker}", "quarter": quarter, "cutoff": cutoff.isoformat(),
               "mode": "historical" if historical_cutoff is not None else "latest",
               "observed_at": observed_at.isoformat(), "monthly_revenue": months,
-              "quarterly_filing": _status(_filing, fetch, output, ticker, year, number, cutoff),
+              "quarterly_filing": _status(_quarterly_filing, fetch, output, ticker, year, number,
+                                         cutoff, filing_history),
               "material_disclosures": _disclosures(fetch, output, ticker, start, end, cutoff)}
     if annual_year is not None:
         result["annual_report"] = _status(_filing, fetch, output, ticker, annual_year, None, cutoff)
@@ -295,10 +337,14 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--annual-year", type=int)
     parser.add_argument("--monthly-history", type=Path, help="Verified dated original releases, as JSON")
+    parser.add_argument("--filing-history", type=Path, help="Verified dated quarterly filing versions, as JSON")
     args = parser.parse_args()
     history = [] if args.monthly_history is None else json.loads(args.monthly_history.read_text())
+    filings = [] if args.filing_history is None else json.loads(args.filing_history.read_text())
+    for filing in filings:
+        filing["pdf"] = args.filing_history.parent / filing["pdf"]
     report = acquire(args.ticker, args.quarter, args.cutoff, args.output,
-                     annual_year=args.annual_year, monthly_history=history)
+                     annual_year=args.annual_year, monthly_history=history, filing_history=filings)
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
