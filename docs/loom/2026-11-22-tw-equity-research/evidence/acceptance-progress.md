@@ -19,6 +19,12 @@ An isolated vault was used to follow the Taiwan skill instructions and call the 
 
 A separate Hon Hai vault followed the same four checkpoints. All four passed portable verification and rediscovery. Q2 reused the same paths and retained its dated changes, and Q2 and Q3 retained prior-quarter links. Filed revenue was NT$1,644,315,563 thousand, NT$1,793,468,046 thousand and NT$2,058,949,127 thousand (PDF pages 7, 8 and 7). The quarters were partial because material-disclosure and full analytical work were outstanding.
 
+China Electric ran in a separate Codex CLI 0.171.0 profile with the local marketplace and obsidian-finance installed. The fresh session selected the installed Taiwan skill. Its cached entry, acquisition, conference, workflow and store files matched commit `20d21cb` byte for byte. The session saved three partial checkpoints (June 3, August 31 and November 30, 2025 Taipei cutoff days), each verified with the portable helper and rediscovered. Preliminary forecast conditions written during replay can exercise continuation but do not establish that an analyst published those conditions in 2025. This host check preceded the mixed-scope repair.
+
 ## Unverified
 
-Nine complete quarterly research cases, all six continuations, and the installed-skill acceptance remain unverified. Full-period disclosure retrieval, dated monthly source versions for China Electric, and report publication/resume evidence are tracked independently. Controlled tests cannot substitute for completed issuer-quarter acceptance.
+Nine complete quarterly research cases and six end-to-end continuations using the final packaged skill remain unverified. All nine quarters have partial publications across the isolated runs. Full-period disclosure retrieval and dated monthly source versions for China Electric remain open. A repeat request to the official disclosure endpoint returned RemoteDisconnected. Controlled tests cannot substitute for completed issuer-quarter acceptance.
+
+## Automated verification
+
+Commit `337fb19`: the full package suite passed (479 tests). The independent mixed-scope probe failed on both cases before the repair and passed both after the repair. The repair suppresses a monthly total when scopes are mixed or unknown and a filed-versus-monthly difference when scopes do not match.
