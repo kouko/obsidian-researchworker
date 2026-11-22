@@ -204,7 +204,19 @@ def _publish(parent, payloads):
         os.rmdir(stage_name, dir_fd=parent)
 
 
-def save_report(report, snapshot, vault, note):
+def _attachment_links(markdown, chart, source):
+    if markdown.count("({{source}})") != 1 or markdown.count("{{source}}") != 1:
+        raise ValueError("Localized note must include one Markdown link to {{source}}.")
+    chart_links = markdown.count("({{chart}})")
+    if chart_links != bool(chart) or markdown.count("{{chart}}") != chart_links:
+        raise ValueError("Localized note must link to {{chart}} exactly once when bars are available.")
+    markdown = markdown.replace("({{source}})", f"({quote(source)})")
+    if chart:
+        markdown = markdown.replace("({{chart}})", f"({quote(chart)})")
+    return markdown
+
+
+def save_report(report, snapshot, vault, note, *, note_markdown=None):
     """Publish attachments first and expose a complete, new note last."""
     with _open_destination(vault, note) as (parent, name):
         stem = Path(name).stem
@@ -215,7 +227,11 @@ def save_report(report, snapshot, vault, note):
         }
         if chart:
             payloads[chart] = _render_chart(report)
-        payloads[name] = render_report(report, chart=chart, source=source).encode("utf-8")
+        markdown = (
+            render_report(report, chart=chart, source=source) if note_markdown is None
+            else _attachment_links(note_markdown, chart, source)
+        )
+        payloads[name] = markdown.encode("utf-8")
         _publish(parent, payloads)
     return Path(vault) / note
 
@@ -226,9 +242,12 @@ def main():
     parser.add_argument("--cutoff", help="Offset-aware ISO analysis cutoff (defaults to snapshot availability)")
     parser.add_argument("--vault", type=Path, help="Absolute vault path")
     parser.add_argument("--note", help="New Markdown path relative to the vault")
+    parser.add_argument("--note-markdown", type=Path, help="Prepared UTF-8 Markdown for the saved note")
     args = parser.parse_args()
     if bool(args.vault) != bool(args.note):
         parser.error("--vault and --note must be used together")
+    if args.note_markdown and not args.note:
+        parser.error("--note-markdown requires --vault and --note")
     from analyze import analyze
     from snapshot import validate_snapshot
 
@@ -238,7 +257,8 @@ def main():
         snapshot = validate_snapshot(payload, cutoff)
         report = analyze(snapshot)
         if args.vault:
-            note = save_report(report, payload, args.vault, args.note)
+            markdown = args.note_markdown.read_text(encoding="utf-8") if args.note_markdown else None
+            note = save_report(report, payload, args.vault, args.note, note_markdown=markdown)
             print(f"Saved {note}", file=sys.stderr)
         print(render_report(report), end="")
     except (OSError, ValueError) as exc:

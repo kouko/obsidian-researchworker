@@ -124,14 +124,56 @@ def test_cli_retains_original_snapshot_for_exact_cutoff_replay(tmp_path):
     }
     original = tmp_path / "input.json"
     original.write_text(json.dumps(payload))
+    markdown = tmp_path / "localized.md"
+    markdown.write_text("# 技術分析\n\n![價量圖]({{chart}})\n[快照]({{source}})\n", encoding="utf-8")
     cli = Path(__file__).resolve().parents[1] / "skills/technical-analysis/scripts/report.py"
     command = [sys.executable, str(cli)]
     first = subprocess.run(
-        [*command, str(original), "--vault", str(tmp_path.resolve()), "--note", "outlook.md"],
+        [*command, str(original), "--vault", str(tmp_path.resolve()), "--note", "outlook.md",
+         "--note-markdown", str(markdown)],
         check=True, capture_output=True, text=True,
     )
     retained = tmp_path / "outlook.source.json"
     assert json.loads(retained.read_text()) == payload
+    assert "[快照](outlook.source.json)" in (tmp_path / "outlook.md").read_text()
     replay = subprocess.run([*command, str(retained)], check=True, capture_output=True, text=True)
     assert first.stdout == replay.stdout
     assert "trading session was incomplete" in replay.stdout
+
+
+@pytest.mark.parametrize("heading, chart_label, source_label", [
+    ("技術分析", "價量圖", "原始快照"),
+    ("テクニカル分析", "価格と出来高", "元のスナップショット"),
+    ("Technical outlook", "Price and volume", "Retained input snapshot"),
+])
+def test_save_localized_note_keeps_prose_and_linked_evidence(
+    report, tmp_path, heading, chart_label, source_label,
+):
+    source = {**report, "evidence": "Captured at source"}
+    markdown = (
+        f"# TEST {heading}\n\n2024-02-29 · 11 · Fixture\n\n"
+        f"![{chart_label}]({{{{chart}}}})\n"
+        f"[{source_label}]({{{{source}}}})\n"
+    )
+    note = save_report(report, source, tmp_path, "research notes.md", note_markdown=markdown)
+    assert note.read_text() == markdown.replace(
+        "{{chart}}", "research%20notes.chart.svg",
+    ).replace("{{source}}", "research%20notes.source.json")
+    assert json.loads((tmp_path / "research notes.source.json").read_text()) == source
+    assert (tmp_path / "research notes.chart.svg").is_file()
+
+
+def test_save_localized_note_with_no_chart_uses_only_source(report, tmp_path):
+    report["bars"] = []
+    note = save_report(
+        report, report, tmp_path, "research.md",
+        note_markdown="# 技術分析\n\n[原始快照]({{source}})\n",
+    )
+    assert "[原始快照](research.source.json)" in note.read_text()
+    assert sorted(path.name for path in tmp_path.iterdir()) == ["research.md", "research.source.json"]
+
+
+def test_localized_note_missing_attachment_is_not_published(report, tmp_path):
+    with pytest.raises(ValueError, match="Markdown link"):
+        save_report(report, report, tmp_path, "research.md", note_markdown="# Missing links\n")
+    assert list(tmp_path.iterdir()) == []

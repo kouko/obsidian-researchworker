@@ -78,9 +78,12 @@ historical provenance before relying on it.
 
 ## Present and save
 
-Report in the current conversation language. Keep the date ranges and
-calculated evidence exact when rephrasing the tool output. Include all three
-horizons with their actual observations and conditional outlooks:
+Use the current conversation language by default for both the reply and any
+saved note. Apply an explicitly requested language to its requested output.
+For example, if the user asks in Chinese for an English note, keep the reply
+in Chinese and write the note in English. Keep dates, values and sources
+exact when rephrasing tool output. Include all three horizons with their
+actual observations and conditional outlooks:
 
 - Short: 3 calendar weeks.
 - Medium: 3 calendar months.
@@ -97,15 +100,27 @@ a price target or calibrated prediction.
 
 Save only when requested. Resolve the chosen vault using its actual absolute
 path and use a new relative Markdown filename in an existing directory.
-Preserve existing notes and attachments. The report command writes a standalone
-English evidence note with its source snapshot and a price/volume chart when
-bars are available. Keep the user's requested language for surrounding prose.
-On collision or write failure, report the actual error and use an available new
-filename if appropriate.
+Preserve existing notes and attachments. First use the report command without
+save arguments and prepare the note in the selected language in a temporary
+UTF-8 Markdown file outside the vault. Localize the title, headings, horizon
+labels, evidence descriptions, findings, conditions, limitations, and link
+labels. Preserve the report's dates, numeric values, source references, and
+method identifiers exactly. Check those details against the rendered report
+before publishing. Include one Markdown link with the literal target
+`{{source}}`. If the report has any observed trading dates, include one image
+with the literal target `{{chart}}`. Use Markdown link and image syntax with
+labels in the note's language. The publisher resolves the targets to the
+actual snapshot and chart filenames.
+
+Set `TA_NOTE_MARKDOWN` to the prepared file and always pass
+`--note-markdown` when saving as part of this skill. On collision or write
+failure, report the actual error and use an available new filename if
+appropriate.
 
 ```sh
 python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT" \
-  --vault "$TA_VAULT" --note 'investing/AAPL technical analysis.md'
+  --vault "$TA_VAULT" --note 'investing/AAPL technical analysis.md' \
+  --note-markdown "$TA_NOTE_MARKDOWN"
 ```
 
 Set `TA_VAULT` to the actual absolute vault path. For a conversation-only
@@ -115,5 +130,6 @@ use the same local snapshot and cutoff as the report:
 ```sh
 python3 "$SKILL_DIR/scripts/report.py" "$TA_HISTORICAL_SNAPSHOT" \
   --cutoff "$TA_HISTORICAL_CUTOFF" \
-  --vault "$TA_VAULT" --note 'investing/AAPL historical technical analysis.md'
+  --vault "$TA_VAULT" --note 'investing/AAPL historical technical analysis.md' \
+  --note-markdown "$TA_NOTE_MARKDOWN"
 ```
