@@ -1,6 +1,6 @@
 # Taiwan quarterly equity research — plan
-intent: 2026-11-22-tw-equity-research@5fe05ea
-spec: docs/loom/2026-11-22-tw-equity-research/spec.md@ba976dd
+intent: 2026-11-22-tw-equity-research@0bcc3bb
+spec: docs/loom/2026-11-22-tw-equity-research/spec.md@0cb232d
 charter: 1.1
 
 ## Task DAG
@@ -22,16 +22,16 @@ charter: 1.1
 
 **W3-01 Public Taiwan skill and integration** after: W2-01 acceptance: 1, 2, 3, 4, 5, 6
 - Files: obsidian-finance/skills/tw-equity-research/SKILL.md, obsidian-finance/README.md, obsidian-finance/tests/test_tw_equity_workflow.py, obsidian-finance/.codex-plugin/plugin.json, obsidian-finance/.claude-plugin/plugin.json, .claude-plugin/marketplace.json
-- Test: A1 positive: nine-quarters; boundary: six-transitions; A2 positive: filed-vs-monthly; boundary: quarter-only-forecast; A3 positive: correction-revision; boundary: historical-cutoff; A4 positive: no-caption-fallback; negative: unavailable-recording; A5 positive: page-and-guidance; boundary: unreadable-cell; A6 positive: us-entry-resume; boundary: cross-market-routing.
+- Test: A1 positive: six-quarters; boundary: three-transitions; A2 positive: filed-vs-monthly; boundary: quarter-only-forecast; A3 positive: correction-revision; boundary: historical-cutoff; A4 positive: no-caption-fallback; negative: unavailable-recording; A5 positive: page-and-guidance; boundary: unreadable-cell; A6 positive: us-entry-resume; boundary: cross-market-routing.
 - Risk: REQ-1–6 — agent-decided: reuse quarterly publication and recovery APIs and verify through a fresh session.
 
 ## Acceptance cohort
 
-W3-01 runs nine real company-quarter cases through the fresh packaged Taiwan skill and records evidence separately from deterministic fixtures. Run 2025Q1–Q3 for each issuer, retaining contemporaneous cutoff evidence and six quarter transitions. Use early monthly and post-filing observations in at least one transition. Cover the annual-report gate with a dedicated fixture and exercise corrections and missing announcement bodies in controlled cases unless matching public cases are verified.
+W3-01 runs six real company-quarter cases through the fresh packaged Taiwan skill and records evidence separately from deterministic fixtures. Run 2025Q2–Q3 for each issuer, retaining contemporaneous cutoff evidence and three quarter transitions. Use early monthly and post-filing observations in at least one transition. Cover the annual-report gate with a dedicated fixture and exercise corrections and missing announcement bodies in controlled cases unless matching public cases are verified.
 
 - TSMC (2330). [Monthly releases](https://investor.tsmc.com/chinese/monthly-revenue/2025) and [financial calendar](https://investor.tsmc.com/english/financial-calendar) provide issuer-side reference dates and materials.
 - Hon Hai (2317). [Company IR](https://www.foxconn.com.tw/zh-tw/investor-relations/investor-relations-activities/investor-conference) provides conference slides and transcripts for cross-checking.
-- China Electric (1611). [Financial statements](https://www.chinaelectric.com.tw/investor6.php), [issuer materials](https://www.chinaelectric.com.tw/investor9.php) and [TWSE recording](https://www.youtube.com/watch?v=bMWy8nvERVY) support the recording fallback at a cutoff after November 21.
+- Delta Electronics (2308). Dated issuer releases support historical monthly revenue for both quarters. [Cohort evidence](evidence/final-cohort.md). China Electric remains the independently exercised no-caption recording case.
 
 ## Simplicity check
 
