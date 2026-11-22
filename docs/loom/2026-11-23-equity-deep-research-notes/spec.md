@@ -1,6 +1,6 @@
 # Deep quarterly equity research notes — spec
 intent: 2026-11-23-equity-deep-research-notes@6a1b95e
-confirmed-behavior: 2026-11-23 @fdd04fc
+confirmed-behavior: 2026-11-23 @7f37c08
 pre-build-review: required — Changes to the published note contract must preserve cutoff-aware verification and safe continuation.
 
 ## Requirements
@@ -21,7 +21,7 @@ REQ-4 — Continuation and integrity
 
 - User-confirmed scope: every generated Markdown note is reader-facing, including source and method registrations. Retain existing fiscal naming, source integrity and note update protections.
 - Agent-decided: retain only atomic properties at the top. Give reports a clear question, findings, evidence and limitations. Give registrations a purpose, applicability, evidence or method steps and limitations. Keep data-native source payloads in their original format.
-- Agent-decided: keep the source version binding and selected evidence exact. Replace repeated full projections with references to the quarter-local captured records, validating the resolved evidence before reuse and portable verification. Review the reduction against the actual Fastenal baseline.
+- Agent-decided: keep the source version binding and selected evidence exact. Replace repeated full projections with references to the quarter-local captured records, validating the resolved evidence before reuse and portable verification. Review the reduction against the actual Fastenal baseline. Missing or changed captures and substitutions of another valid version with the same source ID invalidate reuse of affected units and fail portable verification. Identify the affected source and version as an evidence gap. Never fall back to a different version.
 - Agent-decided: keep existing published files in place. Exercise the compact format in an isolated copy, with existing saved data readable where current behavior depends on it.
 
 ## Alternatives considered
