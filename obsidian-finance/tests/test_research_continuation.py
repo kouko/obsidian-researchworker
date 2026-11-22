@@ -124,7 +124,7 @@ status: partial
         changed_ref.write_text(altered_note)
         isolated_overview = isolated / overview.name
         isolated_overview.write_text(overview.read_text().replace(ref, changed_ref.relative_to(isolated).as_posix()))
-        with pytest.raises(ValueError, match="source projection mismatch"):
+        with pytest.raises(ValueError, match="source capture mismatch"):
             module.verify_quarter(isolated, overview.name)
         registration["identity"] = "substitute"
         registration["available_at"] = "2024-08-02"

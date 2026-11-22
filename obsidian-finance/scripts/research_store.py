@@ -1220,10 +1220,7 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
                        and _adapter._core._same_json(metadata.get("projection"), identity["projection"])]
             _require(options, "missing registered source version for quarter evidence: " + sid)
             origin, source = options[0]
-            if compact:
-                identity["projection_digest"] = sha256(_encoded(source["projection"])).hexdigest()
-                del identity["projection"]
-            else:
+            if not compact:
                 provenance[source.get("origin_reference", origin)] = source
             published = _available(source.get("available_at"), cutoff)
             _require(published is not None and published <= cutoff, "source is later than cutoff: " + sid)
@@ -1237,7 +1234,11 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
             if "original_ref" in source or "original_digest" in source:
                 record["origin_original_ref"] = source.get("origin_original_ref", source["original_ref"])
                 record["original_ref"] = copy_payload(source["original_ref"], source["original_digest"], "raw")
-            links["sources"][sid] = bind("source", record)
+            reference = bind("source", record)
+            links["sources"][sid] = reference
+            if compact:
+                identity["capture_digest"] = Path(reference).stem
+                del identity["projection"]
         for mid, frozen in unit.get("analysis_inputs", {}).items():
             _analysis_identity(frozen)
             options = [(origin, metadata) for origin, metadata in registrations["analysis"]
@@ -1372,13 +1373,14 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None, re
             for sid, ref in links["sources"].items():
                 identity = consumed[sid]
                 try:
+                    if compact:
+                        _require(isinstance(identity, dict) and set(identity) == {"version", "capture_digest"}
+                                 and Path(ref).stem == identity["capture_digest"],
+                                 "quarter evidence source capture mismatch")
                     record = registration(ref, "sources", "source")
                     _require(record["id"] == sid and record["identity"] == identity["version"],
                              "quarter evidence source identity mismatch: " + sid)
                     if compact:
-                        _require(set(identity) == {"version", "projection_digest"}
-                                 and sha256(_encoded(record["projection"])).hexdigest() == identity["projection_digest"],
-                                 "quarter evidence source projection mismatch")
                         _require(record.get("issuer") == manifest["issuer"], "quarter source issuer mismatch")
                     else:
                         _require(_adapter._core._same_json(record["projection"], identity["projection"]),

@@ -244,8 +244,9 @@ current review ID as the predecessor, when present.
 
 Supply complete consumed projections for new units. In a saved fixed quarterly
 overview, `quarter_evidence.version: 2` records each consumed source version and
-projection digest alongside the binding to its captured registration. The
-registration retains the full projection. The helper restores checked projections
+the digest of its exact captured registration separately from its relative path.
+The registration retains its publication date, provenance and full projection.
+The helper restores checked projections
 for assessment and retained-unit publication. A missing or mismatched capture
 invalidates affected work. Older fixed overviews with full projections remain
 readable.
