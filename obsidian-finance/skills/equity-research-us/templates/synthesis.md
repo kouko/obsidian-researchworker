@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Investment thesis and counterevidence
+## Research question, investment thesis and counterevidence
 
 ${thesis_and_counterevidence}
 

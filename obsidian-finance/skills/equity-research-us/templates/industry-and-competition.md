@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Market scope and change
+## Research question, conclusion and market scope
 
 ${market_scope_and_change}
 

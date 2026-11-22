@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Define the relevant market and the company's exposure. Show an aligned comparison with independent demand indicators or peers when available, with dates and denominators. Include a rival explanation for the company's change. If comparison evidence is absent, describe the exact market or peer input needed and withhold claims of share gain or competitive advantage.
+
 ## Research questions
 
 What changed in the conditions shared by competitors? Which changes come from

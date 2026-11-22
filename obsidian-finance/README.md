@@ -219,7 +219,8 @@ result = research_store.discover(
 Use a marked `investing/index.md` and a marked asset entry to establish scope.
 Save one stable overview and one note per completed or partial report role
 directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
-reports and contains the current progress record. It uses `00 Research Overview`;
+reports, explains what changed at the saved cutoff, and calls out evidence
+gaps before the current progress record. It uses `00 Research Overview`;
 analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
 The final report uses `99 Investment Synthesis`. For example,
 `2024Q3 AAPL Apple - 01 Financial Analysis.md` can have a Chinese heading and
@@ -240,6 +241,14 @@ unit, and reverify each of those units when the shared report changes. For
 reports whose content and dependencies still qualify, copy unchanged units
 from the saved progress record with their existing output references. Use the
 current review ID as the predecessor, when present.
+
+Supply complete consumed projections for new units. In a saved fixed quarterly
+overview, `quarter_evidence.version: 2` records each consumed source version and
+projection digest alongside the binding to its captured registration. The
+registration retains the full projection. The helper restores checked projections
+for assessment and retained-unit publication. A missing or mismatched capture
+invalidates affected work. Older fixed overviews with full projections remain
+readable.
 
 ```python
 saved = research_store.publish(

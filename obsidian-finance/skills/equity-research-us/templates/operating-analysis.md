@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Products, segments and strategy
+## Research question, conclusion and operating context
 
 ${product_and_segment_changes}
 

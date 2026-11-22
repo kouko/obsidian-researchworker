@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Show at least one comparable-period financial table with units, reporting basis, and material changes. Reconcile a major earnings movement and its cash or balance-sheet consequence with the underlying inputs. Explain a material liquidity or financing implication and competing explanations. If a comparable period or reconciliation is unavailable, name the missing line or disclosure and the conclusion it prevents.
+
 ## Research questions
 
 How did profitability, cash generation, working capital and financing change?

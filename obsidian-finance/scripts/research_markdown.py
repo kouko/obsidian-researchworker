@@ -1,10 +1,12 @@
 """Obsidian properties and versioned Markdown records for the research pilot."""
 
 from datetime import date, datetime
+from html import escape
 import json
 from pathlib import Path
 import re
 from string import Template
+from urllib.parse import quote
 
 
 ANALYSIS_ROLES = frozenset({
@@ -178,12 +180,17 @@ def _dump(record):
     return yaml.dump(record, sort_keys=False, allow_unicode=True, Dumper=Dumper)
 
 
+def _visible_text(value):
+    text = " ".join(str(value).split())
+    return re.sub(r"([\\`*_{}\[\]()#+!|~])", r"\\\1", escape(text, quote=False))
+
+
 def render_registration(asset, role, record):
     template = Path(__file__).parents[1] / f"skills/equity-research-us/templates/{role}-registration.md"
     title = f"{record['id']} {record['identity']}"
     # One scalar per placeholder; quoted escapes protect metadata written by agents.
     context = {
-        "title": title.replace("\n", " "),
+        "title": _visible_text(title),
         "title_yaml": json.dumps(title, ensure_ascii=False),
         "asset_id_yaml": json.dumps(asset, ensure_ascii=False),
         f"{role}_id_yaml": json.dumps(record["id"], ensure_ascii=False),
@@ -194,12 +201,21 @@ def render_registration(asset, role, record):
         available = record.get("available_at")
         context["available_at_properties"] = "available_at: " + json.dumps(available) + "\n" if available else ""
         origin = record.get("origin_reference", record["raw_ref"])
-        context["source_link_and_basis"] = f"[Local source](../raw/{Path(record['raw_ref']).name})\n\nOrigin: {origin}"
+        kind = _visible_text(record.get("kind", "source"))
+        availability = _visible_text(available) if available else "not established"
+        context["source_link_and_basis"] = (
+            f"Use this captured {kind} to inspect the evidence as it was saved. "
+            f"Recorded availability: {availability}.\n\n"
+            f"[Local source](../raw/{quote(Path(record['raw_ref']).name)}) · Origin: {_visible_text(origin)}"
+        )
         if "original_ref" in record:
-            context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{Path(record['original_ref']).name})"
+            context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{quote(Path(record['original_ref']).name)})"
     else:
         origin = record.get("origin_reference", record["content_ref"])
-        context["method_and_limits"] = f"[Local method](../materials/{Path(record['content_ref']).name})\n\nOrigin: {origin}"
+        context["method_and_limits"] = (
+            "Use this captured method to repeat the applied procedure or inspect its assumptions.\n\n"
+            f"[Local method](../materials/{quote(Path(record['content_ref']).name)}) · Origin: {_visible_text(origin)}"
+        )
     rendered = Template(template.read_text(encoding="utf-8")).substitute(context)
     parse_note(rendered, role + "-registration")
     return rendered
@@ -222,7 +238,17 @@ def render_quarter_overview(asset, quarter, review, title, report_links):
                  asset_id=asset, fiscal_quarter=quarter, as_of=review["cutoff"],
                  review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
+    research = review.get("research", {})
+    changes = _visible_text(research.get("changes") or "No change summary was supplied.")
+    gaps = "\n".join(f"- {_visible_text(gap)}" for gap in research.get("gaps", []))
+    gaps = gaps or "No gaps were recorded."
     links = "\n".join(f"- [{label}]({path})" for label, path in report_links)
-    return ("---\n" + _dump(props) + "---\n\n# " + title + "\n\n" + links
+    links = links or "No analysis reports have been saved for this quarter."
+    return ("---\n" + _dump(props) + "---\n\n# " + _visible_text(title)
+            + "\n\nUse this note to review changes at the saved cutoff, open the supporting analyses, "
+            "and identify what needs more evidence."
+            + "\n\n## What changed\n\n" + changes
+            + "\n\n## Analysis reports\n\n" + links
+            + "\n\n## Evidence gaps\n\n" + gaps
             + "\n\n## Research record\n\n```finance-quarter-overview\n"
             + _dump(review) + "```\n")

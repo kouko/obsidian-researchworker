@@ -103,3 +103,35 @@ def test_review_render_round_trips_shared_source_data():
     markdown = load()._markdown
     _, restored = markdown.record(markdown.render_review("aapl", "2024Q3", review), "review")
     assert restored == review
+
+
+def test_generated_overview_exposes_changes_and_gaps_before_record():
+    codec = load()._markdown
+    review = {
+        "id": "q2-a", "cutoff": CUTOFF, "publication": {"complete": False},
+        "research": {
+            "changes": "Higher sales and slower cash conversion <details>",
+            "gaps": ["Peer comparison still pending"],
+        },
+    }
+    note = codec.render_quarter_overview("aapl", "2024Q2", review, "Quarter results",
+                                         [("Financial Analysis", "financial%20analysis.md")])
+    visible = note.split("## Research record")[0]
+    assert "Higher sales and slower cash conversion &lt;details&gt;" in visible
+    assert "Peer comparison still pending" in visible
+    assert "[Financial Analysis](financial%20analysis.md)" in visible
+    assert codec.record(note, "quarter-overview")[1] == review
+
+
+@pytest.mark.parametrize("role, record, heading, link", [
+    ("source", {"id": "filing", "identity": "v1", "raw_ref": "data/raw/filing.html"},
+     "Original and applicability", "../raw/filing.html"),
+    ("method", {"id": "comparison", "identity": "v1", "content_ref": "data/materials/method.txt"},
+     "Method and limits", "../materials/method.txt"),
+])
+def test_captured_registration_exposes_evidence_before_record(role, record, heading, link):
+    codec = load()._markdown
+    note = codec.render_registration("aapl", role, record)
+    visible = note.split("## Research record")[0]
+    assert heading in visible and link in visible and "## Limits" in visible
+    assert codec.record(note, role + "-registration")[1] == record

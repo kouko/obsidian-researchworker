@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Forecast basis and model
+## Research question, conclusion and forecast basis
 
 ${forecast_basis}
 

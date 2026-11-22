@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Summarize the decision-relevant changes from the prior quarter, with the strongest support and counterevidence linked to the source analyses. For each horizon state the judgment, conditions and invalidation evidence separately. Rank outstanding gaps by their effect on the judgment and specify which evidence would resolve them.
+
 ## Research questions
 
 Which conditional investment judgments follow from the applicable evidence at

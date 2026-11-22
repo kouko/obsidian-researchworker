@@ -139,7 +139,8 @@ Standalone verification uses the recorded claim and captured source even
 when the live note is absent. It cannot decide whether the live claim changed.
 
 Use the [research overview](templates/research-overview.md),
-[asset entry](templates/asset-entry.md), [source registration](templates/source-registration.md),
+[asset entry](templates/asset-entry.md), optional [quarter navigation](templates/quarter-navigation.md),
+[source registration](templates/source-registration.md),
 and [method registration](templates/method-registration.md) templates for their
 corresponding note roles. Choose the matching analysis template:
 [financial](templates/financial-analysis.md), [operating](templates/operating-analysis.md),
@@ -155,9 +156,14 @@ Use quarter-relative payload paths such as `data/raw/filing.html` in these
 registrations.
 Use the source and method templates, including their fenced metadata blocks.
 Every newly authored Markdown note, including a draft or calculation note,
-uses its bundled role template and flat Obsidian frontmatter. The helper
-renders the quarterly overview, including its progress record. Localize titles
-and prose as needed. Put a new
+uses its bundled role template and flat Obsidian frontmatter. Make every note
+independently useful: state its purpose or research question, show the supported
+findings or evidence description, and link to the sources and material
+limitations. Put that readable material before machine records. For entry and
+navigation notes, explain the covered scope and what the links open. For source
+registrations, explain what the source supports and where it does not apply.
+The helper renders the quarterly overview from the saved changes, report links
+and evidence gaps. Localize titles and prose as needed. Put a new
 method or assumption's human-readable procedure, assumptions, and limits
 in the body of its method-registration note. Save the exact applied method
 payload separately as UTF-8 plain text (`data/materials/<name>.txt`) in this
@@ -290,7 +296,15 @@ Apply the same dependency check to other source or method updates. Keep the exis
 quarterly output and review contracts. Combine or separate analysis in notes as
 the actual scope warrants.
 
-Write source-grounded reasoning, counterevidence and calculation checks.
+Use each role reference's minimum output checks. Start with the question and
+the supported conclusion. Then show source-grounded reasoning, counterevidence
+and calculation checks. Use Markdown tables for comparable periods, scenarios,
+or measurements. Label units and comparison bases. Use a Mermaid diagram only
+when a causal or dependency relationship is clearer as a diagram. Identify
+hypotheses as such in the text and diagram, and never draw values or links
+that the evidence does not support. Verify generated internal links and chart
+syntax before saving. For a material gap, name the missing evidence, the
+unfinished check and the judgment it prevents.
 For conditional short/medium/long judgments use the synthesis reference. Missing
 required research remains pending. Record `insufficient_evidence` when the
 evidence cannot support a judgment.
@@ -331,6 +345,8 @@ Include method, assumptions, changes, gaps and all three horizon judgments:
 
 The exact envelope types matter: `research.method` and `research.changes` are
 nonempty strings; `research.assumptions` and `research.gaps` are lists.
+`research.changes` and the entries in `research.gaps` feed the visible
+overview. Use concise plain-language changes and specific missing evidence.
 `research.horizons` has exactly `short`, `medium`, `long`, each an object with
 nonempty string `judgment` and lists `evidence` and `invalidation_triggers`.
 Do not pass a list for `changes`; it is explanatory text, not change records.

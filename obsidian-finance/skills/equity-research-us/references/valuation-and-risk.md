@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Give the selected valuation method, dated inputs and comparability adjustments, with a reproducible range and sensitivity only where supported. Trace each material risk through an operating or financing mechanism and name an observable trigger. If there is no supported range or eligible price, state which input is missing and keep implications for margin of safety and entry price unresolved.
+
 ## Research questions
 
 What valuation follows from supported assumptions? Which risks change the

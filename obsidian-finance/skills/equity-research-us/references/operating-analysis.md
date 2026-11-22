@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Show the material operating drivers and their direction versus a comparable period. Separate management's explanation from quantified contributions and unsupported hypotheses. Connect at least one change to a durability check using an observable metric. Missing volume, price, mix, or currency attribution should remain explicitly unresolved rather than turning a residual into an estimate of one driver.
+
 ## Research questions
 
 How does the company earn and reinvest money? Which products, segments,

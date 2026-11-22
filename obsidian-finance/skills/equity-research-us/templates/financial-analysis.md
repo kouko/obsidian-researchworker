@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Findings
+## Research question and findings
 
 ${findings}
 

@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Price and volume evidence
+## Research question, conclusion and price evidence
 
 ${price_and_volume}
 

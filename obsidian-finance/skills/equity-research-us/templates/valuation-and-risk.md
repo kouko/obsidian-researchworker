@@ -11,7 +11,7 @@ status: ${status_yaml}
 
 # ${title}
 
-## Valuation method and fair-value range
+## Research question, conclusion and fair-value range
 
 ${value_range}
 
