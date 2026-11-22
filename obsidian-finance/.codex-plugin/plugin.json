@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "obsidian-finance",
     "shortDescription": "SEC evidence, equities and quarterly market research",
-    "longDescription": "Use equity-research to start or continue quarterly research on U.S.-listed companies in managed version-1 equities folders, preserving reports and edits and acquiring source-linked SEC evidence when required. Use industry-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
+    "longDescription": "Use equity-research for U.S.-listed companies and tw-equity-research for Taiwan Stock Exchange-listed companies. Each skill supports quarterly Obsidian research that preserves user edits and cites dated sources. Taiwan research includes monthly revenue, financial statements, material disclosures, and investor conference evidence. Use industry-research for quarterly market studies. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],

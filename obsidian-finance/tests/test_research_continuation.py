@@ -11,6 +11,7 @@ import json
 import shutil
 from pathlib import Path
 from string import Template
+from urllib.parse import quote
 
 import pytest
 
@@ -45,11 +46,21 @@ def unit(root, directory, name, content, consumed):
                 verification=directory + "/" + name + "-check.json", consumed=consumed)
 
 
-@pytest.mark.parametrize("update", [
-    "normal", "interrupted", "edited", "edited-before-read", "duplicate-role", "shared-report",
+@pytest.mark.parametrize("update, asset", [
+    ("normal", "bank-fixture"), ("interrupted", "bank-fixture"), ("edited", "bank-fixture"),
+    ("edited-before-read", "bank-fixture"), ("duplicate-role", "bank-fixture"),
+    ("shared-report", "bank-fixture"),
+    ("normal", "twse-1611"), ("interrupted", "twse-1611"), ("edited", "twse-1611"),
+    ("normal", "1611"),
 ])
-def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
-    asset = two_issuers(tmp_path)[0]
+def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update, asset):
+    two_issuers(tmp_path, asset)
+    taiwan = asset == "twse-1611"
+    ticker = "BANK" if asset == "bank-fixture" else "1611"
+    company = "中電" if taiwan else "Example / Bank"
+    saved_company = "中電" if taiwan else "Example - Bank"
+    financial_label = "01 財務分析" if taiwan else "01 Financial Analysis"
+    overview_label = "00 季度研究總覽" if taiwan else "00 Research Overview"
     cycle = f"investing/assets/equities/{asset}/cycles/2024Q2"
     old = tmp_path / cycle / "2024-08-01-r1/review.json"
     original = old.read_bytes()
@@ -67,7 +78,7 @@ def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update
 finance_schema: 1
 finance_role: financial-analysis
 title: {title}
-asset_id: {asset}
+asset_id: "{asset}"
 fiscal_quarter: 2024Q2
 as_of: "{cutoff}"
 review_id: {rid}
@@ -89,11 +100,12 @@ status: partial
         return module.publish(tmp_path, asset, review, {"analysis.md": body},
             expected if expected is not None else module.publication_snapshot(tmp_path),
             rid, complete=False, storage="quarterly",
-            company_name=company, ticker="BANK")
+            company_name=company, ticker=ticker)
 
     first_cutoff = "2024-08-12T23:59:59+00:00"
-    first = publish("fixed1", first_cutoff, "初版", "Original conclusion", "Example / Bank")
-    note = next((tmp_path / cycle).glob("*Financial Analysis.md"))
+    first = publish("fixed1", first_cutoff, "初版", "Original conclusion", company)
+    note = tmp_path / cycle / f"2024Q2 {ticker} {saved_company} - {financial_label}.md"
+    assert note.is_file()
     overview = tmp_path / first["review"]
     args = ("fixed2", CUTOFF, "Update", "Revised conclusion", "Renamed Bank", "fixed1")
     if update == "duplicate-role":
@@ -157,11 +169,10 @@ status: partial
     else:
         second = publish(*args)
         assert first["review"] == second["review"]
-    assert first["review"] == f"{cycle}/2024Q2 BANK Example - Bank - 00 Research Overview.md"
-    assert note.name == "2024Q2 BANK Example - Bank - 01 Financial Analysis.md"
+    assert first["review"] == f"{cycle}/2024Q2 {ticker} {saved_company} - {overview_label}.md"
     assert "Original conclusion" in note.read_text() and "Revised conclusion" in note.read_text()
     assert "filing-2024Q2" in note.read_text() and first_cutoff in note.read_text()
-    assert "Financial%20Analysis.md" in (tmp_path / first["review"]).read_text()
+    assert quote(note.name) in overview.read_text()
     assert old.read_bytes() == original
     view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in view["reusable"]
@@ -181,8 +192,8 @@ status: partial
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in verified["reusable"]
 
 
-def two_issuers(root):
-    assets = ["bank-fixture", "software-fixture"]
+def two_issuers(root, first_asset="bank-fixture"):
+    assets = [first_asset, "software-fixture"]
     put(root, "investing/research.json", dict(version=1, assets=assets))
     for asset, periods, primary in [(assets[0], ("Q1", "Q2"), "credit"),
                                     (assets[1], ("Q3", "Q4"), "retention")]:

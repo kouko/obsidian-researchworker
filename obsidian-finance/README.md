@@ -3,6 +3,7 @@
 Optional `obsidian-finance` 0.1.0 provides `equity-research` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
+`tw-equity-research` for Taiwan Stock Exchange-listed companies and
 `industry-research` for quarterly industry and market studies. It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
@@ -21,7 +22,14 @@ from live SEC access. Partial checkpoints retain unresolved research.
 
 Use [equity-research](skills/equity-research/README.md) to continue analysis
 in an existing managed research folder. It reuses eligible local evidence and
-opens the bundled acquisition guide when required SEC evidence is missing. Use
+opens the bundled acquisition guide when required SEC evidence is missing.
+Use [tw-equity-research](skills/tw-equity-research/SKILL.md) to start or continue
+Taiwan-listed company research, link published monthly revenue to the prior
+forecast, and track financial statements, disclosures, and conference evidence.
+Taiwan reports use numbered Traditional Chinese filenames, such as
+`2025Q3 1611 中電 - 01 財務分析.md`. The skill includes public acquisition
+scripts and can use a user's existing local transcription tools.
+Use
 [industry-research](skills/industry-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
 or cite eligible market findings in issuer research. Given an Obsidian vault,
@@ -211,7 +219,8 @@ Save one stable overview and one note per completed or partial report role
 directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
 reports and contains the current progress record. It uses `00 Research Overview`;
 analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
-The final report uses `99 Investment Synthesis`. For example,
+The final report uses `99 Investment Synthesis`. The Taiwan skill uses the
+same role numbers with Traditional Chinese report names. For example,
 `2024Q3 AAPL Apple - 01 Financial Analysis.md` can have a Chinese heading and
 body. Later language or company display name changes keep the saved path.
 Existing old-format files stay in place.

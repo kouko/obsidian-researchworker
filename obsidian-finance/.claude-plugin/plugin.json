@@ -1,7 +1,7 @@
 {
   "name": "obsidian-finance",
   "version": "0.1.0",
-  "description": "Optional SEC evidence acquisition and folder-grounded equities and quarterly market research with source cutoffs and protected checkpoints.",
+  "description": "Quarterly U.S. equity research with SEC evidence, Taiwan-listed company research with tw-equity-research, and quarterly market research in Obsidian.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",
   "repository": "https://github.com/kouko/obsidian-researchworker",

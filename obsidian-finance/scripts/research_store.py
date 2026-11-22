@@ -36,6 +36,20 @@ _REPORT_LABELS = {
     "technical-analysis": "06 Technical Analysis",
     "synthesis": "99 Investment Synthesis",
 }
+_TW_REPORT_LABELS = {
+    "quarter-overview": "00 季度研究總覽",
+    "financial-analysis": "01 財務分析",
+    "operating-analysis": "02 營運分析",
+    "industry-and-competition": "03 產業與競爭",
+    "forward-forecast": "04 預測",
+    "valuation-and-risk": "05 估值與風險",
+    "technical-analysis": "06 技術分析",
+    "synthesis": "99 投資綜合結論",
+}
+
+
+def _report_labels(asset):
+    return _TW_REPORT_LABELS if re.fullmatch(r"twse-[0-9]{4}", asset) else _REPORT_LABELS
 
 
 def _require(value, message):
@@ -428,6 +442,7 @@ def _candidate_sources_valid(base, quarter, cutoff, unit, sources):
 
 def _fixed_notes(root, cycle, asset, quarter):
     notes = {}
+    labels = _report_labels(asset)
     try:
         names = _names(root, cycle)
     except FileNotFoundError:
@@ -438,7 +453,7 @@ def _fixed_notes(root, cycle, asset, quarter):
         path = cycle + "/" + name
         raw = _bytes(root, path)
         text = raw.decode("utf-8", errors="replace")
-        for role, label in _REPORT_LABELS.items():
+        for role, label in labels.items():
             if not _markdown.declares_role(text, role):
                 continue
             props, _ = _markdown.parse_note(text, role, asset_id=asset, fiscal_quarter=quarter)
@@ -481,10 +496,11 @@ def _fixed_record(notes):
              and type(review["publication"]["complete"]) is bool
              and props["status"] == ("complete" if review["publication"]["complete"] else "partial")
              and review["reports"] == reports, "quarterly overview and reports disagree")
-    prefix = Path(path).name.removesuffix(" - 00 Research Overview.md")
+    labels = _report_labels(props["asset_id"])
+    prefix = Path(path).name.removesuffix(f" - {labels['quarter-overview']}.md")
     for role, name in reports.items():
         report_props = notes[role][2]
-        _require(name == f"{prefix} - {_REPORT_LABELS[role]}.md" and report_props["status"] != "draft"
+        _require(name == f"{prefix} - {labels[role]}.md" and report_props["status"] != "draft"
                  and _adapter._core._instant(report_props["as_of"]) <= _adapter._core._instant(review["cutoff"]),
                  "invalid report identity or cutoff: " + name)
     _require(paths <= set(reports.values()), "quarterly overview refers to an unowned output")
@@ -1411,18 +1427,23 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
 def verify_quarter(folder, review):
     """Verify a copied quarter and its relative overview or dated review."""
     path = Path(review)
-    if not path.is_absolute() and len(path.parts) == 1 and path.name.endswith(" - 00 Research Overview.md"):
+    overview_suffixes = tuple(f" - {labels['quarter-overview']}.md"
+                              for labels in (_REPORT_LABELS, _TW_REPORT_LABELS))
+    if not path.is_absolute() and len(path.parts) == 1 and path.name.endswith(overview_suffixes):
         try:
             raw = _bytes(folder, path.name, quarter_relative=True)
             props, stored = _markdown.record(raw.decode("utf-8"), "quarter-overview")
             asset, quarter = props["asset_id"], props["fiscal_quarter"]
-            prefix = path.name.removesuffix(" - 00 Research Overview.md")
-            _require(prefix.startswith(quarter + " "), "fixed overview quarter mismatch")
+            labels = _report_labels(asset)
+            suffix = f" - {labels['quarter-overview']}.md"
+            _require(path.name.startswith(quarter + " ") and path.name.endswith(suffix),
+                     "fixed overview quarter or market mismatch")
+            prefix = path.name.removesuffix(suffix)
             notes = {"quarter-overview": (path.name, raw, props)}
             _require(isinstance(stored.get("reports"), dict), "quarterly overview requires a mapping for reports")
             for role, filename in stored["reports"].items():
                 _require(role in _markdown.ANALYSIS_ROLES
-                         and filename == f"{prefix} - {_REPORT_LABELS[role]}.md", "invalid fixed report link")
+                         and filename == f"{prefix} - {labels[role]}.md", "invalid fixed report link")
                 report_raw = _bytes(folder, filename, quarter_relative=True)
                 report_props, _ = _markdown.parse_note(report_raw.decode("utf-8"), role,
                                                        asset_id=asset, fiscal_quarter=quarter)
@@ -1672,6 +1693,8 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
     _require(all(re.fullmatch(r"[a-zA-Z0-9_-]+\.md", name) and isinstance(content, str)
                  for name, content in files.items()), "plain proposal filenames and UTF-8 text required")
     _require(asset in _research_config(root)["assets"], "asset outside configured scope")
+    labels = _report_labels(asset)
+    overview_suffix = f" - {labels['quarter-overview']}.md"
     quarter, target = _target(asset, review)
     cycle = target.rsplit("/", 1)[0]
     base = cycle.rsplit("/", 2)[0]
@@ -1686,7 +1709,7 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
         if notes:
             overview, portable = _fixed_record(notes)
             previous = _rebase_review(portable, cycle, portable=False)
-            prefix = Path(overview).name.removesuffix(" - 00 Research Overview.md")
+            prefix = Path(overview).name.removesuffix(overview_suffix)
             _require(review["id"] != previous["id"]
                      and review.get("predecessor") == previous["id"]
                      and _adapter._core._instant(previous["cutoff"]) <= _adapter._core._instant(review["cutoff"])
@@ -1741,7 +1764,7 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
             _require(role not in roles and props["status"] in ("partial", "complete"),
                      "duplicate or draft quarterly report")
             roles.add(role)
-            filename = reports.setdefault(role, f"{prefix} - {_REPORT_LABELS[role]}.md")
+            filename = reports.setdefault(role, f"{prefix} - {labels[role]}.md")
             path = cycle + "/" + filename
             content = _retain_revision(notes.get(role), content, previous_outputs.get(path, []),
                                        review["research"]["changes"])
@@ -1757,12 +1780,12 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
                      "re-verify every unit retained in a changed shared report")
     saved["reports"] = reports
     portable, evidence = _capture_quarter(root, asset, issuer["issuer"], cycle, saved, expected)
-    overview = cycle + f"/{prefix} - 00 Research Overview.md"
+    overview = cycle + "/" + prefix + overview_suffix
     title = overview_title or (notes["quarter-overview"][2]["title"] if notes
-                               else f"{prefix} Research Overview")
+                               else f"{prefix} {labels['quarter-overview'][3:]}")
     _require(isinstance(title, str) and title.strip() and not any(c in title for c in "\r\n"),
              "invalid quarterly overview title")
-    links = [(_REPORT_LABELS[role], quote(reports[role])) for role in _REPORT_LABELS if role in reports]
+    links = [(label, quote(reports[role])) for role, label in labels.items() if role in reports]
     overview_text = _markdown.render_quarter_overview(asset, quarter, portable, title, links)
     _markdown.record(overview_text, "quarter-overview")
     intended[overview] = overview_text.encode("utf-8")
@@ -1791,6 +1814,7 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
 def recover_quarterly(root, asset, quarter):
     """Resume an interrupted write only for the requested asset fiscal quarter."""
     cycle = Path("investing/assets/equities") / _id(asset) / "cycles" / _id(quarter)
+    labels = _report_labels(asset)
     _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
     root = Path(root).absolute()
     _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
@@ -1799,10 +1823,10 @@ def recover_quarterly(root, asset, quarter):
         for reference, (_, intended) in changes.items():
             path = Path(reference)
             _require(path.parent == cycle, "Pending writes are outside the selected quarter")
-            props, _ = _markdown.parse_note(intended.decode("utf-8"), _REPORT_LABELS.keys(),
+            props, _ = _markdown.parse_note(intended.decode("utf-8"), labels.keys(),
                                            asset_id=asset, fiscal_quarter=quarter)
             _require(path.name.startswith(quarter + " ")
-                     and path.name.endswith(f" - {_REPORT_LABELS[props['finance_role']]}.md"),
+                     and path.name.endswith(f" - {labels[props['finance_role']]}.md"),
                      "Pending write does not match its report role")
 
     return _update.recover(root, namespace="equity", check_scope=check_scope)
