@@ -17,7 +17,7 @@ def test_config_directory_symlink_does_not_store_contact_in_vault(tmp_path, monk
     else:
         config.mkdir()
         (config / 'obsidian-finance').symlink_to(vault, target_is_directory=True)
-    script = Path(__file__).resolve().parents[1] / 'skills/sec-data/scripts/acquire.py'
+    script = Path(__file__).resolve().parents[1] / 'skills/equity-research/scripts/acquire.py'
     result = subprocess.run(
         [sys.executable, str(script), '--setup-contact'],
         input=json.dumps({'name': 'Operator Probe', 'email': 'operator@example.invalid'}),

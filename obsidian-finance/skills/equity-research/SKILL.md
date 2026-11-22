@@ -7,17 +7,16 @@ description: Start or continue quarterly equity research for U.S.-listed compani
 
 Continue the research that the selected folder actually needs, preserving prior
 reports and user edits. This skill supplies agent instructions, not a scheduler
-or an autonomous service. For a download-only request use sibling `sec-data`;
-ordinary notes, diary summaries and unrelated research do not enter this workflow.
+or an autonomous service. Ordinary notes, diary summaries and unrelated research
+do not enter this workflow.
 
 Read [research-method.md](references/research-method.md) before substantive
 analysis or judging completion. For a read-only no-work check, load its evidence
 and completion rules if the saved scope or meaning is uncertain. Resolve paths
 from the loaded skill directory: the package README is `../../README.md`, the
-helper is `../../scripts/research_store.py`, and acquisition is sibling
-`../sec-data/SKILL.md`. Read the README's version-1 contracts before constructing
-metadata or calling publication/recovery. Use existing Python 3.11+; these
-legacy helpers use the standard library. No research-store CLI exists.
+helper is `../../scripts/research_store.py`. Read the README's version-1
+contracts before constructing metadata or calling publication/recovery. Use
+existing Python 3.11+; these legacy helpers use the standard library. No research-store CLI exists.
 
 ## 1. Establish the boundary
 
@@ -191,13 +190,17 @@ analysis, including dependent synthesis, while retaining independent valid work.
 Do not stop at printing a work list when evidence permits substantive progress.
 If an input fails, continue independent questions and keep affected ones pending.
 
-For required SEC acquisition follow sibling `sec-data`, including its first-use
-conversation setup, private local contact reuse, actual status/manifest and
-source-declared fiscal identity. On Codex use the non-echoing terminal sequence
-described in that skill when setup is required. Local analysis and reuse checks
-do not require SEC contact setup. Retained HTML is available evidence, not
-evidence that the agent read it. Use appropriate original filing passages for
-each claimed dimension; record sections actually read, passage references and
+If eligible local SEC evidence covers the requested work, reuse it without
+opening the acquisition reference, running the CLI or requesting contact setup.
+If required SEC evidence is missing, follow
+[sec-acquisition.md](references/sec-acquisition.md) for cutoff, fiscal identity,
+private contact setup and acquisition status. Run the bundled CLI for the missing
+evidence and continue supported analysis in the same request. If acquisition is
+partial or fails, report the missing evidence, leave affected questions pending
+and continue work supported by eligible evidence.
+
+Retained HTML is available evidence. Use appropriate original filing passages
+for each claimed dimension; record sections actually read, passage references and
 unread exclusions. Companyfacts and issuer releases alone do not establish a
 full investment case. Read notes, risks, MD&A and governance/proxy material when
 claims depend on them; do not claim a mandatory word-for-word full reading was

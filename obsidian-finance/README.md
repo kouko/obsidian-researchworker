@@ -1,8 +1,8 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.1.0 provides `sec-data` for public SEC filing
-metadata/financial observations and `equity-research` for agent-led research
-continuation from a designated folder. The package also provides
+Optional `obsidian-finance` 0.1.0 provides `equity-research` for agent-led
+research continuation from a designated folder, with bundled SEC filing
+metadata and financial observation acquisition when required evidence is missing. The package also provides
 `industry-research` for quarterly industry and market studies. It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
@@ -19,11 +19,9 @@ from live SEC access. Partial checkpoints retain unresolved research.
 
 ## Skill guides
 
-Use [sec-data](skills/sec-data/README.md) for a public issuer’s filings and
-reported financial observations. Choose the fiscal-quarter selector if the
-issuer’s fiscal calendar matters, or use the observation-end date range when
-you already know the dates. Use [equity-research](skills/equity-research/README.md)
-to continue analysis in an existing managed research folder. Use
+Use [equity-research](skills/equity-research/README.md) to continue analysis
+in an existing managed research folder. It reuses eligible local evidence and
+opens the bundled acquisition guide when required SEC evidence is missing. Use
 [industry-research](skills/industry-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
 or cite eligible market findings in issuer research. Given an Obsidian vault,
@@ -38,17 +36,20 @@ for custom paths, historical citation, and interruption recovery.
 Python 3.11 or later is the only runtime requirement; all runtime imports use
 the standard library. Live acquisition uses the operator or organization name
 and contact email saved in the private local file
-`~/.config/obsidian-finance/sec-contact.json`. The SEC skill asks for these
-values in the current conversation on first use. The bundled script accepts
+`~/.config/obsidian-finance/sec-contact.json`. The equity-research skill asks for these
+values in the current conversation when live acquisition first requires them. The bundled script accepts
 `--setup-contact` with a separate non-echoing stdin JSON payload containing
-the `name` and `email` fields. See the [SEC skill](skills/sec-data/SKILL.md)
+the `name` and `email` fields. See the [SEC acquisition guide](skills/equity-research/references/sec-acquisition.md)
 for setup and failure handling. Requests send the contact and public issuer
 request to SEC. Local analysis and reuse checks do not require a contact.
+
+Direct callers of the retired CLI path need to update it to the bundled path
+below. The options, saved contact and output format are unchanged.
 
 From the repository root:
 
 ```sh
-python3 obsidian-finance/skills/sec-data/scripts/acquire.py \
+python3 obsidian-finance/skills/equity-research/scripts/acquire.py \
   --ticker AAPL \
   --fiscal-quarter 2024Q3 \
   --output-dir /private/tmp/sec-data-sample
@@ -65,7 +66,7 @@ and their own assessment cutoff; this operation does not acquire them.
 The compatible observation-end range entry still requires all three dates:
 
 ```sh
-python3 obsidian-finance/skills/sec-data/scripts/acquire.py \
+python3 obsidian-finance/skills/equity-research/scripts/acquire.py \
   --ticker AAPL \
   --period-start 2024-01-01 \
   --period-end 2024-12-31 \
@@ -169,9 +170,8 @@ Neither establishes installed-host skill execution or complete financial researc
 
 The [equity-research skill](skills/equity-research/SKILL.md) guides the host
 agent through scoped discovery, applicable source checks, actual affected
-analysis and append-only publication/recovery using the APIs below. It is
-separate from download-only `sec-data`; no command wrapper, scheduler or general
-workflow engine is added. The persisted asset questions define the research
+analysis and append-only publication/recovery using the APIs below. Its bundled
+SEC CLI acquires required missing evidence. The persisted asset questions define the research
 scope; the caller supplies the root, mode and assessment cutoff rather than a
 new hand-written work list each time. Unsupported old notes are preserved.
 The current workflow supports U.S.-listed company equities; ETF, commodity and FX
