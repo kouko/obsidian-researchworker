@@ -113,6 +113,7 @@ def test_missing_completed_session_is_reported():
     assert "2026-11-30: completed exchange session missing from provider data." in (
         result["fetch_exclusions"]
     )
+    assert result["missing_completed_sessions"] == ["2026-11-30"]
 
 
 def test_snapshot_preserves_fetch_evidence_and_admits_valid_bars():
@@ -124,5 +125,20 @@ def test_snapshot_preserves_fetch_evidence_and_admits_valid_bars():
     )
     assert normalized["fetch_settings"] == result["fetch_settings"]
     assert normalized["latest_expected_session"] == "2026-11-30"
+    assert normalized["missing_completed_sessions"] == ["2026-11-30"]
     assert normalized["exclusions"] == result["fetch_exclusions"]
     assert len(normalized["bars"]) == 2
+
+
+def test_missing_sessions_are_canonical_and_part_of_source_identity():
+    result = fetch_module().fetch_daily("AAPL", **dependencies(
+        "2026-11-30T21:01:00+00:00", "2026-11-30T21:02:00+00:00",
+    ))
+    validate = load_module(SCRIPT.with_name("snapshot.py")).validate_snapshot
+    cutoff = result["available_at"]
+    normalized = validate(result, cutoff)
+    assert normalized["snapshot_id"] != validate(
+        {**result, "missing_completed_sessions": []}, cutoff
+    )["snapshot_id"]
+    with pytest.raises(ValueError, match="missing_completed_sessions"):
+        validate({**result, "missing_completed_sessions": ["20261128"]}, cutoff)

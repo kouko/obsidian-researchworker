@@ -27,6 +27,16 @@ def _text_field(document, field):
     return value.strip()
 
 
+def _calendar_date(value, field):
+    try:
+        result = date.fromisoformat(value)
+        if result.isoformat() == value:
+            return result
+    except (TypeError, ValueError):
+        pass
+    raise ValueError(f"{field} must have the YYYY-MM-DD form.")
+
+
 def _number(document, field, *, allow_zero=False, allow_missing=False):
     value = document.get(field)
     if value is None and allow_missing:
@@ -46,9 +56,7 @@ def _read_bar(bar, timezone, snapshot_available_at):
     if not isinstance(bar, dict):
         raise ValueError("Each bar must be an object.")
     day_text = _text_field(bar, "date")
-    day = date.fromisoformat(day_text)
-    if day.isoformat() != day_text:
-        raise ValueError("Bar date must have the YYYY-MM-DD form.")
+    day = _calendar_date(day_text, "Bar date")
     session_close = parse_timestamp(bar.get("session_close"), "session_close")
     if session_close.astimezone(timezone).date() != day:
         raise ValueError(f"{day}: session_close falls outside the trading date in the listing timezone.")
@@ -111,10 +119,18 @@ def validate_snapshot(payload, cutoff):
         metadata["request_started_at"] = request_started_at.isoformat()
     if "latest_expected_session" in payload:
         latest_expected_session = _text_field(payload, "latest_expected_session")
-        expected_date = date.fromisoformat(latest_expected_session)
-        if expected_date.isoformat() != latest_expected_session:
-            raise ValueError("latest_expected_session must have the YYYY-MM-DD form.")
+        _calendar_date(latest_expected_session, "latest_expected_session")
         metadata["latest_expected_session"] = latest_expected_session
+    if "missing_completed_sessions" in payload:
+        missing = payload["missing_completed_sessions"]
+        if not isinstance(missing, list):
+            raise ValueError("missing_completed_sessions must be a list of dates.")
+        latest = metadata.get("latest_expected_session", available_at.astimezone(timezone).date().isoformat())
+        for value in missing:
+            day = _calendar_date(value, "missing_completed_sessions date")
+            if day.weekday() >= 5 or value > latest:
+                raise ValueError("missing_completed_sessions contains a date outside completed U.S. sessions.")
+        metadata["missing_completed_sessions"] = sorted(set(missing))
     if "fetch_settings" in payload:
         settings = payload["fetch_settings"]
         if not isinstance(settings, dict) or any(
@@ -141,6 +157,8 @@ def validate_snapshot(payload, cutoff):
         if day in bars:
             raise ValueError(f"Duplicate trading date: {day}.")
         bars[day] = (bar, session_close, bar_available_at)
+    if bars.keys() & set(metadata.get("missing_completed_sessions", ())):
+        raise ValueError("missing_completed_sessions includes a supplied bar.")
     ordered = [bars[day] for day in sorted(bars)]
     identity = json.dumps(
         {**metadata, "bars": [bar for bar, _, _ in ordered]},
@@ -157,7 +175,9 @@ def validate_snapshot(payload, cutoff):
     if not exclusions:
         for bar, session_close, bar_available_at in ordered:
             day = bar["date"]
-            if not bar["complete"] or session_close > cutoff:
+            if _calendar_date(day, "Bar date").weekday() >= 5:
+                exclusions.append(f"{day}: weekend is not a U.S. equity trading session.")
+            elif not bar["complete"] or session_close > cutoff:
                 exclusions.append(f"{day}: trading session was incomplete at cutoff.")
             elif bar_available_at > cutoff:
                 exclusions.append(f"{day}: bar was available after cutoff.")

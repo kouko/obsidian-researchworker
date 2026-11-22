@@ -105,11 +105,13 @@ def fetch_daily(symbol, *, provider=None, calendar=None, now=_utc_now):
     available_dates = {bar["date"] for bar in bars}
     request_day = started_at.astimezone(ZoneInfo(NEW_YORK)).date().isoformat()
     expected_dates = []
+    missing_completed_sessions = []
     for session in calendar.sessions_in_range(bars[0]["date"], request_day):
         day = session.date().isoformat()
         if calendar.session_close(day) <= started_at:
             expected_dates.append(day)
             if day not in available_dates:
+                missing_completed_sessions.append(day)
                 skipped_rows.append(f"{day}: completed exchange session missing from provider data.")
 
     source = f"https://finance.yahoo.com/quote/{symbol}/history/"
@@ -130,6 +132,7 @@ def fetch_daily(symbol, *, provider=None, calendar=None, now=_utc_now):
         "session_calendar": "XNYS",
         "session_calendar_version": calendar_version,
         "latest_expected_session": expected_dates[-1],
+        "missing_completed_sessions": missing_completed_sessions,
         "fetch_exclusions": skipped_rows,
         "bars": bars,
     }

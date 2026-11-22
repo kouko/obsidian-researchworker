@@ -112,3 +112,30 @@ def test_a_known_missing_latest_session_withholds_direction_promptly(analyzer):
     for horizon in report["horizons"]:
         assert horizon["trend"] == "insufficient"
         assert "completed session 2024-02-29" in " ".join(horizon["limitations"])
+
+
+def test_known_gap_keeps_recent_inputs_usable(analyzer):
+    local = snapshot(start="2023-01-01")
+    missing = "2024-01-12"
+    local["bars"] = [bar for bar in local["bars"] if bar["date"] != missing]
+    local["missing_completed_sessions"] = [missing]
+    short, medium, long = analyzer.analyze(local)["horizons"]
+    assert short["trend"] == "up"
+    assert medium["trend"] == long["trend"] == "insufficient"
+    assert set(short["metrics"]["sma"]) == {"20", "50", "200"}
+    assert short["metrics"]["sma"]["20"] is not None
+    assert short["metrics"]["sma"]["50"] is None
+    assert short["metrics"]["volume_ratio"] == 2.0
+    assert any(missing in message for message in medium["limitations"])
+
+
+def test_known_gap_does_not_confirm_a_swing(analyzer):
+    local = snapshot()
+    candidate = next(bar for bar in local["bars"] if bar["date"] == "2024-02-19")
+    candidate["high"] += 10
+    assert any(point["date"] == candidate["date"] for point in analyzer.analyze(local)["horizons"][0]["swings"])
+    missing = "2024-02-20"
+    local["bars"] = [bar for bar in local["bars"] if bar["date"] != missing]
+    local["missing_completed_sessions"] = [missing]
+    short = analyzer.analyze(local)["horizons"][0]
+    assert all(point["date"] != candidate["date"] for point in short["swings"])

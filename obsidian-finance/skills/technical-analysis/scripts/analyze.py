@@ -39,22 +39,33 @@ def _range(bars):
     return [bars[0]["date"], bars[-1]["date"]] if bars else [None, None]
 
 
-def _daily_indicators(bars):
+def _crosses_missing_session(bars, missing_sessions):
+    return bool(bars) and any(bars[0]["date"] <= day <= bars[-1]["date"]
+                              for day in missing_sessions)
+
+
+def _daily_indicators(bars, missing_sessions):
     averages = {}
     previous = {}
     ranges = {}
     for period in (20, 50, 200):
         window = bars[-period:]
-        averages[str(period)] = mean(bar["close"] for bar in window) if len(window) == period else None
-        ranges[f"sma_{period}"] = _range(window) if len(window) == period else [None, None]
+        current_valid = len(window) == period and not _crosses_missing_session(window, missing_sessions)
+        averages[str(period)] = mean(bar["close"] for bar in window) if current_valid else None
+        ranges[f"sma_{period}"] = _range(window) if current_valid else [None, None]
         earlier = bars[:-SLOPE_SESSIONS][-period:]
-        previous[str(period)] = mean(bar["close"] for bar in earlier) if len(earlier) == period else None
-        ranges[f"sma_{period}_previous"] = _range(earlier) if len(earlier) == period else [None, None]
+        slope_window = bars[-period - SLOPE_SESSIONS:]
+        previous_valid = len(earlier) == period and not _crosses_missing_session(slope_window, missing_sessions)
+        previous[str(period)] = mean(bar["close"] for bar in earlier) if previous_valid else None
+        ranges[f"sma_{period}_previous"] = _range(earlier) if previous_valid else [None, None]
 
     baseline = bars[-VOLUME_BASELINE - 1:-1]
     volumes = [bar["volume"] for bar in baseline]
     latest_volume = bars[-1]["volume"] if bars else None
-    enough_volume = len(volumes) == VOLUME_BASELINE and None not in volumes
+    enough_volume = (
+        len(volumes) == VOLUME_BASELINE and None not in volumes
+        and not _crosses_missing_session(bars[-VOLUME_BASELINE - 1:], missing_sessions)
+    )
     baseline_average = mean(volumes) if enough_volume else None
     ratio = latest_volume / baseline_average if latest_volume is not None and baseline_average else None
     ranges["volume_baseline"] = _range(baseline) if enough_volume else [None, None]
@@ -153,7 +164,7 @@ def _conditions(trend, support, resistance):
             "A close outside the range would shift attention to a directional move on that side.")
 
 
-def _horizon(bars, cutoff_day, settings, indicators, stale_gap):
+def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions):
     name, length, weeks, months, average_period = settings
     averages, previous, volume_ratio, metric_ranges = indicators
     start = _offset_day(cutoff_day, -weeks, -months)
@@ -183,12 +194,16 @@ def _horizon(bars, cutoff_day, settings, indicators, stale_gap):
     if average is not None:
         evidence.append(f"{average_period}-session moving average {average:.6g} as of {bars[-1]['date']}.")
     else:
-        limitations.append(f"Fewer than {average_period} daily closes for this horizon's moving average.")
+        limitations.append(f"The {average_period}-session moving average requires a complete input window.")
     if volume_ratio is None:
-        limitations.append("Relative volume requires a valid latest volume and a positive 20-session prior average.")
+        limitations.append("Relative volume requires a valid latest volume and a complete, positive 20-session prior average.")
     else:
         evidence.append(f"Latest volume is {volume_ratio:.2f}× the prior {VOLUME_BASELINE}-session average.")
-    coverage_gap = stale_gap or _coverage_gap(observed, start, cutoff_day)
+    missing_in_window = [day for day in missing_sessions if start.isoformat() <= day <= cutoff_day.isoformat()]
+    known_gap = None
+    if missing_in_window:
+        known_gap = "Coverage gap: missing completed sessions in this observation window: " + ", ".join(missing_in_window)
+    coverage_gap = stale_gap or known_gap or _coverage_gap(observed, start, cutoff_day)
     if coverage_gap is None:
         trend, explanation = _trend(points, observed[-1]["close"], average, prior_average)
         (limitations if trend == "insufficient" else evidence).append(explanation)
@@ -214,7 +229,14 @@ def analyze(snapshot):
     cutoff = _time(snapshot["cutoff"])
     cutoff_day = cutoff.astimezone(ZoneInfo(snapshot["timezone"])).date()
     bars = [bar for bar in snapshot["bars"] if _time(bar["session_close"]) <= cutoff]
-    indicators = _daily_indicators(bars)
+    missing_sessions = set(snapshot.get("missing_completed_sessions", ()))
+    legacy_suffix = ": completed exchange session missing from provider data."
+    missing_sessions.update(
+        item.removesuffix(legacy_suffix) for item in snapshot.get("fetch_exclusions", ())
+        if item.endswith(legacy_suffix)
+    )
+    missing_sessions = sorted(missing_sessions)
+    indicators = _daily_indicators(bars, missing_sessions)
     expected = snapshot.get("latest_expected_session")
     stale_gap = None
     if bars and expected and bars[-1]["date"] < expected <= cutoff_day.isoformat():
@@ -224,7 +246,10 @@ def analyze(snapshot):
         **snapshot, "bars": bars, "schema_version": 1, "method": METHOD,
         "settings": {"slope_sessions": SLOPE_SESSIONS, "swing_radius": SWING_RADIUS,
                      "volume_baseline": VOLUME_BASELINE},
-        "horizons": [_horizon(bars, cutoff_day, settings, indicators, stale_gap) for settings in HORIZONS],
+        "horizons": [
+            _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions)
+            for settings in HORIZONS
+        ],
     }
 
 
