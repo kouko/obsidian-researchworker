@@ -18,6 +18,7 @@ _ROLE_FIELDS = {
     "asset-entry": ("asset_id",),
     "quarter-navigation": ("asset_id", "fiscal_quarter"),
     "review": _RUN_FIELDS,
+    "quarter-overview": _RUN_FIELDS,
     "source-registration": ("asset_id", "source_id", "source_version"),
     "method-registration": ("asset_id", "method_id", "method_version"),
     **dict.fromkeys(ANALYSIS_ROLES, _RUN_FIELDS),
@@ -49,7 +50,7 @@ def _validate_role_properties(props, role):
                 raise ValueError
         except ValueError as error:
             raise ValueError("invalid Obsidian date or timezone: " + field) from error
-    if role in ANALYSIS_ROLES or role == "review":
+    if role in ANALYSIS_ROLES or role in ("review", "quarter-overview"):
         statuses = ("partial", "complete", "draft") if role in ANALYSIS_ROLES else ("partial", "complete")
         if props["status"] not in statuses:
             raise ValueError("invalid Obsidian status")
@@ -214,3 +215,14 @@ def render_review(asset, quarter, review):
     template = Path(__file__).parents[1] / "skills/equity-research/templates/review.md"
     return Template(template.read_text(encoding="utf-8")).substitute(
         title=title, properties=_dump(props), record=_dump(review))
+
+
+def render_quarter_overview(asset, quarter, review, title, report_links):
+    props = dict(finance_schema=1, finance_role="quarter-overview", title=title,
+                 asset_id=asset, fiscal_quarter=quarter, as_of=review["cutoff"],
+                 review_id=review["id"],
+                 status="complete" if review["publication"]["complete"] else "partial")
+    links = "\n".join(f"- [{label}]({path})" for label, path in report_links)
+    return ("---\n" + _dump(props) + "---\n\n# " + title + "\n\n" + links
+            + "\n\n## Research record\n\n```finance-quarter-overview\n"
+            + _dump(review) + "```\n")
