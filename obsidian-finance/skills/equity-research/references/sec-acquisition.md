@@ -1,13 +1,10 @@
----
-name: sec-data
-description: Acquire SEC filing metadata and financial observations by company fiscal quarter or date range as a dated data package. Use for public issuer data downloads. SEC 財務資料擷取・財務データ取得。
----
-
 # SEC data acquisition
 
-Produce a source-linked data package for a public US issuer. This skill acquires
-data; it does not supply investment recommendations, complete quarterly
-statements, general Obsidian research notes or automatic note updates.
+Acquire a dated, source-linked data package of public U.S. issuer filing
+metadata and reported financial observations. For quarterly research, load this
+reference only when eligible local evidence is insufficient for the requested
+work. Use Python 3.11 or later. The [plugin guide](../../../README.md) also
+documents the direct CLI, selectors, outputs and status codes.
 
 ## Run the operation
 
@@ -21,7 +18,7 @@ The compatible alternative accepts an inclusive observation end-date range with
 `--period-start`, `--period-end` and required `--as-of`. Do not mix quarter and
 range selectors. All explicit dates are ISO dates; future cutoffs are invalid.
 
-Resolve `scripts/acquire.py` relative to this loaded skill's directory, then run
+Resolve `scripts/acquire.py` relative to the loaded equity-research skill directory, then run
 it with Python 3.11 or later. The runtime uses only the standard library.
 Use the host-provided skill directory when available; for example,
 `CLAUDE_SKILL_DIR` is a Claude-specific path aid, not a portable requirement.
@@ -122,8 +119,8 @@ only after explaining the concrete failure, into a fresh run.
 Preserve distinct reported versions and duration start dates. A day cutoff
 does not prove availability before a trading session. Observed spans do not
 establish complete quarterly statements, custom metrics or twenty-year
-research coverage. For advice or a general note request, explain this skill's
-data-only scope rather than substituting an acquisition or claiming analysis.
+research coverage. Treat the resulting package as evidence for subsequent
+analysis, with any missing dimensions reported separately.
 Q4 selects an original 10-K's FY endpoint; it does not derive a standalone Q4.
 Acceptance before official filing date is allowed; official filing dates govern
 publication cutoffs, while malformed or impossible chronology stays excluded.

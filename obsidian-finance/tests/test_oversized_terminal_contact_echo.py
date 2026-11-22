@@ -10,7 +10,7 @@ import sys
 
 def test_oversized_terminal_line_stays_hidden_through_its_end(tmp_path, monkeypatch):
     monkeypatch.setenv('HOME', str(tmp_path))
-    script = Path(__file__).resolve().parents[1] / 'skills/sec-data/scripts/acquire.py'
+    script = Path(__file__).resolve().parents[1] / 'skills/equity-research/scripts/acquire.py'
     command = [sys.executable, str(script), '--setup-contact']
     original = {'name': 'Original Operator', 'email': 'original@example.invalid'}
     subprocess.run(command, input=json.dumps(original).encode(), capture_output=True, check=True)

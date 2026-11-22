@@ -48,17 +48,17 @@ former resume skill without migrating them. For a single research note, use
 ## Optional finance package
 
 The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 provides
-[`sec-data`](obsidian-finance/skills/sec-data/README.md) for source-linked SEC
-acquisition and [`equity-research`](obsidian-finance/skills/equity-research/README.md)
-for agent-led continuation from a designated managed version-1 equities folder.
+[`equity-research`](obsidian-finance/skills/equity-research/README.md)
+for agent-led continuation from a designated managed version-1 equities folder,
+with source-linked SEC acquisition when required evidence is missing.
 Research discovers required work, reuses valid analysis and saves protected
 checkpoints; horizon judgments remain conditional or insufficient when evidence
 is missing. Select its marketplace entry independently of `obsidian`; the
 existing general-note package is 4.2.0.
 
 Runtime uses Python 3.11+ and the standard library. For live SEC acquisition,
-the SEC skill asks for an operator or organization name and contact email on
-first use, then reuses the private local record at
+`equity-research` asks for an operator or organization name and contact email
+when setup is required, then reuses the private local record at
 `~/.config/obsidian-finance/sec-contact.json`. Local research and reuse checks
 need no SEC contact. [Acceptance evidence](docs/loom/2026-11-18-sec-contact-setup/evidence/acceptance-test-evidence.md)
 records isolated Codex installation and contact setup in fresh conversations.

@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-SCRIPT = Path(__file__).parents[1] / 'skills/sec-data/scripts/sec_client.py'
+SCRIPT = Path(__file__).parents[1] / 'skills/equity-research/scripts/sec_client.py'
 
 
 def client():
