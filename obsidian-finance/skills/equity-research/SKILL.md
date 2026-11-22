@@ -342,18 +342,26 @@ Use `complete=True` only after all configured required work is substantively
 checked and reusable and required gaps are empty. The helper's structural
 acceptance never supplies the research judgment. Re-run discovery after saving;
 confirm valid independent units are reusable and unresolved work stays pending.
-Use the returned overview path as the saved entry. Only the helper should manage
-its temporary recovery files.
+Use the returned overview path as the saved entry.
 Do not advance `last_success` through local publication. Report actual external
 attempts and successful verification separately.
 
 ## 5. Recover and report honestly
 
 If a quarterly save was interrupted with a pending update, call
-`research_store.recover_quarterly(root)` within the authorized scope. Rediscover
-the quarter afterward and check the resulting reports and overview. If recovery
-detects a conflict, preserve the saved edits and pending update, and report
-which content needs reconciliation.
+`research_store.recover_quarterly(root, asset_id, quarter)` within the authorized
+scope. It uses the selected equity quarter's `.equity-update.json` and
+`.equity-stage-*` recovery files. It does not replay industry updates or
+updates for other quarters. Rediscover the quarter afterward and check the
+resulting reports and overview. If recovery detects a conflict, preserve the
+saved edits and pending update, and report which content needs reconciliation.
+
+After a successful replacement, hidden `.equity-stage-*` folders retain the
+displaced copies because an editor that had the old file open may still write
+to it. On an edit conflict, check the affected quarter's current note and
+its recovery copy. An interrupted update's recovery files may remain while
+the conflict is unresolved. Separate retention and manual cleanup can be
+considered later.
 
 If a proposal fails validation before publication, inspect the named field,
 reassess the affected work, and prepare a corrected proposal with fresh run

@@ -245,10 +245,19 @@ the previous report and its dated source references in its revision history.
 Assess those versions before citing a prior conclusion. An earlier-cutoff
 assessment can report a gap when the retained material is insufficient.
 
-After a pending save is interrupted, use `research_store.recover_quarterly(root)`
-and rediscover. Preserve conflicting edits and the pending record if recovery
-cannot safely proceed. This format keeps data for each quarter under that
-quarter's `data/`. To verify a copied quarter, pass its overview's basename,
+After a pending save is interrupted, use
+`research_store.recover_quarterly(root, asset_id, quarter)` and rediscover.
+This uses the selected equity quarter's `.equity-update.json` and
+`.equity-stage-*` recovery files, so industry updates and other quarters are
+outside its scope. Preserve conflicting edits and the pending record if recovery
+cannot safely proceed. After a successful replacement, hidden
+`.equity-stage-*` folders retain the displaced copies in case an editor that
+had the old file open writes to it. In a conflict, compare the current note
+and the affected quarter's recovery copy. Retention and manual cleanup are
+separate follow-up work.
+
+This format keeps data for each quarter under that quarter's `data/`. To
+verify a copied quarter, pass its overview's basename,
 such as `2024Q3 AAPL Apple - 00 Research Overview.md`, to
 `research_store.verify_quarter(quarter_root, overview_name)`.
 

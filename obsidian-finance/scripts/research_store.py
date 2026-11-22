@@ -1641,10 +1641,22 @@ def _retain_revision(old, content, units, reason):
     _require(delimiter not in content, "revision history is retained from the saved report")
     _, previous = _markdown.parse_note(old_bytes.decode("utf-8"), props["finance_role"])
     _, current = _markdown.parse_note(content, props["finance_role"])
+    previous_digest = sha256(old_bytes).hexdigest()
+    verified = [unit for unit in units
+                if unit["output"].get("digest") == previous_digest
+                and isinstance(unit.get("verification"), dict)
+                and _completion_valid(unit["verification"], previous_digest)]
+    if not verified:
+        # Keep all editable text, including any older history an editor may
+        # have changed, without attesting to the provenance of its contents.
+        quoted = "\n".join("> " + line for line in previous.strip().splitlines())
+        return (content.rstrip() + "\n" + delimiter + "\n"
+                + "### Previous editable report (unverified)\n\n"
+                + f"Reason for update: {reason}\n\n" + quoted + "\n")
     prior_body, _, history = previous.partition(delimiter)
     if prior_body.strip() == current.strip():
         return content.rstrip() + "\n" + delimiter + history if history else content
-    source_versions = {(sid, value["version"]) for unit in units
+    source_versions = {(sid, value["version"]) for unit in verified
                        for sid, value in unit.get("consumed", {}).items()}
     sources = ", ".join(f"{sid} ({version})" for sid, version in sorted(source_versions))
     prior = "\n".join("> " + line for line in prior_body.strip().splitlines())
@@ -1667,7 +1679,7 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
     root = Path(root).absolute()
     _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
     _preconditions(root, expected)
-    with _update.read_barrier(root):
+    with _update.read_barrier(root, namespace="equity"):
         notes = _fixed_notes(root, cycle, asset, quarter)
         prefix = _quarter_prefix(quarter, ticker, company_name) if not notes else None
         previous = {}
@@ -1771,13 +1783,29 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
             else:
                 _require(previous_bytes == payload, "quarter evidence conflicts with an existing file: " + destination)
 
-    _update.apply(root, {path: observed.get(path) for path in intended}, intended, check_scope=prepare_evidence)
+    _update.apply(root, {path: observed.get(path) for path in intended}, intended,
+                  check_scope=prepare_evidence, namespace="equity")
     return dict(status="complete" if complete else "checkpoint", review=overview, run=run_id)
 
 
-def recover_quarterly(root):
-    """Resume an interrupted fixed-note transaction without overwriting conflicts."""
-    return _update.recover(root)
+def recover_quarterly(root, asset, quarter):
+    """Resume an interrupted write only for the requested asset fiscal quarter."""
+    cycle = Path("investing/assets/equities") / _id(asset) / "cycles" / _id(quarter)
+    _require(re.fullmatch(r"[0-9]{4}Q[1-4]", quarter), "invalid fiscal directory")
+    root = Path(root).absolute()
+    _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
+
+    def check_scope(changes):
+        for reference, (_, intended) in changes.items():
+            path = Path(reference)
+            _require(path.parent == cycle, "Pending writes are outside the selected quarter")
+            props, _ = _markdown.parse_note(intended.decode("utf-8"), _REPORT_LABELS.keys(),
+                                           asset_id=asset, fiscal_quarter=quarter)
+            _require(path.name.startswith(quarter + " ")
+                     and path.name.endswith(f" - {_REPORT_LABELS[props['finance_role']]}.md"),
+                     "Pending write does not match its report role")
+
+    return _update.recover(root, namespace="equity", check_scope=check_scope)
 
 
 def publish(root, asset, review, files, expected, run_id, *, complete=True, storage="legacy",
@@ -2028,7 +2056,7 @@ def discover(root, mode, cutoff, *, candidate_for=None, storage="legacy"):
     if storage == "quarterly":
         boundary = Path(root).absolute()
         _require(not any(p.is_symlink() for p in (boundary, *boundary.parents)), "symlink root")
-        with _update.read_barrier(boundary):
+        with _update.read_barrier(boundary, namespace="equity"):
             return _discover(boundary, mode, cutoff, candidate_for, quarterly=True)
     return _discover(root, mode, cutoff, candidate_for, quarterly=False)
 

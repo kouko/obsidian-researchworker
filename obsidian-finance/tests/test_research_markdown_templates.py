@@ -27,7 +27,7 @@ def test_equity_skill_uses_fixed_quarter_publication_and_recovery():
     skill = (TEMPLATES.parent / "SKILL.md").read_text()
     assert skill.count('storage="quarterly"') == 2
     assert "run-directory/review.md" not in skill
-    assert "recover_quarterly(root)" in skill
+    assert "recover_quarterly(root, asset_id, quarter)" in skill
     assert "2024Q3 AAPL Apple - 00 Research Overview.md" in skill
 
 

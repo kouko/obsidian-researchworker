@@ -45,7 +45,9 @@ def unit(root, directory, name, content, consumed):
                 verification=directory + "/" + name + "-check.json", consumed=consumed)
 
 
-@pytest.mark.parametrize("update", ["normal", "interrupted", "edited", "duplicate-role", "shared-report"])
+@pytest.mark.parametrize("update", [
+    "normal", "interrupted", "edited", "edited-before-read", "duplicate-role", "shared-report",
+])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update):
     asset = two_issuers(tmp_path)[0]
     cycle = f"investing/assets/equities/{asset}/cycles/2024Q2"
@@ -111,6 +113,15 @@ status: partial
         assert note.read_bytes() == before
         assert "fixed1" in overview.read_text()
         return
+    if update == "edited-before-read":
+        note.write_bytes(note.read_bytes() + b"\nAn unchecked manual hypothesis.\n")
+        publish(*args)
+        text = note.read_text()
+        assert "Previous editable report (unverified)" in text
+        assert "> An unchecked manual hypothesis." in text
+        assert "Sources: filing-2024Q2" not in text
+        assert f"Previous report as of {first_cutoff}" not in text
+        return
     if update == "interrupted":
         exchange = module._update._exchange
         before = overview.read_bytes()
@@ -126,8 +137,23 @@ status: partial
         with pytest.raises(ValueError, match="pending"):
             module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
         monkeypatch.setattr(module._update, "_exchange", exchange)
-        assert module.recover_quarterly(tmp_path) is True
-        assert module.recover_quarterly(tmp_path) is False
+        assert module._update.recover(tmp_path) is False
+        for wrong_asset, wrong_quarter in [(asset, "2024Q1"), ("software-fixture", "2024Q2")]:
+            with pytest.raises(ValueError, match="outside the selected quarter"):
+                module.recover_quarterly(tmp_path, wrong_asset, wrong_quarter)
+            assert overview.read_bytes() == before
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is True
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is False
+
+        industry_note = tmp_path / "industry-note.md"
+        industry_note.write_bytes(b"Original industry note")
+        monkeypatch.setattr(module._update, "_exchange", interrupt)
+        with pytest.raises(RuntimeError, match="interrupted"):
+            module._update.apply(tmp_path, {"industry-note.md": b"Original industry note"},
+                                 {"industry-note.md": b"Updated industry note"})
+        monkeypatch.setattr(module._update, "_exchange", exchange)
+        assert module.recover_quarterly(tmp_path, asset, "2024Q2") is False
+        assert module._update.recover(tmp_path) is True
     else:
         second = publish(*args)
         assert first["review"] == second["review"]
