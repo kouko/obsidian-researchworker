@@ -1,7 +1,7 @@
 {
   "name": "obsidian-finance",
   "version": "0.1.0",
-  "description": "Optional folder-grounded equity and quarterly market research with on-demand SEC evidence acquisition, source cutoffs and protected checkpoints.",
+  "description": "Optional folder-grounded equity, quarterly market research, and standalone stock technical analysis with on-demand SEC evidence acquisition, source cutoffs and protected checkpoints.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",
   "repository": "https://github.com/kouko/obsidian-researchworker",
@@ -9,8 +9,8 @@
   "keywords": ["sec", "edgar", "financial-data", "provenance"],
   "interface": {
     "displayName": "obsidian-finance",
-    "shortDescription": "SEC evidence, equities and quarterly market research",
-    "longDescription": "Use equity-research to start or continue quarterly research on U.S.-listed companies in managed version-1 equities folders, preserving reports and edits and acquiring source-linked SEC evidence when required. Use industry-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Python 3.11+ and the standard library suffice. Evidence gaps are reported explicitly.",
+    "shortDescription": "SEC evidence, equities, market research and technical analysis",
+    "longDescription": "Use equity-research to start or continue quarterly research on U.S.-listed companies in managed version-1 equities folders, preserving reports and edits and acquiring source-linked SEC evidence when required. Use industry-research for quarterly Obsidian market studies and their source-linked continuation. Live SEC acquisition uses a genuine contact saved locally after first-use setup. Offline research can reuse existing evidence without a contact. Use technical-analysis for dated technical outlooks from latest or local U.S. stock daily bars. Offline technical analysis uses Python 3.11+ and the standard library. Live price fetching uses isolated optional dependencies. Evidence gaps are reported explicitly.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
