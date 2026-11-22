@@ -25,7 +25,7 @@ def acquired():
         "issuer": "twse-1611", "quarter": "2025Q3",
         "monthly_revenue": [
             {"month": month, "status": "available", "amount_ntd_thousands": amount,
-             "url": f"https://example.com/{month}"}
+             "url": f"https://example.com/{month}", "scope": "consolidated"}
             for month, amount in zip(
                 ["2025-07", "2025-08", "2025-09"], [350, 400, 420],
             )
@@ -50,7 +50,7 @@ def test_skill_entry_exposes_the_packaged_workflow():
 
 
 def test_report_keeps_monthly_and_filed_figures_with_separate_sources(workflow, acquired):
-    result = workflow.assess(acquired, filed_ntd_thousands=1180)
+    result = workflow.assess(acquired, filed_ntd_thousands=1180, filed_scope="consolidated")
 
     assert result["quarterly_source_gate"]
     assert result["revenue"]["monthly_total_ntd_thousands"] == 1170
@@ -61,6 +61,27 @@ def test_report_keeps_monthly_and_filed_figures_with_separate_sources(workflow, 
         "https://example.com/2025-07", "https://example.com/2025-08",
         "https://example.com/2025-09",
     ]
+
+
+@pytest.mark.parametrize("scope", [None, "individual"])
+def test_monthly_and_filed_reports_remain_separate_when_filed_scope_is_unmatched(
+    workflow, acquired, scope,
+):
+    result = workflow.assess(acquired, filed_ntd_thousands=1180, filed_scope=scope)
+
+    assert result["revenue"]["monthly_total_ntd_thousands"] == 1170
+    assert result["revenue"]["filed_ntd_thousands"] == 1180
+    assert result["revenue"]["filed_minus_monthly_ntd_thousands"] is None
+
+
+@pytest.mark.parametrize("attribute, value", [("scope", None), ("currency", "USD")])
+def test_monthly_total_requires_known_common_scope_and_ntd(workflow, acquired, attribute, value):
+    acquired["monthly_revenue"][0][attribute] = value
+
+    result = workflow.assess(acquired, filed_ntd_thousands=1180, filed_scope="consolidated")
+
+    assert result["revenue"]["monthly_total_ntd_thousands"] is None
+    assert result["revenue"]["filed_minus_monthly_ntd_thousands"] is None
 
 
 def test_annual_gate_is_independent_and_requires_annual_report(workflow, acquired):
@@ -100,3 +121,13 @@ def test_current_month_observation_does_not_meet_historical_gate(workflow, acqui
 
     assert not result["quarterly_source_gate"]
     assert result["revenue"]["monthly_total_ntd_thousands"] is None
+
+
+def test_latest_research_may_use_a_current_month_observation(workflow, acquired):
+    acquired["mode"] = "latest"
+    acquired["monthly_revenue"][0]["status"] = "observed"
+
+    result = workflow.assess(acquired)
+
+    assert result["quarterly_source_gate"]
+    assert result["revenue"]["monthly_total_ntd_thousands"] == 1170
