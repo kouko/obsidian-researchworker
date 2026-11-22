@@ -100,3 +100,15 @@ def test_stale_data_remains_visible(analyzer):
     for horizon in report["horizons"]:
         assert horizon["trend"] == "insufficient"
         assert "latest usable close was 2024-02-29" in " ".join(horizon["limitations"])
+
+
+def test_a_known_missing_latest_session_withholds_direction_promptly(analyzer):
+    local = {
+        **snapshot(stop="2024-02-28"),
+        "cutoff": "2024-02-29T23:00:00Z",
+        "latest_expected_session": "2024-02-29",
+    }
+    report = analyzer.analyze(local)
+    for horizon in report["horizons"]:
+        assert horizon["trend"] == "insufficient"
+        assert "completed session 2024-02-29" in " ".join(horizon["limitations"])

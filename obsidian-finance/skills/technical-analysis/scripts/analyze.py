@@ -153,7 +153,7 @@ def _conditions(trend, support, resistance):
             "A close outside the range would shift attention to a directional move on that side.")
 
 
-def _horizon(bars, cutoff_day, settings, indicators):
+def _horizon(bars, cutoff_day, settings, indicators, stale_gap):
     name, length, weeks, months, average_period = settings
     averages, previous, volume_ratio, metric_ranges = indicators
     start = _offset_day(cutoff_day, -weeks, -months)
@@ -188,7 +188,7 @@ def _horizon(bars, cutoff_day, settings, indicators):
         limitations.append("Relative volume requires a valid latest volume and a positive 20-session prior average.")
     else:
         evidence.append(f"Latest volume is {volume_ratio:.2f}× the prior {VOLUME_BASELINE}-session average.")
-    coverage_gap = _coverage_gap(observed, start, cutoff_day)
+    coverage_gap = stale_gap or _coverage_gap(observed, start, cutoff_day)
     if coverage_gap is None:
         trend, explanation = _trend(points, observed[-1]["close"], average, prior_average)
         (limitations if trend == "insufficient" else evidence).append(explanation)
@@ -215,11 +215,16 @@ def analyze(snapshot):
     cutoff_day = cutoff.astimezone(ZoneInfo(snapshot["timezone"])).date()
     bars = [bar for bar in snapshot["bars"] if _time(bar["session_close"]) <= cutoff]
     indicators = _daily_indicators(bars)
+    expected = snapshot.get("latest_expected_session")
+    stale_gap = None
+    if bars and expected and bars[-1]["date"] < expected <= cutoff_day.isoformat():
+        stale_gap = (f"Coverage gap: completed session {expected} is missing. "
+                     f"The latest usable close was {bars[-1]['date']}.")
     return {
         **snapshot, "bars": bars, "schema_version": 1, "method": METHOD,
         "settings": {"slope_sessions": SLOPE_SESSIONS, "swing_radius": SWING_RADIUS,
                      "volume_baseline": VOLUME_BASELINE},
-        "horizons": [_horizon(bars, cutoff_day, settings, indicators) for settings in HORIZONS],
+        "horizons": [_horizon(bars, cutoff_day, settings, indicators, stale_gap) for settings in HORIZONS],
     }
 
 
