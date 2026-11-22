@@ -43,14 +43,14 @@ def sample_record(market, quarter, cutoff, identity, url, metric, unit, value):
                 pending=["Revisit the growth comparison next quarter."])
 
 
-def test_skill_package_lists_market_entry_and_issuer_reference():
-    skill = PACKAGE / "skills" / "market-research" / "SKILL.md"
-    assert "\nname: market-research\n" in skill.read_text()
+def test_skill_package_lists_industry_entry_and_issuer_reference():
+    skill = PACKAGE / "skills" / "industry-research" / "SKILL.md"
+    assert "\nname: industry-research\n" in skill.read_text()
     for host in ("codex", "claude"):
         metadata = json.loads((PACKAGE / f".{host}-plugin" / "plugin.json").read_text())
         assert "quarterly market research" in metadata["description"].lower()
     issuer_reference = PACKAGE / "skills/finance-research/references/industry-and-competition.md"
-    assert "market-research" in issuer_reference.read_text()
+    assert "industry-research" in issuer_reference.read_text()
 
 
 def test_two_market_workflow_resumes_in_new_processes(tmp_path):
@@ -226,6 +226,10 @@ def test_industry_notes_keep_two_corrections_and_original_citations(tmp_path):
     current = run_market("resume", tmp_path, "smartphones", "2024Q3")
     assert current["record"]["revision"] == 3
     assert current["record"]["pending"]
+    overview.write_text(overview.read_text().replace('"revision": 3', '"revision": "broken"'))
+    recovered = run_market("resume", tmp_path, "smartphones", "2024Q3")
+    assert recovered["record"]["revision"] == 2
+    assert recovered["issues"] == ["r3: Industry quarter revisions must be contiguous"]
 
 
 def test_industry_resume_keeps_legacy_and_prior_forecast_versions(tmp_path):
@@ -308,9 +312,12 @@ def test_industry_edit_and_late_source_leave_committed_research_readable(tmp_pat
 
     before = overview.read_text()
     changed = before.replace("Worldwide market, calendar quarters.", "Manual change in analysis.")
+    changed = changed.replace("<!-- industry-research:end -->",
+                              "A manual addition after the history block.\n<!-- industry-research:end -->")
     overview.write_text(changed)
     readback = run_market("resume", tmp_path, "smartphones", "2024Q3")
-    assert readback["record"] is None
-    assert readback["issues"] == ["Industry note content conflicts with saved history"]
-    assert run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31") is None
+    assert readback["record"]["claims"] == baseline["claims"]
+    assert readback["issues"] == []
+    cited = run_market("cite", tmp_path, "smartphones", "2024Q3", "market-total", "2024-10-31")
+    assert cited["claim"] == baseline["claims"]["market-total"]
     assert overview.read_text() == changed

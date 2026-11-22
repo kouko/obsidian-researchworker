@@ -110,7 +110,14 @@ changes inside the affected notes. The `review` path in the command result
 points to the quarter overview as it exists now. When `resume --cutoff`
 selects an earlier version, use only the returned `record` as saved-quarter
 evidence. Use the overview path and its links for navigation. A null
-`record` means there is no saved version for the requested cutoff.
+`record` means no usable saved version was found for the requested cutoff.
+Report relevant `issues`, even if an earlier usable version was returned.
+Only carry forward an eligible forecast returned in a complete record.
+If prior history is unreadable, a new comparison can use original releases
+published after the previous overview's recorded cutoff. Leave comparisons
+that depend on unavailable history pending. Editing visible prose does not
+invalidate a saved record. An explicit same-quarter publication regenerates
+the managed body.
 
 Resume and citation can be blocked after an interrupted update. Report the
 block on read-only requests. Only run `recover VAULT` for an authorized

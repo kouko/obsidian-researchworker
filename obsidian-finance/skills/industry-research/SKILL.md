@@ -1,5 +1,5 @@
 ---
-name: market-research
+name: industry-research
 description: Analyze an industry or market quarter and continue its saved Obsidian research. 產業分析、市場研究、季度追蹤。業界分析・市場調査・四半期レビュー。
 ---
 
@@ -25,8 +25,11 @@ previous quarter. For historical research run `resume` with
 `--cutoff CUTOFF` and use the returned `record` as the sole research evidence
 from the saved quarter. The returned `review` path and its links lead to
 the current notes for navigation. Treat their contents as current, even when
-the helper selected an earlier record. If `record` is null, report the gap.
-Published partial research is resumable.
+the helper selected an earlier record. Report the relevant `issues` and use
+only complete returned records for carry-forward. If `record` is null, do not
+recover forecasts from the note prose or its history block. Leave dependent
+comparisons pending and continue work supported by independently eligible
+sources. Published partial research is resumable.
 
 An interrupted write can block resume and citation. Report the block without
 writing during a read-only request. `recover VAULT` is vault-wide and takes

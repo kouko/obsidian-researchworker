@@ -3,7 +3,7 @@
 Optional `obsidian-finance` 0.1.0 provides `sec-data` for public SEC filing
 metadata/financial observations and `finance-research` for agent-led research
 continuation from a designated folder. The package also provides
-`market-research` for quarterly industry and market studies. It runs independently of the general-note
+`industry-research` for quarterly industry and market studies. It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
 Claude and Codex manifests register this separate package in the repository's
@@ -24,13 +24,13 @@ reported financial observations. Choose the fiscal-quarter selector if the
 issuer’s fiscal calendar matters, or use the observation-end date range when
 you already know the dates. Use [finance-research](skills/finance-research/README.md)
 to continue analysis in an existing managed research folder. Use
-[market-research](skills/market-research/SKILL.md) to start or continue a
+[industry-research](skills/industry-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
 or cite eligible market findings in issuer research. Given an Obsidian vault,
 the default study path is `investing/industries/<market>/`. Each calendar
 quarter has a stable overview and localized topic notes, with material
 changes recorded inside the affected notes. Older snapshots remain readable.
-See the [record and command guide](skills/market-research/references/record.md)
+See the [record and command guide](skills/industry-research/references/record.md)
 for custom paths, historical citation, and interruption recovery.
 
 ## Run directly
