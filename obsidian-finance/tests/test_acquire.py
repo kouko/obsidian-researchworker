@@ -13,7 +13,7 @@ import termios
 
 import pytest
 
-SCRIPTS = Path(__file__).parents[1] / 'skills/equity-research/scripts'
+SCRIPTS = Path(__file__).parents[1] / 'skills/equity-research-us/scripts'
 sys.path.insert(0, str(SCRIPTS))
 
 

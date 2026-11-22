@@ -1,6 +1,6 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.1.0 provides `equity-research` for agent-led
+Optional `obsidian-finance` 0.1.0 provides `equity-research-us` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
 `industry-research` for quarterly industry and market studies and
@@ -21,7 +21,7 @@ from live SEC access. Partial checkpoints retain unresolved research.
 
 ## Skill guides
 
-Use [equity-research](skills/equity-research/README.md) to continue analysis
+Use [equity-research-us](skills/equity-research-us/README.md) to continue analysis
 in an existing managed research folder. It reuses eligible local evidence and
 opens the bundled acquisition guide when required SEC evidence is missing. Use
 [industry-research](skills/industry-research/SKILL.md) to start or continue a
@@ -46,10 +46,10 @@ skill describes an isolated setup for live stock-price acquisition.
 The SEC acquisition command below uses Python 3.11+ and the standard library.
 Live SEC acquisition uses the operator or organization name
 and contact email saved in the private local file
-`~/.config/obsidian-finance/sec-contact.json`. The equity-research skill asks for these
+`~/.config/obsidian-finance/sec-contact.json`. The equity-research-us skill asks for these
 values in the current conversation when live acquisition first requires them. The bundled script accepts
 `--setup-contact` with a separate non-echoing stdin JSON payload containing
-the `name` and `email` fields. See the [SEC acquisition guide](skills/equity-research/references/sec-acquisition.md)
+the `name` and `email` fields. See the [SEC acquisition guide](skills/equity-research-us/references/sec-acquisition.md)
 for setup and failure handling. Requests send the contact and public issuer
 request to SEC. Local analysis and reuse checks do not require a contact.
 
@@ -59,7 +59,7 @@ below. The options, saved contact and output format are unchanged.
 From the repository root:
 
 ```sh
-python3 obsidian-finance/skills/equity-research/scripts/acquire.py \
+python3 obsidian-finance/skills/equity-research-us/scripts/acquire.py \
   --ticker AAPL \
   --fiscal-quarter 2024Q3 \
   --output-dir /private/tmp/sec-data-sample
@@ -76,7 +76,7 @@ and their own assessment cutoff; this operation does not acquire them.
 The compatible observation-end range entry still requires all three dates:
 
 ```sh
-python3 obsidian-finance/skills/equity-research/scripts/acquire.py \
+python3 obsidian-finance/skills/equity-research-us/scripts/acquire.py \
   --ticker AAPL \
   --period-start 2024-01-01 \
   --period-end 2024-12-31 \
@@ -178,7 +178,7 @@ Neither establishes installed-host skill execution or complete financial researc
 
 ## Folder-grounded agent research
 
-The [equity-research skill](skills/equity-research/SKILL.md) guides the host
+The [equity-research-us skill](skills/equity-research-us/SKILL.md) guides the host
 agent through scoped discovery, applicable source checks, actual affected
 analysis and safe in-place updates of its [fixed quarterly notes](#fixed-quarterly-notes).
 Its bundled
@@ -188,7 +188,7 @@ new hand-written work list each time. Unsupported old notes are preserved.
 The current workflow supports U.S.-listed company equities; ETF, commodity and FX
 continuation have not been validated as supported asset workflows.
 
-Its [research method](skills/equity-research/references/research-method.md)
+Its [research method](skills/equity-research-us/references/research-method.md)
 requires source-bound reasoning, opposing evidence, explicit analysis horizons
 and actual original-section reading coverage with unread exclusions. Retaining
 filing HTML or checking selected numbers does not establish complete SEC reading

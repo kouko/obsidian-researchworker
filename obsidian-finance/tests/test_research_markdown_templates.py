@@ -20,7 +20,7 @@ ROLES = {
        for role in ("financial-analysis", "operating-analysis", "industry-and-competition",
                     "forward-forecast", "valuation-and-risk", "technical-analysis", "synthesis")},
 }
-TEMPLATES = Path(__file__).parents[1] / "skills/equity-research/templates"
+TEMPLATES = Path(__file__).parents[1] / "skills/equity-research-us/templates"
 
 
 def test_equity_skill_uses_fixed_quarter_publication_and_recovery():

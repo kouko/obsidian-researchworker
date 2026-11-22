@@ -6,7 +6,7 @@ description: Analyze an industry or market quarter and continue its saved Obsidi
 # Quarterly industry and market research
 
 Use for starting, updating, resuming or citing a quarterly market study.
-For single-issuer financial analysis use sibling `equity-research`. For
+For single-issuer financial analysis use sibling `equity-research-us`. For
 one-off questions without a quarterly research record, answer directly.
 
 ## Establish the study
