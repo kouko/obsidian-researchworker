@@ -1,12 +1,12 @@
 # Deep quarterly equity research notes — spec
 intent: 2026-11-23-equity-deep-research-notes@6a1b95e
-confirmed-behavior: 2026-11-23 @7f37c08
+confirmed-behavior: 2026-11-23 @a8153fc
 pre-build-review: required — Changes to the published note contract must preserve cutoff-aware verification and safe continuation.
 
 ## Requirements
 
 REQ-1 — Readable research notes
-  WHEN the workflow writes a Markdown report or registration, it shall provide concise flat Obsidian properties, a visible purpose, a supported conclusion or evidence description, traceable references and material limitations → Acceptance #1
+  WHEN the workflow writes any Markdown note, including entry and navigation notes, reports and registrations, it shall provide concise flat Obsidian properties, a visible purpose, a supported conclusion or evidence description, traceable references and material limitations → Acceptance #1
 
 REQ-2 — Analysis depth and evidence gaps
   WHEN the workflow prepares a quarterly analysis, it shall apply the minimum checks for that analysis role and present their outcomes, or disclose the missing input, the unfinished check and the affected judgment → Acceptance #2
@@ -39,6 +39,8 @@ REQ-4 — Continuation and integrity
 - Boundary: the isolated Fastenal Q2 baseline has 3,739 lines in the overview record and 12 consumed projections with two unique payloads.
 
 ## UI flows
+
+Open a research or asset entry → See its scope, how to use its links, and which parts of the research are covered. The optional navigation note provides the same context for the period it covers.
 
 Open overview → See the reason for the study, material changes since the prior quarter, links to analyses and the priority gaps.
 
