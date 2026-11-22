@@ -92,18 +92,20 @@ def _full_weeks(bars):
     return weeks
 
 
-def _swings(bars):
+def _swings(bars, missing_sessions):
     points = []
     for index in range(SWING_RADIUS, len(bars) - SWING_RADIUS):
-        center = bars[index]
-        right = bars[index + 1:index + SWING_RADIUS + 1]
-        neighbors = bars[index - SWING_RADIUS:index] + right
+        window = bars[index - SWING_RADIUS:index + SWING_RADIUS + 1]
+        if _crosses_missing_session(window, missing_sessions):
+            continue
+        center = window[SWING_RADIUS]
+        neighbors = window[:SWING_RADIUS] + window[SWING_RADIUS + 1:]
         for field, significant in (("high", max), ("low", min)):
             edge = significant(bar[field] for bar in neighbors)
             if center[field] != edge and significant(center[field], edge) == center[field]:
                 points.append({
                     "kind": field, "date": center.get(f"{field}_date", center["date"]),
-                    "price": center[field], "confirmed_on": right[-1]["date"],
+                    "price": center[field], "confirmed_on": window[-1]["date"],
                 })
     return points
 
@@ -184,7 +186,7 @@ def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions
             frequency = "weekly"
         elif observed:
             limitations.append("Complete consecutive exchange weeks are unverified, so structure uses daily bars.")
-    points = _swings(structure)
+    points = _swings(structure, missing_sessions)
     period_return = None
     if len(observed) >= 2:
         period_return = (observed[-1]["close"] / observed[0]["close"] - 1) * 100
