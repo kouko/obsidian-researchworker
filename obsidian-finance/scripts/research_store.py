@@ -1311,7 +1311,7 @@ class _QuarterInputError(_QuarterMaterialError):
     """A saved input is damaged, regardless of the integrity of its output."""
 
 
-def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
+def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None, pending_reports=None):
     """Replay exact quarter-local bindings, optionally recording individual material failures."""
     manifest = stored["quarter_evidence"]
     _require(isinstance(manifest, dict) and type(manifest.get("version")) is int and manifest["version"] == 1
@@ -1350,6 +1350,8 @@ def _verify_quarter_evidence(folder, asset, quarter, stored, *, damaged=None):
                      "quarter evidence method identity mismatch: " + mid)
 
     def read(path):
+        if pending_reports is not None and path in pending_reports:
+            return pending_reports[path]
         return _bytes(folder, path, quarter_relative=True)
 
     def checked(path, checksum, *, error_type=_QuarterMaterialError):
@@ -1863,6 +1865,8 @@ def recover_quarterly(root, asset, quarter):
     _require(not any(path.is_symlink() for path in (root, *root.parents)), "symlink root")
 
     def check_scope(changes):
+        pending = {}
+        pending_overview = None
         for reference, (_, intended) in changes.items():
             path = Path(reference)
             _require(path.parent == cycle, "Pending writes are outside the selected quarter")
@@ -1871,8 +1875,13 @@ def recover_quarterly(root, asset, quarter):
             _require(path.name.startswith(quarter + " ")
                      and path.name.endswith(f" - {labels[props['finance_role']]}.md"),
                      "Pending write does not match its report role")
-            if props["finance_role"] == "quarter-overview":
-                _overview_record(root / cycle, intended.decode("utf-8"))
+            if props["finance_role"] == "quarter-overview" and "research_record" in props:
+                pending_overview = intended.decode("utf-8")
+            else:
+                pending[path.name] = intended
+        if pending_overview is not None:
+            _, review = _overview_record(root / cycle, pending_overview)
+            _verify_quarter_evidence(root / cycle, asset, quarter, review, pending_reports=pending)
 
     return _update.recover(root, namespace="equity", check_scope=check_scope)
 
