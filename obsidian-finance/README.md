@@ -3,7 +3,9 @@
 Optional `obsidian-finance` 0.1.0 provides `equity-research` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
-`industry-research` for quarterly industry and market studies. It runs independently of the general-note
+`industry-research` for quarterly industry and market studies and
+`technical-analysis` for standalone U.S. stock price and volume reports.
+It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
 Claude and Codex manifests register this separate package in the repository's
@@ -31,10 +33,18 @@ changes recorded inside the affected notes. Older snapshots remain readable.
 See the [record and command guide](skills/industry-research/references/record.md)
 for custom paths, historical citation, and interruption recovery.
 
+Use [technical-analysis](skills/technical-analysis/SKILL.md) to analyze one U.S.
+stock from completed daily bars. It can fetch the latest data or replay a local
+snapshot with evidence for a historical cutoff. Each report shows distinct
+three-week, three-month, and one-year outlooks with actual evidence and outlook
+dates. Optional note output keeps the snapshot and a chart alongside the report.
+Offline technical analysis uses Python 3.11+ and the standard library. The
+skill describes an isolated setup for live stock-price acquisition.
+
 ## Run directly
 
-Python 3.11 or later is the only runtime requirement; all runtime imports use
-the standard library. Live acquisition uses the operator or organization name
+The SEC acquisition command below uses Python 3.11+ and the standard library.
+Live SEC acquisition uses the operator or organization name
 and contact email saved in the private local file
 `~/.config/obsidian-finance/sec-contact.json`. The equity-research skill asks for these
 values in the current conversation when live acquisition first requires them. The bundled script accepts
