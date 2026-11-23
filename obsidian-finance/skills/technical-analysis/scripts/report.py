@@ -248,26 +248,30 @@ def _publish(parent, payloads):
 
 
 def _attachment_links(markdown, chart, source):
-    if markdown.count("({{source}})") != 1 or markdown.count("{{source}}") != 1:
-        raise ValueError("Localized note must include one Markdown link to {{source}}.")
+    if source:
+        if markdown.count("({{source}})") != 1 or markdown.count("{{source}}") != 1:
+            raise ValueError("Localized note must include one Markdown link to {{source}}.")
+        markdown = markdown.replace("({{source}})", f"({quote(source)})")
+    elif "{{source}}" in markdown:
+        raise ValueError("Localized note must omit {{source}} when the snapshot is not retained.")
     chart_links = markdown.count("({{chart}})")
     if chart_links != bool(chart) or markdown.count("{{chart}}") != chart_links:
         raise ValueError("Localized note must link to {{chart}} exactly once when bars are available.")
-    markdown = markdown.replace("({{source}})", f"({quote(source)})")
     if chart:
         markdown = markdown.replace("({{chart}})", f"({quote(chart)})")
     return markdown
 
 
-def save_report(report, snapshot, vault, note, *, note_markdown=None):
+def save_report(report, snapshot, vault, note, *, note_markdown=None, retain_snapshot=True):
     """Publish attachments first and expose a complete, new note last."""
     with _open_destination(vault, note) as (parent, name):
         stem = Path(name).stem
         chart = stem + ".chart.svg" if report["bars"] else None
-        source = stem + ".source.json"
-        payloads = {
-            source: (json.dumps(snapshot, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8"),
-        }
+        source = stem + ".source.json" if retain_snapshot else None
+        payloads = {}
+        if source:
+            serialized = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
+            payloads[source] = (serialized + "\n").encode("utf-8")
         if chart:
             payloads[chart] = _render_chart(report)
         markdown = (
@@ -286,11 +290,14 @@ def main():
     parser.add_argument("--vault", type=Path, help="Absolute vault path")
     parser.add_argument("--note", help="New Markdown path relative to the vault")
     parser.add_argument("--note-markdown", type=Path, help="Prepared UTF-8 Markdown for the saved note")
+    parser.add_argument("--omit-snapshot", action="store_true", help="Save without a snapshot attachment")
     args = parser.parse_args()
     if bool(args.vault) != bool(args.note):
         parser.error("--vault and --note must be used together")
     if args.note_markdown and not args.note:
         parser.error("--note-markdown requires --vault and --note")
+    if args.omit_snapshot and not args.note:
+        parser.error("--omit-snapshot requires --vault and --note")
     from analyze import analyze
     from snapshot import validate_snapshot
 
@@ -301,7 +308,10 @@ def main():
         report = analyze(snapshot)
         if args.vault:
             markdown = args.note_markdown.read_text(encoding="utf-8") if args.note_markdown else None
-            note = save_report(report, payload, args.vault, args.note, note_markdown=markdown)
+            note = save_report(
+                report, payload, args.vault, args.note,
+                note_markdown=markdown, retain_snapshot=not args.omit_snapshot,
+            )
             print(f"Saved {note}", file=sys.stderr)
         print(render_report(report), end="")
     except (OSError, ValueError) as exc:
