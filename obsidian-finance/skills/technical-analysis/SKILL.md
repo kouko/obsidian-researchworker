@@ -194,12 +194,14 @@ labels.
 Use this reading order for a saved research note:
 
 1. Start with flat YAML properties (title, `type: research`, date, and ticker),
-   then a title and a brief opening. State the research question, exact cutoff
-   with timezone, latest observed session when available, and the supported
-   conclusion. Follow with a compact table covering all three horizons: actual
-   observation dates, outlook dates, direction, and what daily close would
-   confirm or change the view. For an unsupported horizon, name the evidence
-   gap and leave the direction and revision conditions unset.
+   then a title and a brief opening. Write the research question as a
+   standalone direct question in the selected language before the conclusion.
+   Give the exact cutoff with timezone and the latest observed session when
+   available. State the supported conclusion, then show a compact table with
+   all three horizons: actual observation dates, outlook dates, direction, and
+   what daily close would confirm or change the view. For an unsupported
+   horizon, name the evidence gap and leave the direction and revision
+   conditions unset.
 2. Add a linked contents list after the opening summary. Use Obsidian's
    same-note heading links, `[[#Exact heading|Label]]`, for the sections
    that appear. Check each target against the actual heading text.
