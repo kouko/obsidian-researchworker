@@ -65,3 +65,32 @@ Request history or encounter a conflicted save → See cutoff-eligible results o
 | Valuation and risk | Model choice and dated inputs, supported range and sensitivity when possible, and a risk mechanism with observable triggers. |
 | Technical | Dated price and volume basis, adjustments, trend and levels where verifiable, and limits on comparison against value. |
 | Synthesis | Decision-relevant changes, thesis and counterevidence, separate horizons, conditions and ranked gaps. |
+
+### Output acceptance
+
+The common checks apply to all seven reports. The investment recommendation
+check applies to any recommendation, rating or target presented in synthesis.
+
+| Check | What the reader can verify | If the check fails |
+| --- | --- | --- |
+| Evidence and dates | Trace each material claim to a nearby source with a usable locator. Verify the period, basis, and version available by the cutoff. Prefer the original filing for reported financial figures. | Correct the unsupported claim or identify the missing evidence and the affected judgment. |
+| Diligence and independence | Where a material question remains open, see which public sources were checked and how independent evidence supports or challenges the leading explanations. Check the method, timeliness, and independence of third-party evidence. | Mark the material question pending when eligible evidence does not resolve it. |
+| Reproducibility and communication | Recalculate the main comparison from disclosed inputs, units and method. Identify facts, management statements, external opinions and analyst assumptions. See material limitations and what would change the conclusion. | Correct discrepancies and narrow the conclusion to the supported scope. |
+| Recommendation | Trace the judgment to evidence and the valuation method and dated inputs it relies on. See the horizon, any benchmark used, and the material downside risks and invalidation conditions. If a rating is used, define its meaning. | Keep an unsupported rating or target pending and state what would make it defensible. |
+| Retention and continuity | Reopen the report from the saved quarterly overview and retrieve the cited source versions, including prior-quarter evidence adopted in the analysis. | Keep reuse unverified until the saved report and supporting evidence can be read back. |
+
+Each report can use eligible public sources or viewpoints. Judge sources by
+whether they help resolve the question. Apply the role-specific checks above
+alongside these common checks. Show an explicit pending item where evidence
+limits the conclusion, while preserving independently supported work.
+
+Verify with seven newly authored reports on public evidence. Check each
+report against its originals and role requirements, then exercise normal
+publication, same-quarter update and next-quarter reuse in an isolated vault.
+
+References: [CFA Institute V(A)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-a),
+[V(B)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-b),
+[V(C)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-c)
+and [FINRA Rule 2241(c)](https://www.finra.org/rules-guidance/rulebooks/finra-rules/2241).
+These references inform internal research quality checks. The checks do not
+constitute a broker-dealer compliance review.
