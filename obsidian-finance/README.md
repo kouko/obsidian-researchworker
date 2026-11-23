@@ -37,7 +37,8 @@ Use [technical-analysis](skills/technical-analysis/SKILL.md) to analyze one U.S.
 stock from completed daily bars. It can fetch the latest data or replay a local
 snapshot with evidence for a historical cutoff. Each report shows distinct
 three-week, three-month, and one-year outlooks with actual evidence and outlook
-dates. Optional note output keeps the snapshot and a chart alongside the report.
+dates. Saved notes include source details and a chart when daily bars are
+available. Ask to retain the full snapshot when exact replay is needed.
 Offline technical analysis uses Python 3.11+ and the standard library. The
 skill describes an isolated setup for live stock-price acquisition.
 

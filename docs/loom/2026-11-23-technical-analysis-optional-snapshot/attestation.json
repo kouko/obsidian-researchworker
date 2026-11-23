@@ -1,0 +1,55 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-technical-analysis-optional-snapshot",
+  "content_digest": "dd297e8f9f9d969110835a308c1c44c9f2072859",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Seven independent CLI probes passed. The committed regression covers the new stale-placeholder failure, and existing publisher tests cover collisions and JSON replay."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "closecode",
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "ab04a8aa21fc714efb06f7f78d2563fcaa885120",
+      "review_target_sha": "133990d1a05c2feee4d9180a4398ba3d5ea286bf",
+      "findings": []
+    },
+    {
+      "reviewer": "closedesign",
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "lens": "design-conformance",
+      "verdict": "PASS",
+      "reviewed_sha": "ab04a8aa21fc714efb06f7f78d2563fcaa885120",
+      "review_target_sha": "133990d1a05c2feee4d9180a4398ba3d5ea286bf",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "cc8cd72",
+  "tested_commit": "e233742ea1d84a2259db1d4fb5ce2cf63524298a",
+  "reviewed_commit": "e4f101e468887b58eae7cc5db56508bc7bd21358",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    }
+  ]
+}

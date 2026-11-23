@@ -217,28 +217,33 @@ Use this reading order for a saved research note:
 4. Place eligible external views after the computed analysis. When a verified
    source gives a warning level, attribute it and explain how its period and
    purpose relate to the computed revision condition. Keep missing comparisons
-   unset. End with method and sources so the evidence can be checked or
-   replayed. Link the original snapshot and cite its source, version,
-   availability, identity, cutoff, and the report's method and settings.
+   unset. End with method and sources so the evidence can be checked.
+   Cite the data source, version when recorded, capture time, availability,
+   snapshot identity, cutoff, price adjustment basis, and the report's
+   method and settings. Link the original snapshot only when the user
+   explicitly asks to retain it or to be able to replay the calculation.
    Link external claims to their eligible sources where used.
 
 Preserve the report's dates, numeric values, source references, and method
 identifiers exactly. Check those details against the rendered report before
-publishing. Include one Markdown link with the literal target
-`{{source}}`. If the report has any observed trading dates, include one image
+publishing. Include one Markdown link with the literal target `{{source}}`
+only when retaining the snapshot. If the report has any observed trading dates, include one image
 with the literal target `{{chart}}`. Use Markdown link and image syntax with
 labels in the note's language. The publisher resolves the targets to the
 actual snapshot and chart filenames.
 
 Set `TA_NOTE_MARKDOWN` to the prepared file and always pass
-`--note-markdown` when saving as part of this skill. On collision or write
+`--note-markdown` when saving as part of this skill. For routine saves,
+omit the source attachment link and pass `--omit-snapshot` as shown below.
+When retaining the snapshot, include its link and leave off that flag.
+On collision or write
 failure, report the actual error and use an available new filename if
 appropriate.
 
 ```sh
 python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT" \
   --vault "$TA_VAULT" --note 'investing/AAPL technical analysis.md' \
-  --note-markdown "$TA_NOTE_MARKDOWN"
+  --note-markdown "$TA_NOTE_MARKDOWN" --omit-snapshot
 ```
 
 Set `TA_VAULT` to the actual absolute vault path. For a conversation-only
@@ -249,5 +254,5 @@ use the same local snapshot and cutoff as the report:
 python3 "$SKILL_DIR/scripts/report.py" "$TA_HISTORICAL_SNAPSHOT" \
   --cutoff "$TA_HISTORICAL_CUTOFF" \
   --vault "$TA_VAULT" --note 'investing/AAPL historical technical analysis.md' \
-  --note-markdown "$TA_NOTE_MARKDOWN"
+  --note-markdown "$TA_NOTE_MARKDOWN" --omit-snapshot
 ```

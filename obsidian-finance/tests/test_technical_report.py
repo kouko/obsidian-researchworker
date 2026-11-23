@@ -187,3 +187,30 @@ def test_localized_note_missing_attachment_is_not_published(report, tmp_path):
     with pytest.raises(ValueError, match="Markdown link"):
         save_report(report, report, tmp_path, "research.md", note_markdown="# Missing links\n")
     assert list(tmp_path.iterdir()) == []
+
+
+def test_cli_routine_save_omits_snapshot_and_rejects_stale_placeholder(report, tmp_path):
+    report["bars"][0].update(date="2024-02-28", session_close="2024-02-28T16:00:00-05:00")
+    report["evidence"] = "Test capture"
+    original = tmp_path / "input.json"
+    original.write_text(json.dumps(report))
+    markdown = tmp_path / "draft.md"
+    text = "# 技術分析\n\nFixture · 2024-02-29T17:00:00-05:00 · unadjusted\n\n![價量圖]({{chart}})\n"
+    markdown.write_text(text, encoding="utf-8")
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    cli = Path(__file__).resolve().parents[1] / "skills/technical-analysis/scripts/report.py"
+    command = [
+        sys.executable, str(cli), str(original), "--vault", str(vault),
+        "--omit-snapshot", "--note-markdown", str(markdown), "--note",
+    ]
+    first = subprocess.run([*command, "routine.md"], capture_output=True, text=True)
+    assert first.returncode == 0, first.stderr
+    assert (vault / "routine.md").read_text() == text.replace("{{chart}}", "routine.chart.svg")
+    assert sorted(path.name for path in vault.iterdir()) == ["routine.chart.svg", "routine.md"]
+
+    markdown.write_text(text + "[快照]({{source}})\n", encoding="utf-8")
+    stale = subprocess.run([*command, "stale.md"], capture_output=True, text=True)
+    assert stale.returncode == 1
+    assert "{{source}}" in stale.stderr
+    assert sorted(path.name for path in vault.iterdir()) == ["routine.chart.svg", "routine.md"]
