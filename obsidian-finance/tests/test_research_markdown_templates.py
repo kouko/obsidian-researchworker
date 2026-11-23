@@ -155,11 +155,17 @@ def test_captured_registration_exposes_evidence_before_record(role, record, head
     assert codec.record(note, role + "-registration")[1] == record
 
 
-def test_portable_source_context_retains_public_links_on_recapture():
+@pytest.mark.parametrize(("destination", "rendered"), [
+    ("https://www.federalreserve.gov/example.htm#table", "https://www.federalreserve.gov/example.htm#table"),
+    ('https://example.org/report.pdf "Report"', "https://example.org/report.pdf"),
+    ("<https://example.org/report.pdf#page=2>", "https://example.org/report.pdf#page=2"),
+    ("https://example.org/Company_(inc)", "<https://example.org/Company_(inc)>"),
+])
+def test_portable_source_context_retains_public_links_on_recapture(destination, rendered):
     codec = load()._markdown
     authored = Template((TEMPLATES / "source-registration.md").read_text()).substitute(
         SampleValues(VALUES, source_link_and_basis=(
-            "[Federal Reserve](https://www.federalreserve.gov/example.htm#table) "
+            f"[Federal Reserve]({destination}) "
             "and [local notes](../notes.md)."
         )),
     )
@@ -167,7 +173,7 @@ def test_portable_source_context_retains_public_links_on_recapture():
     context = codec.registration_context(authored, "source-registration", captured=False)
     for _ in range(2):
         captured = codec.render_registration("aapl", "source", record, narrative=context)
-        assert "[Federal Reserve](https://www.federalreserve.gov/example.htm#table)" in captured
+        assert f"[Federal Reserve]({rendered})" in captured
         assert "and local notes." in captured
         assert "../notes.md" not in captured
         context = codec.registration_context(captured, "source-registration", captured=True)

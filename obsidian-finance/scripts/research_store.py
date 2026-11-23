@@ -1213,10 +1213,10 @@ def _capture_quarter(root, asset, issuer, cycle, saved, expected, *, compact=Fal
     def bind(role, registration, origin, matches):
         narrative = read_narrative(role, origin)
         authored = registration["origin_reference"]
-        if not narrative and authored != origin and any(ref == authored for ref, _ in matches):
+        if (role == "source" or not narrative) and authored != origin and any(ref == authored for ref, _ in matches):
             # Use prose only from the documented original among already checked
             # matches. The selected capture still supplies the binding metadata.
-            narrative = read_narrative(role, authored)
+            narrative = read_narrative(role, authored) or narrative
         note = _markdown.render_registration(asset, role, registration, narrative=narrative)
         payload = note.encode("utf-8")
         digest = sha256(payload).hexdigest()

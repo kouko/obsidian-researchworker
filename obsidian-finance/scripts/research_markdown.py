@@ -190,26 +190,50 @@ def _visible_text(value):
 
 
 _SOURCE_CONTEXT_HEADING = "## Original research context"
-_CONTEXT_LINK = re.compile(r"!?\[([^\]\n]*)\]\(([^\n)]*)\)")
-_PUBLIC_CONTEXT_URL = re.compile(r"https?://[^\s/<>()\[\]\\]+[^\s<>()\[\]\\]*", re.I)
+_CONTEXT_LINK = re.compile(
+    r"""!?\[([^\]\n]*)\]\((?:<([^<>\n]*)>|((?:[^\s()<>\\]|\([^\s()<>\\]*\))*))"""
+    r"""(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?\)"""
+)
+_PUBLIC_CONTEXT_URL = re.compile(r"https?://[^\s/<>()\[\]\\]+[^\s<>\[\]\\]*", re.I)
+
+
+def _context_url(link):
+    url = link[2] if link[2] is not None else link[3]
+    if not link[0].startswith("!") and _PUBLIC_CONTEXT_URL.fullmatch(url):
+        return url
+    return None
+
+
+def _context_destination(url):
+    return f"<{url}>" if "(" in url or ")" in url else url
 
 
 def _render_context_paragraph(paragraph):
     parts = []
     offset = 0
     for link in _CONTEXT_LINK.finditer(paragraph):
-        label, url = link.groups()
-        if link[0].startswith("!") or not _PUBLIC_CONTEXT_URL.fullmatch(url):
+        url = _context_url(link)
+        if url is None:
             continue
-        parts.extend((_visible_text(paragraph[offset:link.start()]) + (
-            " " if paragraph[offset:link.start()].endswith(" ") else ""
-        ), f"[{_visible_text(label)}]({url})"))
+        before = paragraph[offset:link.start()]
+        parts.append(_visible_text(before))
+        if before.endswith(" "):
+            parts.append(" ")
+        destination = _context_destination(escape(url, quote=False))
+        parts.append(f"[{_visible_text(link[1])}]({destination})")
         offset = link.end()
         if paragraph[offset:offset + 1] == " ":
             parts.append(" ")
             offset += 1
     parts.append(_visible_text(paragraph[offset:]))
     return "".join(parts)
+
+
+def _portable_context_link(link):
+    url = _context_url(link)
+    if url is None:
+        return link[1]
+    return f"[{link[1]}]({_context_destination(unescape(url))})"
 
 
 def registration_context(text, role, *, captured):
@@ -225,10 +249,7 @@ def registration_context(text, role, *, captured):
         return tuple(unescape(re.sub(r"\\([\\`*_{}\[\]()#+!|~])", r"\1", line[2:]))
                      for line in context.splitlines() if line.startswith("> "))
     prose = re.sub(r"(?m)^#{1,6} .*\n", "", prose)
-    prose = _CONTEXT_LINK.sub(
-        lambda link: link[0] if not link[0].startswith("!") and _PUBLIC_CONTEXT_URL.fullmatch(link[2])
-        else link[1], prose,
-    )
+    prose = _CONTEXT_LINK.sub(_portable_context_link, prose)
     prose = re.sub(r"!?\[\[([^|\]\n]*)(?:\|([^\]\n]*))?\]\]",
                    lambda match: match[2] or match[1], prose)
     return tuple(" ".join(section.split()) for section in re.split(r"\n\s*\n", prose.strip())
