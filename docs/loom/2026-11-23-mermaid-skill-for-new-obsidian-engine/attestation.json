@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-23-mermaid-skill-for-new-obsidian-engine",
-  "content_digest": "415d017088d38ad65a2d459ca0589ee33a83b77f",
+  "content_digest": "c6825a8fee874e53adf53fdf07c9927099f715b5",
   "executions": [
     {
       "kind": "package-tests",
@@ -27,7 +27,7 @@
   ],
   "verdicts": [
     {
-      "reviewer": "reviewer-a-skill-code",
+      "reviewer": "reviewer-a-skill-code-r4",
       "vendor": "anthropic",
       "model": "claude-opus-5-5",
       "lens": "skill",
@@ -35,7 +35,7 @@
       "findings": []
     },
     {
-      "reviewer": "reviewer-b-spec",
+      "reviewer": "reviewer-b-spec-r4",
       "vendor": "anthropic",
       "model": "claude-opus-5-5",
       "lens": "spec",
@@ -46,8 +46,8 @@
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "f5c3a05",
-  "tested_commit": "a3a92f1",
-  "reviewed_commit": "9d695467235c61f05c0e9b59bedbf690557fdb22",
+  "tested_commit": "299ff69",
+  "reviewed_commit": "7ea792f911ce7470ad0153889ba087c3429a705b",
   "acceptance_status": [
     {
       "acceptance": 1,
