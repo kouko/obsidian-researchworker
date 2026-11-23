@@ -1,0 +1,99 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-technical-analysis-research-note-quality",
+  "content_digest": "6228a686fa72611062d39cee8b2edd480dc0c0c7",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "The skill-only change directs model-authored prose and adds no executable surface. Four installed-session adversarial checks covered skipped evidence, limited-data extrema, external-source timing and steering, and condensation without exposing a repeatable defect that earned a new program."
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "214b307e5145a47599ccef88c196f1273f0cd1f8",
+      "reviewer": "quality_review_code",
+      "lens": "code",
+      "dimension_scores": {
+        "security": "PASS",
+        "architecture": "PASS",
+        "correctness": "PASS",
+        "naming": "PASS",
+        "tests": "PASS",
+        "refactoring": "PASS",
+        "cross-task-coherence": "PASS",
+        "external-surface-grounding": "PASS",
+        "principles-conformance": "PASS",
+        "deliberate-simplification": "PASS",
+        "deletion-first": "PASS",
+        "architecture-conformance": "N/A — No ratified ARCHITECTURE.md is tracked."
+      },
+      "findings": [],
+      "notes": [
+        "Ran both changed technical test files: 36 passed. Independently compared matched canonical reports and saved SVGs byte for byte.",
+        "The save guide uses the existing attachment publisher and the heading-link convention established in the repository's Obsidian research skill. Inspected matched, warning, and limited evidence notes.",
+        "Obsidian Reading View click behavior is outside the recorded file-level verification."
+      ]
+    },
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "214b307e5145a47599ccef88c196f1273f0cd1f8",
+      "reviewer": "quality_review_skill",
+      "lens": "skill",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS",
+        "missing-population": "PASS",
+        "user-judgment-leak": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "ambiguity",
+          "anchor": "obsidian-finance/skills/technical-analysis/SKILL.md:219",
+          "text": "nitpick: The save-only instruction lists a source version without restating that it may be absent. The surrounding workflow already says to give it when recorded and use snapshot identity as the fallback.",
+          "fix": "Qualify source version with 'when recorded' in the save-only instruction."
+        }
+      ],
+      "notes": [
+        "Regenerated the candidate report from its saved attachment and exact cutoff. The result matched the captured report byte for byte, as did the matched old and new charts.",
+        "Verified the four heading targets at file level, the separation of the fixture warning from the computed threshold, and the retention of three unsupported horizons in the limited-data run."
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "b47961c",
+  "tested_commit": "5cb096ea7546dd13c42fb06a87b874c2eb549611",
+  "reviewed_commit": "214b307e5145a47599ccef88c196f1273f0cd1f8",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    }
+  ]
+}
