@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[5]
+ROOT = Path(__file__).resolve().parents[2]
 VALIDATE = ROOT / "obsidian" / "skills" / "obsidian-mermaid-visualizer" / "scripts" / "validate.sh"
 BROKEN = "flowchart LR\n  A[Call API (v2)] --> B"
 

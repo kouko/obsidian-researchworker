@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[5]
+ROOT = Path(__file__).resolve().parents[2]
 SKILL = ROOT / "obsidian" / "skills" / "obsidian-mermaid-visualizer"
 VALIDATE = SKILL / "scripts" / "validate.sh"
 
