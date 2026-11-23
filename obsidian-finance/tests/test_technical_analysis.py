@@ -139,3 +139,131 @@ def test_known_gap_does_not_confirm_a_swing(analyzer):
     local["missing_completed_sessions"] = [missing]
     short = analyzer.analyze(local)["horizons"][0]
     assert all(point["date"] != candidate["date"] for point in short["swings"])
+
+
+PATTERN_CASES = [
+    ("double_top", [110, 90, 111], "down"),
+    ("double_bottom", [90, 110, 89], "up"),
+    ("head_and_shoulders_top", [110, 92, 118, 91, 111], "down"),
+    ("head_and_shoulders_bottom", [90, 108, 82, 109, 89], "up"),
+    ("rectangle", [110, 90, 111, 91], "up"),
+    ("rectangle", [110, 90, 111, 91], "down"),
+    ("ascending_triangle", [110, 91, 111, 95], "up"),
+    ("descending_triangle", [113, 90, 108, 91], "down"),
+    ("symmetrical_triangle", [115, 87, 110, 92], "up"),
+]
+
+
+def pattern_snapshot(anchors):
+    local = snapshot(start="2023-01-01", stop="2024-03-01")
+    prices = [100.0] * 2
+    for anchor in anchors:
+        prices.extend((anchor, 100.0))
+    prices.extend((100.0, 100.0))
+    for bar, price in zip(local["bars"], [100.0] * (len(local["bars"]) - len(prices)) + prices):
+        set_price(bar, price)
+    return local, local["bars"][-len(prices):][2:-2:2]
+
+
+def set_price(bar, price):
+    bar.update(open=price, high=price + 0.1, low=price - 0.1, close=price)
+
+
+def pattern_match(horizon, kind):
+    return next(item for item in horizon["patterns"]["matches"] if item["kind"] == kind)
+
+
+@pytest.mark.parametrize("kind,prices,direction", PATTERN_CASES)
+def test_daily_chart_pattern_lifecycle_in_every_horizon(analyzer, monkeypatch, kind, prices, direction):
+    monkeypatch.syspath_prepend(str(Path(analyzer.__file__).parent))
+    from report import render_report
+
+    local, anchors = pattern_snapshot(prices)
+    latest = local["bars"][-1]
+    known_on = local["bars"][-2]["date"]
+    breakout = 130 if direction == "up" else 70
+    for state in ("candidate", "confirmed", "invalidated"):
+        if state == "confirmed":
+            set_price(latest, breakout)
+        if state == "invalidated":
+            follow_up = snapshot(start="2024-03-04", stop="2024-03-04")["bars"][0]
+            set_price(follow_up, 100)
+            local["bars"].append(follow_up)
+            local["cutoff"] = "2024-03-04T23:00:00Z"
+        report = analyzer.analyze(local)
+        assert report["horizons"][-1]["structure_frequency"] == "weekly"
+        for horizon in report["horizons"]:
+            match = pattern_match(horizon, kind)
+            assert match["state"] == state
+            assert [anchor["date"] for anchor in match["anchors"]] == [bar["date"] for bar in anchors]
+            assert match["known_on"] == known_on
+            assert match["confirmation_condition"] and match["invalidation_condition"]
+            if state != "candidate":
+                assert match["confirmation"]["date"] == latest["date"]
+                assert match["confirmation"]["close"] == breakout
+                assert match["confirmation"]["direction"] == direction
+            if state == "invalidated":
+                assert match["invalidation"]["date"] == follow_up["date"]
+        rendered = render_report(report)
+        assert rendered.count(f"{kind.replace('_', ' ').capitalize()} — {state}") == 3
+        for anchor in match["anchors"]:
+            assert f"{anchor['kind']} {anchor['price']:g} on {anchor['date']} (known on {anchor['confirmed_on']})" in rendered
+        if state != "candidate":
+            assert f"Confirmation ({direction}) on {latest['date']}: close {breakout}" in rendered
+
+
+def test_pattern_cutoff_gap_and_no_match_remain_distinct(analyzer):
+    local, _ = pattern_snapshot([110, 90, 111])
+    early, known, latest = local["bars"][-3:]
+    set_price(early, 80)
+    set_price(latest, 70)
+    def short(data):
+        return analyzer.analyze(data)["horizons"][0]
+
+    before_known = short({**local, "cutoff": f"{early['date']}T23:00:00Z"})
+    assert before_known["patterns"]["status"] == "no_match"
+    as_known = short({**local, "cutoff": f"{known['date']}T23:00:00Z"})
+    assert pattern_match(as_known, "double_top")["state"] == "candidate"
+    assert pattern_match(short(local), "double_top")["confirmation"]["date"] == latest["date"]
+    follow_up = snapshot(start="2024-03-04", stop="2024-03-04")["bars"][0]
+    set_price(follow_up, 70)
+    with_gap = short({**local, "bars": local["bars"][:-1] + [follow_up],
+                      "cutoff": "2024-03-04T23:00:00Z", "missing_completed_sessions": [latest["date"]]})
+    assert with_gap["patterns"]["status"] == "insufficient"
+    assert with_gap["patterns"]["matches"] == []
+    assert short(snapshot(start="2024-02-26"))["patterns"]["status"] == "insufficient"
+    assert short(snapshot())["patterns"]["status"] == "no_match"
+
+    overlap, _ = pattern_snapshot([110, 90, 111, 91])
+    assert pattern_match(short(overlap), "rectangle")
+    assert pattern_match(short(overlap), "double_top")
+
+    scaled = {
+        **local, "bars": [
+            {**bar, **{field: bar[field] / 100 for field in ("open", "high", "low", "close")}, "volume": None}
+            for bar in local["bars"]
+        ],
+    }
+    event = pattern_match(short(scaled), "double_top")["confirmation"]
+    assert event["date"] == latest["date"]
+    assert event["close"] == 0.7 and event["volume"] is None
+
+
+@pytest.mark.parametrize("kind,prices,anchor_offsets", [
+    ("rectangle", {2: 110, 6: 108, 10: 109, 14: 90, 18: 111, 22: 91}, [2, 14, 18, 22]),
+    ("ascending_triangle", {2: 110, 10: 88, 18: 111, 34: 106}, [2, 10, 18, 34]),
+])
+def test_pattern_keeps_meaningful_anchors_through_noise_and_convergence(analyzer, kind, prices, anchor_offsets):
+    local, _ = pattern_snapshot([])
+    bars = local["bars"][-38:]
+    for index, bar in enumerate(bars):
+        set_price(bar, prices.get(index, 108.5 if kind == "ascending_triangle" else 100))
+    # Put the three bars around the small counter-swing near its price so it
+    # becomes a real pair of local turns inside the much larger box.
+    if kind == "rectangle":
+        for index in (3, 4, 5, 7, 8, 9, 11, 12):
+            set_price(bars[index], 108.5)
+    medium = analyzer.analyze(local)["horizons"][1]
+    match = pattern_match(medium, kind)
+    assert [anchor["date"] for anchor in match["anchors"]] == [bars[index]["date"] for index in anchor_offsets]
+    assert match["state"] == "candidate"

@@ -52,6 +52,16 @@ def test_reports_three_dated_outlooks_and_evidence(report):
         assert item in rendered
 
 
+def test_renders_distinct_pattern_evidence_gaps(report):
+    report["horizons"][0]["patterns"] = {"status": "no_match", "matches": []}
+    report["horizons"][1]["patterns"] = {
+        "status": "insufficient", "matches": [], "reason": "Missing session 2024-02-02.",
+    }
+    rendered = render_report(report)
+    assert "Daily chart patterns: no supported pattern matched." in rendered
+    assert "Daily chart patterns: insufficient data. Missing session 2024-02-02." in rendered
+
+
 def test_save_note_chart_and_source(report, tmp_path):
     evidence = {**report, "evidence": "Captured at source"}
     note = save_report(report, evidence, tmp_path, "research.md")

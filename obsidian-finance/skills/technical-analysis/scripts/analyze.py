@@ -12,7 +12,7 @@ import sys
 from zoneinfo import ZoneInfo
 
 
-METHOD = "stock-technical-v1"
+METHOD = "stock-technical-v2"
 HORIZONS = (
     ("short", "3 calendar weeks", 3, 0, 20),
     ("medium", "3 calendar months", 0, 3, 50),
@@ -21,6 +21,10 @@ HORIZONS = (
 VOLUME_BASELINE = 20
 SLOPE_SESSIONS = 5
 SWING_RADIUS = 2
+PATTERN_LEVEL_TOLERANCE = 0.03
+PATTERN_MIN_HEIGHT = 0.05
+PATTERN_BREAK_BUFFER = 0.005
+PATTERN_MIN_SESSIONS = 9
 
 
 def _time(value):
@@ -108,6 +112,174 @@ def _swings(bars, missing_sessions):
                     "price": center[field], "confirmed_on": window[-1]["date"],
                 })
     return points
+
+
+def _pattern_candidates(points, *, min_reversal=0):
+    """Yield formations as each confirmed pivot becomes available."""
+    alternating = []
+    for _, same_day in groupby(points, key=lambda point: point["date"]):
+        anchors = list(same_day)
+        if len(anchors) != 1:
+            # An outside bar does not tell us which extreme happened first.
+            continue
+        point = anchors[0]
+        if not alternating:
+            alternating.append(point)
+            continue
+        prior = alternating[-1]
+        if prior["kind"] == point["kind"]:
+            if (point["price"] < prior["price"] if point["kind"] == "high" else point["price"] > prior["price"]):
+                continue
+            alternating[-1] = point
+        elif abs(point["price"] - prior["price"]) >= min_reversal * mean((point["price"], prior["price"])):
+            alternating.append(point)
+        else:
+            continue
+        for size in (3, 4, 5):
+            if len(alternating) >= size:
+                yield alternating[-size:]
+
+
+def _pattern_geometry(anchors, indices):
+    prices = [anchor["price"] for anchor in anchors]
+    level_band = mean(prices) * PATTERN_LEVEL_TOLERANCE
+    min_height = mean(prices) * PATTERN_MIN_HEIGHT
+    highs = [anchor for anchor in anchors if anchor["kind"] == "high"]
+    lows = [anchor for anchor in anchors if anchor["kind"] == "low"]
+
+    def line(points, *, flat=False):
+        start = points[0]
+        origin = indices[start["date"]]
+        if flat or len(points) == 1:
+            return mean(point["price"] for point in points), origin, 0.0
+        last = points[-1]
+        slope = (last["price"] - start["price"]) / (indices[last["date"]] - origin)
+        return start["price"], origin, slope
+
+    if len(anchors) in (3, 5):
+        top = anchors[0]["kind"] == "high"
+        if min(point["price"] for point in highs) - max(point["price"] for point in lows) < min_height:
+            return None
+        if abs(prices[0] - prices[-1]) > level_band:
+            return None
+        if len(anchors) == 3:
+            kind = "double_top" if top else "double_bottom"
+        else:
+            head_height = prices[2] - max(prices[0], prices[-1]) if top else min(prices[0], prices[-1]) - prices[2]
+            if head_height < level_band:
+                return None
+            kind = "head_and_shoulders_top" if top else "head_and_shoulders_bottom"
+        upper = line([max(highs, key=lambda point: point["price"])]) if top else line(highs)
+        lower = line(lows) if top else line([min(lows, key=lambda point: point["price"])])
+        return kind, ("down" if top else "up",), upper, lower
+
+    upper_change = highs[-1]["price"] - highs[0]["price"]
+    lower_change = lows[-1]["price"] - lows[0]["price"]
+    flat_upper = abs(upper_change) <= level_band
+    flat_lower = abs(lower_change) <= level_band
+    if flat_upper and flat_lower:
+        kind, directions = "rectangle", ("up", "down")
+    elif flat_upper and lower_change > level_band:
+        kind, directions = "ascending_triangle", ("up",)
+    elif upper_change < -level_band and flat_lower:
+        kind, directions = "descending_triangle", ("down",)
+    elif upper_change < -level_band and lower_change > level_band:
+        kind, directions = "symmetrical_triangle", ("up", "down")
+    else:
+        return None
+    upper = line(highs, flat=flat_upper)
+    lower = line(lows, flat=flat_lower)
+    first_pair = max(upper[1], lower[1])
+    if _line_at(upper, first_pair) - _line_at(lower, first_pair) < min_height:
+        return None
+    return kind, directions, upper, lower
+
+
+def _line_at(line, index):
+    level, origin, slope = line
+    return level + (index - origin) * slope
+
+
+def _pattern_match(geometry, anchors, bars, indices):
+    kind, directions, upper_line, lower_line = geometry
+    known_on = anchors[-1]["confirmed_on"]
+    first_index = indices[known_on]
+    triangle = kind.endswith("_triangle")
+    upper = _line_at(upper_line, first_index)
+    lower = _line_at(lower_line, first_index)
+    if upper <= lower:
+        # By the time the pivots were knowable the shape was already closed.
+        return None
+    confirmation = invalidation = None
+    for index in range(first_index, len(bars)):
+        bar = bars[index]
+        upper = _line_at(upper_line, index)
+        lower = _line_at(lower_line, index)
+        close = bar["close"]
+        upper_trigger = upper * (1 + PATTERN_BREAK_BUFFER)
+        lower_trigger = lower * (1 - PATTERN_BREAK_BUFFER)
+        event = {"date": bar["date"], "close": close, "volume": bar["volume"]}
+        if confirmation:
+            up = confirmation["direction"] == "up"
+            if (close < upper if up else close > lower):
+                invalidation = {**event, "level": upper if up else lower, "reason": "close back across the break boundary"}
+                break
+        elif triangle and upper <= lower:
+            invalidation = {**event, "level": None, "reason": "triangle boundaries converged without a qualifying close"}
+            break
+        elif close > upper_trigger or close < lower_trigger:
+            up = close > upper_trigger
+            direction = "up" if up else "down"
+            event.update(direction=direction, level=upper_trigger if up else lower_trigger)
+            if direction not in directions:
+                invalidation = {**event, "reason": "close beyond the opposite boundary"}
+                break
+            confirmation = event
+    boundary_date = (invalidation or confirmation or bars[-1])["date"]
+    boundary_index = indices[boundary_date]
+    break_buffer = f"{PATTERN_BREAK_BUFFER:.1%}"
+    triggers = {"up": f"{break_buffer} above the upper boundary",
+                "down": f"{break_buffer} below the lower boundary"}
+    confirmation_condition = "Daily close more than " + " or ".join(triggers[item] for item in directions) + "."
+    invalidation_condition = "After confirmation, a daily close back across the break boundary."
+    if len(directions) == 1:
+        opposite = "down" if directions[0] == "up" else "up"
+        invalidation_condition += f" Before confirmation, a daily close more than {triggers[opposite]}."
+    if triangle:
+        invalidation_condition += " A triangle also expires if its boundaries meet before confirmation."
+    return {
+        "kind": kind,
+        "state": "invalidated" if invalidation else "confirmed" if confirmation else "candidate",
+        "anchors": anchors, "known_on": known_on,
+        "confirmation": confirmation, "invalidation": invalidation,
+        "confirmation_condition": confirmation_condition, "invalidation_condition": invalidation_condition,
+        "boundaries": {
+            "date": boundary_date, "upper": _line_at(upper_line, boundary_index), "lower": _line_at(lower_line, boundary_index),
+            "upper_per_session": upper_line[2], "lower_per_session": lower_line[2],
+        },
+    }
+
+
+def _daily_patterns(bars, points, coverage_gap):
+    if coverage_gap or len(bars) < PATTERN_MIN_SESSIONS:
+        reason = coverage_gap or f"Requires at least {PATTERN_MIN_SESSIONS} completed daily sessions."
+        return {"status": "insufficient", "reason": reason, "matches": []}
+    indices = {bar["date"]: index for index, bar in enumerate(bars)}
+    latest = {}
+    # A second pass can bridge shallow counter-swings. Keep the raw pivots
+    # available so that a close pair of late triangle touches can still qualify.
+    for reversal in (0, PATTERN_LEVEL_TOLERANCE):
+        for anchors in _pattern_candidates(points, min_reversal=reversal):
+            geometry = _pattern_geometry(anchors, indices)
+            if geometry is None:
+                continue
+            match = _pattern_match(geometry, anchors, bars, indices)
+            if match is None:
+                continue
+            prior = latest.get(match["kind"])
+            if prior is None or match["known_on"] >= prior["known_on"]:
+                latest[match["kind"]] = match
+    return {"status": "evaluated" if latest else "no_match", "matches": list(latest.values())}
 
 
 def _level(bars, field, extreme):
@@ -214,6 +386,7 @@ def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions
         explanation = coverage_gap
         limitations.append(explanation)
     trigger, invalidation, alternative = _conditions(trend, support, resistance)
+    daily_points = points if frequency == "daily" else _swings(observed, missing_sessions)
     return {
         "name": name, "length": length, "observed_start": observed_start,
         "observed_end": observed_end, "outlook_start": (cutoff_day + timedelta(days=1)).isoformat(),
@@ -223,6 +396,7 @@ def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions
         "levels": {"support": support, "resistance": resistance}, "swings": points,
         "structure_frequency": frequency, "evidence": evidence, "limitations": limitations,
         "trigger": trigger, "invalidation": invalidation, "alternative": alternative,
+        "patterns": _daily_patterns(observed, daily_points, coverage_gap),
     }
 
 
@@ -247,7 +421,11 @@ def analyze(snapshot):
     return {
         **snapshot, "bars": bars, "schema_version": 1, "method": METHOD,
         "settings": {"slope_sessions": SLOPE_SESSIONS, "swing_radius": SWING_RADIUS,
-                     "volume_baseline": VOLUME_BASELINE},
+                     "volume_baseline": VOLUME_BASELINE,
+                     "pattern_level_tolerance": PATTERN_LEVEL_TOLERANCE,
+                     "pattern_min_height": PATTERN_MIN_HEIGHT,
+                     "pattern_break_buffer": PATTERN_BREAK_BUFFER,
+                     "pattern_min_sessions": PATTERN_MIN_SESSIONS},
         "horizons": [
             _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions)
             for settings in HORIZONS
