@@ -1,6 +1,6 @@
 # 驗收報告
 
-tested_commit: e233742
+Tried on 2026-11-23 at e233742ea1d84a2259db1d4fb5ce2cf63524298a
 
 | 驗收條件 | 實測結果 |
 | --- | --- |
