@@ -189,9 +189,40 @@ Preserve existing notes and attachments. First use the report command without
 save arguments and prepare the note in the selected language in a temporary
 UTF-8 Markdown file outside the vault. Localize the title, headings, horizon
 labels, evidence descriptions, findings, conditions, limitations, and link
-labels. Preserve the report's dates, numeric values, source references, and
-method identifiers exactly. Check those details against the rendered report
-before publishing. Include one Markdown link with the literal target
+labels.
+
+Use this reading order for a saved research note:
+
+1. Start with flat YAML properties (title, `type: research`, date, and ticker),
+   then a title and a brief opening. State the research question, exact cutoff
+   with timezone, latest observed session when available, and the supported
+   conclusion. Follow with a compact table covering all three horizons: actual
+   observation dates, outlook dates, direction, and what daily close would
+   confirm or change the view. For an unsupported horizon, name the evidence
+   gap and leave the direction and revision conditions unset.
+2. Add a linked contents list after the opening summary. Use Obsidian's
+   same-note heading links, `[[#Exact heading|Label]]`, for the sections
+   that appear. Check each target against the actual heading text.
+3. Explain the material evidence and its implications before the detailed
+   pattern records. Explain why the reported direction follows from confirmed
+   swing highs and lows or the close and moving-average slope, as applicable.
+   Use volume and pattern evidence to give context and label any interpretive
+   inference. Explain that support is the lowest eligible daily low and
+   resistance the highest eligible daily high in each observation window.
+   Give their dates and explain that outlook revision rules use daily closes
+   relative to those levels. Retain the dated metrics and pattern evidence
+   required above and the report's coverage and method limitations.
+4. Place eligible external views after the computed analysis. When a verified
+   source gives a warning level, attribute it and explain how its period and
+   purpose relate to the computed revision condition. Keep missing comparisons
+   unset. End with method and sources so the evidence can be checked or
+   replayed. Link the original snapshot and cite its source, version,
+   availability, identity, cutoff, and the report's method and settings.
+   Link external claims to their eligible sources where used.
+
+Preserve the report's dates, numeric values, source references, and method
+identifiers exactly. Check those details against the rendered report before
+publishing. Include one Markdown link with the literal target
 `{{source}}`. If the report has any observed trading dates, include one image
 with the literal target `{{chart}}`. Use Markdown link and image syntax with
 labels in the note's language. The publisher resolves the targets to the
