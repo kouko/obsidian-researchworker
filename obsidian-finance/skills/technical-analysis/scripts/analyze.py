@@ -244,7 +244,12 @@ def _pattern_match(geometry, anchors, bars, indices):
     triggers = {"up": f"{break_buffer} above the upper boundary",
                 "down": f"{break_buffer} below the lower boundary"}
     confirmation_condition = "Daily close more than " + " or ".join(triggers[item] for item in directions) + "."
-    invalidation_condition = "After confirmation, a daily close back across the break boundary."
+    recross_conditions = {
+        "up": "After an upside break, a daily close below the upper boundary invalidates the pattern.",
+        "down": "After a downside break, a daily close above the lower boundary invalidates the pattern.",
+    }
+    confirmed_directions = (confirmation["direction"],) if confirmation else directions
+    invalidation_condition = " ".join(recross_conditions[item] for item in confirmed_directions)
     if len(directions) == 1:
         opposite = "down" if directions[0] == "up" else "up"
         invalidation_condition += f" Before confirmation, a daily close more than {triggers[opposite]}."

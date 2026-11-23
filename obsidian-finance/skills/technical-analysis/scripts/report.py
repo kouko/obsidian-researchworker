@@ -48,7 +48,7 @@ def _render_patterns(patterns):
             event = match[label]
             if event is None:
                 continue
-            volume = "unavailable" if event["volume"] is None else f"{event['volume']:g}"
+            volume = "unavailable" if event["volume"] is None else str(event["volume"])
             level = "" if event["level"] is None else f", threshold {event['level']:.6g}"
             reason = f", {event['reason']}" if "reason" in event else ""
             direction = f" ({event['direction']})" if "direction" in event else ""

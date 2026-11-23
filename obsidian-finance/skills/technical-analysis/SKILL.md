@@ -138,6 +138,11 @@ confirm or invalidate the outlook. Preserve the alternative scenario and the
 evidence gaps. Treat the displayed direction as a conditional assessment, not
 a price target or calibrated prediction.
 
+For every computed report, give the source, snapshot identity from the report,
+source version when recorded, snapshot availability time, and exact analysis
+cutoff in both the reply and any saved note. Give the cutoff even when no
+eligible snapshot is available, if the user specified one.
+
 Include the report's daily chart patterns under each horizon in the reply and
 in any saved note. For every reported match, show the pattern name and state
 (candidate, confirmed, or invalidated), the date the pattern became knowable,
@@ -148,6 +153,13 @@ threshold, and volume. Keep the evidence tied to its horizon even when a
 pattern appears in more than one horizon. Where the report has no match, say
 that no supported pattern matched. Where it could not assess patterns, say
 that the evidence was insufficient and give the report's reason.
+
+Before sending the final reply, compare the reply itself with the rendered
+report. Check the snapshot details and cutoff, then check all three horizons
+for every pattern and its evidence above. Fix omissions even if the same
+evidence is already in a saved note. When identical evidence applies to
+multiple horizons, list it once in the reply and explicitly name each
+applicable horizon there.
 
 After presenting the computed results, add a separate external perspectives
 section if at least one relevant technical view can be verified. Use only

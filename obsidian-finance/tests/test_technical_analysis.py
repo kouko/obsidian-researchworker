@@ -180,6 +180,7 @@ def test_daily_chart_pattern_lifecycle_in_every_horizon(analyzer, monkeypatch, k
 
     local, anchors = pattern_snapshot(prices)
     latest = local["bars"][-1]
+    latest["volume"] = 123456789.125
     known_on = local["bars"][-2]["date"]
     breakout = 130 if direction == "up" else 70
     for state in ("candidate", "confirmed", "invalidated"):
@@ -212,10 +213,15 @@ def test_daily_chart_pattern_lifecycle_in_every_horizon(analyzer, monkeypatch, k
                 assert match["invalidation"]["date"] == follow_up["date"]
         rendered = render_report(report)
         assert rendered.count(f"{kind.replace('_', ' ').capitalize()} — {state}") == 3
+        both_directions = kind in ("rectangle", "symmetrical_triangle") and state == "candidate"
+        condition = match["invalidation_condition"]
+        assert ("close below the upper boundary" in condition) == (direction == "up" or both_directions)
+        assert ("close above the lower boundary" in condition) == (direction == "down" or both_directions)
         for anchor in match["anchors"]:
             assert f"{anchor['kind']} {anchor['price']:g} on {anchor['date']} (known on {anchor['confirmed_on']})" in rendered
         if state != "candidate":
             assert f"Confirmation ({direction}) on {latest['date']}: close {breakout}" in rendered
+            assert "volume 123456789.125" in rendered
 
 
 def test_pattern_cutoff_gap_and_no_match_remain_distinct(analyzer):
