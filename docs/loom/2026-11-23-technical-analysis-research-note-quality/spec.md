@@ -1,6 +1,6 @@
 # Technical analysis research note — spec
 intent: 2026-11-23-technical-analysis-research-note-quality@a587bc5
-confirmed-behavior: 2026-11-23 @31363ea
+confirmed-behavior: 2026-11-23 @a4ca3b1
 pre-build-review: required — this changes the public structure and evidence links of saved research notes
 
 ## Requirements
@@ -18,7 +18,8 @@ REQ-3 — Retain reproducible evidence
 
 - agent-decided — Use flat research properties and put the substantive result ahead of acquisition metadata to match the readability conventions identified in the vault examples.
 - agent-decided — Explain support and resistance as observed range extrema and compare an external threshold only if its source, scope and timing meet existing eligibility rules. The AAPL pilot contains a clearly labeled retrospective comparison, whose exact publication version could not be independently verified at the historical cutoff. It demonstrates presentation without relaxing the skill's historical evidence rule.
-- agent-decided — Retain detailed pattern anchors and calculation provenance in the note so a concise opening does not cost a reader evidence or reproducibility.
+- agent-decided — Attribute the trend to the computed report's actual rule inputs. Identify volume and pattern readings as contextual evidence unless they directly drive the reported calculation. Identify any interpretive inference and its limits.
+- agent-decided — Retain detailed pattern anchors and calculation provenance in the note. Save a chart when eligible observed bars exist, including when there is insufficient evidence for an outlook. This follows the existing publisher.
 
 ## Alternatives considered
 
