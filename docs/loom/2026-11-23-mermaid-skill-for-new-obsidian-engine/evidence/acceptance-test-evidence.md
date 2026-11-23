@@ -42,3 +42,21 @@ Fix range 4b9cd8f..a3a92f1: `obsidian-markdown/references/mermaid-quirks.md` (`(
 - 3: carried over — no new-type file in the fix diff; the only changed example (flowchart Example 5) re-validated under 1/4.
 - 4: re-tested — validator over every `.md` under `obsidian-mermaid-visualizer/*/` and `mermaid-quirks.md`: no file FAILs; `flowchart.md` 11/11 blocks PASS (incl. Example 5). Broken/fixed samples as in 1. App not re-opened.
 - 5: re-tested — the six mermaid/viz-guide test files: `28 passed in 5.99s`. Full suite left to finalize-review (same command).
+
+## Re-run on 2026-11-24, at df521e1
+Fix range a3a92f1..df521e1: CJK identifier quoting guidance in `obsidian-common-quirks.md` Quirk 5 / quoting section / checklist, `obsidian-markdown/references/mermaid-quirks.md`, `structural/gitgraph.md` (new quoted-CJK example), `flow/usecase.md`, `structural/wardley.md`, `structural/requirement.md`, `flow/swimlane.md`; `scripts/validate.mjs` exits 2 when pele cannot load; tests. Clean worktree: `git worktree add --detach <scratch>/acc3/wt df521e1`. Engine: pele 1.13.0 from `~/.cache/obsidian-mermaid-visualizer/pele-1.13.0`. Device check skipped (no vault note created).
+- Setup: `validate.test.sh` -> `7 passed, 0 failed`. `PELE_DIR=/nonexistent node validate.mjs validate.mjs` -> `cannot load pele from /nonexistent (...)`, `exit=2`.
+- 1: re-tested — probe note `cjk.md` (scratch), validator output:
+  - gitGraph `branch 開發` FAIL (`Lexical error ... branch 開發`); skill's quoted example (`branch "開發"`/`checkout`/`merge`) PASS.
+  - usecase `actor 使用者` FAIL (`Expecting ... IDENTIFIER | PLAIN_STRING`); `actor "使用者"` + `"使用者" --> Login` PASS.
+  - wardley bare `anchor 業務` FAIL (lexical); quoted anchor/component/edge PASS.
+  - venn bare `set 前端` FAIL (lexical); quoted sets + union PASS.
+  - requirement bare `requirement 登入 {` FAIL (lexical); quoted names PASS (`req.md` R1; my first quoted sample used `type: test`, a keyword -> `got 'VERIFY_TEST'`, my sample's error).
+  - architecture `service "伺服器"(server)` FAIL (`Expecting token of type 'ID'`); `service api(server)[伺服器]` PASS.
+  - radar `axis "速度"` FAIL (`Expecting token of type 'ID'`); `axis speed["速度"]` PASS.
+  - unquoted CJK in classDiagram, stateDiagram-v2, erDiagram, flowchart (node + subgraph ID), mindmap, kanban: all PASS.
+  All 20 results match the skill's claims.
+- 2: carried over — no added line in the fix diff mentions `11.4` or `1.15` outside the loom report itself.
+- 3: carried over — fix diff changes no type file's first example; the added gitgraph quoted-CJK example PASSes the engine (block 2 above) but was not opened in the app.
+- 4: re-tested — validator over every `.md` under `obsidian-mermaid-visualizer/` and `obsidian-markdown/references/mermaid-quirks.md`: no FAIL. Probe results above agree with the skill text.
+- 5: re-tested — `python3 -m pytest obsidian/tests/test_mermaid_skill_content.py obsidian/tests/test_mermaid_skill_examples_render.py obsidian/tests/test_mermaid_type_files.py obsidian/tests/test_mermaid_validator_fence_forms.py obsidian/tests/test_mermaid_validator.py obsidian/tests/test_obsidian_markdown_viz_guide.py -q -p no:cacheprovider` -> `31 passed in 5.45s`. Full suite left to finalize-review: `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
