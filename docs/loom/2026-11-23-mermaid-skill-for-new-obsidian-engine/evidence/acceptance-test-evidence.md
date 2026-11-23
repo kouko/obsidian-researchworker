@@ -60,3 +60,18 @@ Fix range a3a92f1..df521e1: CJK identifier quoting guidance in `obsidian-common-
 - 3: carried over — fix diff changes no type file's first example; the added gitgraph quoted-CJK example PASSes the engine (block 2 above) but was not opened in the app.
 - 4: re-tested — validator over every `.md` under `obsidian-mermaid-visualizer/` and `obsidian-markdown/references/mermaid-quirks.md`: no FAIL. Probe results above agree with the skill text.
 - 5: re-tested — `python3 -m pytest obsidian/tests/test_mermaid_skill_content.py obsidian/tests/test_mermaid_skill_examples_render.py obsidian/tests/test_mermaid_type_files.py obsidian/tests/test_mermaid_validator_fence_forms.py obsidian/tests/test_mermaid_validator.py obsidian/tests/test_obsidian_markdown_viz_guide.py -q -p no:cacheprovider` -> `31 passed in 5.45s`. Full suite left to finalize-review: `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+## Re-run on 2026-11-24, at 299ff69
+Fix range df521e1..299ff69: `flow/flowchart.md` (CJK paragraph + error-prevention row: unquoted CJK renders, quote for parentheses/shape chars; link to `obsidian-common-quirks.md` "Quote positions" replaces the dangling "Quirk 4.5"), `flow/mindmap.md` (canonical-syntax line + bare-CJK paragraph), `SKILL.md` checklist quote list (adds venn sets, requirement/element names), `test_mermaid_skill_content.py`. Clean worktree: `git worktree add --detach <scratch>/acc4/wt 299ff69`. Engine: pele 1.13.0 from `~/.cache/obsidian-mermaid-visualizer/pele-1.13.0` (`engine: pele 1.13.0 (Obsidian 1.15.1 bundle)`). No vault note created; app not opened.
+- Setup: `validate.test.sh` -> `ok - cold cache -> exit 0`, `7 passed, 0 failed`.
+- 1: re-tested — probe note `acc4/p.md`, `validate.sh` output:
+  - block 1 `A[開始] --> B(處理中) --> C{判斷}` PASS (flowchart.md claim: unquoted CJK renders).
+  - block 2 `A[開始 (現在)]` FAIL (`Expecting 'SQE', 'UNICODE_TEXT', 'TEXT', 'TAGSTART', got 'PS'`); block 3 `A["開始 (現在)"]` PASS (claim: quote required for parentheses).
+  - block 4 mindmap bare `可擴展性` / `效能` PASS (mindmap.md claim: bare CJK renders).
+  - block 5 mindmap `Scale["可擴展性 (規模)"]` PASS.
+  - block 6 mindmap bare `可擴展性 (規模)` PASS at parse level, but the engine reads `(規模)` as a rounded-shape label, so the text `可擴展性` is dropped silently — consistent with mindmap.md saying the wrapper is needed for parentheses (a silent problem the validator cannot flag).
+  - SKILL.md:181 quote list now names venn sets and requirement/element names, matching the df521e1 probes (bare FAIL / quoted PASS). flowchart.md link resolves to `obsidian-common-quirks.md:146` `## Quote positions`.
+- 2: carried over — the only added lines mentioning `1.15` are the two new flowchart/mindmap sentences, both stating Obsidian 1.15 / Pele 1.13.0; no `11.4`.
+- 3: carried over — fix diff changes no example block in any type file (prose and a table row only).
+- 4: re-tested — validator over every `.md` under `obsidian-mermaid-visualizer/` and `obsidian-markdown/references/mermaid-quirks.md`: no FAIL. Probe verdicts above match the skill text.
+- 5: re-tested — the six mermaid/viz-guide test files (same command as above) -> `32 passed in 5.95s`. Full suite left to finalize-review: `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
