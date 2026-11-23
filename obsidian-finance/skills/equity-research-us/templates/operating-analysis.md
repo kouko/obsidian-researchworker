@@ -11,14 +11,22 @@ status: ${status_yaml}
 
 # ${title}
 
-## Research question, conclusion and operating context
+## Research question and conclusion
 
-${product_and_segment_changes}
+${conclusion}
 
-## Volume, price and mix
+## Operating driver comparison
 
 ${operating_drivers}
 
-## Operating evidence and uncertainties
+## Durability and competing explanations
 
 ${operating_evidence_and_gaps}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
+
+${unresolved}

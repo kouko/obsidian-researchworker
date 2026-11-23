@@ -149,6 +149,17 @@ corresponding note roles. Choose the matching analysis template:
 [technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
 Use the same role for partial work and drafts, with their respective status.
 Substitute YAML properties as typed scalars and remove all placeholders.
+Write each analysis as a standalone study. Identify the company, fiscal quarter,
+cutoff, and question in the note, then state the supported conclusion or why it
+remains open. Fill the template sections separately using the reference's
+minimum outputs. Keep the method, comparable values, material component
+calculations, assumptions and counterevidence visible where used, including
+details carried forward from earlier work. Put source links next to key claims
+and record the comparison basis and material limits. Summarize evidence from
+other notes where it is needed to follow the argument, and link to the details.
+For an unsupported section, identify the missing evidence and the result it
+prevents. Rank unresolved checks by their effect on the conclusion, and name
+the source or observation to seek next.
 In the selected quarter directory (`cycles/<YYYYQq>/`), save a new source
 registration under `data/sources/` and a new method or assumption registration
 under `data/analysis/`. Create new evidence only under this quarter's `data/`.

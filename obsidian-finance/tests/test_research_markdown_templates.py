@@ -96,6 +96,24 @@ def test_role_template_rejects_invalid_obsidian_values(role, property_edit):
         codec.parse_note(note.replace(*property_edit, 1), role)
 
 
+@pytest.mark.parametrize(("role", "checkpoints"), [
+    ("financial-analysis", ("Comparable periods and metrics", "Earnings and cash reconciliation",
+                            "Liquidity and financing")),
+    ("operating-analysis", ("Operating driver comparison", "Durability and competing explanations")),
+    ("industry-and-competition", ("Independent market and peer comparison", "Competitive position and counterevidence")),
+    ("forward-forecast", ("Management guidance", "Analyst scenarios and assumptions", "Prior forecast reconciliation")),
+    ("valuation-and-risk", ("Model and dated inputs", "Fair-value range and sensitivity", "Risk and observable triggers")),
+    ("technical-analysis", ("Price and volume basis", "Trend, levels and invalidation", "Comparison with fair value")),
+    ("synthesis", ("Material changes", "Thesis and counterevidence", "Short-, medium- and long-term judgments")),
+])
+def test_analysis_template_exposes_material_checks_as_separate_sections(role, checkpoints):
+    note = _render(role, load()._markdown)
+    sections = re.findall(r"(?m)^## (.+)$", note)
+    assert sections[0] == "Research question and conclusion"
+    assert sections[1:1 + len(checkpoints)] == list(checkpoints)
+    assert sections[-2:] == ["Sources and comparison basis", "Unresolved checks and impact"]
+
+
 def test_review_render_round_trips_shared_source_data():
     shared = {"value": 124, "unit": "USD"}
     review = dict(id="r1", cutoff="2024-08-31T23:59:59+00:00", publication={"complete": False},

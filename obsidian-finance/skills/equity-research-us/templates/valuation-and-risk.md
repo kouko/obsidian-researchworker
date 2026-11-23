@@ -11,14 +11,26 @@ status: ${status_yaml}
 
 # ${title}
 
-## Research question, conclusion and fair-value range
+## Research question and conclusion
 
-${value_range}
+${conclusion}
 
-## Sensitivity and downside risks
+## Model and dated inputs
 
-${sensitivity_and_risks}
+${model_and_dated_inputs}
 
-## Market comparison and invalidation conditions
+## Fair-value range and sensitivity
+
+${value_range_and_sensitivity}
+
+## Risk and observable triggers
 
 ${market_and_triggers}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
+
+${unresolved}

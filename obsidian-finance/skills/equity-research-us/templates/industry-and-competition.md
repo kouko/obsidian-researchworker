@@ -11,14 +11,22 @@ status: ${status_yaml}
 
 # ${title}
 
-## Research question, conclusion and market scope
+## Research question and conclusion
 
-${market_scope_and_change}
+${conclusion}
 
-## Peer comparison and contrary evidence
+## Independent market and peer comparison
 
 ${peer_comparison}
 
-## Company exposure and unresolved questions
+## Competitive position and counterevidence
 
 ${company_exposure}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
+
+${unresolved}

@@ -461,6 +461,9 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
             title_yaml="Apple quarterly financial checkpoint", title="Apple quarterly financial checkpoint",
             asset_id_yaml=asset, fiscal_quarter_yaml=quarter, as_of_yaml=json.dumps(cutoff),
             review_id_yaml="checkpoint", status_yaml="partial", findings=financial_text,
+            comparable_metrics="Only the scoped comparison cited below was checked.",
+            earnings_and_cash_reconciliation="Cash flow was outside this checkpoint.",
+            liquidity_and_financing="Financing disclosures were outside this checkpoint.",
             source_and_comparison=pack["source_url"], unresolved="Synthesis is pending.")
         current = saved["units"]["financial"]
         comparator_metadata = f"{base}/data/sources/filing-2024Q2.json"

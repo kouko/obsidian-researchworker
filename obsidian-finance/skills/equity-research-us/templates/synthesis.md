@@ -11,7 +11,15 @@ status: ${status_yaml}
 
 # ${title}
 
-## Research question, investment thesis and counterevidence
+## Research question and conclusion
+
+${conclusion}
+
+## Material changes
+
+${material_changes}
+
+## Thesis and counterevidence
 
 ${thesis_and_counterevidence}
 
@@ -19,6 +27,10 @@ ${thesis_and_counterevidence}
 
 ${conditional_horizons}
 
-## What changed and what remains pending
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
 
 ${changes_and_gaps}
