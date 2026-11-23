@@ -118,8 +118,11 @@ and [V(C)](https://www.cfainstitute.org/standards/professionals/code-ethics-stan
   the conclusion. If the search leaves a gap, state what was checked, which
   conclusion remains pending and what evidence would resolve it.
 - **Reproducibility.** Recompute material ratios, changes and scenario outputs
-  from the displayed inputs before saving. Show original published figures
-  alongside any material differences from rounding or recalculation. Align
+  from the displayed inputs before saving. Compare the recomputed results
+  with the numbers in the final report body. When a reported figure and a
+  recalculation differ at the displayed precision for a ratio used in the
+  conclusion, label both in the report with the inputs, even when the
+  difference leaves the conclusion unchanged. Align
   periods and definitions before ranking peers or benchmarks. Distinguish
   observed facts, management statements, external opinions and analyst
   assumptions. State material limitations and what would change the finding.

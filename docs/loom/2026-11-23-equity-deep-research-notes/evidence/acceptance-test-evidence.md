@@ -2,6 +2,25 @@
 
 Tried on 2026-11-23, in a clean copy of the project at 12b37d15b0e5ba4d721535634875d266d3cd3dbb.
 
+## Open-source Fastenal run — cb64f15
+
+- A new Codex CLI conversation read the checked-out skill and two Fastenal SEC originals in an empty isolated vault. It authored all seven reports and used normal quarterly publication. At the July 31 cutoff, the overview, seven reports and their bound evidence were readable independently. All seven role reports include tables and evidence gaps.
+- Same-quarter revisions corrected displayed calculations on the existing financial report path. Comparing revision r1 and r2 showed that the other six report files remained unchanged. Revision r3 corrected the prior-year cash conversion rounding from 88.15% to 88.14% using the displayed values. The remaining scope includes valuation calibration, source vintage and the quality limits recorded in the audit.
+- The independent Q3 continuation exercise published a scoped financial checkpoint adopting the Q2 r3 cash-conversion excerpt. Verified the adoption, bound evidence and scoped reusable work from a Q3-only copy. Removing the captured Q3 transcription caused verification to fail, and restoring it returned verified. The 68 Q2 files matched their baseline. The Q3 original was checked on EDGAR; the portable copy includes the scoped transcription, with the exact Q3 HTML unavailable in the test environment.
+- Isolated records: `/private/tmp/equity-acceptance-cb64f15/result.md`, `/private/tmp/equity-acceptance-cb64f15/q2-quality-readback.md`, and `/private/tmp/equity-q3-managed-cb64f15/continuation-result.md`. At `e96e623`, the specified uv invocation ran both package test directories and returned 495 passed. The new seven-report behavioral run at that revision is described below.
+
+## Open-source Fastenal re-run — e96e623
+
+- A separate fresh session saw the updated skill and two public SEC originals. It preserved two exact filing HTML files and retained scoped public excerpts from the Fastenal call, the Federal Reserve, MSC and a historical price provider. It used dated source locators and excluded later-published Grainger evidence. Historical delivery versions for the transcript and price feed remain unverified.
+- Normal publishing saved all seven roles, with six bounded units returned as reusable. Price relative to fair value and the corresponding synthesis remain pending. Quarter verification and the separate link-target check passed. The note set has a comparison table in six roles and a separately retained price table for technical analysis.
+- A pre-save calculation check reproduced earnings, cash, three forecast and valuation scenarios, and 5- and 20-day price measures. Final readback identified a reporting gap: the financial note gave the issuer ratios without labeling them or showing the independent values. The differences did not affect the direction of the comparison. The follow-up instruction now explicitly checks the final prose against the calculation and requires the displayed distinction.
+- Isolated outputs and audit: `/private/tmp/equity-acceptance-e96e623/result.md` and `/private/tmp/equity-acceptance-e96e623/draft-arithmetic-audit.md`. Both package suites passed again with the follow-up instruction in place (495 tests).
+
+## Financial comparison column check
+
+- A fresh targeted session with the previous reporting distinction produced a separate column for issuer and recalculated ratios but shifted the issuer columns by one, treating the five-year average as the current period. The original quarter table reads five-year average 83.7%, current 84.4%, prior 88.1%. The six-month table reads five-year average 99.2%, current 86.0%, prior 100.5%. Both were extracted with the original row and header cells preserved. The first targeted output failed this acceptance check.
+- The financial reference now explicitly requires mapping a cited value to original table headings and identifying benchmark columns before comparison. The common reference also requires checking the final body against the calculation, with reported and recalculated figures labeled where their displayed values differ.
+
 ## Re-run 2026-11-23 — standalone analysis sections
 
 - Extracted and installed the exact tested commit in a new isolated Codex home. The app server listed the enabled US equity skill. Filled the updated templates separately with the retained public Fastenal evidence, including explicit issuer/quarter/cutoff, then repeated normal publishing and historical readback in a fresh two-quarter copy. All six Q2 notes matched their rendered template heading sequence before any revision history. The seventh role's eligibility gap remained visible, and the seven-role template test exercised technical analysis without claiming that a technical report was published.

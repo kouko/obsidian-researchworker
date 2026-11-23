@@ -29,7 +29,15 @@ additive flows from compatible periods, with both source operands and an
 explicit reconciliation. Never subtract EPS or average shares.
 
 Assess margins, cash conversion, leverage and working capital with the
-denominators and adjustments shown. For banks, inspect funding, credit losses
+denominators and adjustments shown. For a key ratio derived from financial
+statement amounts and also reported in management discussion, trace each
+reported cell to the original table header, including multirow headers,
+merged cells, benchmark columns and period labels. Verify the mapping in the
+rendered table if text extraction flattens it. If their displayed values
+differ, give both in the reconciliation paragraph or table and say whether
+the difference affects the inference. If a column cannot be verified, leave
+the reported comparison pending.
+For banks, inspect funding, credit losses
 and regulatory capital. Industrial debt, enterprise-value and CFO-minus-capex
 shortcuts can misstate their economics. Explain one-offs, scope changes and
 periods or metrics that cannot be compared.
