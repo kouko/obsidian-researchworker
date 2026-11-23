@@ -33,3 +33,12 @@ machine, so the first-run install path was not exercised here. `validate.test.sh
 - How I tried it: `python3 -m pytest obsidian/tests/test_mermaid_skill_content.py obsidian/tests/test_mermaid_skill_examples_render.py obsidian/tests/test_mermaid_type_files.py obsidian/tests/test_mermaid_validator_fence_forms.py obsidian/tests/test_mermaid_validator.py obsidian/tests/test_obsidian_markdown_viz_guide.py -q -p no:cacheprovider`
 - What came back: `27 passed in 5.34s`.
 - Full suite (not run here; finalize-review runs it and blocks on failure): `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+## Re-run on 2026-11-23, at a3a92f1
+Fix range 4b9cd8f..a3a92f1: `obsidian-markdown/references/mermaid-quirks.md` (`()` row -> "Quote the label (Rule 5)"), `flow/flowchart.md` Example 5 (`"1. Perception"` … labels, ①②③④ note removed), `validate.test.sh` cold-cache case, `test_obsidian_markdown_viz_guide.py`. Clean worktree at a3a92f1.
+- Setup: `validate.test.sh` -> `ok - cold cache -> exit 0`, `7 passed, 0 failed`.
+- 1: re-tested — same 9 samples plus quoted `A["Start (now)"]`: blocks 1-4 FAIL with the same parse errors as before, 5-8 PASS, quoted-parens PASS (block 10); block 9 is my own bad venn sample, as before. `mermaid-quirks.md:70` and `:94` now say quote labels with `()`, consistent with `obsidian-common-quirks.md` Quirk 2; `flowchart.md` no longer prescribes ①②③④, matching the "Fixed" table.
+- 2: carried over — fix diff touches no version/limit text (`grep '11.4|1.15'` over the diff: none).
+- 3: carried over — no new-type file in the fix diff; the only changed example (flowchart Example 5) re-validated under 1/4.
+- 4: re-tested — validator over every `.md` under `obsidian-mermaid-visualizer/*/` and `mermaid-quirks.md`: no file FAILs; `flowchart.md` 11/11 blocks PASS (incl. Example 5). Broken/fixed samples as in 1. App not re-opened.
+- 5: re-tested — the six mermaid/viz-guide test files: `28 passed in 5.99s`. Full suite left to finalize-review (same command).
