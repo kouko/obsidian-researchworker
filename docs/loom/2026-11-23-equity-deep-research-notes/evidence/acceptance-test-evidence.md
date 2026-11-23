@@ -1,8 +1,15 @@
 # Deep quarterly equity notes — acceptance test evidence
 
-Tried on 2026-11-23, in a clean copy of the project at 333083b4085a26473362ddb0635a26f14e0cb657.
+Tried on 2026-11-23, in a clean copy of the project at 12b37d15b0e5ba4d721535634875d266d3cd3dbb.
 
-## Re-run 2026-11-23 — matching legacy origin context
+## Re-run 2026-11-23 — standalone analysis sections
+
+- Extracted and installed the exact tested commit in a new isolated Codex home. The app server listed the enabled US equity skill. Filled the updated templates separately with the retained public Fastenal evidence, including explicit issuer/quarter/cutoff, then repeated normal publishing and historical readback in a fresh two-quarter copy. All six Q2 notes matched their rendered template heading sequence before any revision history. The seventh role's eligibility gap remained visible, and the seven-role template test exercised technical analysis without claiming that a technical report was published.
+- The replay again measured 1,126 → 340 and 3,739 → 382 machine-record lines, verified six reusable units per standalone quarter, preserved all 19 Q1 files during Q2, and excluded Q2 at the earlier cutoff. Checked flat properties, local destinations, and actual published report headings. The Fastenal evidence-capture implementation is unchanged from 333083b, so the five visible author-context checks below remain applicable. Rendered the new published operating note as SVG. Native Obsidian layout remains unobserved.
+- Re-ran the focused command in §4 with `or legacy_capture` appended to the test selector: `38 passed, 58 deselected in 2.08s`. Archive and artifacts are in `/private/tmp/deep-acceptance-template/` and `/private/tmp/deep-acceptance-template-r2/`.
+- Independently read the completed baseline and updated Codex responses from the separate-session A/B in `/private/tmp/equity-template-ab/`, with identical public filing inputs and prompt. Both distinguish the cutoff, periods, and source basis, retain the 43.1, 31.5 and 35.7 components of the 110.3 million cash headwind, reconcile 278.6 less 69.3 to 209.3 versus 252.5 dividends, discuss limitations of the quarter-only conclusion, and name material unresolved checks. The updated response exposes all six localized top-level financial headings, places clickable primary-source links by findings, and ranks three unresolved checks. The baseline already had substantive calculation detail and used subheadings in a broad findings section; the single pair demonstrates improved structure and citation placement, with no claim of a systematic increase in depth. Web fetching was unnecessary for these attempts because the two primary filings were in the supplied public evidence. These responses were not published to the vault.
+
+## Re-run 2026-11-23 — 333083b4085a26473362ddb0635a26f14e0cb657
 
 - Extracted the tested update with `git archive`, installed the package into a fresh isolated Codex home, and confirmed the app server recognizes the enabled US equity skill. Replayed Q1 and Q2 with the same original Fastenal evidence in a new isolated copy.
 - Opened every registration actually referenced by the two new manifests and checked both visible information and local reader links. All five capture instances retained specific authored context: Q1's calculation denominators, its year-over-year source basis in both quarters, Q2's split-adjustment and working-capital method, and Q2's original scope of 139 eligible observations. All local reader links in those capture bodies resolved.
