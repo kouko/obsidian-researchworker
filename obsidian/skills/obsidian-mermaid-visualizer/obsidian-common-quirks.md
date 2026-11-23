@@ -98,7 +98,7 @@ Always declare `id["label"]` and reference the **ID**. The same applies to nodes
       commit id: "新增功能" tag: "開發"
   ```
 
-- **usecase-beta actor IDs**: a CJK actor ID errors. Use an ASCII ID with the CJK label in quotes, e.g. `actor user as "使用者"`.
+- **usecase-beta actor IDs**: a CJK actor ID errors, and an `as "..."` alias is also rejected. Use an ASCII actor name (`actor User`) and put CJK in use-case labels, e.g. `Login("登入系統")`.
 
 Keep all identifiers (node IDs, branch names, class / entity / state names) ASCII.
 
@@ -139,7 +139,7 @@ Quoting display labels is still a good default — it is required for labels wit
 - Flowchart / graph node labels and arrow labels: `A["Label"]`, `A -->|"Label"| B`
 - Subgraph display names: `subgraph id["Display Name"]`
 - Pie slice labels, quadrant data points and axis labels, xychart title / axes / series names
-- C4 labels, block-beta labels, architecture bracket labels, gitGraph `id:` / `tag:`, usecase actor labels
+- C4 labels, block-beta labels, architecture bracket labels, gitGraph `id:` / `tag:`, usecase labels `Login("登入系統")`
 
 **Do not quote** (quotes render literally or are not accepted):
 - Identifiers: node IDs, branch names, class / entity / state names

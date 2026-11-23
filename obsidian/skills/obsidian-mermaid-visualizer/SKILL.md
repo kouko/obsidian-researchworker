@@ -1,12 +1,12 @@
 ---
 name: obsidian-mermaid-visualizer
 description: |
-  Create Mermaid diagrams — flowcharts, sequence/state/class/ER/C4/git, bar/line/pie/quadrant, Gantt/timeline, architecture/block, mindmaps (Obsidian + any Mermaid renderer). Use to visualize workflows, data trends, architecture, or timelines.
+  Create Mermaid diagrams — flowcharts, sequence/state/class/ER/C4/git, bar/line/pie/quadrant/radar/sankey/treemap/venn, Gantt/timeline, architecture/block, mindmaps, kanban, journeys, fishbone (Obsidian + any Mermaid renderer). Use to visualize workflows, data trends, architecture, or timelines.
 ---
 
 # Obsidian Mermaid Visualizer
 
-Produces clean Mermaid diagrams across 17 diagram types — flow / data-viz / structural / time categories — primarily optimized for Obsidian 1.15 native rendering (Pele engine, Mermaid 12.1.0 syntax), with output in standard Mermaid syntax for other renderers (GitHub, GitLab, Mermaid Live Editor, Notion, Confluence, HackMD, Docusaurus, MkDocs, etc.). Handles Obsidian-specific quirks and provides consistent per-type knowledge.
+Produces clean Mermaid diagrams across 30 diagram types — flow / data-viz / structural / time categories — primarily optimized for Obsidian 1.15 native rendering (Pele engine, Mermaid 12.1.0 syntax), with output in standard Mermaid syntax for other renderers (GitHub, GitLab, Mermaid Live Editor, Notion, Confluence, HackMD, Docusaurus, MkDocs, etc.). Handles Obsidian-specific quirks and provides consistent per-type knowledge.
 
 ## Overview
 
@@ -52,13 +52,23 @@ Pick the diagram type by the content's intent. Each entry links to a type-specif
 - Hierarchical concepts / topic breakdown → [flow/mindmap.md](flow/mindmap.md)
 - Actor interactions over time / API calls → [flow/sequence.md](flow/sequence.md)
 - System states + transitions (FSM / lifecycle) → [flow/state.md](flow/state.md)
+- Process split into lanes by owner / team → [flow/swimlane.md](flow/swimlane.md)
+- Tasks by status column (To do / Doing / Done) → [flow/kanban.md](flow/kanban.md)
+- User / customer experience with satisfaction scores → [flow/journey.md](flow/journey.md)
+- Root-cause analysis (fishbone, 6M) → [flow/ishikawa.md](flow/ishikawa.md)
+- Actors and the use cases they take part in → [flow/usecase.md](flow/usecase.md)
 
 ### Data visualization
 
 - Discrete bar chart (categorical data) → [data-viz/xychart.md](data-viz/xychart.md) bar mode
 - Line / trend chart (single or multi-series) → [data-viz/xychart.md](data-viz/xychart.md) — use named-line syntax `line "name" [values]`
+- Candlestick / OHLC (K 線) → **not supported** in Mermaid or Obsidian 1.15; closest alternative is a closing-price `line` chart in [data-viz/xychart.md](data-viz/xychart.md) (say it is not a candlestick) or an embedded chart image
 - Proportion of whole (%) → [data-viz/pie.md](data-viz/pie.md)
 - 2×2 positioning (Eisenhower / impact-effort / BCG) → [data-viz/quadrant.md](data-viz/quadrant.md)
+- Scores across several dimensions (skill profile) → [data-viz/radar.md](data-viz/radar.md)
+- Quantities flowing between stages (funnel / allocation) → [data-viz/sankey.md](data-viz/sankey.md)
+- Nested part-of-whole (budget by department) → [data-viz/treemap.md](data-viz/treemap.md)
+- Overlap of 2–3 sets → [data-viz/venn.md](data-viz/venn.md)
 
 ### Structural
 
@@ -68,6 +78,10 @@ Pick the diagram type by the content's intent. Each entry links to a type-specif
 - Database schema with cardinality → [structural/er.md](structural/er.md)
 - Software architecture at 3 zoom levels (C4 model) → [structural/c4.md](structural/c4.md)
 - Git branches / merges / commits → [structural/gitgraph.md](structural/gitgraph.md)
+- Folder / file tree → [structural/treeview.md](structural/treeview.md)
+- Value chain vs evolution (Wardley map) → [structural/wardley.md](structural/wardley.md)
+- Bit layout of a packet / header → [structural/packet.md](structural/packet.md)
+- Requirement traceability (SysML) → [structural/requirement.md](structural/requirement.md)
 
 ### Time / project
 
@@ -155,14 +169,14 @@ scripts/validate.sh path/to/note.md      # checks every ```mermaid block in the 
 
 It renders each block with Pele 1.13.0 (the engine version bundled in Obsidian 1.15.1) and reports `PASS` / `FAIL` per block; exit 1 means at least one `FAIL`. It takes a markdown file path only — put a lone diagram in a `.md` file first. A `PASS` does not catch silent problems such as orphan nodes or ignored themes (see the checklist below). Requires `node` on PATH; the first run installs the pinned Pele.
 
-### Universal checks (all 17 types)
+### Universal checks (all 30 types)
 - [ ] No comma-separated `style A,B` — use `classDef` + `class` ([quirk 1](obsidian-common-quirks.md))
 - [ ] Labels containing parentheses are quoted ([quirk 2](obsidian-common-quirks.md))
 - [ ] Subgraphs use `id["Display"]`; all references use IDs ([quirk 3](obsidian-common-quirks.md))
 - [ ] No `9:00`-style times in timeline periods ([quirk 4](obsidian-common-quirks.md))
 - [ ] Identifiers ASCII; CJK only in labels / `tag:` / `id:` ([quirk 5](obsidian-common-quirks.md))
 - [ ] Architecture edges use `a:R --> L:b` ([quirk 6](obsidian-common-quirks.md))
-- [ ] **Quote per each type's position rule, NOT everywhere** ([quote positions](obsidian-common-quirks.md)) — quote where the parser strips them (flowchart nodes `A["Label"]`, arrow labels `-->|"Label"|`, pie slice labels, quadrant data points + axis/quadrant labels, xychart axes/series, C4 labels, gitGraph tags/ids, architecture CJK brackets) but NEVER quote free-form titles (pie/quadrant/gantt/timeline titles render the `"` literally). CJK identifiers (gitGraph branch, state/class IDs) can't be quoted at all — romanize
+- [ ] **Quote per each type's position rule, NOT everywhere** ([quote positions](obsidian-common-quirks.md)) — quote where the parser strips them (flowchart nodes `A["Label"]`, arrow labels `-->|"Label"|`, pie slice labels, quadrant data points, xychart axes/series, C4 labels, gitGraph tags/ids, requirement `text:`) but NEVER quote free-form titles (pie/quadrant/gantt/timeline titles render the `"` literally). CJK identifiers (gitGraph branch, usecase actor, wardley component) can't be quoted at all — romanize
 - [ ] No reliance on themes, icons, HTML, math or JS click callbacks ([engine limits](obsidian-compatibility.md))
 - [ ] Diagram wrapped in ` ```mermaid ... ``` ` fence
 - [ ] No Emoji in node / label text (use color coding instead)
@@ -206,7 +220,7 @@ Here is the Mermaid diagram for <description>:
 
 ## Design notes (non-normative)
 
-**Directory structure** — this skill uses a non-standard layout: 4 category folders (`flow/`, `data-viz/`, `structural/`, `time/`) at the skill root instead of under a `references/` wrapper. Rationale: the 17 per-type files are primary routed content, not supplementary references. Other `obsidian/skills/*` use flat `references/` — this skill is an intentional deviation per user-approved plan.
+**Directory structure** — this skill uses a non-standard layout: 4 category folders (`flow/`, `data-viz/`, `structural/`, `time/`) at the skill root instead of under a `references/` wrapper. Rationale: the 30 per-type files are primary routed content, not supplementary references. Other `obsidian/skills/*` use flat `references/` — this skill is an intentional deviation per user-approved plan.
 
 **Single-layer router** — SKILL.md links directly to each type file, not through intermediate category routers. Rationale: Anthropic's skill authoring docs warn that nested references cause Claude partial-reads (`head -100` previews instead of full loads). Single-layer routing keeps every reference one level deep.
 

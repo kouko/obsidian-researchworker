@@ -27,7 +27,7 @@ stateDiagram-v2
     Error --> Idle: retry
 ```
 
-**Use `stateDiagram-v2`**, not the older `stateDiagram`. v2 has better styling and composite state support.
+**Prefer `stateDiagram-v2`** for portability to other renderers. In Obsidian 1.15 the older `stateDiagram` header also renders.
 
 ## Configuration options
 
@@ -101,15 +101,20 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    direction LR       # or TB, BT, RL
-    [*] --> A --> B --> [*]
+    direction LR
+    [*] --> A
+    A --> B
+    B --> [*]
 ```
 
-## Obsidian 11.4.1 compatibility
+`direction` takes `LR`, `TB`, `BT` or `RL`. Write one transition per line — chained `A --> B --> C` is a parse error.
 
-- **Status**: ✅ Full support — state diagrams are stable
+## Obsidian 1.15 compatibility
+
+- **Status**: ✅ Full support
 - **Known quirks**:
-  - `stateDiagram` (v1) is deprecated — always use `stateDiagram-v2`
+  - `stateDiagram` (v1 header) and `stateDiagram-v2` both render; prefer v2 for other renderers
+  - Chained transitions (`A --> B --> C`) and `#` end-of-line comments are parse errors
   - Choice / fork / join syntax must be precise; typos cause render failures
   - Composite states nested >2 levels deep can overflow preview pane
 - **Workaround**: none needed
@@ -124,7 +129,7 @@ State diagrams, like sequence diagrams, treat text after `:` as free-form descri
 
 **State IDs must remain unquoted identifiers** (`Idle`, `Loading`, etc.) — these are not display strings, they are references. If you need a multi-word state, use underscore (`Virus_scan`) or camelCase (`VirusScan`).
 
-**For CJK / special characters in state**: CJK usually parses unquoted in descriptions and transition labels, but this is **not guaranteed** in Obsidian's bundled lexer (mermaid-cli is more lenient than Obsidian — a cli pass does not prove an Obsidian pass). There is no quoting escape (quotes render literally). If a label fails to parse in Obsidian, rephrase / romanize the text rather than wrapping in quotes. Note: state **IDs** must stay ASCII identifiers regardless — put any CJK in the description (`Scanning : 病毒掃描`), not the ID.
+**For CJK / special characters in state**: CJK renders unquoted in descriptions and transition labels in Obsidian 1.15 (Pele 1.13.0 render check). There is no quoting escape (quotes render literally); if a label fails `scripts/validate.sh`, rephrase it rather than wrapping in quotes. Keep state **IDs** ASCII for portability and put CJK in the description (`Scanning : 病毒掃描`) — Pele accepts CJK IDs, but other renderers may not.
 
 ## Worked examples
 
@@ -225,7 +230,7 @@ stateDiagram-v2
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `stateDiagram` (v1) | `stateDiagram-v2` | v1 deprecated; v2 has better features |
+| `[*] --> A --> B` (chained) | `[*] --> A` then `A --> B` | Chained transitions are a parse error |
 | `state1 --> state2 : label` (space around colon) | `state1 --> state2: label` (space after only) | Label syntax is strict |
 | `[*]` inside nested state to escape | `[*]` only refers to the **containing scope's** start/end | Nested states have their own start/end |
 | Choice without `<<choice>>` marker | `decision <<choice>>` required | Otherwise treated as regular state |

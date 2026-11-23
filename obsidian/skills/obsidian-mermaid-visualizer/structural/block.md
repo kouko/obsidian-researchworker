@@ -44,7 +44,7 @@ block-beta
 
 ### Labeled blocks
 
-```mermaid
+```text
 block-beta
     columns 3
     CPU["Central Processing Unit"]
@@ -55,7 +55,7 @@ block-beta
 
 ### Block spanning
 
-```mermaid
+```text
 A:2      # A spans 2 columns
 B:3      # B spans 3 columns
 ```
@@ -89,20 +89,18 @@ block-beta
 
 `block:id ... end` creates a nested container.
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: 🟡 Needs testing — 2024 Obsidian Forum reports suggest partial / failed rendering. Syntax exists in 11.4.1 but rendering quality varies.
+- **Status**: 🟡 renders in Pele 1.13.0 (every example here passes `scripts/validate.sh`); layout not checked on device
 - **Known quirks**:
-  - Early block-beta versions had layout instability
-  - Complex nested blocks may render poorly
-  - Connections (arrows) between blocks sometimes mis-positioned
-- **Workaround**:
-  - If block-beta renders poorly: fall back to `graph TB` + subgraph (loses grid semantics but preserves structure)
-  - Commit 4 of this skill's development will populate actual render status in [obsidian-compatibility.md](../obsidian-compatibility.md)
+  - Pele lays out blocks itself — spacing and arrow routing differ from Mermaid.js
+  - Complex nested blocks get hard to read — keep nesting to one level
+  - Comments must be on their own `%%` line — a trailing `# note` is a parse error
+- **Fallback**: if the layout reads poorly, use `graph TB` + subgraph (Example 5; loses grid semantics but keeps structure)
 
 ## Quote rule for block-beta
 
-block-beta display labels use the `id["Display Label"]` form with quotes inside the brackets — this is the canonical form and all examples in this file already follow that convention. Block IDs (e.g., `CPU`, `Bus`, `A`, `B`) remain unquoted since they are identifiers, not display strings.
+block-beta display labels use the `id["Display Label"]` form with quotes inside the brackets — this is the canonical form and all examples in this file already follow that convention. Block IDs (e.g., `CPU`, `Bus`, `A`, `B`) remain unquoted since they are identifiers, not display strings. CJK labels render: `A["前端"]`.
 
 ## Worked examples
 
@@ -170,9 +168,9 @@ block-beta
     Database["Database"]
 ```
 
-### Example 5: Fallback to graph TB when block-beta rendering is poor
+### Example 5: Fallback to graph TB when the block layout reads poorly
 
-If block-beta doesn't render well in user's Obsidian, degrade to:
+If the block-beta layout is hard to read in the user's Obsidian, degrade to:
 
 ```mermaid
 graph TB
@@ -201,7 +199,7 @@ Loses the grid structure but gains reliable rendering.
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `block` (no `-beta`) | `block-beta` | v11.4.1 uses beta suffix |
+| `block` (no `-beta`) | `block-beta` | Both render in Obsidian 1.15; `-beta` also works in older renderers |
 | Missing `columns N` | `columns 3` (or other number) first | Layout requires column count |
 | Inconsistent row lengths | Match row length to column count (use `space` for empty cells) | Auto-layout gets confused |
 | Spanning span size > remaining columns | `A:3` on a 3-column row at position 1 = OK; at position 2 = error | Can't span beyond remaining columns |
@@ -213,6 +211,6 @@ Loses the grid structure but gains reliable rendering.
 - [ ] `columns N` specified
 - [ ] Row cells add up to column count (using `space` for blanks)
 - [ ] All nested `block:` have matching `end`
-- [ ] Test render in target Obsidian — have graph TB fallback ready if rendering fails
+- [ ] `scripts/validate.sh` passes; graph TB fallback ready if the layout reads poorly
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) and [obsidian-compatibility.md](../obsidian-compatibility.md) for version considerations.

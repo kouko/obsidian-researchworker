@@ -30,13 +30,13 @@ mindmap
     Branch3["Branch3"]
 ```
 
-**Note on bare text nodes**: Mermaid mindmap also accepts unquoted bare text as the default rounded shape. However, for CJK content and content with special characters, wrapping in a quoted shape (e.g., `["..."]`) is more reliable and follows the unified quote rule.
+**Note on bare text nodes**: Mermaid mindmap also accepts unquoted bare text as the default rounded shape, including CJK in Obsidian 1.15. For text with parentheses or other shape characters, wrap it in a quoted shape (e.g., `["..."]`), which also follows the unified quote rule.
 
 ## Configuration options
 
 ### Node shapes
 
-```mermaid
+```text
 mindmap
   root(("Circle"))            # Double parens = circle
     Rectangle["Square"]       # Square brackets = rectangle
@@ -51,7 +51,7 @@ mindmap
 
 **Rule**: use consistent spacing (2 or 4 spaces) for each level. Mixing levels of indentation confuses the parser.
 
-```mermaid
+```text
 mindmap
   root(("Root"))
     Level1a["Level1a"]        # 4 spaces from root
@@ -60,27 +60,18 @@ mindmap
     Level1b["Level1b"]
 ```
 
-### Icons (optional, v10.3+)
+### Icons — do not use in Obsidian
 
-```mermaid
-mindmap
-  root(("Research"))
-    ::icon(fa fa-book)
-    Topic_A["Topic A"]
-      ::icon(fa fa-lightbulb)
-```
+Mermaid.js supports `::icon(fa fa-book)` under a node. In Obsidian 1.15 `fa:` / iconify icons render as an **empty box** (no icon resolver), so leave icons out.
 
-Note: icon rendering depends on FontAwesome availability in Obsidian. May not render in 11.4.1 without additional setup.
+## Obsidian 1.15 compatibility
 
-## Obsidian 11.4.1 compatibility
-
-- **Status**: ✅ Full support — mindmap is stable since Mermaid 9.3
+- **Status**: ✅ Full support
 - **Known quirks**:
-  - FontAwesome icons may not render without additional CSS / plugin setup — avoid icons for portable notes
+  - Icons render as an empty box — do not use them
   - Deep nesting (>4 levels) may overflow Obsidian preview pane; keep to 3 levels for readability
-  - `<br/>` in node text has inconsistent behavior across shapes
-  - Bare (unquoted) text works for simple ASCII but may fail with CJK / special chars — prefer quoted shape wrappers
-- **Workaround**: wrap display text in `["..."]` or `(("..."))` for reliability
+  - Bare (unquoted) CJK text renders; quoted shape wrappers (`["..."]`) are still needed when text contains parentheses or brackets
+  - Comments must be on their own `%%` line — a trailing `# note` is a parse error
 
 ## Worked examples
 

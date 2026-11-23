@@ -40,7 +40,7 @@ Commits happen on the currently-checked-out branch. Default branch is `main`.
 
 ### Branch operations
 
-```mermaid
+```text
 gitGraph
     commit id: "initial"         # Custom commit ID
     branch feature-x             # Create branch
@@ -54,7 +54,7 @@ gitGraph
 
 ### Commit options
 
-```mermaid
+```text
 commit                           # Basic commit
 commit id: "abc123"              # Custom ID
 commit tag: "v1.2.0"             # Tagged commit
@@ -64,7 +64,7 @@ commit type: HIGHLIGHT           # Highlighted (larger circle)
 
 ### Cherry-pick
 
-```mermaid
+```text
 cherry-pick id: "abc123"         # Cherry-pick a commit by ID
 ```
 
@@ -78,20 +78,22 @@ gitGraph
 
 ### Orientation
 
-```mermaid
+```text
 %%{init: { 'gitGraph': {'mainBranchOrder': 0, 'rotateCommitLabel': true}}}%%
-gitGraph LR         # Left-to-right (default)
+gitGraph LR:
 ```
 
-Use `gitGraph TB` for top-to-bottom (but renders as LR in some versions).
+`gitGraph LR:` is left-to-right (the default); use `gitGraph TB:` for top-to-bottom. The colon is required — `gitGraph TB` without it is a parse error.
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — gitGraph is stable across Mermaid versions
+- **Status**: ✅ Full support
+- **Colours**: branch colours follow `themeVariables.git0`–`git7`; other theme settings are ignored
 - **Known quirks**:
   - Complex diagrams with >5 branches get visually crowded — keep simple
   - Very long commit IDs / tags may overflow — keep concise
-  - `gitGraph TB` may still render LR (orientation setting unreliable)
+  - CJK branch names are a syntax error — ASCII branch, CJK in `id:` / `tag:` (see warning below)
+  - Comments must be on their own `%%` line — a trailing `# note` is a parse error
   - Parallel merges from multiple branches can look tangled — render each separately if needed
 - **Workaround**: for complex branching, consider splitting into multiple smaller gitGraph diagrams showing different aspects
 
@@ -106,7 +108,7 @@ Mermaid gitGraph requires quoting on **commit IDs** and **tags** — this is the
 - **Commit type keywords** (`type: REVERSE`, `type: HIGHLIGHT`): enum values — unquoted
 
 > [!warning] Branch names must be ASCII — no CJK
-> A CJK branch name (`branch 開發` / `checkout 開發`) throws `Syntax error in text`, and because branch names are identifiers they **cannot be quoted** to fix it (verified with mermaid-cli, 2026-06). Use an ASCII branch id and put any CJK in a quotable display field instead — commit `id:` and `tag:` accept CJK when quoted (`commit id: "初始化"`, `commit tag: "版本1.0"` both render clean). Same applies to `checkout` / `merge` / `cherry-pick` which reference the branch name.
+> A CJK branch name (`branch 開發` / `checkout 開發`) throws `Syntax error in text`, and because branch names are identifiers they **cannot be quoted** to fix it (verified with Pele 1.13.0, 2026-11-23). Use an ASCII branch id and put any CJK in a quotable display field instead — commit `id:` and `tag:` accept CJK when quoted (`commit id: "初始化"`, `commit tag: "版本1.0"` both render clean). Same applies to `checkout` / `merge` / `cherry-pick` which reference the branch name.
 
 ## Worked examples
 

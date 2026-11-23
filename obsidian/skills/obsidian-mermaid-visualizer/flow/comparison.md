@@ -44,7 +44,7 @@ Inherits flowchart options. Key variations for comparison:
 - **Styling contrast**: differentiate the two sides with contrasting colors (e.g., gray = traditional, blue = modern)
 - **Shared criteria**: use a "Key Differences" subgraph below to show summary
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
 - **Status**: ✅ Full support — uses standard flowchart syntax
 - **Known quirks**: same as flowchart
