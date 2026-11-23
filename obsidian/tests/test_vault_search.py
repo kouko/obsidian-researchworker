@@ -561,7 +561,7 @@ SHIPPED = [p for d in (SKILL.parent, HOOKS_DIR) for p in d.rglob("*") if p.is_fi
 
 def test_inventory_includes_obsidian_knowledge():
     plugin = json.loads((REPO_ROOT / "obsidian/.claude-plugin/plugin.json").read_text())
-    assert plugin["version"] == "4.2.0" and "15" in plugin["description"]
+    assert plugin["version"] == "4.3.0" and "15" in plugin["description"]
 
 
 def test_routing_table_lists_obsidian_knowledge():
