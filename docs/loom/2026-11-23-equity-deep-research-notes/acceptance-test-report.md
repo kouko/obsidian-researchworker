@@ -1,8 +1,8 @@
 # 美股季度深度研究筆記驗收
 
-Tried on 2026-11-23, in a clean copy of the project at 12b37d15b0e5ba4d721535634875d266d3cd3dbb. 操作與結果見 `docs/loom/2026-11-23-equity-deep-research-notes/evidence/acceptance-test-evidence.md`。
+Tried on 2026-11-23, in a clean copy of the project at 3afc20e8f09753166243aadffba77bc59bdc0810. 操作與結果見 `docs/loom/2026-11-23-equity-deep-research-notes/evidence/acceptance-test-evidence.md`。
 
-## 最新實跑（ceb2f9f）
+## 最新實跑與存檔重驗
 
 | 驗收項目 | 實際結果 |
 | --- | --- |
@@ -11,11 +11,13 @@ Tried on 2026-11-23, in a clean copy of the project at 12b37d15b0e5ba4d721535634
 | 綜合判斷 | 三種期限各列風險與失效條件。估值倍數未校準，筆記保留有依據的情境判斷，將投資評級及目標價列為證據不足。 |
 | 存檔、更新與接續 | 最新七份筆記通過獨立季度資料夾讀回。前一輪同季修正保留路徑與修訂紀錄。另一份隔離副本實際發布 Q3 財務檢查並採用 Q2 版本，68 個 Q2 檔案保持一致。 |
 | 套件測試 | 用原定 uv 指令重跑兩套件，495 項通過。 |
-| 交付 | 本機功能版本 ceb2f9f。遠端 PR #29 仍開啟，尚指向 cfbdc143。最新版本交付與收尾審查待完成。 |
+| 交付 | 本機功能版本 3afc20e。遠端 PR #29 仍開啟，尚指向 cfbdc143。最新版本交付與收尾審查待完成。 |
+
+七份報告原先由 ceb2f9f 產出。這次在 3afc20e 的全新隔離副本，以同一批公開證據和原稿重跑正式存檔、九筆來源擷取、七份報告讀回及連結檢查。另確認較早擷取的 Trading 212 來源跨季後能從正文開啟原件。重驗紀錄在 `/private/tmp/equity-acceptance-3afc20e/replay.log`。
 
 詳細命令與研究限制見同目錄的 `evidence/acceptance-test-evidence.md`。完整七份產出位於 `/private/tmp/equity-acceptance-ceb2f9f/`。跨季測試在 `/private/tmp/equity-q3-managed-cb64f15/`。
 
-## 逐項驗收
+## 較早一輪的逐項驗收
 
 | # | 你要求的結果 | 判定 | 實際結果 | 重測 |
 |---|---|---|---|---|
