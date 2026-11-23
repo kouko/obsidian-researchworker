@@ -1,6 +1,6 @@
 # Technical analysis research note — plan
-intent: 2026-11-23-technical-analysis-research-note-quality@a587bc5
-spec: docs/loom/2026-11-23-technical-analysis-research-note-quality/spec.md@fc79a5c
+intent: 2026-11-23-technical-analysis-research-note-quality@d803142
+spec: docs/loom/2026-11-23-technical-analysis-research-note-quality/spec.md@f678a8e
 charter: 1.1
 
 ## Task DAG
