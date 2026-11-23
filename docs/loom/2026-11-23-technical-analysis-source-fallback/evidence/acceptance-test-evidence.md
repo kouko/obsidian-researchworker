@@ -2,6 +2,21 @@
 
 Tried on 2026-11-23 at 0f5eb7cb562468750af269aa6f6d099931f731cf. The README local marketplace path resolved to the finance package. I compared the clean source export `round2-source/obsidian-finance` with the installed finance package under `round2-home/plugins/cache/obsidian-researchworker` recursively, excluding only generated Python cache files. They matched. Run directory: `/private/tmp/technical-analysis-acceptance-20261123`. Fresh sessions used ephemeral Codex, `gpt-6.2-sol`, workspace-write sandbox, disabled memory, and the isolated installed plugin. See the final re-run below. Sections 1–13 retain the first complete trial on `0363964ba87e672e10d4e982e365c4ae2d92e6e1` for comparison. The initial replay harness `verify-installed.py` ran four separate ephemeral sessions, with public live data enabled for one and deterministic acquisition failure or supplied snapshots for the others.
 
+## Reproduce from a checkout
+
+Run these commands from the repository root.
+
+```sh
+python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider
+python3 -m pytest docs/loom/2026-11-23-technical-analysis-source-fallback/evidence/probes/test_flat_pattern_break_not_inside_range.py -q -p no:cacheprovider
+```
+
+The package suite covers snapshot timing, chart patterns, reports and note publication. The independent test covers four false-break cases around the observed horizontal boundary. To replay an eligible snapshot, run `python3 obsidian-finance/skills/technical-analysis/scripts/report.py SNAPSHOT.json --cutoff ISO_TIMESTAMP` with the original offset-aware cutoff.
+
+The recorded AAPL replay used 501 daily bars and reproduced the 342.56 close, 1.69× volume ratio and sideways/up/up conditional directions. A controlled acquisition outage exercised the local fallback, and the saved snapshot reproduced that calculation. A fixed outside opinion remained attributed commentary. The live reply omitted the explicit provider version, which was recorded in the snapshot.
+
+The historical transcript and snapshot paths below refer to the original isolated environment. Those raw files are retained locally. The automated checks use repository fixtures.
+
 ## 1. Reproducible current analysis
 
 - How tried: `verified-live.jsonl` captured the installed skill's genuine `uv run` provider call, nonempty-file and ticker validation, and installed `report.py` output. I separately ran the installed `python3 report.py /private/tmp/technical-analysis.xvAplNdz/daily.json` and captured stdout at `/private/tmp/ta-acceptance-independent-live.md`.
