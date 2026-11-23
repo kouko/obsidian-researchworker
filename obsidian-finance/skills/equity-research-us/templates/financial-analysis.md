@@ -11,14 +11,30 @@ status: ${status_yaml}
 
 # ${title}
 
-## Findings
+## Research question
+
+${research_question}
+
+## Conclusion
 
 ${findings}
 
-## Source and comparison basis
+## Comparable periods and metrics
+
+${comparable_metrics}
+
+## Earnings and cash reconciliation
+
+${earnings_and_cash_reconciliation}
+
+## Liquidity and financing
+
+${liquidity_and_financing}
+
+## Sources and comparison basis
 
 ${source_and_comparison}
 
-## Unresolved work
+## Unresolved checks and impact
 
 ${unresolved}

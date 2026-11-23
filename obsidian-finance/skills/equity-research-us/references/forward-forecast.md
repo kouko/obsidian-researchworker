@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Present management guidance separately from your own forecast. For each supported scenario, show the horizon, assumptions, effects on the target metrics, and observable conditions that would change it. Compare a genuinely prior forecast with actuals where eligible. When only qualitative scenarios can be supported, state which inputs prevent a numeric range or a forecast-error calculation.
+
 ## Research questions
 
 What paths could the business take from the information available at this

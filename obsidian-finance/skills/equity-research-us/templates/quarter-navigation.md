@@ -10,6 +10,8 @@ fiscal_quarter: ${fiscal_quarter_yaml}
 
 ## Saved research
 
+Use these links to find the notes and evidence gaps for this fiscal quarter.
+
 ${review_links}
 
 ## Supplementary notes

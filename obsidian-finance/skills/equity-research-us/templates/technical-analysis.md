@@ -11,14 +11,30 @@ status: ${status_yaml}
 
 # ${title}
 
-## Price and volume evidence
+## Research question
+
+${research_question}
+
+## Conclusion
+
+${conclusion}
+
+## Price and volume basis
 
 ${price_and_volume}
 
-## Trend, levels and valuation context
+## Trend, levels and invalidation
 
 ${trend_and_context}
 
-## Signal limits and invalidation conditions
+## Comparison with fair value
+
+${valuation_comparison}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
 
 ${signal_limits}

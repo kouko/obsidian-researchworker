@@ -96,6 +96,24 @@ def test_role_template_rejects_invalid_obsidian_values(role, property_edit):
         codec.parse_note(note.replace(*property_edit, 1), role)
 
 
+@pytest.mark.parametrize(("role", "checkpoints"), [
+    ("financial-analysis", ("Comparable periods and metrics", "Earnings and cash reconciliation",
+                            "Liquidity and financing")),
+    ("operating-analysis", ("Operating driver comparison", "Durability and competing explanations")),
+    ("industry-and-competition", ("Independent market and peer comparison", "Competitive position and counterevidence")),
+    ("forward-forecast", ("Management guidance", "Analyst scenarios and assumptions", "Prior forecast reconciliation")),
+    ("valuation-and-risk", ("Model and dated inputs", "Fair-value range and sensitivity", "Risk and observable triggers")),
+    ("technical-analysis", ("Price and volume basis", "Trend, levels and invalidation", "Comparison with fair value")),
+    ("synthesis", ("Material changes", "Thesis and counterevidence", "Short-, medium- and long-term outlook and recommendations")),
+])
+def test_analysis_template_exposes_material_checks_as_separate_sections(role, checkpoints):
+    note = _render(role, load()._markdown)
+    sections = re.findall(r"(?m)^## (.+)$", note)
+    assert sections[:2] == ["Research question", "Conclusion"]
+    assert sections[2:2 + len(checkpoints)] == list(checkpoints)
+    assert sections[-2:] == ["Sources and comparison basis", "Unresolved checks and impact"]
+
+
 def test_review_render_round_trips_shared_source_data():
     shared = {"value": 124, "unit": "USD"}
     review = dict(id="r1", cutoff="2024-08-31T23:59:59+00:00", publication={"complete": False},
@@ -103,3 +121,79 @@ def test_review_render_round_trips_shared_source_data():
     markdown = load()._markdown
     _, restored = markdown.record(markdown.render_review("aapl", "2024Q3", review), "review")
     assert restored == review
+
+
+def test_generated_overview_exposes_changes_and_gaps_before_record():
+    codec = load()._markdown
+    review = {
+        "id": "q2-a", "cutoff": CUTOFF, "publication": {"complete": False},
+        "research": {
+            "changes": "Higher sales and slower cash conversion <details>",
+            "gaps": ["Peer comparison still pending"],
+        },
+    }
+    note = codec.render_quarter_overview("aapl", "2024Q2", review, "Quarter results",
+                                         [("Financial Analysis", "financial%20analysis.md")])
+    visible = note.split("## Research record")[0]
+    assert "Higher sales and slower cash conversion &lt;details&gt;" in visible
+    assert "Peer comparison still pending" in visible
+    assert "[Financial Analysis](financial%20analysis.md)" in visible
+    assert codec.record(note, "quarter-overview")[1] == review
+
+
+@pytest.mark.parametrize("role, record, heading, link", [
+    ("source", {"id": "filing", "identity": "v1", "raw_ref": "data/raw/filing.html"},
+     "Original and applicability", "../raw/filing.html"),
+    ("method", {"id": "comparison", "identity": "v1", "content_ref": "data/materials/method.txt"},
+     "Method and limits", "../materials/method.txt"),
+])
+def test_captured_registration_exposes_evidence_before_record(role, record, heading, link):
+    codec = load()._markdown
+    note = codec.render_registration("aapl", role, record)
+    visible = note.split("## Research record")[0]
+    assert heading in visible and link in visible and "## Limits" in visible
+    assert codec.record(note, role + "-registration")[1] == record
+
+
+@pytest.mark.parametrize(("destination", "rendered"), [
+    ("https://www.federalreserve.gov/example.htm#table", "https://www.federalreserve.gov/example.htm#table"),
+    ('https://example.org/report.pdf "Report"', "https://example.org/report.pdf"),
+    ("<https://example.org/report.pdf#page=2>", "https://example.org/report.pdf#page=2"),
+    ("https://example.org/Company_(inc)", "<https://example.org/Company_(inc)>"),
+])
+def test_portable_source_context_retains_public_links_on_recapture(destination, rendered):
+    codec = load()._markdown
+    authored = Template((TEMPLATES / "source-registration.md").read_text()).substitute(
+        SampleValues(VALUES, source_link_and_basis=(
+            f"[Federal Reserve]({destination}) "
+            "and [local notes](../notes.md)."
+        )),
+    )
+    record = {"id": "fed", "identity": "v1", "raw_ref": "data/raw/source.txt"}
+    context = codec.registration_context(authored, "source-registration", captured=False)
+    for _ in range(2):
+        captured = codec.render_registration("aapl", "source", record, narrative=context)
+        assert f"[Federal Reserve]({rendered})" in captured
+        assert "and local notes." in captured
+        assert "../notes.md" not in captured
+        context = codec.registration_context(captured, "source-registration", captured=True)
+
+
+def test_synthesis_template_gives_each_horizon_an_outlook_and_a_recommendation():
+    template = Template((TEMPLATES / "synthesis.md").read_text())
+    horizons = ("short", "medium", "long")
+    values = SampleValues(VALUES, **{
+        f"{horizon}_{field}": f"{horizon} {field}"
+        for horizon in horizons
+        for field in ("window", "outlook", "recommendation", "basis")
+    })
+    for horizon in horizons:
+        values[f"{horizon}_reassessment"] = f"| {horizon} condition | Reassess outlook | Source note |"
+    body = template.substitute(values)
+    for horizon in horizons:
+        section = body.split(f"### {horizon.title()} term\n", 1)[1].split("\n#", 1)[0]
+        assert f"| Outlook | {horizon} outlook |" in section
+        assert f"| Investment recommendation | {horizon} recommendation |" in section
+        assert f"**Basis and counterevidence**\n\n{horizon} basis" in section
+        assert "| Reassessment condition | Effect on judgment or action | Source |" in section
+        assert f"| {horizon} condition | Reassess outlook | Source note |" in section

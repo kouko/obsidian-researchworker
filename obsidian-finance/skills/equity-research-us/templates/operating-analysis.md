@@ -11,14 +11,26 @@ status: ${status_yaml}
 
 # ${title}
 
-## Products, segments and strategy
+## Research question
 
-${product_and_segment_changes}
+${research_question}
 
-## Volume, price and mix
+## Conclusion
+
+${conclusion}
+
+## Operating driver comparison
 
 ${operating_drivers}
 
-## Operating evidence and uncertainties
+## Durability and competing explanations
 
 ${operating_evidence_and_gaps}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
+
+${unresolved}

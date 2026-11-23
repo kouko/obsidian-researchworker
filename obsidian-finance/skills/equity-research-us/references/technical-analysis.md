@@ -2,6 +2,10 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+State the eligible price and volume date range, exchange and split adjustment basis. Give evidence and limits for the material trend, levels and invalidation signal. Where a consistent data series is unavailable, specify the missing observations and which signals cannot be assessed. Distinguish price action from comparison against independently established value.
+
 ## Research questions
 
 What do the eligible trading data show about trend, momentum, trading activity

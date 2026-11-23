@@ -11,14 +11,80 @@ status: ${status_yaml}
 
 # ${title}
 
-## Investment thesis and counterevidence
+## Research question
 
+${research_question}
+
+## Conclusion
+
+${conclusion}
+
+## Material changes
+
+| Indicator | Prior period or baseline | Current period or change | Implication and source |
+| --- | --- | --- | --- |
+${material_changes}
+
+## Thesis and counterevidence
+
+| Thesis | Supporting evidence | Counterevidence or limits | Current judgment |
+| --- | --- | --- | --- |
 ${thesis_and_counterevidence}
 
-## Short-, medium- and long-term judgments
+## Short-, medium- and long-term outlook and recommendations
 
-${conditional_horizons}
+### Short term
 
-## What changed and what remains pending
+| Item | Assessment |
+| --- | --- |
+| Dates | ${short_window} |
+| Outlook | ${short_outlook} |
+| Investment recommendation | ${short_recommendation} |
+
+**Basis and counterevidence**
+
+${short_basis}
+
+| Reassessment condition | Effect on judgment or action | Source |
+| --- | --- | --- |
+${short_reassessment}
+
+### Medium term
+
+| Item | Assessment |
+| --- | --- |
+| Dates | ${medium_window} |
+| Outlook | ${medium_outlook} |
+| Investment recommendation | ${medium_recommendation} |
+
+**Basis and counterevidence**
+
+${medium_basis}
+
+| Reassessment condition | Effect on judgment or action | Source |
+| --- | --- | --- |
+${medium_reassessment}
+
+### Long term
+
+| Item | Assessment |
+| --- | --- |
+| Dates | ${long_window} |
+| Outlook | ${long_outlook} |
+| Investment recommendation | ${long_recommendation} |
+
+**Basis and counterevidence**
+
+${long_basis}
+
+| Reassessment condition | Effect on judgment or action | Source |
+| --- | --- | --- |
+${long_reassessment}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
 
 ${changes_and_gaps}
