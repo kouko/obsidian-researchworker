@@ -39,7 +39,7 @@ Inherits all flowchart options (see [flowchart.md § Configuration options](flow
 ## Obsidian 1.15 compatibility
 
 - **Status**: ✅ Full support — built on flowchart
-- **Known quirks**: same as flowchart (see [flowchart.md § Obsidian compatibility](flowchart.md))
+- **Known quirks**: same as flowchart (see [flowchart.md § Obsidian 1.15 compatibility](flowchart.md#obsidian-115-compatibility))
 - **Workaround**: none needed
 
 ## Worked examples
