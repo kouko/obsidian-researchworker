@@ -279,3 +279,46 @@ def test_pattern_keeps_meaningful_anchors_through_noise_and_convergence(analyzer
     match = pattern_match(medium, kind)
     assert [anchor["date"] for anchor in match["anchors"]] == [bars[index]["date"] for index in anchor_offsets]
     assert match["state"] == "candidate"
+
+
+@pytest.mark.parametrize("release,anchor_index,known_on,first_break", [
+    ("2024-03-04T22:00:00Z", -1, "2024-03-04", "2024-03-05"),
+    ("2024-03-04T01:00:00Z", 0, "2024-03-03", "2024-03-04"),
+])
+def test_delayed_daily_bar_cannot_backdate_pattern_confirmation(
+    analyzer, monkeypatch, release, anchor_index, known_on, first_break,
+):
+    monkeypatch.syspath_prepend(str(Path(analyzer.__file__).parent))
+    from report import render_report
+    from snapshot import validate_snapshot
+
+    local, anchors = pattern_snapshot([110, 90, 111])
+    anchors[anchor_index]["available_at"] = release
+    set_price(local["bars"][-1], 70)
+    follow_up = snapshot(start="2024-03-04", stop="2024-03-05")["bars"]
+    for bar in follow_up:
+        set_price(bar, 70)
+    local.update(evidence="Synthetic publication record", available_at="2024-03-04T22:00:00Z")
+    local["bars"].append(follow_up[0])
+
+    def replay(cutoff):
+        validated = validate_snapshot(local, f"{cutoff}T23:00:00Z")
+        return analyzer.analyze(validated)
+
+    report = replay("2024-03-04")
+    pattern = pattern_match(report["horizons"][0], "double_top")
+    assert pattern["known_on"] == known_on
+    assert pattern["anchors"][anchor_index]["confirmed_on"] == known_on
+    assert pattern["known_at"] in render_report(report)
+    if first_break == "2024-03-05":
+        assert pattern["state"] == "candidate"
+        assert pattern["confirmation"] is None
+    local["bars"].append(follow_up[1])
+    local["available_at"] = "2024-03-05T22:00:00Z"
+    follow_up[1]["available_at"] = local["available_at"]
+    report = replay("2024-03-05")
+    confirmed = pattern_match(report["horizons"][0], "double_top")
+    assert confirmed["confirmation"]["date"] == first_break
+    if first_break == "2024-03-05":
+        assert confirmed["confirmation"]["known_at"] == "2024-03-05T17:00:00-05:00"
+        assert "Evidence time 2024-03-05T17:00:00-05:00." in render_report(report)

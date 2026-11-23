@@ -31,7 +31,7 @@ def _render_patterns(patterns):
     lines = ["- Daily chart patterns:"]
     for match in patterns["matches"]:
         title = match["kind"].replace("_", " ").capitalize()
-        lines.append(f"  - **{title} — {match['state']}** (knowable on {match['known_on']}).")
+        lines.append(f"  - **{title} — {match['state']}** (earliest evidence at {match['known_at']}).")
         anchors = "; ".join(
             f"{anchor['kind']} {anchor['price']:.6g} on {anchor['date']} (known on {anchor['confirmed_on']})"
             for anchor in match["anchors"]
@@ -54,7 +54,7 @@ def _render_patterns(patterns):
             direction = f" ({event['direction']})" if "direction" in event else ""
             lines.append(
                 f"    - {label.capitalize()}{direction} on {event['date']}: "
-                f"close {event['close']:.6g}{level}, volume {volume}{reason}."
+                f"close {event['close']:.6g}{level}, volume {volume}{reason}. Evidence time {event['known_at']}."
             )
     return lines
 
@@ -110,6 +110,11 @@ def render_report(report, *, chart=None, source=None):
     if report.get("settings"):
         settings = json.dumps(report["settings"], sort_keys=True)
         lines.append(f"- Analysis settings: `{_cell(settings)}`")
+    if any("patterns" in horizon for horizon in report["horizons"]):
+        lines.append(
+            "- Pattern timing uses explicit bar publication times when supplied. Otherwise it reconstructs "
+            "timing from session closes. Snapshot availability is recorded separately above."
+        )
     lines.extend(f"- Excluded: {_cell(item)}" for item in report["exclusions"])
     lines.extend(f"- Fetch exclusion: {_cell(item)}" for item in report.get("fetch_exclusions", []))
     return "\n".join(lines) + "\n"

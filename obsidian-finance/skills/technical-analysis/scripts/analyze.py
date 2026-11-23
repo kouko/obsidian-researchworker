@@ -2,6 +2,7 @@
 """Deterministic technical analysis of a validated, completed-session snapshot."""
 
 import argparse
+from bisect import bisect_left
 from calendar import monthrange
 from datetime import date, datetime, timedelta
 from itertools import groupby, pairwise
@@ -203,25 +204,29 @@ def _line_at(line, index):
     return level + (index - origin) * slope
 
 
-def _pattern_match(geometry, anchors, bars, indices):
+def _pattern_match(geometry, anchors, bars, indices, close_times, available_times, timezone):
     kind, directions, upper_line, lower_line = geometry
-    known_on = anchors[-1]["confirmed_on"]
-    first_index = indices[known_on]
+    known_at = max(_time(anchor["known_at"]) for anchor in anchors)
+    first_index = bisect_left(close_times, known_at)
+    formation_index = min(first_index, len(bars) - 1)
     triangle = kind.endswith("_triangle")
-    upper = _line_at(upper_line, first_index)
-    lower = _line_at(lower_line, first_index)
+    upper = _line_at(upper_line, formation_index)
+    lower = _line_at(lower_line, formation_index)
     if upper <= lower:
         # By the time the pivots were knowable the shape was already closed.
         return None
     confirmation = invalidation = None
     for index in range(first_index, len(bars)):
+        if confirmation and close_times[index] < _time(confirmation["known_at"]):
+            continue
         bar = bars[index]
         upper = _line_at(upper_line, index)
         lower = _line_at(lower_line, index)
         close = bar["close"]
         upper_trigger = upper * (1 + PATTERN_BREAK_BUFFER)
         lower_trigger = lower * (1 - PATTERN_BREAK_BUFFER)
-        event = {"date": bar["date"], "close": close, "volume": bar["volume"]}
+        event = {"date": bar["date"], "close": close, "volume": bar["volume"],
+                 "known_at": available_times[index].astimezone(timezone).isoformat()}
         if confirmation:
             up = confirmation["direction"] == "up"
             if (close < upper if up else close > lower):
@@ -258,7 +263,8 @@ def _pattern_match(geometry, anchors, bars, indices):
     return {
         "kind": kind,
         "state": "invalidated" if invalidation else "confirmed" if confirmation else "candidate",
-        "anchors": anchors, "known_on": known_on,
+        "anchors": anchors, "known_on": known_at.astimezone(timezone).date().isoformat(),
+        "known_at": known_at.astimezone(timezone).isoformat(),
         "confirmation": confirmation, "invalidation": invalidation,
         "confirmation_condition": confirmation_condition, "invalidation_condition": invalidation_condition,
         "boundaries": {
@@ -268,24 +274,38 @@ def _pattern_match(geometry, anchors, bars, indices):
     }
 
 
-def _daily_patterns(bars, points, coverage_gap):
+def _daily_patterns(bars, points, coverage_gap, timezone):
     if coverage_gap or len(bars) < PATTERN_MIN_SESSIONS:
         reason = coverage_gap or f"Requires at least {PATTERN_MIN_SESSIONS} completed daily sessions."
         return {"status": "insufficient", "reason": reason, "matches": []}
     indices = {bar["date"]: index for index, bar in enumerate(bars)}
+    close_times = [_time(bar["session_close"]) for bar in bars]
+    # Capture time gates the snapshot as a whole. Only an explicit timestamp
+    # supplies evidence that an individual trading bar appeared after its close.
+    available_times = [
+        _time(bar["available_at"]) if bar.get("availability_explicit") else close
+        for bar, close in zip(bars, close_times)
+    ]
+    dated_points = []
+    for point in points:
+        center = indices[point["date"]]
+        window = available_times[center - SWING_RADIUS:center + SWING_RADIUS + 1]
+        known_at = max(window).astimezone(timezone)
+        dated_points.append({**point, "confirmed_on": known_at.date().isoformat(),
+                             "known_at": known_at.isoformat()})
     latest = {}
     # A second pass can bridge shallow counter-swings. Keep the raw pivots
     # available so that a close pair of late triangle touches can still qualify.
     for reversal in (0, PATTERN_LEVEL_TOLERANCE):
-        for anchors in _pattern_candidates(points, min_reversal=reversal):
+        for anchors in _pattern_candidates(dated_points, min_reversal=reversal):
             geometry = _pattern_geometry(anchors, indices)
             if geometry is None:
                 continue
-            match = _pattern_match(geometry, anchors, bars, indices)
+            match = _pattern_match(geometry, anchors, bars, indices, close_times, available_times, timezone)
             if match is None:
                 continue
             prior = latest.get(match["kind"])
-            if prior is None or match["known_on"] >= prior["known_on"]:
+            if prior is None or _time(match["known_at"]) >= _time(prior["known_at"]):
                 latest[match["kind"]] = match
     return {"status": "evaluated" if latest else "no_match", "matches": list(latest.values())}
 
@@ -346,7 +366,7 @@ def _conditions(trend, support, resistance):
             "A close outside the range would shift attention to a directional move on that side.")
 
 
-def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions):
+def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions, timezone):
     name, length, weeks, months, average_period = settings
     averages, previous, volume_ratio, metric_ranges = indicators
     start = _offset_day(cutoff_day, -weeks, -months)
@@ -404,14 +424,15 @@ def _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions
         "levels": {"support": support, "resistance": resistance}, "swings": points,
         "structure_frequency": frequency, "evidence": evidence, "limitations": limitations,
         "trigger": trigger, "invalidation": invalidation, "alternative": alternative,
-        "patterns": _daily_patterns(observed, daily_points, coverage_gap),
+        "patterns": _daily_patterns(observed, daily_points, coverage_gap, timezone),
     }
 
 
 def analyze(snapshot):
     """Return analysis for an already validated snapshot, without network or writes."""
     cutoff = _time(snapshot["cutoff"])
-    cutoff_day = cutoff.astimezone(ZoneInfo(snapshot["timezone"])).date()
+    timezone = ZoneInfo(snapshot["timezone"])
+    cutoff_day = cutoff.astimezone(timezone).date()
     bars = [bar for bar in snapshot["bars"] if _time(bar["session_close"]) <= cutoff]
     missing_sessions = set(snapshot.get("missing_completed_sessions", ()))
     legacy_suffix = ": completed exchange session missing from provider data."
@@ -435,7 +456,7 @@ def analyze(snapshot):
                      "pattern_break_buffer": PATTERN_BREAK_BUFFER,
                      "pattern_min_sessions": PATTERN_MIN_SESSIONS},
         "horizons": [
-            _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions)
+            _horizon(bars, cutoff_day, settings, indicators, stale_gap, missing_sessions, timezone)
             for settings in HORIZONS
         ],
     }

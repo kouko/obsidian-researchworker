@@ -72,6 +72,8 @@ def _read_bar(bar, timezone, snapshot_available_at):
         **{field: _number(bar, field) for field in ("open", "high", "low", "close")},
         "volume": _number(bar, "volume", allow_zero=True, allow_missing=True),
     }
+    if "available_at" in bar:
+        normalized["availability_explicit"] = True
     if not (
         normalized["low"] <= min(normalized["open"], normalized["close"])
         <= max(normalized["open"], normalized["close"]) <= normalized["high"]
