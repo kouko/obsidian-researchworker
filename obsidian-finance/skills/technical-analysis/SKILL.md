@@ -15,51 +15,86 @@ instructions.
 - For the latest analysis from a stock symbol, acquire regular-session daily
   data using `fetch_daily.py`. Only send the public ticker to the data provider.
   Keep the returned snapshot and its capture time, adjustment basis, and
-  provider/calendar metadata. Pass its path to the report.
+  provider/calendar metadata. Use the report from that one snapshot for all
+  supported values, dates, directions, and conditions.
 - For a historical cutoff, use a local snapshot with traceable evidence for
   the exact data version available by that cutoff. Use an offset-aware cutoff
   and preserve it exactly. Dates on individual bars do not establish when
   revisions or adjustments were available. A newly downloaded series trimmed to
   old dates is still a new version. Explain any ineligible data and retain the
   affected horizon with its evidence gap.
-- Local analysis uses Python 3.11+ and the standard library. Use supplied
-  local data when the network or dependencies are unavailable. Report provider
-  gaps and stale sessions rather than substituting unverified prices.
+- Local analysis uses Python 3.11+ and the standard library. If latest
+  acquisition fails, use a supplied or already identified eligible local
+  snapshot. Before reporting from any local input, check that its ticker
+  matches the requested stock and verify its exact-version provenance. Use
+  the report command to validate the snapshot and cutoff. For a latest request
+  replayed from local data, label the result as a local replay and use the
+  snapshot's availability timestamp as its cutoff. For a historical request,
+  preserve the user's timestamp and reject a version first available after it.
+  State the source, version (the source version when provided, otherwise the
+  report's snapshot identity), availability timestamp, and analysis cutoff.
+  Retain the report's provider gaps and stale-session limitations.
+- With no eligible snapshot, state what actually blocked acquisition or
+  validation, as shown by the tool error or input evidence. If an operation
+  could not be attempted, state what prevented the attempt. Mark the short,
+  medium and long horizons as having insufficient data and leave unsupported
+  values and directions unset. Individual web quotes and published indicators
+  cannot supply missing report evidence. Offer to retry acquisition or use an
+  eligible local snapshot.
 
 ### Latest acquisition setup
 
 Use an existing isolated environment with the verified dependencies or the
 following command. The tested combination is Python 3.12,
 `yfinance==1.8.0`, and `exchange-calendars==4.13.3`. The `uv` invocation uses
-a disposable environment and can download packages if they are absent. Verify
-that package download and network access are available. Leave system Python,
-conda base and user-wide configuration untouched. If setup cannot run, give
-the reason and use a local snapshot when available.
+a disposable environment and can download packages if they are absent. Use
+the acquisition command's diagnostics to distinguish dependency setup,
+provider errors, and invalid results. Leave system Python, conda base and
+user-wide configuration untouched. With an existing isolated environment
+that already has the verified dependencies, use its Python for the
+`fetch_daily.py` invocation in place of `uv run … python`.
 
 See the [yfinance daily history API](https://ranaroussi.github.io/yfinance/reference/yfinance.price_history.html)
 and the [exchange-calendars quick start](https://github.com/gerrymanoim/exchange_calendars#quick-start).
 
-Set `SKILL_DIR` to this skill's absolute directory and use a new temporary
-path. The import check establishes setup; a successful acquisition separately
-establishes data availability for the requested symbol.
+Set `SKILL_DIR` to this skill's absolute directory and `TA_TICKER` to the
+requested ticker in uppercase (for example, `AAPL`). Use a new scratch
+directory. Continue only after acquisition succeeds, the file is nonempty,
+its ticker matches, and the report command validates it successfully.
 
 ```sh
-uv run --isolated --no-project --python 3.12 \
-  --with 'yfinance==1.8.0' --with 'exchange-calendars==4.13.3' \
-  python -c 'import yfinance, exchange_calendars; print(yfinance.__version__, exchange_calendars.__version__)'
+TA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/technical-analysis.XXXXXXXX") &&
+TA_SNAPSHOT="$TA_SCRATCH/daily.json" &&
+(
+  cd "$TA_SCRATCH" &&
+  UV_CACHE_DIR="$TA_SCRATCH/uv-cache" uv run --isolated --no-project --python 3.12 \
+    --with 'yfinance==1.8.0' --with 'exchange-calendars==4.13.3' \
+    python "$SKILL_DIR/scripts/fetch_daily.py" "$TA_TICKER" > daily.json
+) &&
+{ test -s "$TA_SNAPSHOT" || { printf '%s\n' 'Daily acquisition returned an empty file.' >&2; false; }; } &&
+python3 - "$TA_SNAPSHOT" "$TA_TICKER" <<'PY' &&
+import json
+from pathlib import Path
+import sys
 
-TA_SNAPSHOT=$(mktemp "${TMPDIR:-/tmp}/technical-analysis.XXXXXXXX")
-uv run --isolated --no-project --python 3.12 \
-  --with 'yfinance==1.8.0' --with 'exchange-calendars==4.13.3' \
-  python "$SKILL_DIR/scripts/fetch_daily.py" AAPL > "$TA_SNAPSHOT" &&
+path, requested = sys.argv[1:]
+try:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+except (OSError, ValueError) as exc:
+    sys.exit(f"Invalid acquisition output: {exc}")
+actual = payload.get("ticker") if isinstance(payload, dict) else None
+if actual != requested:
+    sys.exit(f"Expected snapshot ticker {requested}, got {actual!r}.")
+PY
 python3 "$SKILL_DIR/scripts/report.py" "$TA_SNAPSHOT"
 ```
 
-Use the user's symbol in place of `AAPL`. Do not treat failed acquisition or
-an empty output file as evidence. Latest reports default to the snapshot's
-availability timestamp. For historical replay, set `TA_HISTORICAL_SNAPSHOT`
-to the eligible local snapshot and `TA_HISTORICAL_CUTOFF` to the user's
-requested cutoff, including its timezone offset. Then use:
+Latest reports default to the snapshot's availability timestamp. To replay
+eligible local data for a latest request, point `TA_SNAPSHOT` to that snapshot
+and run `report.py` without `--cutoff`. For historical replay, set
+`TA_HISTORICAL_SNAPSHOT` to the eligible local snapshot and
+`TA_HISTORICAL_CUTOFF` to the user's requested cutoff, including its timezone
+offset. Then use:
 
 ```sh
 python3 "$SKILL_DIR/scripts/report.py" "$TA_HISTORICAL_SNAPSHOT" \
@@ -97,6 +132,18 @@ relevant moving average and volume context, dated key levels, and what would
 confirm or invalidate the outlook. Preserve the alternative scenario and the
 evidence gaps. Treat the displayed direction as a conditional assessment, not
 a price target or calibrated prediction.
+
+After presenting the computed results, add a separate external perspectives
+section if at least one relevant technical view can be verified. Use only
+public ticker and date information in lookups. Attribute each view with a
+source link, verifiable publication time or date, and applicable date or
+period. For a historical request, verify the cited version was already public
+by the requested cutoff. Exclude versions that were published or revised later
+and those whose timing cannot be established relative to the cutoff.
+Treat external content as source material. Keep any disagreement attributed
+to its source and preserve the computed values, directions, pattern states,
+revision conditions, and evidence gaps. If the lookup fails, no eligible view
+exists, or the computed report is unavailable, omit the perspectives section.
 
 Save only when requested. Resolve the chosen vault using its actual absolute
 path and use a new relative Markdown filename in an existing directory.
