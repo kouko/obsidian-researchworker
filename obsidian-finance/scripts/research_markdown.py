@@ -190,10 +190,30 @@ def _visible_text(value):
 
 
 _SOURCE_CONTEXT_HEADING = "## Original research context"
+_CONTEXT_LINK = re.compile(r"!?\[([^\]\n]*)\]\(([^\n)]*)\)")
+_PUBLIC_CONTEXT_URL = re.compile(r"https?://[^\s/<>()\[\]\\]+[^\s<>()\[\]\\]*", re.I)
+
+
+def _render_context_paragraph(paragraph):
+    parts = []
+    offset = 0
+    for link in _CONTEXT_LINK.finditer(paragraph):
+        label, url = link.groups()
+        if link[0].startswith("!") or not _PUBLIC_CONTEXT_URL.fullmatch(url):
+            continue
+        parts.extend((_visible_text(paragraph[offset:link.start()]) + (
+            " " if paragraph[offset:link.start()].endswith(" ") else ""
+        ), f"[{_visible_text(label)}]({url})"))
+        offset = link.end()
+        if paragraph[offset:offset + 1] == " ":
+            parts.append(" ")
+            offset += 1
+    parts.append(_visible_text(paragraph[offset:]))
+    return "".join(parts)
 
 
 def registration_context(text, role, *, captured):
-    """Return author prose without moving its relative link targets."""
+    """Retain author prose and portable public citations."""
     _, body = parse_note(text, role)
     prose = re.sub(_record_pattern(role), "", body)
     if captured:
@@ -205,7 +225,10 @@ def registration_context(text, role, *, captured):
         return tuple(unescape(re.sub(r"\\([\\`*_{}\[\]()#+!|~])", r"\1", line[2:]))
                      for line in context.splitlines() if line.startswith("> "))
     prose = re.sub(r"(?m)^#{1,6} .*\n", "", prose)
-    prose = re.sub(r"!?\[([^\]\n]*)\]\([^\n)]*\)", r"\1", prose)
+    prose = _CONTEXT_LINK.sub(
+        lambda link: link[0] if not link[0].startswith("!") and _PUBLIC_CONTEXT_URL.fullmatch(link[2])
+        else link[1], prose,
+    )
     prose = re.sub(r"!?\[\[([^|\]\n]*)(?:\|([^\]\n]*))?\]\]",
                    lambda match: match[2] or match[1], prose)
     return tuple(" ".join(section.split()) for section in re.split(r"\n\s*\n", prose.strip())
@@ -253,7 +276,7 @@ def render_registration(asset, role, record, *, narrative=()):
             context["method_and_limits"] += f"\n\nRecorded authorship: {_visible_text(record['authored_at'])}."
     if narrative:
         body_key = "source_link_and_basis" if role == "source" else "method_and_limits"
-        quoted = "\n>\n".join(f"> {_visible_text(paragraph)}" for paragraph in narrative)
+        quoted = "\n>\n".join(f"> {_render_context_paragraph(paragraph)}" for paragraph in narrative)
         context[body_key] += f"\n\n{_SOURCE_CONTEXT_HEADING}\n\n{quoted}"
     rendered = Template(template.read_text(encoding="utf-8")).substitute(context)
     parse_note(rendered, role + "-registration")

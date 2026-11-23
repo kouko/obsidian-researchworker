@@ -153,3 +153,21 @@ def test_captured_registration_exposes_evidence_before_record(role, record, head
     visible = note.split("## Research record")[0]
     assert heading in visible and link in visible and "## Limits" in visible
     assert codec.record(note, role + "-registration")[1] == record
+
+
+def test_portable_source_context_retains_public_links_on_recapture():
+    codec = load()._markdown
+    authored = Template((TEMPLATES / "source-registration.md").read_text()).substitute(
+        SampleValues(VALUES, source_link_and_basis=(
+            "[Federal Reserve](https://www.federalreserve.gov/example.htm#table) "
+            "and [local notes](../notes.md)."
+        )),
+    )
+    record = {"id": "fed", "identity": "v1", "raw_ref": "data/raw/source.txt"}
+    context = codec.registration_context(authored, "source-registration", captured=False)
+    for _ in range(2):
+        captured = codec.render_registration("aapl", "source", record, narrative=context)
+        assert "[Federal Reserve](https://www.federalreserve.gov/example.htm#table)" in captured
+        assert "and local notes." in captured
+        assert "../notes.md" not in captured
+        context = codec.registration_context(captured, "source-registration", captured=True)
