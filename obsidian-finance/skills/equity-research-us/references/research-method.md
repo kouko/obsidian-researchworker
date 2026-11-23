@@ -107,15 +107,21 @@ and [V(C)](https://www.cfainstitute.org/standards/professionals/code-ethics-stan
   change the conclusion. Verify the observed period, measurement basis, and
   version available by the cutoff. Reported financial figures use the original
   financial filing when available. Every role can cite eligible public data or
-  viewpoints, including synthesis.
+  viewpoints, including synthesis. A source-registration link should lead to a
+  named table, section, page or dated observation in the original. When only
+  an excerpt or a retrospectively retrieved series is available, state what
+  was retained and which parts of its historical version can be verified.
 - **Independent inquiry.** When the available evidence cannot resolve a
   material issue, seek public sources able to distinguish the leading
   explanations. Check their method, timing, independence and incentives.
   Explain the strongest supporting and contrary evidence and how it bears on
   the conclusion. If the search leaves a gap, state what was checked, which
   conclusion remains pending and what evidence would resolve it.
-- **Reproducibility.** Give inputs, units and method for material comparisons.
-  Separate observed facts, management statements, external opinions and analyst
+- **Reproducibility.** Recompute material ratios, changes and scenario outputs
+  from the displayed inputs before saving. Show original published figures
+  alongside any material differences from rounding or recalculation. Align
+  periods and definitions before ranking peers or benchmarks. Distinguish
+  observed facts, management statements, external opinions and analyst
   assumptions. State material limitations and what would change the finding.
 - **Readback.** Register the exact sources and methods used through the normal
   save path. After saving, read the report and its cited evidence back from
