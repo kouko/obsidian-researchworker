@@ -190,7 +190,8 @@ def test_localized_note_missing_attachment_is_not_published(report, tmp_path):
 
 
 def test_cli_routine_save_omits_snapshot_and_rejects_stale_placeholder(report, tmp_path):
-    report["bars"][0]["session_close"] = "2024-02-29T16:00:00-05:00"
+    report["bars"][0].update(date="2024-02-28", session_close="2024-02-28T16:00:00-05:00")
+    report["evidence"] = "Test capture"
     original = tmp_path / "input.json"
     original.write_text(json.dumps(report))
     markdown = tmp_path / "draft.md"
