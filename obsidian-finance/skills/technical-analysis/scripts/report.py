@@ -23,6 +23,42 @@ def _span(start, end):
     return f"{start} to {end}" if start is not None and end is not None else "Unavailable"
 
 
+def _render_patterns(patterns):
+    if patterns["status"] == "no_match":
+        return ["- Daily chart patterns: no supported pattern matched."]
+    if patterns["status"] == "insufficient":
+        return [f"- Daily chart patterns: insufficient data. {_cell(patterns['reason'])}"]
+    lines = ["- Daily chart patterns:"]
+    for match in patterns["matches"]:
+        title = match["kind"].replace("_", " ").capitalize()
+        lines.append(f"  - **{title} — {match['state']}** (earliest evidence at {match['known_at']}).")
+        anchors = "; ".join(
+            f"{anchor['kind']} {anchor['price']:.6g} on {anchor['date']} (known on {anchor['confirmed_on']})"
+            for anchor in match["anchors"]
+        )
+        lines.append(f"    - Anchors: {anchors}.")
+        boundaries = match["boundaries"]
+        lines.append(
+            f"    - Boundaries on {boundaries['date']}: lower {boundaries['lower']:.6g}, "
+            f"upper {boundaries['upper']:.6g}."
+        )
+        lines.append(f"    - Confirmation condition: {match['confirmation_condition']}")
+        lines.append(f"    - Invalidation condition: {match['invalidation_condition']}")
+        for label in ("confirmation", "invalidation"):
+            event = match[label]
+            if event is None:
+                continue
+            volume = "unavailable" if event["volume"] is None else str(event["volume"])
+            level = "" if event["level"] is None else f", threshold {event['level']:.6g}"
+            reason = f", {event['reason']}" if "reason" in event else ""
+            direction = f" ({event['direction']})" if "direction" in event else ""
+            lines.append(
+                f"    - {label.capitalize()}{direction} on {event['date']}: "
+                f"close {event['close']:.6g}{level}, volume {volume}{reason}. Evidence time {event['known_at']}."
+            )
+    return lines
+
+
 def render_report(report, *, chart=None, source=None):
     """Render the same horizon conclusions in conversation and in a note."""
     lines = [
@@ -58,6 +94,8 @@ def render_report(report, *, chart=None, source=None):
             lines.append(f"- What would change the view: {_cell(horizon['invalidation'])}")
         if horizon.get("alternative"):
             lines.append(f"- Alternative scenario: {_cell(horizon['alternative'])}")
+        if "patterns" in horizon:
+            lines.extend(_render_patterns(horizon["patterns"]))
         lines.extend(f"- Limitation: {_cell(item)}" for item in horizon["limitations"])
     lines.extend([
         "", "## Data and method", "",
@@ -72,6 +110,11 @@ def render_report(report, *, chart=None, source=None):
     if report.get("settings"):
         settings = json.dumps(report["settings"], sort_keys=True)
         lines.append(f"- Analysis settings: `{_cell(settings)}`")
+    if any("patterns" in horizon for horizon in report["horizons"]):
+        lines.append(
+            "- Pattern timing uses explicit bar publication times when supplied. Otherwise it reconstructs "
+            "timing from session closes. Snapshot availability is recorded separately above."
+        )
     lines.extend(f"- Excluded: {_cell(item)}" for item in report["exclusions"])
     lines.extend(f"- Fetch exclusion: {_cell(item)}" for item in report.get("fetch_exclusions", []))
     return "\n".join(lines) + "\n"
