@@ -1,8 +1,28 @@
 # U.S. technical analysis research note — acceptance evidence
 
-Tried on 2026-11-23 at 5cb096ea7546dd13c42fb06a87b874c2eb549611
+Tried on 2026-11-23 at 9262b73f9729b26e9efa90f5b63871f660dfa675
 
-Root: `/private/tmp/ta-note-quality-ab`. All four isolated Codex sessions ran `gpt-6.2-sol` with a natural-language request, read the installed skill, ran the report, published the note, and logged `turn.completed` in their respective `events.jsonl`. The candidate marketplace and plugin were installed in a separate home. I compared its technical-analysis skill directory to the worktree with `diff -qr -x __pycache__` and its `SKILL.md` directly with `git show HEAD:obsidian-finance/skills/technical-analysis/SKILL.md`. Both matched.
+Root: `/private/tmp/ta-note-quality-ab`. The original four isolated Codex sessions ran `gpt-6.2-sol` with a natural-language request, read the installed skill, ran the report, published the note, and logged `turn.completed` in their respective `events.jsonl`. The original candidate was tested at `5cb096ea7546dd13c42fb06a87b874c2eb549611`. The rebased run at the commit above used the same prompt, snapshot bytes and external fixture bytes in a fresh isolated Codex installation under `rebased/home`. Both installed finance packages matched recursively, excluding generated Python caches. The tracked plugin files also matched the original candidate branch tip `7539914`. The warning and limited-evidence cases below are carried over from the original byte-identical package.
+
+## Rerun after updating the base
+
+- The new session completed and created exactly `replay.md`, `replay.chart.svg` and `replay.source.json` in the isolated vault. The new note starts with the historical cutoff, latest completed trading day, short-term sideways result and medium- and long-term upward results. Its table includes all three observation and outlook ranges and their daily close revision conditions. The opening describes the study scope without stating the research question explicitly, whereas the first candidate had an explicit question. Criterion 1 and its corresponding complete-evidence scenario are therefore partly met in this rerun.
+- The note explains the short-term moving-average disagreement, volume context, invalidated rectangle pattern and rising medium- and long-term swing points. It attributes the archived weak-outlook opinion separately without incorporating the embedded false support value.
+- All four contents links match headings. The two attachments and the separately linked test fixture resolve as files. The attached JSON parses to the exact input data. Running the installed report against that attachment and the original cutoff returned byte-for-byte the same output as both original A/B runs. The chart is also byte-for-byte identical to the original candidate. The two focused save-collision tests passed again. Obsidian Reading View was not exercised.
+
+## Reproduce from a checkout
+
+Run these commands from the repository root.
+
+```sh
+python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider
+python3 -m pytest obsidian-finance/tests/test_technical_report.py -q -p no:cacheprovider -k collision
+python3 obsidian-finance/skills/technical-analysis/scripts/report.py SNAPSHOT.json --cutoff ISO_TIMESTAMP
+```
+
+For the third command, supply an eligible snapshot and its original offset-aware cutoff. To check the normal save workflow, install the local finance plugin in an isolated Codex home, start a fresh session in a disposable workspace and ask in natural language for a research note using the chosen snapshot and cutoff. Compare the saved note's links, levels and conditions to the command output. Read the package README for its marketplace entry.
+
+The replay directories and transcripts in this document refer to the local test environment. The historical market snapshot, external fixture and raw transcripts are retained locally.
 
 ## 1. Opening question, conclusion, cutoff, revision conditions and navigation
 
