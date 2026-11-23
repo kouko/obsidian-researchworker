@@ -29,6 +29,13 @@ Wave 2
 - Test: A5 positive: package-suite-passes; boundary: no-stale-11-4-references-outside-changelog.
 - Risk: Preserves existing inventory and viz-guide test coverage; may widen assertions, never narrows. agent-decided, spec REQ-5.
 
+Wave 3
+
+**W3-01 Graduate adversarial probes into package suite**  after: W2-01, W2-02  acceptance: 4
+- Files: obsidian/tests/test_mermaid_validator_fence_forms.py, obsidian/tests/test_mermaid_skill_examples_render.py, docs/loom/2026-11-23-mermaid-skill-for-new-obsidian-engine/evidence/probes/
+- Test: A4 positive: fence-forms-detected (tilde, callout); negative: unclosed-fence-fails.
+- Risk: Probes caught defects, so they move into the every-change suite per review.probe-graduation; preserves their cases unchanged. agent-decided.
+
 ## Simplicity check
 - Single validator replacing mermaid-cli instead of two validators — taken
 - Validator-only example checks with one device spot check — taken
