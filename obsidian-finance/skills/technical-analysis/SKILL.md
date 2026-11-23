@@ -138,6 +138,17 @@ confirm or invalidate the outlook. Preserve the alternative scenario and the
 evidence gaps. Treat the displayed direction as a conditional assessment, not
 a price target or calibrated prediction.
 
+Include the report's daily chart patterns under each horizon in the reply and
+in any saved note. For every reported match, show the pattern name and state
+(candidate, confirmed, or invalidated), the date the pattern became knowable,
+and the dated anchor prices with the date each anchor became knowable. Include
+the dated boundary levels, the exact confirmation and invalidation conditions,
+and any reported confirmation or invalidation event with its date, close,
+threshold, and volume. Keep the evidence tied to its horizon even when a
+pattern appears in more than one horizon. Where the report has no match, say
+that no supported pattern matched. Where it could not assess patterns, say
+that the evidence was insufficient and give the report's reason.
+
 After presenting the computed results, add a separate external perspectives
 section if at least one relevant technical view can be verified. Use only
 public ticker and date information in lookups. Attribute each view with a
