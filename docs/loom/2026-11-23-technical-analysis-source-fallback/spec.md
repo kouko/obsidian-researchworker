@@ -1,6 +1,6 @@
 # Stock technical analysis data availability — spec
 intent: 2026-11-23-technical-analysis-source-fallback@9bb6541
-confirmed-behavior: 2026-11-23 @8bd3ea6
+confirmed-behavior: 2026-11-23 @b8ab1f4
 pre-build-review: required — cutoff-sensitive pattern decisions and third-party evidence affect the skill's public analysis contract
 
 ## Requirements
@@ -15,7 +15,7 @@ REQ-3 — Explicit lack of evidence
   WHEN no eligible snapshot is available, the skill shall state the observable reason, mark all three horizons as having insufficient data, and leave unsupported values and directions unset → Acceptance #3
 
 REQ-4 — Separately attributed external perspectives
-  WHEN computed analysis is available and a verifiable relevant external technical perspective exists, the skill shall place that attributed perspective after the computed results, with its applicable date or period and with historical commentary restricted to publications verifiably available by the requested cutoff → Acceptance #4
+  WHEN computed analysis is available and a verifiable relevant external technical perspective exists, the skill shall place that attributed perspective after the computed results, with its applicable date or period, without changing computed metrics, directions, revision conditions, or evidence gaps, and with historical commentary restricted to publications verifiably available by the requested cutoff → Acceptance #4
 
 REQ-5 — Reproducible chart patterns
   WHEN a horizon has eligible price and volume history, the skill shall evaluate double tops and bottoms, head-and-shoulders tops and bottoms, rectangular ranges, and ascending, descending, and symmetrical triangles, showing dated price anchors and confirmation or invalidation conditions for identified patterns and distinguishing no match from insufficient evidence → Acceptance #5
