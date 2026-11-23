@@ -192,7 +192,7 @@ Write inline (without invoking the visualizer) only when **all** of the followin
 
 - Clearly a `flowchart` / `graph` type — simple directional flow or decision tree
 - ≤ 6 nodes, no subgraphs
-- Special characters (`"`, `()`, `#`) in labels have already been substituted per Rule 6 of mermaid-quirks — `()` → `「」`, `"` → `『』`, `#` → `&#35;`
+- Special characters in labels follow Rule 6 of mermaid-quirks — labels with `()` are quoted, `"` → `『』`, `#` → `&#35;`
 - Already read [mermaid-quirks.md](references/mermaid-quirks.md) and the pre-flight checklist is complete
 
 When a note carries multiple diagrams, **reuse one semantic `classDef` palette across all of them** (same role → same colour note-wide) instead of inventing colours per diagram.

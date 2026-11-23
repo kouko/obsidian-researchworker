@@ -1,7 +1,7 @@
 ---
 name: obsidian-mermaid-visualizer
 description: |
-  Create Mermaid diagrams — flowcharts, sequence/state/class/ER/C4/git, bar/line/pie/quadrant/radar/sankey/treemap/venn, Gantt/timeline, architecture/block, mindmaps, kanban, journeys, fishbone (Obsidian + any Mermaid renderer). Use to visualize workflows, data trends, architecture, or timelines.
+  Create Mermaid diagrams — flowcharts, sequence/state/class/ER/C4/git, bar/line/pie/quadrant/radar/sankey/treemap/venn, Gantt/timeline, architecture/block/packet/requirement/wardley/tree view, mindmaps, kanban, journeys, fishbone, swimlanes, use cases (Obsidian + any Mermaid renderer). Use to visualize workflows, data trends, architecture, or timelines.
 ---
 
 # Obsidian Mermaid Visualizer
