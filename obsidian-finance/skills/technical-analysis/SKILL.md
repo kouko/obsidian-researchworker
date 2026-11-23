@@ -12,6 +12,11 @@ instructions.
 
 ## Choose the data
 
+Finish acquisition, snapshot validation, and the computed report before
+starting any external perspective lookup. Preserve the report's computed
+findings and evidence gaps before opening commentary sources. If the report
+is unavailable or has no eligible observations, skip all commentary lookup.
+
 - For the latest analysis from a stock symbol, acquire regular-session daily
   data using `fetch_daily.py`. Only send the public ticker to the data provider.
   Keep the returned snapshot and its capture time, adjustment basis, and
@@ -24,9 +29,13 @@ instructions.
   old dates is still a new version. Explain any ineligible data and retain the
   affected horizon with its evidence gap.
 - Local analysis uses Python 3.11+ and the standard library. If latest
-  acquisition yields no eligible data, use a supplied or already identified
-  eligible local snapshot. Before reporting from any local input, check that its ticker
-  matches the requested stock and verify its exact-version provenance. Use
+  acquisition yields no eligible data, use an eligible local snapshot supplied
+  by the user or previously identified and authorized by the user for this
+  task. The same input boundary applies to historical requests. Read only the
+  identified inputs. Skip searches of parent directories, sibling directories,
+  other workspaces, and caches for snapshots or metadata outside that boundary.
+  Before reporting from local input, check that its ticker matches the
+  requested stock and verify its exact-version provenance. Use
   the report command to validate the snapshot and cutoff. For a latest request
   replayed from local data, label the result as a local replay and use the
   snapshot's availability timestamp as its cutoff. For a historical request,
@@ -161,9 +170,10 @@ evidence is already in a saved note. When identical evidence applies to
 multiple horizons, list it once in the reply and explicitly name each
 applicable horizon there.
 
-After presenting the computed results, add a separate external perspectives
-section if at least one relevant technical view can be verified. Use only
-public ticker and date information in lookups. Attribute each view with a
+Once the computed report has eligible observations and its findings are ready
+to present, look up relevant external technical views. Use only public ticker
+and date information in lookups. Present any verified view separately after
+the computed results. Attribute each view with a
 source link, verifiable publication time or date, and applicable date or
 period. For a historical request, verify the cited version was already public
 by the requested cutoff. Exclude versions that were published or revised later
