@@ -67,7 +67,7 @@ Unquoted CJK labels render correctly in Obsidian 1.15. Quoting node labels and a
 | Character | Problem | Replacement |
 |-----------|---------|-------------|
 | `"` | Breaks node text | `『』` |
-| `()` | Ambiguous with shape syntax | `「」` |
+| `()` | Ambiguous with shape syntax when unquoted | Quote the label (Rule 5) |
 | `#` | Reserved | `&#35;` or spell out |
 
 ---
@@ -91,7 +91,7 @@ Before finalising any inline Mermaid block:
 - [ ] Subgraphs with spaces use `subgraph id["Name"]` format
 - [ ] All connections use node IDs, not display text
 - [ ] Display strings are quoted (Rule 5); identifiers are ASCII
-- [ ] Special characters substituted: `()` → `「」`, `"` → `『』`, `#` → `&#35;` (Rule 6)
+- [ ] Labels containing `()` are quoted; `"` → `『』`, `#` → `&#35;` (Rule 6)
 - [ ] Multi-node styling uses `classDef` + `class`
 - [ ] No reliance on themes, icons, HTML in labels or math (not rendered by Pele)
 - [ ] *(if applicable)* Nodes that should open a vault note have `class NodeName internal-link;`

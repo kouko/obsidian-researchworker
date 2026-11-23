@@ -30,5 +30,16 @@ out="$(bash "$V" "$tmp/e.md" 2>&1)"; rc=$?
 expect "no diagrams -> message" "no mermaid diagrams found in" "$out"
 expect "no diagrams -> exit 0" "^0$" "$rc"
 
+# 4) cold cache (fresh XDG_CACHE_HOME) -> known-good note exits 0
+if command -v npm >/dev/null 2>&1 && curl -sfI https://registry.npmjs.org/ >/dev/null 2>&1; then
+  note 'flowchart TD
+  A["Call API (v2)"] --> B'
+  mkdir -p "$tmp/cache"
+  out="$(XDG_CACHE_HOME="$tmp/cache" bash "$V" "$tmp/n.md" 2>&1)"; rc=$?
+  expect "cold cache -> exit 0" "^0$" "$rc"
+else
+  echo "skip - cold cache: no network or npm"
+fi
+
 echo "--- $pass passed, $fail failed"
 [ "$fail" -eq 0 ]

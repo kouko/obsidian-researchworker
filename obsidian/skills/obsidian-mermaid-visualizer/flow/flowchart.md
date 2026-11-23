@@ -223,9 +223,9 @@ graph TB
 
     subgraph agent["AI Agent Core"]
         direction TB
-        Perception["①Perception"] --> Planning["②Planning"]
-        Planning --> Reasoning["③Reasoning"]
-        Reasoning --> Action["④Action"]
+        Perception["1. Perception"] --> Planning["2. Planning"]
+        Planning --> Reasoning["3. Reasoning"]
+        Reasoning --> Action["4. Action"]
     end
 
     Action --> Output["System Response"]
@@ -239,7 +239,7 @@ graph TB
     style Action fill:#fff4e6,stroke:#e67700,stroke-width:2px
 ```
 
-Note the use of `①②③④` instead of `1. 2. 3. 4.` to avoid the Markdown list syntax conflict (see [obsidian-common-quirks.md Quirk 1](../obsidian-common-quirks.md)).
+Numbered labels such as `"1. Perception"` render as literal text in Obsidian 1.15; no `①②③④` substitution is needed (see [obsidian-common-quirks.md](../obsidian-common-quirks.md)).
 
 ### Example 6: CJK content (訂單處理流程)
 

@@ -89,3 +89,10 @@ def test_no_stale_11_4_references_outside_changelog():
             if STALE_MERMAID_CLAIMS.search(line):
                 hits.append(f"{md.relative_to(PLUGIN_DIR)}:{n}")
     assert not hits, f"stale Mermaid 11.4 / mermaid-cli / 17-type claims: {hits}"
+
+
+def test_quirks_quote_parens_instead_of_substituting():
+    """Pele renders quoted `()` (Rule 5); a `()` -> `「」` rule is stale."""
+    text = (SKILL_DIR / "references/mermaid-quirks.md").read_text(encoding="utf-8")
+    stale = [l for l in text.splitlines() if "`()`" in l and "「」" in l]
+    assert not stale, f"stale () -> 「」 substitution: {stale}"
