@@ -6,11 +6,19 @@
 // 2026-11-23); the 1.15.0 installer bundled 1.8.0, and both agree on the
 // known samples. Re-check the bundle banner when Obsidian updates.
 //
-// Usage: node validate.mjs path/to/note.md
+// Usage: PELE_DIR=<installed pele package dir> node validate.mjs path/to/note.md
+//        (validate.sh sets PELE_DIR to its cache install.)
 // Exit:  0 = all blocks render (or none found), 1 = any FAIL, 2 = bad usage.
 
 import { readFileSync } from 'node:fs';
-import { render } from 'pele';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+if (!process.env.PELE_DIR) {
+  console.error('validate.mjs: PELE_DIR is not set; run via validate.sh');
+  process.exit(2);
+}
+const { render } = await import(pathToFileURL(join(process.env.PELE_DIR, 'dist', 'pele.js')).href);
 
 const args = process.argv.slice(2);
 if (args.length !== 1) {
