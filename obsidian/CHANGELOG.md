@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [4.3.1] — 2026-11-24 Mermaid trigger and link fixes
+
+### Fixed
+
+- `obsidian-mermaid-visualizer` description now names all 30 diagram types
+  (adds swimlane, use case, packet, requirement, tree view, wardley).
+- `obsidian-markdown`'s inline Mermaid rule quotes labels with `()` instead
+  of replacing them with `「」`, matching `mermaid-quirks.md` Rule 6.
+- `circular-flow.md` links to flowchart's "Obsidian 1.15 compatibility"
+  section by its current name.
+
 ## [4.3.0] — 2026-11-24 Mermaid skill for the Obsidian 1.15 Pele engine
 
 ### Changed
