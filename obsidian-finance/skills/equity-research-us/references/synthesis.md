@@ -13,7 +13,8 @@ quantitative comparison its own row when the measures or periods differ. Put
 the period, unit, comparison basis, and source next to the figure. Label
 reported values, recalculations, and model assumptions in the cells. Place
 counterevidence on the same row as the thesis it challenges. Put material
-scenario results and numeric triggers elsewhere in compact supporting tables.
+scenario results in compact supporting tables and numeric triggers in each
+horizon's reassessment table.
 Use the conclusion and surrounding prose for interpretation.
 
 ## Research questions

@@ -48,7 +48,7 @@ Open report → See the question and conclusion first, then the evidence, calcul
 
 Open source or method registration → See why it was used, the supporting document or applied method and its limitations. Follow its links to retained evidence or related notes.
 
-Continue research → Reopen the same report paths. Adopt verified eligible prior results and show how they support the new work. Keep dated material revisions as part of the affected note.
+Continue research → Reopen the same report paths. Adopt verified eligible prior results and show how they support the new work. Keep one current report per quarter and role, with material change reasons in the overview. Preserve identifiable manual additions verbatim and label unchecked text separately. When potentially manual text cannot be safely isolated, keep the affected report as-is and surface the ambiguity.
 
 Open a report with insufficient data → See the completed portion, the missing evidence, the pending check and the conclusion it prevents. Do not produce a numeric estimate without support.
 

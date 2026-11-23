@@ -41,7 +41,9 @@ ${thesis_and_counterevidence}
 | Outlook | ${short_outlook} |
 | Investment recommendation | ${short_recommendation} |
 
-**Basis and counterevidence** ${short_basis}
+**Basis and counterevidence**
+
+${short_basis}
 
 | Reassessment condition | Effect on judgment or action | Source |
 | --- | --- | --- |
@@ -55,7 +57,9 @@ ${short_reassessment}
 | Outlook | ${medium_outlook} |
 | Investment recommendation | ${medium_recommendation} |
 
-**Basis and counterevidence** ${medium_basis}
+**Basis and counterevidence**
+
+${medium_basis}
 
 | Reassessment condition | Effect on judgment or action | Source |
 | --- | --- | --- |
@@ -69,7 +73,9 @@ ${medium_reassessment}
 | Outlook | ${long_outlook} |
 | Investment recommendation | ${long_recommendation} |
 
-**Basis and counterevidence** ${long_basis}
+**Basis and counterevidence**
+
+${long_basis}
 
 | Reassessment condition | Effect on judgment or action | Source |
 | --- | --- | --- |

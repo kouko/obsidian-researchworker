@@ -194,5 +194,6 @@ def test_synthesis_template_gives_each_horizon_an_outlook_and_a_recommendation()
         section = body.split(f"### {horizon.title()} term\n", 1)[1].split("\n#", 1)[0]
         assert f"| Outlook | {horizon} outlook |" in section
         assert f"| Investment recommendation | {horizon} recommendation |" in section
+        assert f"**Basis and counterevidence**\n\n{horizon} basis" in section
         assert "| Reassessment condition | Effect on judgment or action | Source |" in section
         assert f"| {horizon} condition | Reassess outlook | Source note |" in section

@@ -190,11 +190,17 @@ status: partial
         return
     if update == "edited-before-read":
         note.write_bytes(note.read_bytes() + b"\nAn unchecked manual hypothesis.\n")
-        rid, cutoff, title, finding, company, predecessor = args
-        publish(rid, cutoff, title, finding + "\n\nAn unchecked manual hypothesis.", company, predecessor)
+        before = note.read_bytes()
+        publish(*args)
         text = note.read_text()
-        assert "An unchecked manual hypothesis." in text
         assert "Revision history" not in text and "Original conclusion" not in text
+        displaced = [
+            manifest.with_name(payload).read_bytes()
+            for manifest in tmp_path.glob(".equity-stage-*/displaced.json")
+            for payload, path in json.loads(manifest.read_text()).items()
+            if path == note.relative_to(tmp_path).as_posix()
+        ]
+        assert before in displaced
         assert module.verify_quarter(tmp_path / cycle, overview.name)["status"] == "verified"
         return
     if update == "interrupted":

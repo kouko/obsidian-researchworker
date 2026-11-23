@@ -198,8 +198,14 @@ a reusable unit within a partial review; broader unanswered questions
 remain pending. State the scope before saving the unit.
 Save reusable partial output as `partial`. Give a specific explanation in
 `research.changes` when a finding changes. Each quarterly report contains
-the current analysis. When updating it, read the existing note and carry
-forward relevant user-authored edits in the revised analysis. Leave generated
+the current analysis. When updating it, read the existing note as written.
+Carry identifiable user-authored passages forward verbatim. Put passages
+that have not been independently verified in a clearly labeled user notes
+section, outside the verified claims. Preserve a bounded passage with
+uncertain authorship verbatim and label it as unverified with uncertain
+authorship if it can be isolated from the generated analysis. If you
+cannot safely isolate it without copying the prior report wholesale,
+leave the affected note as it is and report the ambiguity. Leave generated
 previous-report quotations out of the proposal. Preserve the current source
 versions and cutoff in the saved review. Verify earlier conclusions against
 their dated sources before reuse and report a gap if the earlier answer
@@ -368,6 +374,8 @@ nonempty strings; `research.assumptions` and `research.gaps` are lists.
 overview. Use concise plain-language changes and specific missing evidence.
 `research.horizons` has exactly `short`, `medium`, `long`, each an object with
 nonempty string `judgment` and lists `evidence` and `invalidation_triggers`.
+Summarize both the stated outlook and investment recommendation in the
+corresponding `judgment` and keep its triggers aligned with the synthesis table.
 Do not pass a list for `changes`; it is explanatory text, not change records.
 
 ```python

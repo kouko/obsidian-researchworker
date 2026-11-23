@@ -262,7 +262,11 @@ saved = research_store.publish(
 Set `complete=True` only after all required work has been verified. For a
 changed finding, put the reason in `research.changes` for the quarterly overview.
 A same-quarter update writes the current report to its existing path. Read the
-existing note and carry forward relevant user-authored edits in the proposal.
+existing note and carry identifiable user-authored passages forward verbatim.
+Label unchecked passages separately from verified claims. If authorship is
+unclear, keep the bounded passage with that uncertainty labeled. Defer the
+affected update and report the ambiguity if you cannot isolate the passage
+without copying the earlier report wholesale.
 Earlier-cutoff assessments use eligible saved evidence and report a gap when
 the retained material is insufficient.
 
