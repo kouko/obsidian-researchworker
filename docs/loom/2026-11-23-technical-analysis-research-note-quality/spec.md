@@ -1,5 +1,5 @@
 # Technical analysis research note — spec
-intent: 2026-11-23-technical-analysis-research-note-quality@a587bc5
+intent: 2026-11-23-technical-analysis-research-note-quality@d803142
 confirmed-behavior: 2026-11-23 @a4ca3b1
 pre-build-review: required — this changes the public structure and evidence links of saved research notes
 
