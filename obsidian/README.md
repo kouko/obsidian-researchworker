@@ -116,7 +116,7 @@ Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/
 |---|---|
 | `obsidian-canvas` | Create Obsidian Canvas files with MindMap or freeform layouts, four community patterns (kanban, dashboard / home page, research map, moodboard) with templates and a `.canvas` output validator, and zero-plugin advanced patterns (nested canvas workspaces, research dual-canvas, data-pipeline documentation, audit / post-mortem / onboarding, teacher class, worldbuilding, Bases-in-canvas 1.9+, canvas-only / 2D MOC). (Combined with json-canvas integration from kepano.) |
 | `obsidian-excalidraw-diagram` | Generate Excalidraw diagrams in Obsidian / Standard / Animated formats. |
-| `obsidian-mermaid-visualizer` | 17 Mermaid diagram types — flow, data-viz, structural, time — optimized for Obsidian 11.4.1, portable to GitHub / Notion / HackMD. |
+| `obsidian-mermaid-visualizer` | 30 Mermaid diagram types — flow, data-viz, structural, time — optimized for Obsidian 1.15 (Pele engine), validated with `scripts/validate.sh`; standard Mermaid syntax for GitHub / Notion / HackMD. |
 
 ## Install
 
@@ -175,7 +175,7 @@ Draw a diagram inside a note:
 ```
 
 `using-obsidian` routes to `obsidian-mermaid-visualizer`, which picks the
-sequence diagram type, applies Obsidian 11.4.1 quirks, and emits a
+sequence diagram type, applies Obsidian 1.15 (Pele) quirks, and emits a
 ` ```mermaid ` block.
 
 ## Repository structure

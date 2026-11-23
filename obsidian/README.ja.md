@@ -102,7 +102,7 @@ Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/
 |---|---|
 | `obsidian-canvas` | Obsidian Canvas ファイルを MindMap / freeform layout で作成。さらにカンバン／ダッシュボード（ホームページ）／研究マップ／ムードボードの 4 つのコミュニティパターンとテンプレート、`.canvas` 出力検証スクリプト、そしてプラグインなしで使える応用パターン（ネストキャンバス／研究デュアルキャンバス／データパイプラインの文書化／監査・ポストモーテム・オンボーディング／教師用クラスキャンバス／ワールドビルディング／Bases-in-canvas 1.9+／canvas-only／2D MOC）に対応（kepano の json-canvas integration を統合） |
 | `obsidian-excalidraw-diagram` | Excalidraw 図を Obsidian / Standard / Animated 形式で生成 |
-| `obsidian-mermaid-visualizer` | Mermaid 17 図種（flow / data-viz / structural / time）— Obsidian 11.4.1 最適化、GitHub / Notion / HackMD にも portable |
+| `obsidian-mermaid-visualizer` | Mermaid 30 図種（flow / data-viz / structural / time）— Obsidian 1.15（Pele エンジン）最適化、`scripts/validate.sh` で検証、標準 Mermaid syntax なので GitHub / Notion / HackMD でも利用可 |
 
 ## Install
 
@@ -156,7 +156,7 @@ note 内に図を描く：
 ```
 
 `using-obsidian` が `obsidian-mermaid-visualizer` に route。sequence diagram type
-を選択し、Obsidian 11.4.1 quirk を適用、` ```mermaid ` ブロックを出力する。
+を選択し、Obsidian 1.15（Pele）の quirk を適用、` ```mermaid ` ブロックを出力する。
 
 ## Repository 構造
 

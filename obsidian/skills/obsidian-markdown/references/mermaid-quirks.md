@@ -3,39 +3,24 @@
 Distilled from `obsidian-mermaid-visualizer/obsidian-common-quirks.md`.
 Read this **before writing any Mermaid block inline** in an Obsidian note.
 
-> **Obsidian bundled Mermaid**: 11.4.1 (as of 2026-04). Features added in v11.5+ will not render.
+> **Obsidian 1.15+ renders Mermaid with its Pele engine** (Mermaid 12.1.0 syntax; Pele 1.13.0 in Obsidian 1.15.1, checked 2026-11-23). Themes, icons, HTML in labels and math are not rendered — see `obsidian-mermaid-visualizer/obsidian-compatibility.md` § Engine limits.
 
 ---
 
-## Rule 1: Line breaks — `<br/>` not `\n`
+## Rule 1: Line breaks — prefer `<br/>`
 
-`\n` is **not** a valid escape inside Mermaid node text or edge labels. Use `<br/>`.
+Both `<br/>` and a literal `\n` render as line breaks in node text and edge labels. Use `<br/>` so the source reads the same in other renderers.
 
 ```
-❌ A["first line\nsecond line"]
 ✅ A["first line<br/>second line"]
-
-❌ A -->|"step one\nstep two"| B
 ✅ A -->|"step one<br/>step two"| B
 ```
 
-Applies to all quoted node labels and arrow labels in flowchart / graph diagrams.
-
-> ✅ **Verified in Obsidian 11.4.1** (2026-06-30): `<br/>` works in both rectangular `["..."]` and circle `(("..."))` nodes. `\n` does not work in either. An earlier note in `obsidian-common-quirks.md` Quirk 4 claiming circle-only has been corrected.
-
 ---
 
-## Rule 2: List syntax conflict
+## Rule 2: `1. ` in labels — fixed, no workaround needed
 
-`number. space` inside node text triggers a Markdown list parser error.
-
-```
-❌ ["1. Perception"]   → Parse error: Unsupported markdown: list
-✅ ["1.Perception"]    — no space after period
-✅ ["① Perception"]    — circled number
-✅ ["(1) Perception"]  — parentheses
-✅ ["Step 1: Perception"]
-```
+The old renderer read `number. space` in node text as a Markdown list and failed. Pele renders it as literal text, so `A["1. Perception"]` is fine. Do not rewrite it to `1.Perception` or `①`.
 
 ---
 
@@ -63,17 +48,17 @@ B["Display Text B"]
 
 ---
 
-## Rule 5: Quote all user-visible display strings
+## Rule 5: Quote display strings as a default
 
-Wrap node labels, arrow labels, and other display text in `"..."`.
-CJK text without quotes fails unpredictably.
+Unquoted CJK labels render correctly in Obsidian 1.15. Quoting node labels and arrow labels in `"..."` is still the default, because labels with parentheses or other shape characters fail unless quoted.
 
 ```
 ✅ A["処理ステップ"] -->|"条件一致"| B["完了"]
-❌ A[処理ステップ] -->|条件一致| B[完了]
+✅ A[処理ステップ] --> B[完了]        — renders, but quote if the text may gain ( ) [ ] { }
+❌ A[Call API (v2)]                    — parse error: quote it
 ```
 
-**Do not quote**: node IDs, keywords (`subgraph`, `end`, `class`), branch names.
+**Do not quote**: node IDs, keywords (`subgraph`, `end`, `class`), branch names. Keep identifiers ASCII.
 
 ---
 
@@ -102,12 +87,11 @@ CJK text without quotes fails unpredictably.
 
 Before finalising any inline Mermaid block:
 
-- [ ] No `\n` in node labels or edge labels — replaced with `<br/>`
-- [ ] No `number. space` pattern in node text or edge labels
+- [ ] Line breaks use `<br/>`
 - [ ] Subgraphs with spaces use `subgraph id["Name"]` format
 - [ ] All connections use node IDs, not display text
-- [ ] CJK / special-char display strings are quoted (Rule 5)
+- [ ] Display strings are quoted (Rule 5); identifiers are ASCII
 - [ ] Special characters substituted: `()` → `「」`, `"` → `『』`, `#` → `&#35;` (Rule 6)
 - [ ] Multi-node styling uses `classDef` + `class`
-- [ ] No v11.5+ features (`look: neo`, `showDataLabelOutsideBar`, `wardley-beta`)
+- [ ] No reliance on themes, icons, HTML in labels or math (not rendered by Pele)
 - [ ] *(if applicable)* Nodes that should open a vault note have `class NodeName internal-link;`

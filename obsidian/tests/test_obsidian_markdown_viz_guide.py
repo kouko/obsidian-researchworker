@@ -25,6 +25,9 @@ MERMAID_TYPE_PATTERNS = [
     r"erdiagram", r"classdiagram", r"c4\w+", r"gitgraph", r"gantt", r"timeline",
     r"mindmap", r"xychart", r"pie", r"quadrant", r"quadrantchart", r"quadrant-chart",
     r"architecture-beta", r"block-beta",
+    r"venn-beta", r"treemap-beta", r"radar-beta", r"sankey-beta", r"kanban", r"journey",
+    r"ishikawa", r"usecase-beta", r"treeview-beta", r"wardley-beta", r"packet-beta",
+    r"requirementdiagram",
 ]
 
 FENCE = re.compile(r"^(`{3,}|~{3,}).*?^\1[ \t]*$", re.M | re.S)
@@ -66,3 +69,23 @@ def test_guide_links_resolve():
         if anchor:
             slugs = {_slug(h) for h in _headings(target.read_text(encoding="utf-8"))}
             assert anchor in slugs, f"anchor #{anchor} not a heading in {target.name}"
+
+
+# Obsidian 1.15 (Pele) replaced the Mermaid 11.4.1 baseline and mermaid-cli.
+STALE_MERMAID_CLAIMS = re.compile(
+    r"\b11\.4(\.\d)?\b|mermaid-cli|\bmmdc\b|\b17 ?(diagram types|types|種|図種)", re.I
+)
+PLUGIN_DIR = Path(__file__).parent.parent
+
+
+def test_no_stale_11_4_references_outside_changelog():
+    hits = []
+    for md in PLUGIN_DIR.rglob("*.md"):
+        if md.name == "CHANGELOG.md" or "docs/loom" in md.as_posix():
+            continue
+        for n, line in enumerate(md.read_text(encoding="utf-8").splitlines(), 1):
+            if line.startswith("- **v"):  # dated version-history entries stay as written
+                continue
+            if STALE_MERMAID_CLAIMS.search(line):
+                hits.append(f"{md.relative_to(PLUGIN_DIR)}:{n}")
+    assert not hits, f"stale Mermaid 11.4 / mermaid-cli / 17-type claims: {hits}"
