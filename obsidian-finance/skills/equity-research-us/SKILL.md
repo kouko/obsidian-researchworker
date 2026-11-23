@@ -322,6 +322,10 @@ evidence cannot support a judgment.
 
 ## 4. Save resumable work safely
 
+Before saving, apply the [output acceptance checks](references/research-method.md#output-acceptance)
+to each affected report. For synthesis, also apply its [investment recommendation
+check](references/synthesis.md#investment-recommendation-check).
+
 Capture `publication_snapshot(root)` before analysis. If acquiring new evidence,
 first retain the original discovery map, persist only known new immutable inputs,
 verify every old path still has its original digest and inspect any unexpected

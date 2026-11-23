@@ -65,6 +65,20 @@ evidence, refrain from an investment rating. `insufficient_evidence` is not hold
 neutrality or expected zero return. A horizon can have useful conditional
 operating reasoning while its investment conclusion remains insufficient.
 
+## Investment recommendation check
+
+Adapt the research-content checks in [FINRA Rule 2241(c)](https://www.finra.org/rules-guidance/rulebooks/finra-rules/2241)
+for internal review. Before stating a recommendation, rating or target, show its
+evidence, valuation method and dated inputs, the applicable horizon, any
+benchmark used, and material downside risks and observable invalidation
+conditions. Define any rating used. Present the strongest material downside
+evidence alongside the case for the judgment.
+
+When a recommendation, rating or target lacks a defensible basis, leave it
+pending and give the evidence needed to support it. A recalculable sensitivity
+table establishes how assumptions change the output. A target also requires
+evidence for the selected inputs and method.
+
 ## Completion
 
 Record all three horizon judgments in the existing review format, with

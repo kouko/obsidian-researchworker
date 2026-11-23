@@ -95,6 +95,37 @@ when available. Those examples illustrate how methods differ by industry.
 They do not establish accepted company research, calibrated models or expected
 excess returns.
 
+## Output acceptance
+
+Apply these checks to each of the seven reports, including a standalone or
+partial report. Use the role's own minimum output alongside these checks.
+The shared checks draw on [CFA Institute V(A)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-a),
+[V(B)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-b)
+and [V(C)](https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-c).
+
+- **Evidence and cutoff.** Place a source locator next to each claim that could
+  change the conclusion. Verify the observed period, measurement basis, and
+  version available by the cutoff. Reported financial figures use the original
+  financial filing when available. Every role can cite eligible public data or
+  viewpoints, including synthesis.
+- **Independent inquiry.** When the available evidence cannot resolve a
+  material issue, seek public sources able to distinguish the leading
+  explanations. Check their method, timing, independence and incentives.
+  Explain the strongest supporting and contrary evidence and how it bears on
+  the conclusion. If the search leaves a gap, state what was checked, which
+  conclusion remains pending and what evidence would resolve it.
+- **Reproducibility.** Give inputs, units and method for material comparisons.
+  Separate observed facts, management statements, external opinions and analyst
+  assumptions. State material limitations and what would change the finding.
+- **Readback.** Register the exact sources and methods used through the normal
+  save path. After saving, read the report and its cited evidence back from
+  the quarterly overview. Verify adopted earlier findings against their
+  original cutoff and retained support before relying on them.
+
+Correct failed checks before marking the affected work complete. Save supported
+independent findings as partial where appropriate. Record the unresolved check
+and its effect on the conclusion in the existing research gaps.
+
 ## Completion and continuation
 
 Check sources, citations, calculations and counterevidence against the actual
