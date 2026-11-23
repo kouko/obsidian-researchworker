@@ -260,10 +260,11 @@ saved = research_store.publish(
 ```
 
 Set `complete=True` only after all required work has been verified. For a
-changed finding, put the reason in `research.changes`. The affected note keeps
-the previous report and its dated source references in its revision history.
-Assess those versions before citing a prior conclusion. An earlier-cutoff
-assessment can report a gap when the retained material is insufficient.
+changed finding, put the reason in `research.changes` for the quarterly overview.
+A same-quarter update writes the current report to its existing path. Read the
+existing note and carry forward relevant user-authored edits in the proposal.
+Earlier-cutoff assessments use eligible saved evidence and report a gap when
+the retained material is insufficient.
 
 After a pending save is interrupted, use
 `research_store.recover_quarterly(root, asset_id, quarter)` and rediscover.

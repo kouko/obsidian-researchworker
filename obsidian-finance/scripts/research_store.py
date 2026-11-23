@@ -1691,39 +1691,6 @@ def _quarter_prefix(quarter, ticker, company_name):
     return f"{quarter} {ticker.upper()} {company}"
 
 
-def _retain_revision(old, content, units, reason):
-    if old is None:
-        return content
-    _, old_bytes, props = old
-    delimiter = "\n## Revision history\n"
-    _require(delimiter not in content, "revision history is retained from the saved report")
-    _, previous = _markdown.parse_note(old_bytes.decode("utf-8"), props["finance_role"])
-    _, current = _markdown.parse_note(content, props["finance_role"])
-    previous_digest = sha256(old_bytes).hexdigest()
-    verified = [unit for unit in units
-                if unit["output"].get("digest") == previous_digest
-                and isinstance(unit.get("verification"), dict)
-                and _completion_valid(unit["verification"], previous_digest)]
-    if not verified:
-        # Keep all editable text, including any older history an editor may
-        # have changed, without attesting to the provenance of its contents.
-        quoted = "\n".join("> " + line for line in previous.strip().splitlines())
-        return (content.rstrip() + "\n" + delimiter + "\n"
-                + "### Previous editable report (unverified)\n\n"
-                + f"Reason for update: {reason}\n\n" + quoted + "\n")
-    prior_body, _, history = previous.partition(delimiter)
-    if prior_body.strip() == current.strip():
-        return content.rstrip() + "\n" + delimiter + history if history else content
-    source_versions = {(sid, value["version"]) for unit in verified
-                       for sid, value in unit.get("consumed", {}).items()}
-    sources = ", ".join(f"{sid} ({version})" for sid, version in sorted(source_versions))
-    prior = "\n".join("> " + line for line in prior_body.strip().splitlines())
-    return (content.rstrip() + "\n" + delimiter + "\n"
-            + f"### Previous report as of {props['as_of']} ({props['review_id']})\n\n"
-            + f"Sources: {sources or 'None recorded'}\n\nReason: {reason}\n\n"
-            + prior + "\n" + ("\n" + history if history else ""))
-
-
 def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
                        company_name, ticker, overview_title):
     _require(type(complete) is bool and isinstance(files, dict), "publication arguments")
@@ -1760,10 +1727,6 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
     _require(review.get("last_success") == previous.get("last_success"),
              "local publication cannot advance last successful external verification")
     previous_units = previous.get("units", {})
-    previous_outputs = {}
-    for unit in previous_units.values():
-        if "output" in unit:
-            previous_outputs.setdefault(unit["output"]["path"], []).append(unit)
     saved = _adapter._json(_encoded(review).decode("utf-8"))
     for qid, prior in previous_units.items():
         unit = saved["units"].get(qid)
@@ -1813,8 +1776,6 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
             roles.add(role)
             filename = reports.setdefault(role, f"{prefix} - {_REPORT_LABELS[role]}.md")
             path = cycle + "/" + filename
-            content = _retain_revision(notes.get(role), content, previous_outputs.get(path, []),
-                                       review["research"]["changes"])
             intended[path] = content.encode("utf-8")
             proposed_paths[name] = path
         path = proposed_paths[name]

@@ -11,7 +11,11 @@ status: ${status_yaml}
 
 # ${title}
 
-## Research question and conclusion
+## Research question
+
+${research_question}
+
+## Conclusion
 
 ${findings}
 

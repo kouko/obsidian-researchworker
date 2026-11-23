@@ -123,7 +123,9 @@ and [V(C)](https://www.cfainstitute.org/standards/professionals/code-ethics-stan
   recalculation differ at the displayed precision for a ratio used in the
   conclusion, label both in the report with the inputs, even when the
   difference leaves the conclusion unchanged. Align
-  periods and definitions before ranking peers or benchmarks. Distinguish
+  periods and definitions before ranking peers or benchmarks. Put the period,
+  unit, comparison basis and any decisive qualification in the table header,
+  row or adjacent caption so a reader can interpret the table on its own. Distinguish
   observed facts, management statements, external opinions and analyst
   assumptions. State material limitations and what would change the finding.
 - **Readback.** Register the exact sources and methods used through the normal

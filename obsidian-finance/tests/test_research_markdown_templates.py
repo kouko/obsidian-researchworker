@@ -104,13 +104,13 @@ def test_role_template_rejects_invalid_obsidian_values(role, property_edit):
     ("forward-forecast", ("Management guidance", "Analyst scenarios and assumptions", "Prior forecast reconciliation")),
     ("valuation-and-risk", ("Model and dated inputs", "Fair-value range and sensitivity", "Risk and observable triggers")),
     ("technical-analysis", ("Price and volume basis", "Trend, levels and invalidation", "Comparison with fair value")),
-    ("synthesis", ("Material changes", "Thesis and counterevidence", "Short-, medium- and long-term judgments")),
+    ("synthesis", ("Material changes", "Thesis and counterevidence", "Short-, medium- and long-term outlook and recommendations")),
 ])
 def test_analysis_template_exposes_material_checks_as_separate_sections(role, checkpoints):
     note = _render(role, load()._markdown)
     sections = re.findall(r"(?m)^## (.+)$", note)
-    assert sections[0] == "Research question and conclusion"
-    assert sections[1:1 + len(checkpoints)] == list(checkpoints)
+    assert sections[:2] == ["Research question", "Conclusion"]
+    assert sections[2:2 + len(checkpoints)] == list(checkpoints)
     assert sections[-2:] == ["Sources and comparison basis", "Unresolved checks and impact"]
 
 
@@ -177,3 +177,22 @@ def test_portable_source_context_retains_public_links_on_recapture(destination, 
         assert "and local notes." in captured
         assert "../notes.md" not in captured
         context = codec.registration_context(captured, "source-registration", captured=True)
+
+
+def test_synthesis_template_gives_each_horizon_an_outlook_and_a_recommendation():
+    template = Template((TEMPLATES / "synthesis.md").read_text())
+    horizons = ("short", "medium", "long")
+    values = SampleValues(VALUES, **{
+        f"{horizon}_{field}": f"{horizon} {field}"
+        for horizon in horizons
+        for field in ("window", "outlook", "recommendation", "basis")
+    })
+    for horizon in horizons:
+        values[f"{horizon}_reassessment"] = f"| {horizon} condition | Reassess outlook | Source note |"
+    body = template.substitute(values)
+    for horizon in horizons:
+        section = body.split(f"### {horizon.title()} term\n", 1)[1].split("\n#", 1)[0]
+        assert f"| Outlook | {horizon} outlook |" in section
+        assert f"| Investment recommendation | {horizon} recommendation |" in section
+        assert "| Reassessment condition | Effect on judgment or action | Source |" in section
+        assert f"| {horizon} condition | Reassess outlook | Source note |" in section

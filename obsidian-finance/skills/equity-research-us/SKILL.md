@@ -150,8 +150,10 @@ corresponding note roles. Choose the matching analysis template:
 Use the same role for partial work and drafts, with their respective status.
 Substitute YAML properties as typed scalars and remove all placeholders.
 Write each analysis as a standalone study. Identify the company, fiscal quarter,
-cutoff, and question in the note, then state the supported conclusion or why it
-remains open. Fill the template sections separately using the reference's
+and cutoff in the note. Start with separate Research question and Conclusion
+headings (localize both for the note language). State the question in its own
+paragraph, then state the supported conclusion or why it remains open in the
+next section. Fill the remaining template sections using the reference's
 minimum outputs. Keep the method, comparable values, material component
 calculations, assumptions and counterevidence visible where used, including
 details carried forward from earlier work. Put source links next to key claims
@@ -195,11 +197,13 @@ configured research question. A verified, explicitly scoped answer may be
 a reusable unit within a partial review; broader unanswered questions
 remain pending. State the scope before saving the unit.
 Save reusable partial output as `partial`. Give a specific explanation in
-`research.changes` when a finding changes. The helper retains the previous
-report, source identities and versions, cutoff and reason in the updated
-report's revision history. Read earlier conclusions against their dated sources
-before reuse. If those sources or saved analysis cannot reconstruct the earlier
-answer, report the gap.
+`research.changes` when a finding changes. Each quarterly report contains
+the current analysis. When updating it, read the existing note and carry
+forward relevant user-authored edits in the revised analysis. Leave generated
+previous-report quotations out of the proposal. Preserve the current source
+versions and cutoff in the saved review. Verify earlier conclusions against
+their dated sources before reuse and report a gap if the earlier answer
+cannot be reconstructed.
 
 ### Quarter-owned evidence and portable reviews
 

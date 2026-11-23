@@ -190,12 +190,12 @@ status: partial
         return
     if update == "edited-before-read":
         note.write_bytes(note.read_bytes() + b"\nAn unchecked manual hypothesis.\n")
-        publish(*args)
+        rid, cutoff, title, finding, company, predecessor = args
+        publish(rid, cutoff, title, finding + "\n\nAn unchecked manual hypothesis.", company, predecessor)
         text = note.read_text()
-        assert "Previous editable report (unverified)" in text
-        assert "> An unchecked manual hypothesis." in text
-        assert "Sources: filing-2024Q2" not in text
-        assert f"Previous report as of {first_cutoff}" not in text
+        assert "An unchecked manual hypothesis." in text
+        assert "Revision history" not in text and "Original conclusion" not in text
+        assert module.verify_quarter(tmp_path / cycle, overview.name)["status"] == "verified"
         return
     if update == "interrupted":
         exchange = module._update._exchange
@@ -234,8 +234,9 @@ status: partial
         assert first["review"] == second["review"]
     assert first["review"] == f"{cycle}/2024Q2 BANK Example - Bank - 00 Research Overview.md"
     assert note.name == "2024Q2 BANK Example - Bank - 01 Financial Analysis.md"
-    assert "Original conclusion" in note.read_text() and "Revised conclusion" in note.read_text()
-    assert "filing-2024Q2" in note.read_text() and first_cutoff in note.read_text()
+    assert "Revised conclusion" in note.read_text()
+    assert "Original conclusion" not in note.read_text() and "Revision history" not in note.read_text()
+    assert "Updated credit assessment" in overview.read_text()
     assert "Financial%20Analysis.md" in (tmp_path / first["review"]).read_text()
     assert old.read_bytes() == original
     view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
@@ -460,7 +461,7 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         content = Template(template.read_text()).substitute(
             title_yaml="Apple quarterly financial checkpoint", title="Apple quarterly financial checkpoint",
             asset_id_yaml=asset, fiscal_quarter_yaml=quarter, as_of_yaml=json.dumps(cutoff),
-            review_id_yaml="checkpoint", status_yaml="partial", findings=financial_text,
+            review_id_yaml="checkpoint", status_yaml="partial", research_question="How did earnings change?", findings=financial_text,
             comparable_metrics="Only the scoped comparison cited below was checked.",
             earnings_and_cash_reconciliation="Cash flow was outside this checkpoint.",
             liquidity_and_financing="Financing disclosures were outside this checkpoint.",
