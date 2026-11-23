@@ -150,8 +150,11 @@ def _pattern_geometry(anchors, indices):
     def line(points, *, flat=False):
         start = points[0]
         origin = indices[start["date"]]
-        if flat or len(points) == 1:
-            return mean(point["price"] for point in points), origin, 0.0
+        if flat:
+            extreme = max if start["kind"] == "high" else min
+            return extreme(point["price"] for point in points), origin, 0.0
+        if len(points) == 1:
+            return start["price"], origin, 0.0
         last = points[-1]
         slope = (last["price"] - start["price"]) / (indices[last["date"]] - origin)
         return start["price"], origin, slope

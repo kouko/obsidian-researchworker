@@ -202,6 +202,12 @@ def test_daily_chart_pattern_lifecycle_in_every_horizon(analyzer, monkeypatch, k
                 assert match["confirmation"]["date"] == latest["date"]
                 assert match["confirmation"]["close"] == breakout
                 assert match["confirmation"]["direction"] == direction
+                if direction == "up" and kind in ("rectangle", "ascending_triangle"):
+                    highest = max(bar["high"] for bar in anchors[::2])
+                    assert match["confirmation"]["level"] == pytest.approx(highest * 1.005)
+                if direction == "down" and kind in ("rectangle", "descending_triangle"):
+                    lowest = min(bar["low"] for bar in anchors[1::2])
+                    assert match["confirmation"]["level"] == pytest.approx(lowest * 0.995)
             if state == "invalidated":
                 assert match["invalidation"]["date"] == follow_up["date"]
         rendered = render_report(report)
