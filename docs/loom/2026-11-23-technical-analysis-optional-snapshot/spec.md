@@ -1,6 +1,6 @@
 # On-demand technical analysis snapshots — spec
 intent: 2026-11-23-technical-analysis-optional-snapshot@aa4378d
-confirmed-behavior: 2026-11-23 @d717f6d
+confirmed-behavior: 2026-11-23 @9d6602f
 pre-build-review: required — changes the public saved-note attachment contract
 
 ## Requirements
@@ -16,7 +16,7 @@ REQ-2 — Saved note with replay data
 - agent-decided — Use an explicit retention choice in the existing save workflow so a natural-language request can select either output without persistent settings.
 - agent-decided — Preserve existing direct command behavior unless its caller selects the new save mode, because existing scripts may expect an attachment.
 - agent-decided — Keep the existing publish and recovery boundary so each note and its selected attachments are saved together.
-- agent-decided — The existing limit on publishing when no eligible snapshot exists still applies. Existing notes and attachments remain untouched.
+- agent-decided — When no publishable input exists, preserve the insufficient-data response. A valid input with zero eligible bars remains supported by the direct publisher without a chart. Existing notes and attachments remain untouched.
 
 ## Alternatives considered
 
