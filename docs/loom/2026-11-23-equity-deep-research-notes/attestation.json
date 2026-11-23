@@ -1,7 +1,7 @@
 {
   "schema": "loom-attestation/v2",
   "change_id": "2026-11-23-equity-deep-research-notes",
-  "content_digest": "9de834d2feef67fe1ab9bc120b13c435afec084c",
+  "content_digest": "ba1c9b7de93fbd82e23b837559b0b6fda855cee1",
   "executions": [
     {
       "kind": "package-tests",
@@ -20,31 +20,31 @@
   ],
   "verdicts": [
     {
-      "reviewer": "deep_close_code",
+      "reviewer": "link_final_code_review",
       "lens": "code",
       "verdict": "PASS",
       "vendor": "openai",
       "model": "Codex host model unreported",
       "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
-      "review_target_sha": "3d5491865ca2bb28677a0356e5118a5603308c10",
+      "review_target_sha": "3afc20e8f09753166243aadffba77bc59bdc0810",
       "findings": []
     },
     {
-      "reviewer": "deep_close_skill",
+      "reviewer": "link_final_skill_review",
       "lens": "skill",
       "verdict": "PASS",
       "vendor": "openai",
       "model": "Codex host model unreported",
       "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
-      "review_target_sha": "3d5491865ca2bb28677a0356e5118a5603308c10",
+      "review_target_sha": "3afc20e8f09753166243aadffba77bc59bdc0810",
       "findings": []
     }
   ],
   "findings": [],
   "selection": null,
   "intent_confirmed_sha": "5fae4e2",
-  "tested_commit": "333083b4085a26473362ddb0635a26f14e0cb657",
-  "reviewed_commit": "3d5491865ca2bb28677a0356e5118a5603308c10",
+  "tested_commit": "3afc20e8f09753166243aadffba77bc59bdc0810",
+  "reviewed_commit": "d8431b2a9eef835bd51793fe0778998767c72c7d",
   "acceptance_status": [
     {
       "acceptance": 1,
