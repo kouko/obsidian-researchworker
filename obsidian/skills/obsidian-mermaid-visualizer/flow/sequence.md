@@ -92,14 +92,12 @@ sequenceDiagram
     end
 ```
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — sequence diagram has been stable since Mermaid's earliest versions
+- **Status**: ✅ Full support
 - **Known quirks**:
-  - Messages with special characters may need quoting
   - Very long sequences (>30 messages) get cramped — split into multiple diagrams
-  - Activation boxes (`+`/`-`) must be paired — unmatched `+` without `-` causes render error
-- **Workaround**: none needed for standard flows
+  - Pair activation boxes (`+`/`-`) — Pele tolerates an unmatched `+`, other renderers may not
 
 ## Quote rule for sequence diagrams
 
@@ -115,7 +113,7 @@ Sequence diagram has **limited quote support** compared to flowchart. Mermaid se
 - `loop Every 10 seconds` — NOT `loop "Every 10 seconds"`
 - `alt Success` — NOT `alt "Success"`
 
-**For CJK / special characters in sequence**: CJK usually parses unquoted in these positions, but this is **not guaranteed** in Obsidian's bundled lexer (mermaid-cli is more lenient than Obsidian, so a cli pass does not prove an Obsidian pass). There is **no quoting escape** here — quotes render literally, and the backtick form `` `...` `` also renders the backticks literally (do not use it). If a message fails to parse in Obsidian, the only fix is to **rephrase / romanize** the problematic text or HTML-encode the offending character. Never wrap the string in `"..."`.
+**For CJK / special characters in sequence**: CJK (including full-width punctuation such as `（）`) renders unquoted in these positions in Obsidian 1.15 (Pele 1.13.0 render check). There is **no quoting escape** here — quotes render literally, and the backtick form `` `...` `` also renders the backticks literally (do not use it). If a message fails to parse in Obsidian, the only fix is to **rephrase / romanize** the problematic text or HTML-encode the offending character. Never wrap the string in `"..."`.
 
 ## Worked examples
 
@@ -231,7 +229,7 @@ sequenceDiagram
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
 | Using `A --> B` (flowchart arrow) | Use `A->>B` or `A-->>B` (sequence-specific) | Sequence has its own arrow syntax |
-| Unmatched activation `+` without `-` | Every `+` must pair with `-` to deactivate | Parser error or visual glitch |
+| Unmatched activation `+` without `-` | Every `+` must pair with `-` to deactivate | Visual glitch; an error in other renderers |
 | `loop Every X` without `end` | `loop ... end` must be closed | Syntax error |
 | Using participant name as ID then referencing by name | Declare `participant A as AliceName`, then use `A->>B` | Reference by participant ID, not display name |
 | Nesting loop/alt too deeply (>3 levels) | Flatten or split into multiple diagrams | Visual clutter, hard to follow |

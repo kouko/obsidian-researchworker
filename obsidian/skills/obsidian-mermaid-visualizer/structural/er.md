@@ -44,7 +44,7 @@ erDiagram
 
 ### Entity syntax
 
-```mermaid
+```text
 ENTITY_NAME {
     type field_name [key_indicator] "optional comment"
 }
@@ -59,7 +59,7 @@ Types are free-form strings (`string`, `int`, `decimal`, `timestamp`, `boolean`,
 
 ### Relationship syntax
 
-```mermaid
+```text
 ENTITY_A RELATIONSHIP ENTITY_B : label
 ```
 
@@ -82,16 +82,16 @@ The `|` means "exactly one (mandatory)", `o` means "zero or one (optional)", `{`
 
 ### Comments on fields
 
-```mermaid
+```text
 ENTITY {
     string id PK "Primary key"
     string email "User's email, unique"
 }
 ```
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — ER diagram has been stable
+- **Status**: ✅ Full support — CJK entity names and labels render
 - **Known quirks**:
   - Entity names conventionally ALL_CAPS (but not enforced)
   - Very long field comments get truncated in compact preview panes
@@ -105,7 +105,7 @@ ER diagrams use **structured identifiers** for entities and fields; only field c
 - **Entity names** (`CUSTOMER`, `ORDER`): identifiers — unquoted (or quoted as `"Customer Order"` only if spaces required)
 - **Field names / types / keys** (`string customer_id PK`): identifier-structured — unquoted
 - **Field comments** (`string id PK "Primary key"`): ALREADY quoted per Mermaid canonical syntax — keep quoted. This is the one position where ER requires quoting
-- **Relationship labels** (`CUSTOMER ||--o{ ORDER : places`): free-form text after `:` — quotable. Unlike class-diagram labels, the ER parser **strips** the quotes (they do NOT render literally — verified with mermaid-cli, 2026-06: `USER ||..o{ AUDIT_LOG : "可能產生"` renders clean `可能產生`). Single-word labels can stay unquoted; quote them when multi-word, punctuated, or CJK
+- **Relationship labels** (`CUSTOMER ||--o{ ORDER : places`): free-form text after `:` — quotable. Unlike class-diagram labels, the ER parser **strips** the quotes (they do NOT render literally — verified with Pele 1.13.0, 2026-11-23: `USER ||..o{ AUDIT_LOG : "可能產生"` renders clean `可能產生`). Single-word labels can stay unquoted; quote them when multi-word, punctuated, or CJK
 
 **Recommendation**: keep relationship labels unquoted when they are single-word (`places`, `has`, `manages`); quote them only when they contain spaces or punctuation (`"may generate"`, `"belongs to"`). Mermaid ER parser tolerates both forms.
 

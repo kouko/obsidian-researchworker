@@ -36,9 +36,9 @@ Inherits all flowchart options (see [flowchart.md § Configuration options](flow
 
 **Circular-specific tip**: use `-.->` (dashed) for feedback arrows to visually distinguish the loop-closing edge from forward flow.
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — built on flowchart which is the most stable type
+- **Status**: ✅ Full support — built on flowchart
 - **Known quirks**: same as flowchart (see [flowchart.md § Obsidian compatibility](flowchart.md))
 - **Workaround**: none needed
 

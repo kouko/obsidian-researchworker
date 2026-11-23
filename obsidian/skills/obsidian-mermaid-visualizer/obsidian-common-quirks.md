@@ -1,226 +1,183 @@
 # Obsidian Mermaid — Common Quirks Across All Diagram Types
 
-Rules that apply to **every** Mermaid diagram type when rendered in Obsidian. If you are writing or reviewing any diagram, skim this first. Type-specific syntax lives in each type's own file under `flow/`, `data-viz/`, `structural/`, `time/`.
+Rules that apply to **every** Mermaid diagram rendered in Obsidian. If you are writing or reviewing any diagram, skim this first. Type-specific syntax lives in each type's own file under `flow/`, `data-viz/`, `structural/`, `time/`.
 
 ---
 
-## Version notice
+## Engine notice
 
-- **Obsidian bundled Mermaid**: 11.4.1 (as of April 2026)
-- **Mermaid latest official**: 11.14.0
-- **Gap**: ~10 minor versions behind — features added in 11.5+ are unavailable in Obsidian's native viewer
-
-**Rule of thumb when writing diagrams for Obsidian notes**:
-- Use only syntax documented in Mermaid docs as available in v11.4.1 or earlier
-- Avoid features flagged as "11.5+" or newer in Mermaid changelog
-- For full compatibility matrix per diagram type, see [obsidian-compatibility.md](obsidian-compatibility.md)
+- **Obsidian 1.15** renders Mermaid with its in-house engine **Pele**, which accepts Mermaid 12.1.0 syntax.
+- Behaviour below was checked in Obsidian 1.15.1 on 2026-11-23; items not checked locally say **unverified**.
+- Engine limits that have no workaround (themes, icons, HTML, math, size) are listed in [obsidian-compatibility.md § Engine limits](obsidian-compatibility.md).
 
 ---
 
-## Quirk 1: List syntax conflict (most common error)
+## Quirk 1: Comma-separated `style` creates an orphan node
 
-**Root cause**: Mermaid parser interprets `number. space` inside node text as Markdown ordered list syntax.
+**Still broken in Obsidian 1.15.** `style A,B ...` is read as one node named `A,B`, which renders as a separate, unconnected box.
 
-**Error message**: `Parse error: Unsupported markdown: list`
-
-**Wrong**:
 ```
-❌ [1. Perception]
-❌ [2. Planning]
-❌ [3. Reasoning]
+❌ style A,B fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px    ← renders an orphan node "A,B"
 ```
 
-**Fix — 4 safe numbering options**:
-```
-✅ [1.Perception]           — remove space after period
-✅ [① Perception]           — use circled numbers
-✅ [(1) Perception]         — use parentheses
-✅ [Step 1: Perception]     — use "Step" prefix
-✅ [Step 1 - Perception]    — use dash separator
-✅ [Perception]             — drop numbering entirely
-```
+Safe forms — `classDef` + `class`, or one `style` line per node:
 
-**Circled-number reference**:
-```
-① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳
-```
-
-This quirk applies to **every** diagram type that has node text (flowchart, class, ER, sequence, state, etc.).
-
----
-
-## Quirk 2: Subgraph naming rule
-
-**Rule**: Subgraphs with spaces in their name must use `subgraph id["Display Name"]` format. Applies to flowchart / graph / state / sequence / architecture whenever subgraphs are used.
-
-**Wrong**:
 ```mermaid
+flowchart LR
+A --> B
+classDef greenGroup fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px
+class A,B greenGroup
+```
+
+```mermaid
+flowchart LR
+A --> B
+style A fill:#d3f9d8,stroke:#2f9e44
+style B fill:#d3f9d8,stroke:#2f9e44
+```
+
+Fixed colours set by `classDef` / `style` are kept (they do not follow the theme). Colour formats: hex `#ff0000` / `#f00` recommended.
+
+---
+
+## Quirk 2: Unquoted ASCII parentheses in labels
+
+**Still broken.** Parentheses inside an unquoted bracket label are read as shape syntax and throw an error.
+
+```
+❌ A[Call API (v2)]
+✅ A["Call API (v2)"]
+```
+
+Quote any label containing `()`, `[]`, `{}` or other shape characters.
+
+---
+
+## Quirk 3: Bare subgraph names
+
+**Still broken.** `subgraph Core Process` with spaces, referenced later by its display name, fails to parse in Pele 1.13.0 (`Expecting 'SEMI', 'NEWLINE', 'EOF', got 'NODE_STRING'`), so the whole diagram shows an error.
+
+```
 ❌ subgraph Core Process
      A --> B
    end
+   Title --> Core Process
 ```
 
-**Right**:
+✅ Declare an ID and link to it:
+
 ```mermaid
-✅ subgraph core["Core Process"]
+flowchart TD
+   subgraph core["Core Process"]
      A --> B
    end
-
-✅ subgraph core_process            — simple ID only, no spaces
-     A --> B
-   end
+   Title --> core
 ```
 
-**Referencing subgraphs** (in any context — links, nesting, etc.): always use the **ID**, never the display name.
+Always declare `id["label"]` and reference the **ID**. The same applies to nodes: reference by ID, never by display text — display text used as a reference silently creates new unconnected nodes.
 
-```mermaid
-❌ Title --> Core Process      — cannot reference display name
-✅ Title --> core              — must reference ID
+---
+
+## Quirk 4: Timeline time-like text
+
+**Still broken.** In a timeline, a time-like period such as `9:00 : x` throws an error, and quoting does **not** fix it.
+
+```
+❌ 9:00 : Opening bell
+❌ "9:00" : Opening bell
+✅ 0900 : Opening bell
+✅ 9時 : Opening bell
+✅ 9.00 : Opening bell
 ```
 
 ---
 
-## Quirk 3: Node reference rule
+## Quirk 5: CJK in identifier positions
 
-**Rule**: Always reference nodes by their **ID**, never by their display text. Applies universally.
+**Still broken.** CJK is accepted in display labels and in most identifier positions (flowchart / mindmap / kanban node IDs, subgraph IDs, class / entity / state names), but an **unquoted** CJK identifier is a syntax error in some types. Quoting fixes most of them (verified with Pele 1.13.0, 2026-11-23):
 
-```mermaid
-# Define nodes
-A[Display Text A]
-B["Display Text B"]
+- **gitGraph branch names**: `branch 開發` is a syntax error. Quote the name in every `branch` / `checkout` / `merge` line, or use an ASCII branch name and put the CJK text in `tag:` or `id:`:
 
-# Reference nodes
-A --> B                              ✅ use node IDs
-Display Text A --> Display Text B    ❌ cannot use display text
-```
+  ```mermaid
+  gitGraph
+      commit id: "初始化"
+      branch "開發"
+      checkout "開發"
+      commit id: "新增功能"
+      checkout main
+      merge "開發"
+  ```
 
-This is the most common silent-failure pattern: diagram parses but layout is wrong because Mermaid treats display-text-as-reference as new unconnected nodes.
-
----
-
-## Quirk 4: Special characters in node / label text
-
-**Problematic characters and their safe replacements**:
-
-| Character | Problem | Safe replacement |
-|---|---|---|
-| `"` (double quote) | Breaks node text parsing | `『』` (CJK quote) |
-| `()` (parens in text) | Ambiguous with shape syntax | `「」` (CJK bracket) |
-| `:` (colon) | Usually safe; avoid if parsing fails | Use dash or remove |
-| `<br/>` (line break) | Works in quoted node labels: `["Text<br/>Line"]`, `(("Text<br/>Line"))`, etc. | Does **not** work unquoted; use `["..."]` quoting |
-| `#` (hash) | Reserved; escape with `&#35;` | Replace with text "number" |
-
-**Length guideline**: keep node text under 50 characters. Long labels should be broken into annotation nodes or use circle-node line breaks.
+- **usecase-beta actor IDs**: `actor 使用者` errors and an `as "..."` alias is rejected; `actor "使用者"` works when every reference also quotes it (`"使用者" --> Login`). CJK use-case labels go in `Login("登入系統")`.
+- **wardley-beta components / anchors, venn-beta sets, requirement / element names**: bare CJK is a lexical error; the quoted name (`component "雲端" [0.4, 0.8]`, `set "前端"`, `requirement "登入" {`) works when every reference quotes it too.
+- **architecture-beta and radar-beta IDs**: CJK is rejected bare *and* quoted — use an ASCII ID and put CJK in the bracket label (`service api(server)[伺服器]`, `axis speed["速度"]`).
 
 ---
 
-## Quirk 4.5: Always quote user-visible display strings (where the parser allows it)
+## Quirk 6: Architecture edge form
 
-**Rule**: Wrap user-visible display text in `"..."` wherever the diagram type's parser accepts it.
+**Still required.** `architecture-beta` edges must name the side of each end:
 
-**Rationale**:
-- CJK (Chinese / Japanese / Korean) text fails unpredictably without quotes across many Mermaid positions
-- EN text often works unquoted but can fail silently on special characters (spaces, dashes, parentheses, reserved words)
-- Unified rule eliminates per-case judgment and avoids the "works most of the time" trap
+```
+❌ db --> server
+✅ db:R --> L:server
+```
 
-**Positions where quoting IS required or safe (apply consistently)**:
-- Flowchart / graph / circular-flow / comparison node labels: `A["Label"]`, `B("Label")`, `C(("Label"))`, `D{"Decision?"}`, `E[/"Para"/]`, `F[("DB")]`, etc.
-- Flowchart arrow labels: `A -->|"Label"| B`
-- Subgraph display names with spaces: `subgraph id["Display Name"]`
-- Pie slice labels: `"Label" : value` (the pie **title** must NOT be quoted — see unquoted list)
-- Quadrant data points: `"Name": [x, y]`
-- Quadrant x-axis / y-axis / quadrant-N labels: CJK MUST be quoted (`x-axis "單一規則" --> "完整框架"`); the quadrant **title** must NOT — see [data-viz/quadrant.md](data-viz/quadrant.md)
-- xychart title, axis names, categorical x-axis labels, series names: all `"..."` per [data-viz/xychart.md](data-viz/xychart.md) Style rule
-- Block-beta labels: `id["Display"]`
-- Architecture-beta bracket labels containing CJK / special chars: `service x(server)["應用伺服器"]` — unquoted CJK in a bracket throws a syntax error
-- C4 element / boundary / relationship labels: all quoted per C4 canonical syntax
-- gitGraph commit IDs and tags: `id: "..."`, `tag: "..."`
-
-**Positions where quoting is NOT supported — leave unquoted**:
-- Identifiers / node IDs / branch names / class names / entity names (references, not display strings) — keep these **ASCII**: CJK in an identifier position (e.g. a gitGraph `branch 開發`) throws a syntax error and **cannot** be fixed by quoting; romanize it, or move the CJK into a quotable display field (tag / commit-id / label)
-- Keywords: `subgraph`, `end`, `class`, `state`, `loop`, `alt`, `participant`, `actor`, `section`, `title`, `direction`
-- Sequence message text / state transition labels / state descriptions (positions after `:` in sequence-v2 and state-v2)
-- Gantt title / section / task name (all free-form after keyword; quoting renders literally — if CJK fails to parse, rephrase, there is no quoting escape)
-- Timeline title / section / period / event text (same: quoting renders literally)
-- Pie title and Quadrant title (free-form to end of line; quoting prints literal `"`). ⚠️ Quadrant **axis / quadrant-N labels are the exception** — those MUST be quoted for CJK (see quoted list above)
-- Architecture-beta bracket content for **ASCII** labels (`[Label]`); CJK / special-char bracket labels MUST be quoted (`["..."]`) — see quoted list above
-- Numeric values, arrow operators, cardinality symbols, shape syntax without text content
-
-**When uncertain**: test in Mermaid Live Editor first; if quotes render literally in output, the position does not support quoting — leave unquoted and rely on rephrasing to avoid special characters.
-
-Per-type quote rules are documented at the top of each type file under `## Quote rule for <type>`.
+Sides are `T`, `B`, `L`, `R`. Only the built-in icons render; external icon packs render as an empty box.
 
 ---
 
-## Quirk 5: Inline styling syntax
+## Fixed in Obsidian 1.15 — do not avoid any more
 
-**Rule**: Style declarations use the same syntax across all diagram types that support styling.
+These were problems under the old Mermaid.js renderer. They render correctly in Obsidian 1.15; do not rewrite diagrams to avoid them.
 
-```mermaid
-style NodeID fill:#color,stroke:#color,stroke-width:2px
-```
+| Pattern | Now |
+|---|---|
+| `1. ` numbered-list-like label (`A[1. Perception]`) | Renders as literal text |
+| Unquoted CJK labels (`A[需要處理]`) | Renders normally |
+| Line breaks with `<br/>` or a literal `\n` in labels | Render as line breaks |
+| `stateDiagram` (v1) | Renders, as does `stateDiagram-v2` |
+| Undirected `---` edges | Render without an arrowhead |
 
-**Color formats**:
-- Hex: `#ff0000` or `#f00` (recommended)
-- RGB: `rgb(255,0,0)` (works but verbose)
-- Named: `red`, `blue`, etc. (limited support; stick to hex)
-
-**Style multiple nodes at once** — do NOT use comma-separated `style` (Obsidian 11.4.1 parses it as one long node ID and creates an orphan node):
-
-```
-❌ style A,B,C fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px    ← renders as orphan node "A,B,C"
-```
-
-Use `classDef` + `class` instead (standard Mermaid multi-node styling):
-
-```mermaid
-classDef greenGroup fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px
-class A,B,C greenGroup
-```
-
-This defines a named class once, then applies it to multiple node IDs. Supported universally in Mermaid including Obsidian 11.4.1.
-
-**Font color for dark backgrounds**:
-```mermaid
-style Title fill:#1971c2,stroke:#1971c2,stroke-width:3px,color:#ffffff
-```
+Quoting display labels is still a good default — it is required for labels with parentheses (Quirk 2) — but unquoted CJK is no longer an error.
 
 ---
 
-## Quirk 6: Version-gap landmines (v11.4.1 vs v11.14.0)
+## Quote positions
 
-Because Obsidian ships Mermaid 11.4.1, features added in 11.5+ will NOT render correctly in Obsidian's native viewer. Do not use:
+**Quote** user-visible display strings where the parser strips the quotes:
+- Flowchart / graph node labels and arrow labels: `A["Label"]`, `A -->|"Label"| B`
+- Subgraph display names: `subgraph id["Display Name"]`
+- Pie slice labels, quadrant data points and axis labels, xychart title / axes / series names
+- C4 labels, block-beta labels, architecture bracket labels, gitGraph `id:` / `tag:`, usecase labels `Login("登入系統")`
 
-| Feature | Added in | Obsidian 11.4.1 behavior |
-|---|---|---|
-| `look: neo` (drop-shadow sketch) | 11.14.0 | Ignored; falls back to default |
-| `showDataLabelOutsideBar` (xychart) | 11.14.0 | Not recognized |
-| `wardley-beta` | 11.10+ | Syntax error |
-| Neo look styling | 11.14.0 | Ignored |
-| Updated arrow rendering | 11.5+ | Older behavior in Obsidian |
-| Fixed undirected-graph rendering | 11.5 | Obsidian still renders undirected as directed |
+**Do not quote** (quotes render literally or are not accepted):
+- Identifiers: node IDs, ASCII branch names, class / state names (exception: a CJK name in gitGraph / usecase / wardley / venn / requirement must be quoted — Quirk 5)
+- Keywords: `subgraph`, `end`, `class`, `state`, `section`, `title`, `direction`, ...
+- Free-form text: pie / quadrant titles, gantt title / section / task names, timeline title / section / period / event text, sequence messages and state transition labels after `:`
 
-**If you encounter a bug in Obsidian that is known-fixed in Mermaid 11.5+**: either wait for Obsidian to upgrade, or degrade the diagram type (see [obsidian-compatibility.md](obsidian-compatibility.md) fallback policies).
+Per-type quote rules are at the top of each type file under `## Quote rule for <type>`.
 
-**Specific beta types available in 11.4.1** (syntax works but may have styling quirks):
-- `xychart-beta` (v11.1+) ✅ bar works / 🔻 line has CSS bug
-- `architecture-beta` (v11.1+) 🟡 icon CDN dependency
-- `block-beta` (v10.10+) 🟡 needs testing
-- `packet-beta` (v11.0+) — not in scope
+---
+
+## Labels are SVG text
+
+Labels support line breaks, bold and italic only. Arbitrary HTML, Font Awesome / iconify icons, math and emoji-as-icons should not be used. Keep labels under about 50 characters; long CJK labels may wrap mid-word in some versions.
 
 ---
 
 ## Error message → root cause cheatsheet
 
-| Error message | Root cause | Fix |
+| Symptom | Root cause | Fix |
 |---|---|---|
-| `Unsupported markdown: list` | `number. space` pattern in node text | Quirk 1 |
-| `Parse error on line X: Expecting 'SEMI', 'NEWLINE', 'EOF'` | Subgraph with spaces missing ID format, OR node reference by display text | Quirk 2 / Quirk 3 |
-| `unexpected character` | Unescaped special character (`"`, `()`, etc.) | Quirk 4 |
-| Diagram renders but layout is wrong | Likely display-text-used-as-reference silently creating unconnected nodes | Quirk 3 |
-| Undirected graph looks directed | Known 11.4.1 bug — fixed in 11.5+ | Use explicit arrows |
-| `xychart` lines invisible | `stroke-width: 0` CSS bug in 11.4.1 | Use bar mode (see [obsidian-compatibility.md § Line chart fallback policy](obsidian-compatibility.md)) |
-| Architecture diagram icons missing | iconify CDN offline / blocked | See [obsidian-compatibility.md § Architecture icon fallback policy](obsidian-compatibility.md) |
+| Extra unconnected box named `A,B` | Comma-separated `style` | Quirk 1 |
+| Parse error near `(` in a label | Unquoted parentheses | Quirk 2 |
+| Extra unconnected box named like a subgraph | Subgraph referenced by display name | Quirk 3 |
+| Timeline error on a time | `9:00`-style period | Quirk 4 |
+| gitGraph / usecase syntax error with CJK | CJK identifier | Quirk 5 |
+| Architecture edge error | Edge without sides | Quirk 6 |
+| Theme or init colours ignored | Engine limit | [obsidian-compatibility.md](obsidian-compatibility.md) |
+| Icon shows as empty box | Engine limit | [obsidian-compatibility.md](obsidian-compatibility.md) |
 
 ---
 
@@ -228,54 +185,19 @@ Because Obsidian ships Mermaid 11.4.1, features added in 11.5+ will NOT render c
 
 Before finalizing ANY Mermaid diagram for an Obsidian note:
 
-- [ ] No `number. space` pattern in any node / label text
-- [ ] All subgraphs with spaces use `subgraph id["Display Name"]` format
-- [ ] All node references use IDs, never display text
-- [ ] **User-visible display strings quoted in positions that support it** (flowchart nodes, arrow labels, pie labels, quadrant data points, xychart title/axis/series, C4 labels, gitGraph tags) — see Quirk 4.5
-- [ ] Special characters (`"`, `()`) replaced with safe equivalents (`『』`, `「」`)
-- [ ] No features from Mermaid 11.5+ (Neo look, showDataLabelOutsideBar, wardley-beta)
-- [ ] Style declarations use valid hex colors and syntax
-- [ ] Emojis NOT used in node text (use color coding or text labels instead)
-- [ ] Diagram tested in target renderer (Obsidian preferred; Mermaid Live Editor for pre-validation)
+- [ ] No comma-separated `style A,B` — use `classDef` + `class` or one `style` per node
+- [ ] Labels containing parentheses are quoted
+- [ ] Subgraphs use `id["label"]`; all references use IDs
+- [ ] No `9:00`-style times in timeline periods
+- [ ] No unquoted CJK branch / actor / component / set / requirement names; architecture and radar IDs are ASCII (Quirk 5)
+- [ ] Architecture edges use `a:R --> L:b`
+- [ ] No reliance on themes, icons, HTML, math or JS click callbacks
+- [ ] Diagram tested in Obsidian when it uses an unverified feature
 
 ---
 
 ## Platform notes
 
-**Obsidian** (primary target):
-- Mermaid version 11.4.1 (bundled, may lag behind)
-- Strictest parser — if it works here, it usually works elsewhere
-- Known quirks for xychart lines, architecture icons, undirected graphs
-- Test diagrams in target vault before publishing
+**Obsidian 1.15** (primary target): Pele engine, Mermaid 12.1.0 syntax; theme and HTML differences listed in [obsidian-compatibility.md](obsidian-compatibility.md).
 
-**GitHub**:
-- Mermaid version typically newer than Obsidian
-- Most features supported including betas
-- Good pre-validation platform
-
-**Mermaid Live Editor** (<https://mermaid.live/>):
-- Latest Mermaid version
-- Best for testing new syntax before moving to Obsidian
-- Features here may not work in Obsidian 11.4.1
-
-**Migration consideration**: if Obsidian upgrades bundled Mermaid to 11.5+ or later, revisit [obsidian-compatibility.md § Migration path](obsidian-compatibility.md).
-
----
-
-## Quick reference
-
-### Safe numbering methods
-- ✅ `1.Text` `①Text` `(1)Text` `Step 1:Text`
-- ❌ `1. Text` (space after period)
-
-### Safe subgraph syntax
-- ✅ `subgraph id["Name"]` `subgraph simple_name`
-- ❌ `subgraph Name With Spaces`
-
-### Safe node references
-- ✅ `NodeID --> AnotherID`
-- ❌ `"Display Text" --> "Other Text"`
-
-### Safe special characters in text
-- ✅ `『』` for quotes, `「」` for parentheses
-- ❌ `"` unescaped quotes, `()` in ambiguous contexts
+**GitHub / GitLab / Mermaid Live Editor**: use the Mermaid.js library. Output from this skill is standard Mermaid syntax and should render there, but colours and themes may differ from Obsidian.

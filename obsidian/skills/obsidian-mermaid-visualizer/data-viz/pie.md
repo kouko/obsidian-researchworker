@@ -58,9 +58,10 @@ pie showData
 
 `showData` adds numeric values on each slice (in addition to the legend).
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — pie is one of Mermaid's oldest / most stable types
+- **Status**: ✅ Full support
+- **Colours**: slice colours follow `themeVariables.pie1`–`pie8`; other theme settings are ignored ([engine limits](../obsidian-compatibility.md))
 - **Known quirks**:
   - Slice-label quoting: slice labels with spaces or special characters require `"..."` quotes
   - **Title must NOT be quoted** — the pie title is free-form text to end of line; wrapping it in `"..."` prints the quote characters literally (same bug class as the quadrant title). Leave it bare.
@@ -69,7 +70,7 @@ pie showData
 
 ## Quote rule for pie
 
-Pie has **opposite quoting rules for slices vs the title** — verified with mermaid-cli (2026-06):
+Pie has **opposite quoting rules for slices vs the title** — verified with Pele 1.13.0, 2026-11-23:
 
 - **Slice labels** (always quote): `"Label" : value` — quotes are stripped, render clean; required for spaces / CJK.
 - **Title** (never quote): `pie title 市場佔有率` / `pie title Market Share Q1 2026`. The title reads to end of line, so multi-word and CJK titles work bare. ⚠️ Quoting it (`pie title "..."`) renders the `"` **literally** — confirmed for ASCII and CJK alike.

@@ -90,9 +90,11 @@ timeline
     ...
 ```
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — timeline added in v10.9, stable
+- **Status**: ✅ Full support
+- **Colours**: section colours follow `themeVariables.cScale*` (fixed in Obsidian 1.15.1)
+- **Still broken**: a time-like period such as `9:00 :` errors and quoting does not help — write `0900`, `9時` or `9.00` ([quirk 4](../obsidian-common-quirks.md))
 - **Known quirks**:
   - Very long event text wraps awkwardly — keep events ≤ 40 chars each
   - Too many events per period (>5) gets cramped vertically
@@ -110,9 +112,9 @@ Mermaid timeline treats title / section / period / event text as free-form token
 - Period / events: `1957 : FORTRAN` ✅ (NOT `1957 : "FORTRAN"`)
 - Multi-event line: `1995 : Java : JavaScript : PHP : Ruby` ✅ — each event is colon-delimited free-form, unquoted
 
-**For CJK content in Timeline**: CJK usually parses throughout, but this is **not guaranteed** in Obsidian's bundled lexer (mermaid-cli is more lenient than Obsidian — a cli pass does not prove an Obsidian pass). No quoting escape exists (quotes render literally); if a label fails in Obsidian, rephrase / romanize it.
+**For CJK content in Timeline**: CJK renders throughout in Obsidian 1.15 (verified with Pele 1.13.0, 2026-11-23). No quoting escape exists (quotes render literally); if a label fails `scripts/validate.sh`, rephrase it.
 
-**Colon caveat (scoped)**: only a **space-padded ` : `** starts a new event — that is the separator. A bare colon inside event text is safe and does NOT split: `2023 : 開會 9:00 開始` renders as one event, and `2023 : 發布 http://x` keeps the `://` (verified mermaid-cli 2026-06). So only avoid the literal ` : ` (space-colon-space) sequence inside an event; there is no quoting/escape mechanism, so rephrase if you need that exact sequence.
+**Colon caveat (scoped)**: only a **space-padded ` : `** starts a new event — that is the separator. A bare colon inside event text is safe and does NOT split: `2023 : 開會 9:00 開始` renders as one event, and `2023 : 發布 http://x` keeps the `://` (verified with Pele 1.13.0, 2026-11-23). So only avoid the literal ` : ` (space-colon-space) sequence inside an event; there is no quoting/escape mechanism, so rephrase if you need that exact sequence.
 
 ## Worked examples
 
