@@ -1,5 +1,6 @@
 """Pele-based Mermaid validator (validate.sh -> validate.mjs) gives Obsidian 1.15's verdict."""
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -52,6 +53,16 @@ def test_pele_rejected_samples_fail(tmp_path, src):
     assert r.returncode == 1, r.stdout + r.stderr
     assert "PASS  block 1" in r.stdout
     assert "FAIL  block 2" in r.stdout
+
+
+def test_broken_pele_install_exits_2(tmp_path):
+    note = tmp_path / "note.md"
+    note.write_text("```mermaid\npie\n \"a\" : 1\n```\n", encoding="utf-8")
+    r = subprocess.run(
+        ["node", str(SCRIPTS / "validate.mjs"), str(note)],
+        capture_output=True, text=True, timeout=60, env={**os.environ, "PELE_DIR": str(tmp_path)},
+    )
+    assert r.returncode == 2, r.stdout + r.stderr
 
 
 BROKEN = "flowchart TD\n A[Call API (v2)] --> B"

@@ -34,6 +34,17 @@ def test_still_broken_patterns_listed():
         assert needle in quirks, needle
 
 
+def test_quotable_cjk_identifiers_not_called_unquotable():
+    # Pele 1.13.0 accepts `branch "開發"` (and quoted usecase / wardley / venn /
+    # requirement names); the skill must not say quoting cannot fix them.
+    gitgraph = _text("structural/gitgraph.md")
+    assert "cannot be quoted" not in gitgraph
+    assert 'branch "開發"' in gitgraph and 'merge "開發"' in gitgraph
+    text = _all()
+    assert "quoting the identifier does not help" not in text
+    assert "can't be quoted at all" not in text
+
+
 def test_fixed_patterns_not_prohibited():
     text = _all()
     for banned in [

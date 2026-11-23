@@ -94,20 +94,23 @@ Always declare `id["label"]` and reference the **ID**. The same applies to nodes
 
 ## Quirk 5: CJK in identifier positions
 
-**Still broken.** CJK is accepted in display labels but not in some identifier positions; quoting the identifier does not help.
+**Still broken.** CJK is accepted in display labels and in most identifier positions (flowchart / mindmap / kanban node IDs, subgraph IDs, class / entity / state names), but an **unquoted** CJK identifier is a syntax error in some types. Quoting fixes most of them (verified with Pele 1.13.0, 2026-11-23):
 
-- **gitGraph branch names**: `branch 開發` is a syntax error. Use an ASCII branch name and put the CJK text in `tag:` or `id:`:
+- **gitGraph branch names**: `branch 開發` is a syntax error. Quote the name in every `branch` / `checkout` / `merge` line, or use an ASCII branch name and put the CJK text in `tag:` or `id:`:
 
   ```mermaid
   gitGraph
       commit id: "初始化"
-      branch dev
-      commit id: "新增功能" tag: "開發"
+      branch "開發"
+      checkout "開發"
+      commit id: "新增功能"
+      checkout main
+      merge "開發"
   ```
 
-- **usecase-beta actor IDs**: a CJK actor ID errors, and an `as "..."` alias is also rejected. Use an ASCII actor name (`actor User`) and put CJK in use-case labels, e.g. `Login("登入系統")`.
-
-Keep all identifiers (node IDs, branch names, class / entity / state names) ASCII.
+- **usecase-beta actor IDs**: `actor 使用者` errors and an `as "..."` alias is rejected; `actor "使用者"` works when every reference also quotes it (`"使用者" --> Login`). CJK use-case labels go in `Login("登入系統")`.
+- **wardley-beta components / anchors, venn-beta sets, requirement / element names**: bare CJK is a lexical error; the quoted name (`component "雲端" [0.4, 0.8]`, `set "前端"`, `requirement "登入" {`) works when every reference quotes it too.
+- **architecture-beta and radar-beta IDs**: CJK is rejected bare *and* quoted — use an ASCII ID and put CJK in the bracket label (`service api(server)[伺服器]`, `axis speed["速度"]`).
 
 ---
 
@@ -149,7 +152,7 @@ Quoting display labels is still a good default — it is required for labels wit
 - C4 labels, block-beta labels, architecture bracket labels, gitGraph `id:` / `tag:`, usecase labels `Login("登入系統")`
 
 **Do not quote** (quotes render literally or are not accepted):
-- Identifiers: node IDs, branch names, class / entity / state names
+- Identifiers: node IDs, ASCII branch names, class / state names (exception: a CJK name in gitGraph / usecase / wardley / venn / requirement must be quoted — Quirk 5)
 - Keywords: `subgraph`, `end`, `class`, `state`, `section`, `title`, `direction`, ...
 - Free-form text: pie / quadrant titles, gantt title / section / task names, timeline title / section / period / event text, sequence messages and state transition labels after `:`
 
@@ -186,7 +189,7 @@ Before finalizing ANY Mermaid diagram for an Obsidian note:
 - [ ] Labels containing parentheses are quoted
 - [ ] Subgraphs use `id["label"]`; all references use IDs
 - [ ] No `9:00`-style times in timeline periods
-- [ ] Identifiers (branch names, actor IDs, node IDs) are ASCII; CJK only in labels
+- [ ] No unquoted CJK branch / actor / component / set / requirement names; architecture and radar IDs are ASCII (Quirk 5)
 - [ ] Architecture edges use `a:R --> L:b`
 - [ ] No reliance on themes, icons, HTML, math or JS click callbacks
 - [ ] Diagram tested in Obsidian when it uses an unverified feature

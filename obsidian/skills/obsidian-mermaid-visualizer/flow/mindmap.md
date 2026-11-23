@@ -158,7 +158,7 @@ mindmap
       Evolution["漸進演化"]
 ```
 
-Using the quoted shape form `id["..."]` is especially important for CJK content — bare text like `可擴展性` without a shape wrapper may fail to parse reliably. Node IDs stay as ASCII identifiers (`Part1`, `Scale`, etc.) since they are references, not display strings.
+Using the quoted shape form `id["..."]` is especially important for CJK content — bare text like `可擴展性` without a shape wrapper may fail to parse reliably. Node IDs are references, not display strings; short ASCII IDs (`Part1`, `Scale`, etc.) are conventional, though CJK IDs also render in Pele 1.13.0.
 
 ## Error prevention
 

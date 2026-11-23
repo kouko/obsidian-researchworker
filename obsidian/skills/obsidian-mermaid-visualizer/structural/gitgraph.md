@@ -92,7 +92,7 @@ gitGraph LR:
 - **Known quirks**:
   - Complex diagrams with >5 branches get visually crowded — keep simple
   - Very long commit IDs / tags may overflow — keep concise
-  - CJK branch names are a syntax error — ASCII branch, CJK in `id:` / `tag:` (see warning below)
+  - An unquoted CJK branch name is a syntax error — quote it everywhere (`branch "開發"`) or use an ASCII branch (see warning below)
   - Comments must be on their own `%%` line — a trailing `# note` is a parse error
   - Parallel merges from multiple branches can look tangled — render each separately if needed
 - **Workaround**: for complex branching, consider splitting into multiple smaller gitGraph diagrams showing different aspects
@@ -104,11 +104,21 @@ Mermaid gitGraph requires quoting on **commit IDs** and **tags** — this is the
 - **Commit IDs**: `commit id: "initial"` ✅ (always quoted per Mermaid docs)
 - **Tags**: `commit tag: "v1.0"` ✅ (always quoted)
 - **Cherry-pick IDs**: `cherry-pick id: "abc123"` ✅ (always quoted)
-- **Branch names** (`branch develop`, `checkout develop`): identifiers — unquoted. Branch names are references, not display strings
+- **Branch names** (`branch develop`, `checkout develop`): ASCII branch names stay unquoted. A CJK branch name must be quoted (see warning below)
 - **Commit type keywords** (`type: REVERSE`, `type: HIGHLIGHT`): enum values — unquoted
 
-> [!warning] Branch names must be ASCII — no CJK
-> A CJK branch name (`branch 開發` / `checkout 開發`) throws `Syntax error in text`, and because branch names are identifiers they **cannot be quoted** to fix it (verified with Pele 1.13.0, 2026-11-23). Use an ASCII branch id and put any CJK in a quotable display field instead — commit `id:` and `tag:` accept CJK when quoted (`commit id: "初始化"`, `commit tag: "版本1.0"` both render clean). Same applies to `checkout` / `merge` / `cherry-pick` which reference the branch name.
+> [!warning] Unquoted CJK branch names are a syntax error
+> `branch 開發` / `checkout 開發` throws a lexical error. Either quote the name **consistently** in every `branch` / `checkout` / `merge` line — the label renders as 開發 without the quotes (verified with Pele 1.13.0, 2026-11-23) — or use an ASCII branch id and put the CJK in commit `id:` / `tag:` (`commit id: "初始化"`, `commit tag: "版本1.0"` both render clean).
+>
+> ```mermaid
+> gitGraph
+>     commit id: "初始化"
+>     branch "開發"
+>     checkout "開發"
+>     commit id: "新增功能"
+>     checkout main
+>     merge "開發"
+> ```
 
 ## Worked examples
 

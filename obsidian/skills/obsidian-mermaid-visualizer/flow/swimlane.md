@@ -62,6 +62,6 @@ swimlane-beta LR
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
 | `lane A["客戶"]` | `subgraph cust["客戶"] ... end` | Lanes are subgraphs |
-| `subgraph 客戶` | `subgraph cust["客戶"]` | Subgraph IDs are ASCII identifiers |
+| `subgraph 客戶` | `subgraph cust["客戶"]` | Bare CJK subgraph IDs render, but a short ASCII ID keeps references and `class` lines readable |
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) for universal rules.

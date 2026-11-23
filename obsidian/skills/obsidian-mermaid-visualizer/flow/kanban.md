@@ -30,7 +30,7 @@ kanban
 ## Obsidian 1.15 compatibility
 
 - **Status**: ✅ renders in Pele 1.13.0 (validator-checked, not checked on device)
-- **Known quirks**: every column and card needs a unique ASCII ID
+- **Known quirks**: every column and card needs a unique ID (CJK IDs also render; short ASCII IDs keep metadata lines readable)
 
 ## Worked examples
 

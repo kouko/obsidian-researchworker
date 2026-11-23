@@ -17,7 +17,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-@pytest.mark.parametrize("rel", ["obsidian-common-quirks.md"])
+@pytest.mark.parametrize("rel", ["obsidian-common-quirks.md", "structural/gitgraph.md"])
 def test_skillexamples_recommendedblocks_render(rel):
     """Each ```mermaid block in the file renders (validate.sh exit 0, no FAIL line)."""
     r = subprocess.run(["bash", str(VALIDATE), str(SKILL / rel)], capture_output=True, text=True, timeout=300)

@@ -58,7 +58,7 @@ Unquoted CJK labels render correctly in Obsidian 1.15. Quoting node labels and a
 ❌ A[Call API (v2)]                    — parse error: quote it
 ```
 
-**Do not quote**: node IDs, keywords (`subgraph`, `end`, `class`), branch names. Keep identifiers ASCII.
+**Do not quote**: node IDs, keywords (`subgraph`, `end`, `class`), ASCII branch names. A CJK gitGraph branch name must be quoted in every `branch` / `checkout` / `merge` (`branch "開發"`).
 
 ---
 
@@ -90,7 +90,7 @@ Before finalising any inline Mermaid block:
 - [ ] Line breaks use `<br/>`
 - [ ] Subgraphs with spaces use `subgraph id["Name"]` format
 - [ ] All connections use node IDs, not display text
-- [ ] Display strings are quoted (Rule 5); identifiers are ASCII
+- [ ] Display strings are quoted (Rule 5); no unquoted CJK gitGraph branch names
 - [ ] Labels containing `()` are quoted; `"` → `『』`, `#` → `&#35;` (Rule 6)
 - [ ] Multi-node styling uses `classDef` + `class`
 - [ ] No reliance on themes, icons, HTML in labels or math (not rendered by Pele)

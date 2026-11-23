@@ -8,7 +8,7 @@
 //
 // Usage: PELE_DIR=<installed pele package dir> node validate.mjs path/to/note.md
 //        (validate.sh sets PELE_DIR to its cache install.)
-// Exit:  0 = all blocks render (or none found), 1 = any FAIL, 2 = bad usage.
+// Exit:  0 = all blocks render (or none found), 1 = any FAIL, 2 = bad usage or pele cannot load.
 
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -18,8 +18,6 @@ if (!process.env.PELE_DIR) {
   console.error('validate.mjs: PELE_DIR is not set; run via validate.sh');
   process.exit(2);
 }
-const { render } = await import(pathToFileURL(join(process.env.PELE_DIR, 'dist', 'pele.js')).href);
-
 const args = process.argv.slice(2);
 if (args.length !== 1) {
   console.error('usage: validate.sh <note.md>');
@@ -31,6 +29,14 @@ try {
   text = readFileSync(path, 'utf8');
 } catch (e) {
   console.error(`cannot read: ${path} (${e.message})`);
+  process.exit(2);
+}
+
+let render;
+try {
+  ({ render } = await import(pathToFileURL(join(process.env.PELE_DIR, 'dist', 'pele.js')).href));
+} catch (e) {
+  console.error(`validate.mjs: cannot load pele from ${process.env.PELE_DIR} (${e.message})`);
   process.exit(2);
 }
 

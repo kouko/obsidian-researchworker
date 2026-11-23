@@ -21,7 +21,7 @@ venn-beta
     union A,B["全端"]
 ```
 
-- `set ID["Label"]` declares a set; the ID is ASCII, the label may be CJK.
+- `set ID["Label"]` declares a set; use an ASCII ID (or a quoted CJK one, `set "前端"`), the label may be CJK.
 - `union ID,ID["Label"]` labels the overlap of the listed sets.
 - Optional `title` line (unquoted).
 
@@ -29,7 +29,7 @@ venn-beta
 
 - **Status**: ✅ renders in Pele 1.13.0 (validator-checked, not checked on device)
 - **Colours**: set colours follow `themeVariables.venn1`–`venn8`; other theme settings are ignored ([engine limits](../obsidian-compatibility.md))
-- **Known quirks**: set IDs must be ASCII; put CJK in the bracket label
+- **Known quirks**: an unquoted CJK set ID is a lexical error; put CJK in the bracket label, or quote the ID everywhere (`set "前端"`)
 
 ## Worked examples
 
@@ -49,7 +49,7 @@ venn-beta
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `set 前端` | `set FE["前端"]` | IDs are identifiers — keep them ASCII |
+| `set 前端` | `set FE["前端"]` | Unquoted CJK IDs are a lexical error |
 | `union A B` | `union A,B["Label"]` | Sets are comma-separated |
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) for universal rules.

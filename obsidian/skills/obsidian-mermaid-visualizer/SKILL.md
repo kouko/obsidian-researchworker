@@ -176,9 +176,9 @@ It renders each block with Pele 1.13.0 (the engine version bundled in Obsidian 1
 - [ ] Labels containing parentheses are quoted ([quirk 2](obsidian-common-quirks.md))
 - [ ] Subgraphs use `id["Display"]`; all references use IDs ([quirk 3](obsidian-common-quirks.md))
 - [ ] No `9:00`-style times in timeline periods ([quirk 4](obsidian-common-quirks.md))
-- [ ] Identifiers ASCII; CJK only in labels / `tag:` / `id:` ([quirk 5](obsidian-common-quirks.md))
+- [ ] No unquoted CJK identifier where the type rejects it (gitGraph branch, usecase actor, wardley component, venn set, requirement name — quote it everywhere); architecture / radar IDs ASCII ([quirk 5](obsidian-common-quirks.md))
 - [ ] Architecture edges use `a:R --> L:b` ([quirk 6](obsidian-common-quirks.md))
-- [ ] **Quote per each type's position rule, NOT everywhere** ([quote positions](obsidian-common-quirks.md)) — quote where the parser strips them (flowchart nodes `A["Label"]`, arrow labels `-->|"Label"|`, pie slice labels, quadrant data points, xychart axes/series, C4 labels, gitGraph tags/ids, requirement `text:`) but NEVER quote free-form titles (pie/quadrant/gantt/timeline titles render the `"` literally). CJK identifiers (gitGraph branch, usecase actor, wardley component) can't be quoted at all — romanize
+- [ ] **Quote per each type's position rule, NOT everywhere** ([quote positions](obsidian-common-quirks.md)) — quote where the parser strips them (flowchart nodes `A["Label"]`, arrow labels `-->|"Label"|`, pie slice labels, quadrant data points, xychart axes/series, C4 labels, gitGraph tags/ids, requirement `text:`) but NEVER quote free-form titles (pie/quadrant/gantt/timeline titles render the `"` literally). CJK identifiers in gitGraph branches, usecase actors and wardley components must be quoted in every reference (`branch "開發"`); architecture / radar IDs reject CJK even quoted — use an ASCII ID with a CJK bracket label
 - [ ] No reliance on themes, icons, HTML, math or JS click callbacks ([engine limits](obsidian-compatibility.md))
 - [ ] Diagram wrapped in ` ```mermaid ... ``` ` fence
 - [ ] No Emoji in node / label text (use color coding instead)

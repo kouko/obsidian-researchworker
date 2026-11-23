@@ -21,14 +21,14 @@ usecase-beta
     User --> Login
 ```
 
-- `actor ID` declares an actor; the ID is shown as its name and **must be ASCII**.
+- `actor ID` declares an actor; the ID is shown as its name; a CJK ID **must be quoted** in the declaration and every reference (`actor "使用者"`, `"使用者" --> Login`).
 - `ID("Label")` declares a use case; the label may be CJK.
 - `actor --> usecase` connects them.
 
 ## Obsidian 1.15 compatibility
 
 - **Status**: ✅ renders in Pele 1.13.0 (validator-checked, not checked on device)
-- **Known quirks**: a CJK actor ID (`actor 使用者`) is a syntax error, and `actor user as "使用者"` is also rejected — use an ASCII actor name ([quirk 5](../obsidian-common-quirks.md))
+- **Known quirks**: a CJK actor ID (`actor 使用者`) is a syntax error, and `actor user as "使用者"` is also rejected — quote the CJK name everywhere (`actor "使用者"`, verified with Pele 1.13.0, 2026-11-23) or use an ASCII actor name ([quirk 5](../obsidian-common-quirks.md))
 
 ## Worked examples
 
@@ -49,7 +49,7 @@ usecase-beta
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `actor 使用者` | `actor User` | Actor IDs must be ASCII |
+| `actor 使用者` | `actor "使用者"` or `actor User` | Unquoted CJK actor IDs are a syntax error |
 | `actor user as "使用者"` | `actor User` | `as` aliases are rejected |
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) for universal rules.

@@ -27,7 +27,7 @@ Per-type compatibility status for Obsidian's native Mermaid rendering, plus the 
 | Flow | Kanban | [flow/kanban.md](flow/kanban.md) | ✅ renders (Pele 1.13.0) | Cards indented under columns | Use directly |
 | Flow | User journey | [flow/journey.md](flow/journey.md) | ✅ renders (Pele 1.13.0) | Colon in task text splits fields | Use directly |
 | Flow | Ishikawa | [flow/ishikawa.md](flow/ishikawa.md) | ✅ renders (Pele 1.13.0) | First line is the effect | Use directly |
-| Flow | Use case | [flow/usecase.md](flow/usecase.md) | ✅ renders (Pele 1.13.0) | Actor names must be ASCII; no `as` alias | ASCII actors, CJK in use-case labels |
+| Flow | Use case | [flow/usecase.md](flow/usecase.md) | ✅ renders (Pele 1.13.0) | Unquoted CJK actor names error; no `as` alias | ASCII actors, or quote CJK actors everywhere (`actor "使用者"`) |
 | Data viz | XY Chart (bar / line) | [data-viz/xychart.md](data-viz/xychart.md) | ✅ full | Series colours come from `themeVariables.xyChart.plotColorPalette` (series order) | Use directly |
 | Data viz | Pie | [data-viz/pie.md](data-viz/pie.md) | ✅ full | Title must NOT be quoted; slice labels ARE quoted | Use directly |
 | Data viz | Quadrant | [data-viz/quadrant.md](data-viz/quadrant.md) | ✅ full | Quadrant numbering counter-intuitive; unquoted CJK axis labels render | Use directly |
@@ -41,9 +41,9 @@ Per-type compatibility status for Obsidian's native Mermaid rendering, plus the 
 | Structural | Class | [structural/class.md](structural/class.md) | ✅ full | Relationship arrow direction confusing | Use directly |
 | Structural | ER | [structural/er.md](structural/er.md) | ✅ full | Cardinality syntax strict | Use directly |
 | Structural | C4 | [structural/c4.md](structural/c4.md) | ✅ full | Don't mix Context / Container / Component in one diagram | Use directly (separate per level) |
-| Structural | gitgraph | [structural/gitgraph.md](structural/gitgraph.md) | ✅ full | CJK branch names are a syntax error — ASCII branch, CJK in `tag:` / `id:` | Use directly |
+| Structural | gitgraph | [structural/gitgraph.md](structural/gitgraph.md) | ✅ full | Unquoted CJK branch names are a syntax error — quote them in every `branch` / `checkout` / `merge` (`branch "開發"`), or ASCII branch with CJK in `tag:` / `id:` | Use directly |
 | Structural | Tree view | [structural/treeview.md](structural/treeview.md) | ✅ renders (Pele 1.13.0) | Keyword is case-sensitive: `treeView-beta` | Use directly |
-| Structural | Wardley map | [structural/wardley.md](structural/wardley.md) | ✅ renders (Pele 1.13.0) | Component names must be ASCII | Use directly |
+| Structural | Wardley map | [structural/wardley.md](structural/wardley.md) | ✅ renders (Pele 1.13.0) | Unquoted CJK component names error — quote them (`component "雲端"`) | Use directly |
 | Structural | Packet | [structural/packet.md](structural/packet.md) | ✅ renders (Pele 1.13.0) | Field labels quoted | Use directly |
 | Structural | Requirement | [structural/requirement.md](structural/requirement.md) | ✅ renders (Pele 1.13.0) | Unquoted CJK in `text:` fails — quote it | Use directly |
 | Time | Gantt | [time/gantt.md](time/gantt.md) | ✅ full | Fills the container width | Use directly |

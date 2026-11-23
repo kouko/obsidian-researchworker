@@ -36,7 +36,7 @@ requirementDiagram
 ## Obsidian 1.15 compatibility
 
 - **Status**: ✅ renders in Pele 1.13.0 (validator-checked, not checked on device)
-- **Known quirks**: unquoted CJK in `text:` is a lexical error — quote it (`text: "系統需支援登入"`); requirement / element names stay ASCII
+- **Known quirks**: unquoted CJK in `text:` is a lexical error — quote it (`text: "系統需支援登入"`); requirement / element names are ASCII, or quoted in the declaration and every relation when CJK (`requirement "登入" {`)
 
 ## Worked examples
 

@@ -33,7 +33,7 @@ wardley-beta
 ## Obsidian 1.15 compatibility
 
 - **Status**: ✅ renders in Pele 1.13.0 (validator-checked, not checked on device)
-- **Known quirks**: component and anchor names must be ASCII — `component 杯茶 [...]` is a lexical error; only the title takes CJK
+- **Known quirks**: an unquoted CJK component or anchor name — `component 杯茶 [...]` — is a lexical error; quote it in the declaration and every edge (`component "杯茶" [...]`, `"杯茶" -> Tea`; verified with Pele 1.13.0, 2026-11-23). The title takes CJK bare
 
 ## Worked examples
 
@@ -56,7 +56,7 @@ wardley-beta
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `component 雲端 [0.4, 0.8]` | `component Cloud [0.4, 0.8]` | Names must be ASCII |
+| `component 雲端 [0.4, 0.8]` | `component "雲端" [0.4, 0.8]` | Unquoted CJK names are a lexical error |
 | Coordinates outside 0–1 | 0–1 | Axes are normalised |
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) for universal rules.
