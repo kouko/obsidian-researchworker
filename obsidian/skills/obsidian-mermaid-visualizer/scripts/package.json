@@ -1,0 +1,9 @@
+{
+  "name": "obsidian-mermaid-validator",
+  "private": true,
+  "type": "module",
+  "description": "Validates Mermaid blocks with Pele, the renderer bundled in Obsidian 1.15.1",
+  "dependencies": {
+    "pele": "1.13.0"
+  }
+}
