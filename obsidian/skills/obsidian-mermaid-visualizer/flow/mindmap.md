@@ -16,7 +16,7 @@ Hierarchical concepts, knowledge organization, topic breakdowns, brainstorming.
 
 ## Canonical syntax
 
-Mermaid `mindmap` uses indentation-based hierarchy (not arrows). For reliability (especially with CJK text or special characters), wrap node display text in shape markers with quotes: `id(("Text"))`, `id["Text"]`, `id("Text")`.
+Mermaid `mindmap` uses indentation-based hierarchy (not arrows). For reliability (especially with parentheses or other special characters; bare CJK text renders), wrap node display text in shape markers with quotes: `id(("Text"))`, `id["Text"]`, `id("Text")`.
 
 ```mermaid
 mindmap
@@ -158,7 +158,7 @@ mindmap
       Evolution["漸進演化"]
 ```
 
-Using the quoted shape form `id["..."]` is especially important for CJK content — bare text like `可擴展性` without a shape wrapper may fail to parse reliably. Node IDs are references, not display strings; short ASCII IDs (`Part1`, `Scale`, etc.) are conventional, though CJK IDs also render in Pele 1.13.0.
+The quoted shape form `id["..."]` is the default; bare CJK text like `可擴展性` also renders in Obsidian 1.15 (Pele 1.13.0 render check), so the wrapper is needed only when the text contains parentheses or brackets. Node IDs are references, not display strings; short ASCII IDs (`Part1`, `Scale`, etc.) are conventional, though CJK IDs also render in Pele 1.13.0.
 
 ## Error prevention
 

@@ -267,7 +267,7 @@ graph TB
     style Refund fill:#fff4e6,stroke:#e67700,stroke-width:2px
 ```
 
-CJK labels work reliably when wrapped in `"..."` per the unified quote rule (see [obsidian-common-quirks.md § Quirk 4.5](../obsidian-common-quirks.md)). Without quotes, CJK characters in node labels may fail to render or break parsing.
+Unquoted CJK node labels render in Obsidian 1.15 (`A[開始] --> B(處理中) --> C{判斷}`, Pele 1.13.0 render check). Quoting labels in `"..."` is still the default, and is required when a label contains parentheses or other shape characters (see [obsidian-common-quirks.md § Quote positions](../obsidian-common-quirks.md)).
 
 ### Example 7: Multi-stage pipeline (compact display for long workflows)
 
@@ -408,7 +408,7 @@ Both variants apply the same technique — **subgraph-level connections** (`stag
 | `A --> B --> |"Label"| C` | `A --> B -->|"Label"| C` (no space before `|`) | Arrow label syntax is strict |
 | `<b>` / `<span>` / other HTML in labels | `<br/>` for line breaks; plain text otherwise | Labels are SVG text — other HTML is not rendered |
 | `A --> B  # note` (trailing comment) | Put `%% note` on its own line | `#` is not a comment marker — parse error |
-| Unquoted display text: `A[Label]` | Quote display text: `A["Label"]` | Unified quote rule for reliability (CJK + special chars) |
+| Unquoted display text: `A[Label]` | Quote display text: `A["Label"]` | Unified quote rule; required for parentheses and other shape characters (unquoted CJK renders) |
 
 ### Pre-save validation
 

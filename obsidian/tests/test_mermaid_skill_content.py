@@ -68,3 +68,16 @@ def test_no_11_4_baseline_claim():
     for name in FILES:
         assert not re.search(r"11\.4\.1|11\.5\+", _text(name)), name
     assert "stroke-width: 0" not in _all()
+
+
+def test_quirk_refs_exist_and_cjk_labels_not_called_failing():
+    # Pele 1.13.0 renders `A[開始] --> B(處理中)` and bare CJK mindmap text.
+    headings = set(re.findall(r"^## (Quirk [\d.]+)", _text("obsidian-common-quirks.md"), re.M))
+    for path in SKILL.rglob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        for ref in re.findall(r"§ (Quirk [\d.]+)", text):
+            assert ref in headings, (path.name, ref)
+    for name in ["flow/flowchart.md", "flow/mindmap.md"]:
+        assert not re.search(r"may fail to (render|parse)", _text(name)), name
+    line = next(l for l in _text("SKILL.md").splitlines() if "quote positions" in l)
+    assert "venn" in line and "requirement" in line
