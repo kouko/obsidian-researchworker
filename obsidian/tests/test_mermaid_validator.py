@@ -52,3 +52,24 @@ def test_pele_rejected_samples_fail(tmp_path, src):
     assert r.returncode == 1, r.stdout + r.stderr
     assert "PASS  block 1" in r.stdout
     assert "FAIL  block 2" in r.stdout
+
+
+BROKEN = "flowchart TD\n A[Call API (v2)] --> B"
+
+
+@pytest.mark.parametrize(
+    "text,code",
+    [
+        (f"~~~mermaid\n{BROKEN}\n~~~\n", 1),
+        ("> [!note]\n> > ```mermaid\n" + "".join(f"> > {l}\n" for l in BROKEN.splitlines()) + "> > ```\n", 1),
+        (f"```mermaid\n{BROKEN}\n", 1),
+        (f"````markdown\n```mermaid\n{BROKEN}\n```\n````\n", 0),
+        (f"    ```mermaid\n    {BROKEN}\n    ```\n", 0),
+    ],
+    ids=["tilde", "nested-callout", "unclosed", "inside-outer-fence", "indented-code"],
+)
+def test_fence_forms_follow_obsidian(tmp_path, text, code):
+    note = tmp_path / "note.md"
+    note.write_text(text, encoding="utf-8")
+    r = subprocess.run(["bash", str(VALIDATE), str(note)], capture_output=True, text=True, timeout=300)
+    assert r.returncode == code, r.stdout + r.stderr

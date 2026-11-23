@@ -140,6 +140,8 @@ Each pair: light fill + stronger stroke. Use semantic assignments by role, not a
 
 Example:
 ```mermaid
+flowchart LR
+NodeA --> NodeB
 style NodeA fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px
 ```
 

@@ -27,7 +27,7 @@ The old renderer read `number. space` in node text as a Markdown list and failed
 ## Rule 3: Subgraph names with spaces
 
 ```
-❌ subgraph Core Process
+❌ subgraph Core Process    — fails to parse in Pele 1.13.0 when linked by name ("got NODE_STRING")
 ✅ subgraph core["Core Process"]
 ✅ subgraph core_process
 ```

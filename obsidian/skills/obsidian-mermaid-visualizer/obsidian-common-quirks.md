@@ -23,11 +23,15 @@ Rules that apply to **every** Mermaid diagram rendered in Obsidian. If you are w
 Safe forms — `classDef` + `class`, or one `style` line per node:
 
 ```mermaid
+flowchart LR
+A --> B
 classDef greenGroup fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px
 class A,B greenGroup
 ```
 
 ```mermaid
+flowchart LR
+A --> B
 style A fill:#d3f9d8,stroke:#2f9e44
 style B fill:#d3f9d8,stroke:#2f9e44
 ```
@@ -51,7 +55,7 @@ Quote any label containing `()`, `[]`, `{}` or other shape characters.
 
 ## Quirk 3: Bare subgraph names
 
-**Still broken.** `subgraph Core Process` with spaces, referenced later by its display name, creates an orphan node instead of linking the subgraph.
+**Still broken.** `subgraph Core Process` with spaces, referenced later by its display name, fails to parse in Pele 1.13.0 (`Expecting 'SEMI', 'NEWLINE', 'EOF', got 'NODE_STRING'`), so the whole diagram shows an error.
 
 ```
 ❌ subgraph Core Process
@@ -60,8 +64,11 @@ Quote any label containing `()`, `[]`, `{}` or other shape characters.
    Title --> Core Process
 ```
 
+✅ Declare an ID and link to it:
+
 ```mermaid
-✅ subgraph core["Core Process"]
+flowchart TD
+   subgraph core["Core Process"]
      A --> B
    end
    Title --> core

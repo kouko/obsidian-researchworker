@@ -34,13 +34,28 @@ try {
   process.exit(2);
 }
 
+// Fences as Obsidian sees them: ``` or ~~~ (3+), indented at most 3 spaces,
+// optionally inside (nested) callout '>' prefixes; closed only by the same
+// char at least as long. Any fence (not only mermaid) is tracked so a
+// ```mermaid line inside an outer ````markdown fence stays literal code.
 const blocks = [];
-let cur = null;
-text.split(/\r?\n/).forEach((line, i) => {
-  if (cur === null && /^\s*```mermaid\s*$/.test(line)) cur = { line: i + 1, body: [] };
-  else if (cur !== null && /^\s*```\s*$/.test(line)) { blocks.push(cur); cur = null; }
-  else if (cur !== null) cur.body.push(line);
+let open = null; // { char, len, mermaid, line, body }
+text.split(/\r?\n/).forEach((raw, i) => {
+  let line = raw;
+  while (/^ {0,3}>/.test(line)) line = line.replace(/^ {0,3}> ?/, '');
+  const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+  if (open === null) {
+    if (m && !(m[1][0] === '`' && m[2].includes('`'))) {
+      open = { char: m[1][0], len: m[1].length, mermaid: m[2].trim().split(/\s+/)[0] === 'mermaid', line: i + 1, body: [] };
+    }
+  } else if (m && m[1][0] === open.char && m[1].length >= open.len && m[2].trim() === '') {
+    if (open.mermaid) blocks.push(open);
+    open = null;
+  } else {
+    open.body.push(line);
+  }
 });
+if (open !== null && open.mermaid) blocks.push({ ...open, unclosed: true });
 
 if (blocks.length === 0) {
   console.log(`no mermaid diagrams found in: ${path}`);
@@ -49,8 +64,8 @@ if (blocks.length === 0) {
 
 let fail = 0;
 blocks.forEach((b, i) => {
-  let err = '';
-  try {
+  let err = b.unclosed ? 'mermaid fence is not closed before end of file' : '';
+  if (!err) try {
     const r = render(b.body.join('\n'));
     if (r && r.error) err = String(r.error.message ?? r.error);
     else if (!r || !r.svg) err = 'render produced no output';
