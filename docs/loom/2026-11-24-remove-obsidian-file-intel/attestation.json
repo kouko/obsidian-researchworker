@@ -1,0 +1,42 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-24-remove-obsidian-file-intel",
+  "content_digest": "90bbaef77105fb1277c8e99068e7b2dcc0a1cc5f",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Existing exact inventory and loader regressions cover rediscovery; committed-tree checks settle guidance and metadata removal."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "code_review",
+      "vendor": "OpenAI",
+      "model": "inherited (exact model unobservable)",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "spec_review",
+      "vendor": "OpenAI",
+      "model": "inherited (exact model unobservable)",
+      "lens": "spec",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "2867969",
+  "tested_commit": "229b679ee96eb7726d94d4c0229c638cf4c014db",
+  "reviewed_commit": "229b679ee96eb7726d94d4c0229c638cf4c014db",
+  "acceptance_status": []
+}
