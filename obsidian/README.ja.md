@@ -2,7 +2,7 @@
 
 [English](README.md) | **日本語** | [繁體中文](README.zh-TW.md)
 
-> Obsidian vault workflow — daily note、markdown、Bases、図、Canvas、file intel、vault 管理、ダッシュボード設計を Claude Code plugin としてパッケージ化。
+> Obsidian vault workflow — daily note、markdown、Bases、図、Canvas、vault 管理、ダッシュボード設計を Claude Code plugin としてパッケージ化。
 
 ## スキルを選ぶ
 
@@ -34,17 +34,16 @@ daily-news-digest を削除する。通常の daily note、単一テーマの研
 wikilink は保持し、既存 vault の出力や設定は変更しない。切り替え前に
 [移行ガイド](../docs/migration.md)を確認してください。
 4.2.0 ではローカル検索を `obsidian-knowledge` に改名し、同梱の読み取り専用シェルスクリプトへ移行しました。
-現在の作業ツリーには `obsidian-research-project` を含め、16 個のスキルがあります。
+現在の作業ツリーには `obsidian-research-project` を含め、15 個のスキルがあります。
 
 ## 背景
 
 Obsidian は local-first な markdown knowledge base。日常の vault 作業は小さい
 反復タスクの集合になる：今日の daily note を開く、inbox を整理する、
-有効な Bases YAML を書く、note 内に Mermaid 図を描く、PDF フォルダを
-要約 note としてインポートする、session 終了時に会話の要約を保存する。
+有効な Bases YAML を書く、note 内に Mermaid 図を描く、session 終了時に会話の要約を保存する。
 
 本 plugin はそれらのタスクを skill としてパッケージ化し、Claude Code が
-intent に応じて dispatch する。Original skill は daily workflow / file intel /
+intent に応じて dispatch する。Original skill は daily workflow /
 ダッシュボード設計 / vault setup / 会話要約をカバー。Import 済 skill は
 Obsidian 固有の markdown / Bases / Obsidian CLI / Defuddle web 抽出 /
 Canvas 作成 / Excalidraw 図 / Mermaid 図をカバー。
@@ -54,7 +53,7 @@ Canvas 作成 / Excalidraw 図 / Mermaid 図をカバー。
 ### Router
 
 `using-obsidian` が entry skill。ユーザーの依頼内容（daily note、vault setup、
-file processing、図、cleanup など）に応じて適切な skill に routing する。
+図、cleanup など）に応じて適切な skill に routing する。
 
 slash command は `/using-obsidian` で呼び出す。
 
@@ -78,7 +77,6 @@ move か edit のみ。振り分け先が曖昧な場合は確認を取る。
 | `obsidian-research` | トピックを web 調査（英語＋日本語、テーマ固有の言語があればそれを主に追加）し、目次付きの研究ノートを `research/` に保存 |
 | `obsidian-research-project` | 保存した研究を複数回にわたって開始・更新する。各ラウンドの範囲を確認し、過去の根拠を保持する。 |
 | `obsidian-knowledge` | 任意の project からローカル vault を検索（読み取り専用）。SessionStart hook が各 session に vault の場所を伝える。Grep/Glob 不要 |
-| `obsidian-file-intel` | PDF / PPTX / XLSX / DOCX / CSV / JSON を Gemini で抽出し、Obsidian-ready な要約を生成 |
 | `dashboard-design` | デジタル庁ダッシュボード設計ガイドラインに基づき、要件整理から layout までを引導 |
 
 ### kepano（Steph Ango）からの import
@@ -116,11 +114,6 @@ npm install -g defuddle
 
 `obsidian-cli` skill は公式 Obsidian CLI と起動中の Obsidian instance が必要 —
 [help.obsidian.md/cli](https://help.obsidian.md/cli) 参照。
-
-`obsidian-file-intel` skill は vault 内の外部互換スクリプト
-`scripts/process_files_with_gemini.py` と、設定済の Gemini API key が必要。
-スクリプトは同梱されず、取得・セットアップ手順も本配布にはない。
-既存の互換スクリプトがなければ処理は利用できず、独立版での設定と実行は未検証。
 
 `obsidian-knowledge` skill は他の project から vault を読む。SessionStart hook
 （`hooks/hooks.json`）が session 開始時に vault のパスを出力する。検索は同梱の `skills/obsidian-knowledge/scripts/vault.sh`（POSIX sh。Obsidian 起動中は CLI、それ以外は BSD grep）を使う — macOS で Python も Grep/Glob も不要。vault の読み取りで
@@ -176,7 +169,6 @@ obsidian/
 │   ├── obsidian-research/       # web research → vault note（original）
 │   ├── obsidian-research-project/ # 複数回にわたる研究プロジェクト
 │   ├── obsidian-knowledge/      # 読み取り専用 vault 検索（original）
-│   ├── obsidian-file-intel/     # ファイル → Obsidian 要約（original）
 │   ├── dashboard-design/        # ダッシュボード設計（original）
 │   ├── obsidian-markdown/       # kepano から import
 │   ├── obsidian-bases/          # kepano から import

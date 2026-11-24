@@ -235,8 +235,7 @@ and verify existing memory/local-skill bytes are unchanged. Verify all generated
 note links resolve or omit them. A file-level check does not establish fresh
 Claude/Codex loading or automatic skill triggering; disclose unexecuted checks.
 Adapt the example below to observed results (do not claim the app opened if it
-did not). Offer file-intel only with its documented external script and credentials;
-do not advertise an unbundled script as installed.
+did not).
 
 ```
 Done. Your vault is live in Obsidian.
@@ -248,7 +247,4 @@ Your slash commands:
   /obsidian-daily    — run this tomorrow morning
   /obsidian-tldr     — run this at the end of any session
   [actual created role skill name] — [one liner, Claude-specific]
-
-Have files to import?
-  Check obsidian-file-intel prerequisites first, then ask to process your files.
 ```
