@@ -13,7 +13,6 @@ Choose a skill by task and open its guide for prerequisites and an example reque
 - [`obsidian-cli`](obsidian-cli/README.md)
 - [`obsidian-daily`](obsidian-daily/README.md)
 - [`obsidian-excalidraw-diagram`](obsidian-excalidraw-diagram/README.md)
-- [`obsidian-file-intel`](obsidian-file-intel/README.md)
 - [`obsidian-knowledge`](obsidian-knowledge/README.md)
 - [`obsidian-markdown`](obsidian-markdown/README.md)
 - [`obsidian-mermaid-visualizer`](obsidian-mermaid-visualizer/README.md)
@@ -36,7 +35,6 @@ Choose a skill by task and open its guide for prerequisites and an example reque
 | obsidian-mermaid-visualizer | [axtonliu/axton-obsidian-visual-skills](https://github.com/axtonliu/axton-obsidian-visual-skills) | MIT (Axton Liu) |
 | dashboard-design | This project | — |
 | obsidian-daily | This project | — |
-| obsidian-file-intel | This project | — |
 | obsidian-research | This project | — |
 | obsidian-research-project | This project | — |
 | obsidian-tldr | This project | — |

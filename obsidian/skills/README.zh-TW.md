@@ -13,7 +13,6 @@
 - [`obsidian-cli`](obsidian-cli/README.md)
 - [`obsidian-daily`](obsidian-daily/README.md)
 - [`obsidian-excalidraw-diagram`](obsidian-excalidraw-diagram/README.zh-TW.md)
-- [`obsidian-file-intel`](obsidian-file-intel/README.md)
 - [`obsidian-knowledge`](obsidian-knowledge/README.md)
 - [`obsidian-markdown`](obsidian-markdown/README.zh-TW.md)
 - [`obsidian-mermaid-visualizer`](obsidian-mermaid-visualizer/README.zh-TW.md)
@@ -36,7 +35,6 @@
 | obsidian-mermaid-visualizer | [axtonliu/axton-obsidian-visual-skills](https://github.com/axtonliu/axton-obsidian-visual-skills) | MIT (Axton Liu) |
 | dashboard-design | 本專案 | — |
 | obsidian-daily | 本專案 | — |
-| obsidian-file-intel | 本專案 | — |
 | obsidian-research | 本專案 | — |
 | obsidian-research-project | 本專案 | — |
 | obsidian-tldr | 本專案 | — |

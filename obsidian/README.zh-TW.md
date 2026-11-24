@@ -2,7 +2,7 @@
 
 [English](README.md) | [日本語](README.ja.md) | **繁體中文**
 
-> Obsidian vault workflow — daily note、markdown、Bases、圖表、Canvas、file intel、vault 管理、dashboard 設計，封裝為 Claude Code plugin。
+> Obsidian vault workflow — daily note、markdown、Bases、圖表、Canvas、vault 管理、dashboard 設計，封裝為 Claude Code plugin。
 
 ## 選擇技能
 
@@ -32,17 +32,17 @@
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 4.2.0 將本機搜尋改名為 `obsidian-knowledge`，並改用隨附的唯讀 shell script。
-目前工作樹有 16 個 skill，包含 `obsidian-research-project`。
+目前工作樹有 15 個 skill，包含 `obsidian-research-project`。
 
 ## 背景
 
 Obsidian 是 local-first 的 markdown 知識庫。日常 vault 工作充滿小而重複的任務：
 打開今天的 daily note、整理 inbox、撰寫合法的 Bases YAML、在 note 內畫
-Mermaid 圖、把一整個 PDF 資料夾匯入成摘要 note，以及在 session 結束時
+Mermaid 圖，以及在 session 結束時
 保存對話摘要。
 
 本 plugin 把這些任務封裝為 skill，讓 Claude Code 依 intent dispatch。
-Original skill 涵蓋 daily workflow、file intel、dashboard 設計、vault setup、
+Original skill 涵蓋 daily workflow、dashboard 設計、vault setup、
 對話摘要。Imported skill 則涵蓋 Obsidian 專屬 markdown、Bases、Obsidian CLI、
 Defuddle 網頁萃取、Canvas 建立、Excalidraw 圖與 Mermaid 圖。
 
@@ -51,7 +51,7 @@ Defuddle 網頁萃取、Canvas 建立、Excalidraw 圖與 Mermaid 圖。
 ### Router
 
 `using-obsidian` 是入口 skill，依使用者意圖（daily note、vault setup、
-file processing、圖表、清理 vault）將請求 routing 至正確的 skill。
+圖表、清理 vault）將請求 routing 至正確的 skill。
 
 用 `/using-obsidian` 呼叫即可。
 
@@ -74,7 +74,6 @@ file processing、圖表、清理 vault）將請求 routing 至正確的 skill�
 | `obsidian-research` | 上網研究指定主題（英文＋日文，主題有特定語言時再加該語言並以它為主），在 `research/` 產出附目錄的研究筆記 |
 | `obsidian-research-project` | 建立並跨輪更新研究專案。每輪先確認範圍，保留歷史判斷與來源版本。 |
 | `obsidian-knowledge` | 從任何 project 搜尋本機 vault（唯讀）；SessionStart hook 會告訴每個 session vault 在哪裡；不需 Grep/Glob |
-| `obsidian-file-intel` | 透過 Gemini 從 PDF / PPTX / XLSX / DOCX / CSV / JSON 萃取內容並產出 Obsidian-ready 摘要 |
 | `dashboard-design` | 依日本數位廳 dashboard 設計指引，從需求釐清引導到 layout |
 
 ### 引入自 kepano（Steph Ango）
@@ -112,11 +111,6 @@ npm install -g defuddle
 
 `obsidian-cli` skill 需要官方 Obsidian CLI 與運行中的 Obsidian instance ——
 參見 [help.obsidian.md/cli](https://help.obsidian.md/cli)。
-
-`obsidian-file-intel` skill 需要 vault 內外部提供的相容腳本
-`scripts/process_files_with_gemini.py` 與設定好的 Gemini API key。
-本發行版未附帶該腳本，也未提供取得或設定程序。沒有既有相容腳本時無法使用
-檔案處理；獨立版本的設定與執行仍未驗證。
 
 `obsidian-knowledge` skill 從其他 project 讀取 vault。SessionStart hook
 （`hooks/hooks.json`）在 session 開始時輸出 vault 路徑。搜尋使用隨附的 `skills/obsidian-knowledge/scripts/vault.sh`（POSIX sh；Obsidian 開著時用 CLI，否則用 BSD grep）——macOS 上不需要 Python，也不需要 Grep/Glob。若讀取 vault 跳出權限確認，
@@ -173,7 +167,6 @@ obsidian/
 │   ├── obsidian-research/       # 單題研究 → vault 筆記（original）
 │   ├── obsidian-research-project/ # 跨輪研究專案
 │   ├── obsidian-knowledge/      # 唯讀 vault 搜尋（original）
-│   ├── obsidian-file-intel/     # 檔案 → Obsidian 摘要（original）
 │   ├── dashboard-design/        # dashboard 設計（original）
 │   ├── obsidian-markdown/       # 引入自 kepano
 │   ├── obsidian-bases/          # 引入自 kepano
