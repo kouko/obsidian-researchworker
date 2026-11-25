@@ -321,10 +321,6 @@ def render_quarter_overview(asset, quarter, review, title, report_links, *, reco
                  asset_id=asset, fiscal_quarter=quarter, as_of=review["cutoff"],
                  review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
-    research = review.get("research", {})
-    changes = _visible_text(research.get("changes") or "No change summary was supplied.")
-    gaps = "\n".join(f"- {_visible_text(gap)}" for gap in research.get("gaps", []))
-    gaps = gaps or "No gaps were recorded."
     links = "\n".join(f"- [{label}]({path})" for label, path in report_links)
     if record_path is not None:
         props["research_record"] = record_path
@@ -356,6 +352,10 @@ def render_quarter_overview(asset, quarter, review, title, report_links, *, reco
                 + "\n\n## 分項研究\n\n" + links
                 + "\n\n## 待補證據\n\n" + list_items(gaps, "本次未列出待補證據。")
                 + f"\n\n[研究紀錄]({record_path})\n")
+    research = review.get("research", {})
+    changes = _visible_text(research.get("changes") or "No change summary was supplied.")
+    gaps = "\n".join(f"- {_visible_text(gap)}" for gap in research.get("gaps", []))
+    gaps = gaps or "No gaps were recorded."
     links = links or "No analysis reports have been saved for this quarter."
     return ("---\n" + _dump(props) + "---\n\n# " + _visible_text(title)
             + "\n\nUse this note to review changes at the saved cutoff, open the supporting analyses, "

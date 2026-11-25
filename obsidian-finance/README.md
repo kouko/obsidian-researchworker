@@ -266,6 +266,16 @@ reports whose content and dependencies still qualify, copy unchanged units
 from the saved progress record with their existing output references. Use the
 current review ID as the predecessor, when present.
 
+Supply complete consumed projections for new units. In a saved fixed US quarterly
+overview, `quarter_evidence.version: 2` records each consumed source version and
+the digest of its exact captured registration separately from its relative path.
+The registration retains its publication date, provenance and full projection.
+The helper restores checked projections
+for assessment and retained-unit publication. A missing or mismatched capture
+invalidates affected work. Older fixed overviews with full projections remain
+readable.
+Taiwan quarterly records keep `quarter_evidence.version: 1` with provenance.
+
 ```python
 saved = research_store.publish(
     root, asset_id, review, files, expected, unique_run_id, complete=False,
@@ -275,10 +285,15 @@ saved = research_store.publish(
 ```
 
 Set `complete=True` only after all required work has been verified. For a
-changed finding, put the reason in `research.changes`. The affected note keeps
-the previous report and its dated source references in its revision history.
-Assess those versions before citing a prior conclusion. An earlier-cutoff
-assessment can report a gap when the retained material is insufficient.
+changed finding, put the reason in `research.changes` for the quarterly overview.
+A same-quarter update writes the current report to its existing path. Read the
+existing note and carry identifiable user-authored passages forward verbatim.
+Label unchecked passages separately from verified claims. If authorship is
+unclear, keep the bounded passage with that uncertainty labeled. Defer the
+affected update and report the ambiguity if you cannot isolate the passage
+without copying the earlier report wholesale.
+Earlier-cutoff assessments use eligible saved evidence and report a gap when
+the retained material is insufficient.
 
 After a pending save is interrupted, use
 `research_store.recover_quarterly(root, asset_id, quarter)` and rediscover.

@@ -1851,7 +1851,8 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
             _require(output["digest"] == sha256(intended[output["path"]]).hexdigest(),
                      "re-verify every unit retained in a changed shared report")
     saved["reports"] = reports
-    portable, evidence = _capture_quarter(root, asset, issuer["issuer"], cycle, saved, expected, compact=True)
+    portable, evidence = _capture_quarter(root, asset, issuer["issuer"], cycle, saved, expected,
+                                         compact=labels is not _TW_REPORT_LABELS)
     overview = cycle + "/" + prefix + overview_suffix
     title = overview_title or (notes["quarter-overview"][2]["title"] if notes
                                else f"{prefix} {labels['quarter-overview'][3:]}")

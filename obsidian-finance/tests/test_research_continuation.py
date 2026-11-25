@@ -136,6 +136,8 @@ status: partial
         assert "finance-quarter-overview" not in overview.read_text()
         assert "Synthesis pending" in overview.read_text()
         companion, = (overview.parent / "data" / "reviews").glob("*.json")
+        portable = json.loads(companion.read_text())["review"]
+        assert portable["quarter_evidence"]["version"] == 1 and portable["provenance"]
         assert list((overview.parent / "data" / "sources").glob("*.json"))
         assert module.verify_quarter(overview.parent, overview.name)["status"] == "verified"
         contents = companion.read_bytes()
@@ -150,6 +152,7 @@ status: partial
     else:
         _, stored = module._markdown.record(overview.read_text(), "quarter-overview")
         assert "fixture_value" not in overview.read_text()
+        assert stored["quarter_evidence"]["version"] == 2
         bindings = stored["quarter_evidence"]["units"]
         sid = "filing-2024Q2"
         ref = bindings["credit"]["sources"][sid]
