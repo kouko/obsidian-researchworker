@@ -1,5 +1,5 @@
 # Align Taiwan skill revision wording with republish behaviour — plan
-intent: 2026-11-25-tw-skill-revision-wording@9ec5fc1
+intent: 2026-11-25-tw-skill-revision-wording@f682296
 charter: 1.1
 
 ## Current State Evidence
@@ -24,3 +24,4 @@ charter: 1.1
 
 ## Risks
 1. Agent wording may still imply a revision log; the test checks the phrase 修訂紀錄 is absent from the whole skill.
+2. Scope widened 2026-11-25 (user-decided — adversary found SKILL.md:35 keeping prior version in the same report; user approved adding it). Test pin strengthened against synonyms and negation.
