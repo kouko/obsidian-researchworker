@@ -52,9 +52,9 @@ def test_skill_entry_exposes_the_packaged_workflow():
 
 def test_skill_drops_in_note_dated_revision_record():
     skill = (SKILL / "SKILL.md").read_text()
-    assert not re.search(r"修訂[紀記]錄|修訂歷程|變更[紀記]錄|報告[^。]*保存前一版", skill)
+    assert not re.search(r"修訂(紀錄|記錄|歷程|歷史)|變更[紀記]錄|保存前一版", skill)
     sentence = next(s for s in skill.split("。") if "原值、原始來源及當時判斷" in s)
-    assert not re.search(r"不|無需|免", sentence)
+    assert not re.search(r"不|無[需須]|毋須|勿|免", sentence)
     assert "受影響的判斷" in skill
 
 
