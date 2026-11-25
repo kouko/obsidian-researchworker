@@ -36,3 +36,9 @@ The prior main commit `f139638` (PR #28) removed `registration_context` and othe
 ## Independent adversarial check
 
 The independent adversary found no candidate-specific issues: both package loaders are identical, standalone and native-skill-only; actual frontmatter descriptions agreed with PyYAML. Existing tests cover package inventories, body and path registration, failure isolation and absence of command registration. No additional adversarial program was warranted.
+
+## Rebase and full-suite rerun
+
+On November 25, the branch was rebased onto `9f6aba7` (PR #40), which restores the US quarterly behavior while preserving Taiwan research. The previously confirmed intent was already present on main and Git dropped its duplicate patch. The remaining commits replayed without conflicts; the Finance README retained the upstream restoration.
+
+At rebased candidate `f18667b`, the full package command returned **588 passed in 59.81s**, with no failures. The previous baseline blocker is resolved. The earlier host-install observations remain dated to their original candidate; refreshed host evidence and closing review are pending.

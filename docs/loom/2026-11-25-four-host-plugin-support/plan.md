@@ -18,7 +18,7 @@ charter: 1.1
 - Files: .claude-plugin/marketplace.json, obsidian/.claude-plugin/, obsidian/.codex-plugin/, obsidian/package.json, obsidian-finance/.claude-plugin/, obsidian-finance/.codex-plugin/, obsidian/tests/test_vault_search.py, README.md
 - Test: A1 positive: version-and-inventory; negative: retired-skill. A4 positive: package-suite; boundary: no-vault-changes.
 - Risk: REQ-1,4; agent-decided align versions and retain existing inventory tests; update historical version assertion for current metadata.
- 
+
 **W2-02 Verify host installation and consolidate guides** after: W2-01 acceptance: 2, 4
 - Files: obsidian/README*.md, obsidian-finance/README.md, docs/migration.md, docs/loom/2026-11-25-four-host-plugin-support/evidence/
 - Test: A2 positive: eight-install-inventories; boundary: isolated-config. A4 positive: documented-routes; boundary: unsupported-or-unverified-disclosed.
