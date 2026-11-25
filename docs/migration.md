@@ -55,13 +55,18 @@ codex plugin add obsidian-finance@obsidian-researchworker
 codex plugin list --marketplace obsidian-researchworker
 ```
 
-To update, bring the checkout to the desired release revision and refresh its
-marketplace.
+To update a locally registered marketplace, bring the checkout to the desired
+release revision and repeat the install commands for the selected plugins.
 
 ```sh
-codex plugin marketplace upgrade obsidian-researchworker
+codex plugin add obsidian@obsidian-researchworker
+codex plugin add obsidian-finance@obsidian-researchworker
 codex plugin list --marketplace obsidian-researchworker
 ```
+
+For a marketplace registered from a Git URL or repository instead, first run
+`codex plugin marketplace upgrade obsidian-researchworker` to refresh its
+snapshot. The upgrade command applies only to Git registrations.
 
 Verify the installed versions separately. If the catalog changes but a selected
 plugin still has older installed contents, refresh that plugin using the host's
@@ -141,7 +146,7 @@ details.
 
 ## Verification status
 
-Candidate release verification on November 25, 2026 used isolated host configurations. Claude Code 2.1.332 and Codex 0.172.0 installed both local marketplace packages with 15 and 4 skill files. Antigravity CLI 1.5.16 converted both Claude plugins and reported the complete inventories. OpenCode 2.4.1 loaded both local package directories, registered 19 namespaced skills, and registered no generated package commands; its TUI offered and completed both example @ mentions without submitting a prompt.
+Candidate release verification on November 25, 2026 used isolated host configurations. Claude Code 2.1.332 and Codex 0.172.0 installed both local marketplace packages with 15 and 4 skill files. Antigravity CLI 1.5.16 converted both Claude plugins and reported the complete inventories. Local update tests also advanced both packages from the previous release versions using the commands above. OpenCode 2.4.1 loaded both local package directories, registered 19 namespaced skills, and registered no generated package commands; its TUI offered and completed both example @ mentions without submitting a prompt.
 
 Model-backed automatic selection and skill execution, remote Git installation of the candidate, live-vault writes, and global installation refresh were not verified. See the [verification record](verification.md) for earlier host evidence.
 
