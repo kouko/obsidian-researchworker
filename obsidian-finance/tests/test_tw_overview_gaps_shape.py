@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-_SCRIPT = Path(__file__).resolve().parents[5] / "obsidian-finance/scripts/research_markdown.py"
+_SCRIPT = Path(__file__).resolve().parents[2] / "obsidian-finance/scripts/research_markdown.py"
 
 
 def _markdown():

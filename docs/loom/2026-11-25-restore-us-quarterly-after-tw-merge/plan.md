@@ -16,6 +16,11 @@ charter: 1.1
 - Test: A1 positive: full package suite; negative: test_portable_source_context_retains_public_links_on_recapture. A2 positive: test_generated_overview_exposes_changes_and_gaps_before_record; boundary: test_public_pilot_adjacent_quarters_and_competition_cutoffs. A3 positive: test_tw_equity_workflow; negative: test_tw_equity_conference.
 - Risk: agent-decided — git merge-file from 6bb2411 base; resolve hunks keeping both behaviours; preserves coverage of test_research_markdown_templates.py and test_research_continuation.py; assertions copied from ab04a8a unchanged.
 
+**W2-01 Graduate Taiwan overview gap probe**  after: W1-01  acceptance: 3
+- Files: obsidian-finance/tests/test_tw_overview_gaps_shape.py, docs/loom/2026-11-25-restore-us-quarterly-after-tw-merge/evidence/probes/test_tw_overview_gaps_shape.py
+- Test: A3 positive: test_render_quarter_overview_taiwan_non_list_gaps_renders_overview[5]; boundary: test_render_quarter_overview_taiwan_non_list_gaps_renders_overview[None].
+- Risk: agent-decided — probe caught a real regression; move into package suite unchanged except the repo-root path depth.
+
 ## Simplicity check
 - Revert PR #28 and re-land — declined: drops shipped Taiwan behaviour, intent requires both.
 - Single task over three files — taken
