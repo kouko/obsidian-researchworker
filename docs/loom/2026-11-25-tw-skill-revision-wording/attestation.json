@@ -1,0 +1,65 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-25-tw-skill-revision-wording",
+  "content_digest": "eb2b0456c702341213f1a5e49cc0f22674a70b51",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest -q obsidian-finance/tests/test_tw_skill_revision_adversarial.py -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_tw_skill_revision_adversarial.py",
+      "result": "pass",
+      "command_digest": "caa06dde6b733c1c2670bdfa1acb972a776856af37a00890ebe2aebcc4d0ba13"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "skill",
+      "verdict": "PASS_WITH_NOTES",
+      "reviewed_sha": "4d6d53d",
+      "review_target_sha": "f0604bd",
+      "findings": []
+    },
+    {
+      "reviewer": "reviewer-b",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "code",
+      "verdict": "PASS_WITH_NOTES",
+      "reviewed_sha": "4d6d53d",
+      "review_target_sha": "f0604bd",
+      "findings": [
+        {
+          "severity": "nit",
+          "anchor": "obsidian-finance/tests/test_tw_equity_workflow.py:56",
+          "text": "next(...) raises StopIteration instead of a clear assertion when the correction sentence is missing."
+        },
+        {
+          "severity": "nit",
+          "anchor": "obsidian-finance/tests/test_tw_skill_revision_adversarial.py:7",
+          "text": "Adversary NEGATIONS lacks 無需; narrower than shipped pin."
+        },
+        {
+          "severity": "nit",
+          "anchor": "docs/loom/intent/2026-11-25-tw-skill-revision-wording.md:22",
+          "text": "Intent says tests unchanged, but the TDD pin and adversarial probe were added."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "5d81b9d077a642b925830b035e92cc7d2d1e48b2",
+  "tested_commit": "167a26267cf3e68d465591dacb445324ebdba3ad",
+  "reviewed_commit": "167a26267cf3e68d465591dacb445324ebdba3ad",
+  "acceptance_status": []
+}
