@@ -1,5 +1,5 @@
 # Align Taiwan skill revision wording with republish behaviour — plan
-intent: 2026-11-25-tw-skill-revision-wording@f682296
+intent: 2026-11-25-tw-skill-revision-wording@9308969
 charter: 1.1
 
 ## Current State Evidence
@@ -22,7 +22,9 @@ charter: 1.1
 ## Questions asked
 ① — consequence — 確認修改目標（兩處台股說明措辭、驗收、範圍）並授權通過審查後自動開 PR、合併另由使用者決定
 ① — consequence — 第 35 行仍要求在同一份報告保存前一版，是否一起改（答：好）
+① — consequence — 第 79 行「保存前一版主張供回查」是否一起改（答：一起改吧）
 
 ## Risks
 1. Agent wording may still imply a revision log; the test checks the phrase 修訂紀錄 is absent from the whole skill.
 2. Scope widened 2026-11-25 (user-decided — adversary found SKILL.md:35 keeping prior version in the same report; user approved adding it). Test pin strengthened against synonyms and negation.
+3. Scope widened again 2026-11-25 (user-decided — reviewer found SKILL.md:79 '保存前一版主張'; user approved).
