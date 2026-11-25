@@ -51,7 +51,7 @@ graph TB
 
 ### Node shapes
 
-```mermaid
+```text
 A["Rectangle Text"]             # Default rectangle
 B("Rounded Text")               # Rounded rectangle
 C(["Stadium Text"])             # Stadium / pill
@@ -78,7 +78,7 @@ J[/"Trapezoid"\]                # Trapezoid
 
 ### Multi-target connections
 
-```mermaid
+```text
 A --> B & C & D        # One to many
 A & B & C --> D        # Many to one
 A --> B --> C --> D    # Chaining
@@ -86,7 +86,7 @@ A --> B --> C --> D    # Chaining
 
 ### Subgraphs (grouping)
 
-```mermaid
+```text
 graph TB
     subgraph group_id["Group Display Name"]
         direction TB
@@ -132,19 +132,21 @@ graph TB
 
 ### Styling
 
-```mermaid
+```text
 style NodeID fill:#color,stroke:#color,stroke-width:2px
 ```
 
 See SKILL.md §Color Scheme Defaults for the 9-color palette and when to apply each.
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — flowchart is the most stable Mermaid type
+- **Status**: ✅ Full support
 - **Known quirks**:
-  - Undirected graph edges (`---`) may render as directed in 11.4.1 (known 11.5+ fix) — use explicit arrows
-  - Large flowcharts (>50 nodes) may have layout stability issues — consider splitting into multiple diagrams
-  - `<br/>` in node text works reliably only in circle nodes `(("Text<br/>Line"))`
+  - Undirected edges (`---`) render undirected (fixed in 1.15)
+  - Pele lays out the graph itself — node positions and spacing differ from Mermaid.js
+  - Large flowcharts (>50 nodes) get hard to read — consider splitting into multiple diagrams
+  - `<br/>` line breaks work in any node shape; other HTML is not rendered
+  - Comments must be on their own `%%` line — a trailing `# note` is a parse error
 - **Workaround**: none needed for standard use; follow [obsidian-common-quirks.md](../obsidian-common-quirks.md) universal rules
 
 ## Worked examples
@@ -221,9 +223,9 @@ graph TB
 
     subgraph agent["AI Agent Core"]
         direction TB
-        Perception["①Perception"] --> Planning["②Planning"]
-        Planning --> Reasoning["③Reasoning"]
-        Reasoning --> Action["④Action"]
+        Perception["1. Perception"] --> Planning["2. Planning"]
+        Planning --> Reasoning["3. Reasoning"]
+        Reasoning --> Action["4. Action"]
     end
 
     Action --> Output["System Response"]
@@ -237,7 +239,7 @@ graph TB
     style Action fill:#fff4e6,stroke:#e67700,stroke-width:2px
 ```
 
-Note the use of `①②③④` instead of `1. 2. 3. 4.` to avoid the Markdown list syntax conflict (see [obsidian-common-quirks.md Quirk 1](../obsidian-common-quirks.md)).
+Numbered labels such as `"1. Perception"` render as literal text in Obsidian 1.15; no `①②③④` substitution is needed (see [obsidian-common-quirks.md](../obsidian-common-quirks.md)).
 
 ### Example 6: CJK content (訂單處理流程)
 
@@ -265,7 +267,7 @@ graph TB
     style Refund fill:#fff4e6,stroke:#e67700,stroke-width:2px
 ```
 
-CJK labels work reliably when wrapped in `"..."` per the unified quote rule (see [obsidian-common-quirks.md § Quirk 4.5](../obsidian-common-quirks.md)). Without quotes, CJK characters in node labels may fail to render or break parsing.
+Unquoted CJK node labels render in Obsidian 1.15 (`A[開始] --> B(處理中) --> C{判斷}`, Pele 1.13.0 render check). Quoting labels in `"..."` is still the default, and is required when a label contains parentheses or other shape characters (see [obsidian-common-quirks.md § Quote positions](../obsidian-common-quirks.md)).
 
 ### Example 7: Multi-stage pipeline (compact display for long workflows)
 
@@ -404,8 +406,9 @@ Both variants apply the same technique — **subgraph-level connections** (`stag
 | `graph TB A --> B` (on one line) | Put `graph TB` on its own line, then `A --> B` on next | Direction declaration needs newline |
 | `subgraph AI Agent` without ID | `subgraph agent["AI Agent"]` | Space in name requires ID+display format |
 | `A --> B --> |"Label"| C` | `A --> B -->|"Label"| C` (no space before `|`) | Arrow label syntax is strict |
-| Using `<br/>` in rectangles `["Line1<br/>Line2"]` | Use circle nodes `(("Line1<br/>Line2"))` OR split into annotation nodes | `<br/>` reliable only in circles |
-| Unquoted display text: `A[Label]` | Quote display text: `A["Label"]` | Unified quote rule for reliability (CJK + special chars) |
+| `<b>` / `<span>` / other HTML in labels | `<br/>` for line breaks; plain text otherwise | Labels are SVG text — other HTML is not rendered |
+| `A --> B  # note` (trailing comment) | Put `%% note` on its own line | `#` is not a comment marker — parse error |
+| Unquoted display text: `A[Label]` | Quote display text: `A["Label"]` | Unified quote rule; required for parentheses and other shape characters (unquoted CJK renders) |
 
 ### Pre-save validation
 
@@ -415,6 +418,6 @@ Both variants apply the same technique — **subgraph-level connections** (`stag
 - [ ] All subgraphs with spaces use `subgraph id["Display Name"]`
 - [ ] Arrow syntax matches type (`-->`, `-.->`, `==>`, never mixed like `-.>`)
 - [ ] Decision nodes use `{"Text?"}` rhombus shape
-- [ ] `<br/>` only used in circle nodes
+- [ ] No HTML other than `<br/>` in labels
 - [ ] Style declarations apply to node IDs not display text
 - [ ] Cross-type universal checks per [obsidian-common-quirks.md](../obsidian-common-quirks.md)

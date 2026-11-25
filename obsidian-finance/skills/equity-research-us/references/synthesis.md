@@ -2,6 +2,21 @@
 
 Apply the shared evidence and time rules in [research-method.md](research-method.md).
 
+## Minimum output
+
+Summarize the decision-relevant changes from the prior quarter, with the strongest support and counterevidence linked to the source analyses. For each horizon state the outlook and investment recommendation explicitly, alongside the evidence and reassessment conditions. Rank outstanding gaps by their effect on the judgment and specify which evidence would resolve them.
+
+## Present quantitative evidence in tables
+
+Use the template tables for material changes and thesis checks. Give each
+quantitative comparison its own row when the measures or periods differ. Put
+the period, unit, comparison basis, and source next to the figure. Label
+reported values, recalculations, and model assumptions in the cells. Place
+counterevidence on the same row as the thesis it challenges. Put material
+scenario results in compact supporting tables and numeric triggers in each
+horizon's reassessment table.
+Use the conclusion and surrounding prose for interpretation.
+
 ## Research questions
 
 Which conditional investment judgments follow from the applicable evidence at
@@ -47,19 +62,50 @@ change with affected comparisons, not a cosmetic label edit. Where no window
 is established, identify the proposed analysis windows and any decision-relevant
 ambiguity rather than inventing the user's preference.
 
-For each of `short`, `medium`, `long`, record:
+Fill one subsection per horizon in the synthesis template. Put the outlook
+and recommendation in the compact table before the supporting detail. Keep
+long reasoning below the outlook table and enter triggers in the reassessment
+table. Every subsection must state:
 
-- Explicit duration/anchor; a conditional judgment or `insufficient_evidence`.
-- The relevant eligible evidence and counterevidence; distinguish business
-  direction from price/return implications and identify unsupported links.
-- Material assumptions and observable invalidation triggers, with the next
-  evidence needed to test them.
+- **Dates.** Give the date range, tied to the review cutoff or the documented
+  convention. Identify any historical price by its observation date.
+- **Outlook.** State the supported price or return direction in plain language,
+  such as upward, downward, range-bound, or undetermined. Name the subject
+  explicitly. Where only the operating direction is supported, state it
+  separately and mark the price or return outlook as undetermined. Label
+  modeled directions with their assumptions.
+- **Investment recommendation.** State an action separately from the outlook.
+  Give a conditional recommendation when the evidence supports it. Otherwise,
+  say to defer the investment decision, name the missing evidence, and say
+  when to reassess. A deferred decision is distinct from a hold rating.
+- **Basis and counterevidence.** Cite the relevant report or evidence next to
+  the claim. Preserve the date, units and scope of any material number.
+- **Reassessment triggers.** Add a table row per observable trigger, with the
+  full condition, the change to the outlook or action, and a link to the
+  supporting analysis. Keep combined clauses in the same cell and preserve
+  conjunctions, thresholds, units, time windows, price type and volume
+  requirements. If a trigger remains unverified, record the missing evidence
+  and the action it prevents in its own row. Keep quantitative trigger levels
+  in the table when writing the surrounding explanation.
 
-Do not invent scenario probabilities, benchmark returns, price targets or
-precision. Without dated price, suitable valuation inputs or sufficient driver
-evidence, refrain from an investment rating. `insufficient_evidence` is not hold,
-neutrality or expected zero return. A horizon can have useful conditional
-operating reasoning while its investment conclusion remains insufficient.
+Use research language in the report. Reserve `insufficient_evidence` for the
+existing machine record. Do not invent scenario probabilities, benchmark
+returns, price targets or precision. Evidence supporting an operating outlook
+alone cannot support an investment rating.
+
+## Investment recommendation check
+
+Adapt the research-content checks in [FINRA Rule 2241(c)](https://www.finra.org/rules-guidance/rulebooks/finra-rules/2241)
+for internal review. Before stating a recommendation, rating or target, show its
+evidence, valuation method and dated inputs, the applicable horizon, any
+benchmark used, and material downside risks and observable invalidation
+conditions. Define any rating used. Present the strongest material downside
+evidence alongside the case for the judgment.
+
+When a recommendation, rating or target lacks a defensible basis, leave it
+pending and give the evidence needed to support it. A recalculable sensitivity
+table establishes how assumptions change the output. A target also requires
+evidence for the selected inputs and method.
 
 ## Completion
 

@@ -46,7 +46,7 @@ gantt
 
 ### Date format
 
-```mermaid
+```text
 dateFormat YYYY-MM-DD                # Default ISO
 dateFormat DD-MM-YYYY                # European
 dateFormat HH:mm                     # Hour-based (short projects)
@@ -54,7 +54,7 @@ dateFormat HH:mm                     # Hour-based (short projects)
 
 ### Axis format (display format)
 
-```mermaid
+```text
 axisFormat %Y-%m-%d                  # ISO date
 axisFormat %m/%d                     # Short
 axisFormat %d %b                     # Day + month name (e.g., "15 Jan")
@@ -62,7 +62,7 @@ axisFormat %d %b                     # Day + month name (e.g., "15 Jan")
 
 ### Task declaration
 
-```mermaid
+```text
 TaskName :status, task_id, start_spec, duration_or_end
 ```
 
@@ -87,7 +87,7 @@ Multiple statuses: `:done, crit` (completed but was critical).
 
 ### Sections (grouping)
 
-```mermaid
+```text
 section Group Name
     TaskA :task_a, 2026-01-01, 5d
     TaskB :task_b, after task_a, 3d
@@ -98,7 +98,7 @@ section Another Group
 
 ### Milestones (point events)
 
-```mermaid
+```text
 TaskName :milestone, id, date_or_after, 0d
 ```
 
@@ -106,7 +106,7 @@ Duration must be `0d` for milestones to render as diamond markers.
 
 ### Task dependencies via `after`
 
-```mermaid
+```text
 TaskA :a, 2026-01-01, 5d
 TaskB :b, after a, 3d                # B starts when A ends
 TaskC :c, after a b, 4d              # C starts when BOTH A and B end
@@ -121,9 +121,9 @@ gantt
     todayMarker on          # or "off" to hide
 ```
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — Gantt is one of Mermaid's oldest diagrams
+- **Status**: ✅ Full support — the chart fills the container width
 - **Known quirks**:
   - Very long task names may truncate — keep to 20-30 chars
   - Too many tasks (>30) make the chart cramped — split by section or timeframe
@@ -141,7 +141,7 @@ Gantt's grammar treats `section`, `title`, and task-name positions as free-form 
 - Task name: `Research        :done, research, 2026-01-01, 5d` ✅ (the "Research" part is free-form, NOT quotable)
 - Task ID, status, dates, durations: all structured tokens, unquoted
 
-**For CJK content in Gantt**: CJK usually parses unquoted in title / section / task-name positions, but this is **not guaranteed** in Obsidian's bundled lexer (mermaid-cli is more lenient than Obsidian — a cli pass does not prove an Obsidian pass; and a task line puts the CJK name right before the `:` delimiter, structurally similar to the quadrant data-point case that does fail in Obsidian). There is **no quoting escape** (quotes render literally). If a label fails to parse in Obsidian, rephrase / romanize it — do not add quotes.
+**For CJK content in Gantt**: CJK renders unquoted in title / section / task-name positions in Obsidian 1.15 (verified with Pele 1.13.0, 2026-11-23). There is **no quoting escape** (quotes render literally). If a label fails `scripts/validate.sh`, rephrase it — do not add quotes.
 
 ## Worked examples
 

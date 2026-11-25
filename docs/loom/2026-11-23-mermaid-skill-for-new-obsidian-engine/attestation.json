@@ -1,0 +1,73 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-mermaid-skill-for-new-obsidian-engine",
+  "content_digest": "c6825a8fee874e53adf53fdf07c9927099f715b5",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian/tests/test_mermaid_validator_fence_forms.py",
+      "artifact": "obsidian/tests/test_mermaid_validator_fence_forms.py",
+      "result": "pass",
+      "command_digest": "96bb3108ee7a463bceab1ae4ea0ee5f04e73c007cbc65593ddb31a445ca97cf2"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian/tests/test_mermaid_skill_examples_render.py",
+      "artifact": "obsidian/tests/test_mermaid_skill_examples_render.py",
+      "result": "pass",
+      "command_digest": "34d0365ed121d27d32556805db5ee51a969a621a4c582fbb3ecf407d48e101e3"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a-skill-code-r4",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "skill",
+      "verdict": "PASS_WITH_NOTES",
+      "findings": []
+    },
+    {
+      "reviewer": "reviewer-b-spec-r4",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "spec",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "f5c3a05",
+  "tested_commit": "299ff69",
+  "reviewed_commit": "7ea792f911ce7470ad0153889ba087c3429a705b",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    }
+  ]
+}

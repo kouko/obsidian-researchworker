@@ -7,6 +7,12 @@ asset_id: ${asset_id_yaml}
 
 # ${title}
 
+## Quarter research
+
+Use these links to find the saved research and evidence gaps for each fiscal quarter.
+
+${quarter_links}
+
 ## Research record
 
 ```finance-asset-entry
@@ -18,7 +24,3 @@ questions:
     required_sources: ${required_sources_yaml}
     depends_on: ${depends_on_yaml}
 ```
-
-## Quarter research
-
-${quarter_links}

@@ -52,7 +52,7 @@ classDiagram
 
 ### Field / method notation
 
-```mermaid
+```text
 class ClassName {
     +public_field Type
     -private_field Type
@@ -79,7 +79,7 @@ Type goes AFTER the name; multiple params separated by comma.
 
 ### Cardinality labels
 
-```mermaid
+```text
 ClassA "1" --> "*" ClassB : has
 ```
 
@@ -87,7 +87,7 @@ Shows "one ClassA has many ClassB, with label 'has'". Cardinalities: `0..1`, `1`
 
 ### Class annotations
 
-```mermaid
+```text
 class Repository {
     <<interface>>
     +find(id) Entity
@@ -111,13 +111,13 @@ classDiagram
     note for Foo "Note attached to Foo"
 ```
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**: ✅ Full support — class diagram has been stable for many versions
+- **Status**: ✅ Full support
 - **Known quirks**:
   - Relationship arrow direction can be confusing — `A <|-- B` means B inherits from A (arrow points to parent)
   - Long method signatures may get cut off — keep concise
-  - CJK class names render fine (verified mermaid-cli 2026-06); if you hit a parse error with other Unicode (rare), romanize that name. Note relationship labels are NOT quotable (quotes render literally) — see Quote rule below
+  - CJK class and field names render fine (verified with Pele 1.13.0, 2026-11-23); if you hit a parse error with other Unicode (rare), romanize that name. Note relationship labels are NOT quotable (quotes render literally) — see Quote rule below
 - **Workaround**: none needed
 
 ## Quote rule for class diagrams

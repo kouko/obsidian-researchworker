@@ -84,8 +84,11 @@ overall MIT license, whose notice is retained in this repository:
 - `obsidian/skills/obsidian-daily/` — daily workflow
 - `obsidian/skills/obsidian-vault-setup/` — vault configurator
 - `obsidian/skills/obsidian-tldr/` — conversation summary saver
-- `obsidian/skills/obsidian-file-intel/` — file content extractor
 - `obsidian/skills/dashboard-design/` — dashboard design workflow
+
+## Retired Obsidian skill
+
+- `obsidian-file-intel` — originally [File Intel in earlyaidopters/second-brain](https://github.com/earlyaidopters/second-brain/blob/main/skills/file-intel/SKILL.md), [imported into dotfiles](https://github.com/kouko/dotfiles/commit/18bb5f397e5c489223fcc1dec10610f58d291d7e) and later transferred through Monkey Skills.
 
 ## Reporting License Issues
 

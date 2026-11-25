@@ -139,7 +139,8 @@ Standalone verification uses the recorded claim and captured source even
 when the live note is absent. It cannot decide whether the live claim changed.
 
 Use the [research overview](templates/research-overview.md),
-[asset entry](templates/asset-entry.md), [source registration](templates/source-registration.md),
+[asset entry](templates/asset-entry.md), optional [quarter navigation](templates/quarter-navigation.md),
+[source registration](templates/source-registration.md),
 and [method registration](templates/method-registration.md) templates for their
 corresponding note roles. Choose the matching analysis template:
 [financial](templates/financial-analysis.md), [operating](templates/operating-analysis.md),
@@ -148,6 +149,19 @@ corresponding note roles. Choose the matching analysis template:
 [technical](templates/technical-analysis.md), or [synthesis](templates/synthesis.md).
 Use the same role for partial work and drafts, with their respective status.
 Substitute YAML properties as typed scalars and remove all placeholders.
+Write each analysis as a standalone study. Identify the company, fiscal quarter,
+and cutoff in the note. Start with separate Research question and Conclusion
+headings (localize both for the note language). State the question in its own
+paragraph, then state the supported conclusion or why it remains open in the
+next section. Fill the remaining template sections using the reference's
+minimum outputs. Keep the method, comparable values, material component
+calculations, assumptions and counterevidence visible where used, including
+details carried forward from earlier work. Put source links next to key claims
+and record the comparison basis and material limits. Summarize evidence from
+other notes where it is needed to follow the argument, and link to the details.
+For an unsupported section, identify the missing evidence and the result it
+prevents. Rank unresolved checks by their effect on the conclusion, and name
+the source or observation to seek next.
 In the selected quarter directory (`cycles/<YYYYQq>/`), save a new source
 registration under `data/sources/` and a new method or assumption registration
 under `data/analysis/`. Create new evidence only under this quarter's `data/`.
@@ -155,9 +169,14 @@ Use quarter-relative payload paths such as `data/raw/filing.html` in these
 registrations.
 Use the source and method templates, including their fenced metadata blocks.
 Every newly authored Markdown note, including a draft or calculation note,
-uses its bundled role template and flat Obsidian frontmatter. The helper
-renders the quarterly overview, including its progress record. Localize titles
-and prose as needed. Put a new
+uses its bundled role template and flat Obsidian frontmatter. Make every note
+independently useful: state its purpose or research question, show the supported
+findings or evidence description, and link to the sources and material
+limitations. Put that readable material before machine records. For entry and
+navigation notes, explain the covered scope and what the links open. For source
+registrations, explain what the source supports and where it does not apply.
+The helper renders the quarterly overview from the saved changes, report links
+and evidence gaps. Localize titles and prose as needed. Put a new
 method or assumption's human-readable procedure, assumptions, and limits
 in the body of its method-registration note. Save the exact applied method
 payload separately as UTF-8 plain text (`data/materials/<name>.txt`) in this
@@ -178,11 +197,19 @@ configured research question. A verified, explicitly scoped answer may be
 a reusable unit within a partial review; broader unanswered questions
 remain pending. State the scope before saving the unit.
 Save reusable partial output as `partial`. Give a specific explanation in
-`research.changes` when a finding changes. The helper retains the previous
-report, source identities and versions, cutoff and reason in the updated
-report's revision history. Read earlier conclusions against their dated sources
-before reuse. If those sources or saved analysis cannot reconstruct the earlier
-answer, report the gap.
+`research.changes` when a finding changes. Each quarterly report contains
+the current analysis. When updating it, read the existing note as written.
+Carry identifiable user-authored passages forward verbatim. Put passages
+that have not been independently verified in a clearly labeled user notes
+section, outside the verified claims. Preserve a bounded passage with
+uncertain authorship verbatim and label it as unverified with uncertain
+authorship if it can be isolated from the generated analysis. If you
+cannot safely isolate it without copying the prior report wholesale,
+leave the affected note as it is and report the ambiguity. Leave generated
+previous-report quotations out of the proposal. Preserve the current source
+versions and cutoff in the saved review. Verify earlier conclusions against
+their dated sources before reuse and report a gap if the earlier answer
+cannot be reconstructed.
 
 ### Quarter-owned evidence and portable reviews
 
@@ -290,12 +317,24 @@ Apply the same dependency check to other source or method updates. Keep the exis
 quarterly output and review contracts. Combine or separate analysis in notes as
 the actual scope warrants.
 
-Write source-grounded reasoning, counterevidence and calculation checks.
+Use each role reference's minimum output checks. Start with the question and
+the supported conclusion. Then show source-grounded reasoning, counterevidence
+and calculation checks. Use Markdown tables for comparable periods, scenarios,
+or measurements. Label units and comparison bases. Use a Mermaid diagram only
+when a causal or dependency relationship is clearer as a diagram. Identify
+hypotheses as such in the text and diagram, and never draw values or links
+that the evidence does not support. Verify generated internal links and chart
+syntax before saving. For a material gap, name the missing evidence, the
+unfinished check and the judgment it prevents.
 For conditional short/medium/long judgments use the synthesis reference. Missing
 required research remains pending. Record `insufficient_evidence` when the
 evidence cannot support a judgment.
 
 ## 4. Save resumable work safely
+
+Before saving, apply the [output acceptance checks](references/research-method.md#output-acceptance)
+to each affected report. For synthesis, also apply its [investment recommendation
+check](references/synthesis.md#investment-recommendation-check).
 
 Capture `publication_snapshot(root)` before analysis. If acquiring new evidence,
 first retain the original discovery map, persist only known new immutable inputs,
@@ -331,8 +370,12 @@ Include method, assumptions, changes, gaps and all three horizon judgments:
 
 The exact envelope types matter: `research.method` and `research.changes` are
 nonempty strings; `research.assumptions` and `research.gaps` are lists.
+`research.changes` and the entries in `research.gaps` feed the visible
+overview. Use concise plain-language changes and specific missing evidence.
 `research.horizons` has exactly `short`, `medium`, `long`, each an object with
 nonempty string `judgment` and lists `evidence` and `invalidation_triggers`.
+Summarize both the stated outlook and investment recommendation in the
+corresponding `judgment` and keep its triggers aligned with the synthesis table.
 Do not pass a list for `changes`; it is explanatory text, not change records.
 
 ```python

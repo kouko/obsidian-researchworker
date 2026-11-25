@@ -1,0 +1,66 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-equity-deep-research-notes",
+  "content_digest": "ba1c9b7de93fbd82e23b837559b0b6fda855cee1",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-23-equity-deep-research-notes/evidence/probes/test_compact_capture_availability.py",
+      "artifact": "docs/loom/2026-11-23-equity-deep-research-notes/evidence/probes/test_compact_capture_availability.py",
+      "result": "pass",
+      "command_digest": "10f4b0f43ca9579029b50d1051fa6fded27a7e05e00e36888e24f367dc04958d"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "link_final_code_review",
+      "lens": "code",
+      "verdict": "PASS",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "3afc20e8f09753166243aadffba77bc59bdc0810",
+      "findings": []
+    },
+    {
+      "reviewer": "link_final_skill_review",
+      "lens": "skill",
+      "verdict": "PASS",
+      "vendor": "openai",
+      "model": "Codex host model unreported",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "3afc20e8f09753166243aadffba77bc59bdc0810",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "5fae4e2",
+  "tested_commit": "3afc20e8f09753166243aadffba77bc59bdc0810",
+  "reviewed_commit": "d8431b2a9eef835bd51793fe0778998767c72c7d",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

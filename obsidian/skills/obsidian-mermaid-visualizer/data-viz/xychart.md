@@ -77,7 +77,7 @@ y-axis "LabelName" MIN --> MAX
 
 ## Canonical syntax — line mode (use NAMED-LINE form)
 
-**Named-line syntax works in Obsidian 11.4.1** (user-verified April 2026):
+**Named-line syntax** — each named series gets a legend entry in Obsidian 1.15:
 
 ```mermaid
 xychart-beta
@@ -91,13 +91,45 @@ xychart-beta
 
 **Default pattern for line charts**: use `line "series name" [values]` — the named form renders correctly in Obsidian's native viewer. Each series shown with distinct color + legend.
 
-### Bare `line [values]` (without name) — may have issues
+### Bare `line [values]` (without name)
 
-Earlier Obsidian Forum reports (Jan 2024) indicated the bare `line [values]` form rendered with `stroke-width: 0` (invisible). This was NOT confirmed in April 2026 user testing with the named form.
+Renders in Obsidian 1.15, but an unnamed series gets no legend entry. Prefer `line "name" [values]` even for single-series charts.
 
-**Recommendation**: prefer named-line syntax (`line "name" [values]`) even for single-series charts. Gives consistent behavior + labels the line in the legend.
+### Point labels on a line
 
-If for some reason named-line doesn't render in your Obsidian vault, use `bar` instead as a fallback (see § Fallback strategy below).
+Add a quoted text after any value to label that point; points without text stay plain:
+
+```mermaid
+xychart-beta
+    title "市場相對走勢（虛構）"
+    x-axis "觀察日" ["D1", "D2", "D3", "D4"]
+    y-axis "起點為100" 80 --> 110
+    line "台股" [100, 96, 90 "事件日", 93 "台股93"]
+    line "美股" [100, 99, 95, 97 "美股97"]
+```
+
+To show every value, write it as text after each point (`10 "10"`). Text after a **bar** value parses but is not displayed — use `showDataLabel` for bars.
+
+### Bar value labels
+
+```mermaid
+---
+config:
+  xyChart:
+    showDataLabel: true
+---
+xychart-beta
+    title "成交量（虛構）"
+    x-axis "觀察日" ["D1", "D2", "D3"]
+    y-axis "相對單位" 0 --> 30
+    bar "成交量" [12, 20, 25]
+```
+
+Values are drawn outside the bar whatever `showDataLabelOutsideBar` says.
+
+### Candlestick / OHLC — not supported
+
+There is no candlestick command (only `line` and `bar`). Embed an image of a candlestick chart made elsewhere, or plot closing prices with `line` and say it is not a candlestick chart.
 
 ## Configuration options
 
@@ -157,31 +189,20 @@ Mixes bar and line on same chart when both quantities share the y-axis range.
 
 ### Y-axis range
 
-```mermaid
+```text
 y-axis "Label" MIN --> MAX
 ```
 
 If omitted, Mermaid auto-scales. Explicit ranges force consistent scale across multiple charts (e.g., year-over-year comparisons).
 
-## Obsidian 11.4.1 compatibility
+## Obsidian 1.15 compatibility
 
-- **Status**:
-  - Bar mode: ✅ full
-  - Line mode (named-line syntax `line "name" [values]`): ✅ full (user-verified April 2026)
-  - Line mode (bare `line [values]`): 🟡 possibly buggy per 2024 forum reports; prefer named form
+- **Status**: ✅ Full support — bar, named line, bare line, point labels, bar value labels
 - **Known quirks**:
-  - Bar styling uses default theme; custom colors via `%%{init: {...}}%%` config block may not fully apply
+  - Series colours come only from `themeVariables.xyChart.plotColorPalette` (series order); other theme settings are ignored
+  - Dense x-axis categories may be thinned — not every label is guaranteed to show
   - Very dense multi-series (>4 lines) can get visually crowded
-- **Workaround**: use named-line syntax as default; if it fails in a specific environment, fall back to bar chart (see § Fallback strategy below)
-
-## Fallback strategy (optional — only if named-line fails in user's Obsidian)
-
-If a user reports that line charts don't render even with named-line syntax (possible if their Obsidian version / theme / plugins cause an issue), the skill can fall back to bar chart:
-
-1. Produce `xychart-beta` with bar mode preserving data order
-2. Include inline note: "折線圖在此 Obsidian 環境未正常渲染，已改用長條圖。請檢查 Obsidian 是否有相容性問題（例如自訂 CSS snippet）或考慮 Mermaid View plugin 取得原生 Mermaid 渲染。"
-
-This fallback is **NOT auto-triggered** — the default path is named-line, which works in standard Obsidian 11.4.1.
+  - `xychart` (without `-beta`) also renders; keep `-beta` for other renderers
 
 ## Worked examples
 
@@ -255,12 +276,14 @@ xychart-beta
 
 | ❌ Wrong | ✅ Right | Reason |
 |---|---|---|
-| `xychart` (no `-beta`) | `xychart-beta` | v11.4.1 uses beta suffix |
-| `line [1,2,3]` without name (may fail in some Obsidian setups) | `line "SeriesName" [1,2,3]` | Named form has better cross-environment compatibility |
+| `xychart` (no `-beta`) | `xychart-beta` | Both render in Obsidian 1.15; `-beta` also works in older renderers |
+| `line [1,2,3]` without name | `line "SeriesName" [1,2,3]` | Unnamed series get no legend entry |
+| `candlestick [...]` | `line "收盤" [...]` or an embedded image | No candlestick command — parse error |
 | x-axis array length ≠ data array length | Match lengths exactly: `[Q1,Q2,Q3]` paired with `[a,b,c]` | Mismatch causes render error or wrong labels |
 | `y-axis "Label" 0 -> 100` (wrong arrow) | `y-axis "Label" 0 --> 100` | Must use `-->` double-hyphen |
 | Missing quotes on title with spaces | `title "Has Spaces"` | Strings with spaces need quotes |
-| Using `showDataLabelOutsideBar` or Neo look | These are v11.14.0+ features — not in Obsidian 11.4.1 | Silent feature-ignore |
+| Relying on `showDataLabelOutsideBar: false` | Expect labels outside the bar | Pele ignores the setting |
+| Text after a bar value `bar [10 "事件"]` | `showDataLabel: true` | Bar point text is not displayed |
 | Swapping x-axis / y-axis for `horizontal` mode | Keep categorical on x-axis, numeric on y-axis; let `horizontal` flip rendering | `horizontal` reorients visuals; axis declarations stay the same as vertical |
 | Unquoted categorical axis elements `[Q1, Q2]` | Quote all categorical labels `["Q1", "Q2"]` | Statutory rule per § Style rule Rule 2 — consistent pattern for non-continuous axes |
 | Axis without name label `x-axis ["Q1", "Q2"]` | `x-axis "Quarter" ["Q1", "Q2"]` | Statutory rule per § Style rule Rule 1 — charts must be self-describing |
@@ -274,7 +297,7 @@ xychart-beta
 - [ ] Line charts use named-line syntax: `line "name" [values]`
 - [ ] Title quoted if contains spaces
 - [ ] y-axis uses `-->` double-hyphen arrow syntax
-- [ ] No v11.14.0+ features used
+- [ ] No candlestick / OHLC requested of Mermaid (not supported)
 - [ ] For horizontal mode: axis declarations stay categorical=x, numeric=y (don't swap)
 
 See also [obsidian-common-quirks.md](../obsidian-common-quirks.md) and [obsidian-compatibility.md](../obsidian-compatibility.md).

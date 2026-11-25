@@ -9,12 +9,16 @@ ${available_at_properties}---
 
 # ${title}
 
+## Original and applicability
+
+${source_link_and_basis}
+
+## Limits
+
+Check the original period, publication time and scope before applying this source to a research question.
+
 ## Research record
 
 ```finance-source-registration
 ${source_record}
 ```
-
-## Original and applicability
-
-${source_link_and_basis}

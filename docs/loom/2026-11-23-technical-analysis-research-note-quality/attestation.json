@@ -1,0 +1,102 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-technical-analysis-research-note-quality",
+  "content_digest": "52b37ead84d8d05d2107b02a55481dfc0ed3b5ac",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Installed-skill replay recovered the previously observed scope-only opening while preserving navigation, outside-evidence boundaries and computed levels; existing tests cover the unchanged publisher, and no deterministic repository entry point generates the note prose, so no new program earned."
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "92dcdf01b6fafd687c59566c8db9d27fc619e4e1",
+      "review_target_sha": "fd38b516e504ab55df74c37ec2aa16515633b9b5",
+      "reviewer": "question_review_skill",
+      "lens": "skill",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS",
+        "missing-population": "PASS",
+        "deletion-first": "PASS",
+        "user-judgment-leak": "PASS"
+      },
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "ambiguity",
+          "anchor": "obsidian-finance/skills/technical-analysis/SKILL.md:221",
+          "text": "nitpick: The short citation checklist leaves 'version' unqualified, although the earlier output rule limits the source version to when recorded.",
+          "fix": "Repeat 'source version when recorded' in the checklist."
+        }
+      ],
+      "notes": [
+        "Three completed isolated replays open with an explicit research question. The eligible external warning remains distinct from computed thresholds, and the limited note leaves all unsupported directions and conditions blank.",
+        "Independently confirmed 11 same-note heading links and nine local file links across the three notes. Obsidian Reading View was not exercised.",
+        "The existing analyzer computes the stated extrema and daily-close conditions. The branch changes the note instructions, with no new executable entry point."
+      ]
+    },
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "92dcdf01b6fafd687c59566c8db9d27fc619e4e1",
+      "review_target_sha": "fd38b516e504ab55df74c37ec2aa16515633b9b5",
+      "reviewer": "question_review_docs",
+      "lens": "docs",
+      "dimension_scores": {
+        "omission": "PASS",
+        "ambiguity": "PASS",
+        "inconsistency": "PASS",
+        "incorrect-fact": "PASS",
+        "missing-population": "PASS",
+        "deletion-first": "PASS"
+      },
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "ambiguity",
+          "anchor": "obsidian-finance/skills/technical-analysis/SKILL.md:221",
+          "text": "nitpick: The save instruction lists source version without the earlier qualification that it may be unavailable.",
+          "fix": "Repeat 'when recorded' after 'source version'."
+        }
+      ],
+      "notes": [
+        "Opened all three saved notes and verified that each places a standalone research question before the conclusion.",
+        "Verified the qualified warning remains separate from computed conditions and the late warning is absent from the limited-data note.",
+        "Evidence preserves the earlier partial outcome and distinguishes filesystem verification from unexercised Obsidian Reading View."
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "b47961c",
+  "tested_commit": "ae267ba635b930e6baa2ce1dd958f1f6ff42e786",
+  "reviewed_commit": "fd38b516e504ab55df74c37ec2aa16515633b9b5",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    }
+  ]
+}

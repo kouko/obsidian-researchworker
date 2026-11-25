@@ -1,6 +1,6 @@
 {
   "name": "obsidian",
-  "version": "4.2.0",
+  "version": "4.3.1",
   "description": "15 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
@@ -18,13 +18,12 @@
     "canvas",
     "mermaid",
     "excalidraw",
-    "dashboard",
-    "file-intel"
+    "dashboard"
   ],
   "interface": {
     "displayName": "obsidian",
     "shortDescription": "15 Obsidian skills — notes, research, diagrams, Canvas and local vault search",
-    "longDescription": "Manage Obsidian vaults with 15 skills: daily notes, topic research, Flavored Markdown and wikilinks, Bases, Canvas, Mermaid and Excalidraw diagrams, web extraction, file-intel summaries, vault setup, dashboard design, and local vault search from any project via the obsidian-knowledge skill. using-obsidian routes the skills. Defuddle requires its CLI; file intel requires an external compatible vault script and Gemini credentials.",
+    "longDescription": "Manage Obsidian vaults with 15 skills: daily notes, topic research, Flavored Markdown and wikilinks, Bases, Canvas, Mermaid and Excalidraw diagrams, web extraction, vault setup, dashboard design, and local vault search from any project via the obsidian-knowledge skill. using-obsidian routes the skills. Defuddle requires its CLI.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": [

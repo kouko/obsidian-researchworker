@@ -14,6 +14,11 @@ The notes have stable English filenames, such as
 and prose. A material change keeps the previous conclusion and its dated
 sources in the same note.
 
+The overview puts changes, report links and evidence gaps before the saved
+research record. Analysis notes start with a question and conclusion, then show
+comparisons, reasoning, counterevidence and limits. Each analysis reference
+defines the checks and outputs for that role.
+
 The local helpers require Python 3.11 or later and PyYAML for Markdown metadata.
 When required SEC evidence is missing, use the bundled
 [acquisition guide](references/sec-acquisition.md). Existing eligible local

@@ -2,7 +2,7 @@
 
 **English** | [日本語](README.ja.md) | [繁體中文](README.zh-TW.md)
 
-> Obsidian vault workflows — daily notes, markdown, Bases, diagrams, Canvas, file intel, vault management, and dashboard design, packaged as a Claude Code plugin.
+> Obsidian vault workflows — daily notes, markdown, Bases, diagrams, Canvas, vault management, and dashboard design, packaged as a Claude Code plugin.
 
 ## Choose a skill
 
@@ -33,7 +33,7 @@ Maintained in [Obsidian ResearchWorker](../README.md), extracted from
 and daily-news-digest. General daily notes, topic research, Defuddle extraction
 and ordinary wikilinks remain. Existing vault output and settings are untouched.
 The 4.2.0 release renamed local search to `obsidian-knowledge` and moved it to a
-bundled read-only shell script. This working tree contains 16 skills, including
+bundled read-only shell script. This working tree contains 15 skills, including
 `obsidian-research-project`.
 Read the [transition guide](../docs/migration.md) before changing installations.
 
@@ -42,11 +42,10 @@ Read the [transition guide](../docs/migration.md) before changing installations.
 Obsidian is a local-first markdown knowledge base. Day-to-day vault work
 involves many small, repetitive tasks: opening today's daily note, sweeping the
 inbox, writing valid Bases YAML, drawing a Mermaid diagram inside a note,
-importing a folder of PDFs as summarized notes, and saving a conversation
-summary at the end of the session.
+and saving a conversation summary at the end of the session.
 
 This plugin packages those tasks as skills that Claude Code can dispatch on
-intent. Original skills cover the daily workflow, file intel, dashboard
+intent. Original skills cover the daily workflow, dashboard
 design, vault setup, and conversation summary. Imported skills cover
 Obsidian-specific markdown, Bases, the Obsidian CLI, Defuddle web extraction,
 Canvas authoring, Excalidraw diagrams, and Mermaid diagrams.
@@ -56,7 +55,7 @@ Canvas authoring, Excalidraw diagrams, and Mermaid diagrams.
 ### Router
 
 `using-obsidian` is the entry skill. It routes intent to the right skill based
-on what the user asks for — daily notes, vault setup, file processing,
+on what the user asks for — daily notes, vault setup,
 diagrams, or cleanup.
 
 Invoke it as `/using-obsidian`.
@@ -81,7 +80,6 @@ edits — and asks before reorganizing when the destination is ambiguous.
 | `obsidian-research` | Research a topic on the web (English + Japanese, plus the topic's own language) and write a readable research note with a TOC to `research/`. |
 | `obsidian-research-project` | Start or update a saved research project across rounds. Confirm each round and preserve earlier judgments and source versions. |
 | `obsidian-knowledge` | Search the local vault from any project, read-only; no Grep/Glob needed. A SessionStart hook tells each session where the vault is. |
-| `obsidian-file-intel` | Extract content from PDF / PPTX / XLSX / DOCX / CSV / JSON via Gemini and produce Obsidian-ready summaries. |
 | `dashboard-design` | Guide dashboard design from requirements to layout, grounded in Japan Digital Agency dashboard guidelines. |
 
 To start or update a saved project, invoke `obsidian-research-project` with the
@@ -116,7 +114,7 @@ Upstream: [`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu/
 |---|---|
 | `obsidian-canvas` | Create Obsidian Canvas files with MindMap or freeform layouts, four community patterns (kanban, dashboard / home page, research map, moodboard) with templates and a `.canvas` output validator, and zero-plugin advanced patterns (nested canvas workspaces, research dual-canvas, data-pipeline documentation, audit / post-mortem / onboarding, teacher class, worldbuilding, Bases-in-canvas 1.9+, canvas-only / 2D MOC). (Combined with json-canvas integration from kepano.) |
 | `obsidian-excalidraw-diagram` | Generate Excalidraw diagrams in Obsidian / Standard / Animated formats. |
-| `obsidian-mermaid-visualizer` | 17 Mermaid diagram types — flow, data-viz, structural, time — optimized for Obsidian 11.4.1, portable to GitHub / Notion / HackMD. |
+| `obsidian-mermaid-visualizer` | 30 Mermaid diagram types — flow, data-viz, structural, time — optimized for Obsidian 1.15 (Pele engine), validated with `scripts/validate.sh`; standard Mermaid syntax for GitHub / Notion / HackMD. |
 
 ## Install
 
@@ -130,12 +128,6 @@ npm install -g defuddle
 
 The `obsidian-cli` skill needs the official Obsidian CLI and a running
 Obsidian instance — see [help.obsidian.md/cli](https://help.obsidian.md/cli).
-
-The `obsidian-file-intel` skill needs an external, compatible vault script at
-`scripts/process_files_with_gemini.py` and a Gemini API key configured in your
-vault. That script is not bundled, and this distribution provides no acquisition
-or setup procedure. File processing is unavailable without an existing compatible
-script; independent setup and execution remain unverified.
 
 The `obsidian-knowledge` skill reads the vault from other projects. A
 SessionStart hook (`hooks/hooks.json`) prints the vault path at session start.
@@ -175,7 +167,7 @@ Draw a diagram inside a note:
 ```
 
 `using-obsidian` routes to `obsidian-mermaid-visualizer`, which picks the
-sequence diagram type, applies Obsidian 11.4.1 quirks, and emits a
+sequence diagram type, applies Obsidian 1.15 (Pele) quirks, and emits a
 ` ```mermaid ` block.
 
 ## Repository structure
@@ -196,7 +188,6 @@ obsidian/
 │   ├── obsidian-research/       # web research → vault note (original)
 │   ├── obsidian-research-project/ # start and update saved research (original)
 │   ├── obsidian-knowledge/      # read-only vault search (original)
-│   ├── obsidian-file-intel/     # file → Obsidian summaries (original)
 │   ├── dashboard-design/        # dashboard design (original)
 │   ├── obsidian-markdown/       # imported from kepano
 │   ├── obsidian-bases/          # imported from kepano

@@ -1,6 +1,6 @@
 ---
 name: using-obsidian
-description: Manage Obsidian vault workflows. Use when managing daily notes, setting up vaults, saving conversation summaries, processing files, starting or resuming research, creating diagrams, or cleaning up vaults. 筆記・日記・整理。ノート・日記・整理。
+description: Manage Obsidian vault workflows. Use when managing daily notes, setting up vaults, saving conversation summaries, starting or resuming research, creating diagrams, or cleaning up vaults. 筆記・日記・整理。ノート・日記・整理。
 ---
 
 # Using Obsidian
@@ -12,7 +12,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 - Starting your day (daily notes, priorities)
 - Setting up a new Obsidian vault
 - Saving conversation summaries to vault
-- Processing files into Obsidian-ready notes
 - Saving standalone research or starting or updating a saved research project
 - Creating diagrams (Mermaid, Excalidraw, Canvas)
 - Vault cleanup and organization
@@ -26,7 +25,6 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 | `obsidian-daily` | Start the day — read/create daily note, surface priorities |
 | `obsidian-vault-setup` | Interactive vault configurator |
 | `obsidian-tldr` | Save conversation summary to vault |
-| `obsidian-file-intel` | Extract content from files into Obsidian notes |
 | `obsidian-research` | Research a standalone topic on the web (EN + JA + the topic's own language) and write a research note to `research/` |
 | `obsidian-research-project` | Start a research project or update its saved state across rounds after user confirmation |
 | `obsidian-knowledge` | Search the local vault from any project (read-only); works without Grep/Glob |

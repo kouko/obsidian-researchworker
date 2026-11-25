@@ -1,6 +1,6 @@
 {
   "name": "obsidian",
-  "version": "4.2.0",
+  "version": "4.3.1",
   "description": "15 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
@@ -18,7 +18,6 @@
     "canvas",
     "mermaid",
     "excalidraw",
-    "dashboard",
-    "file-intel"
+    "dashboard"
   ]
 }

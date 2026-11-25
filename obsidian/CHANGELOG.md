@@ -4,6 +4,36 @@ All notable changes to the `obsidian` plugin are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [4.3.1] — 2026-11-24 Mermaid trigger and link fixes
+
+### Fixed
+
+- `obsidian-mermaid-visualizer` description now names all 30 diagram types
+  (adds swimlane, use case, packet, requirement, tree view, wardley).
+- `obsidian-markdown`'s inline Mermaid rule quotes labels with `()` instead
+  of replacing them with `「」`, matching `mermaid-quirks.md` Rule 6.
+- `circular-flow.md` links to flowchart's "Obsidian 1.15 compatibility"
+  section by its current name.
+
+## [4.3.0] — 2026-11-24 Mermaid skill for the Obsidian 1.15 Pele engine
+
+### Changed
+
+- `obsidian-mermaid-visualizer` targets Obsidian 1.15, which renders Mermaid
+  with its Pele engine (Mermaid 12.1.0 syntax), instead of the Mermaid 11.4.1
+  library. Thirteen diagram types added (swimlane, kanban, journey, ishikawa,
+  use case, radar, sankey, treemap, venn, tree view, wardley, packet,
+  requirement), 30 in total.
+- Validation uses `scripts/validate.sh <markdown-file>`, which renders with
+  Pele 1.13.0 (needs `node`; installs into
+  `~/.cache/obsidian-mermaid-visualizer/pele-1.13.0`). mermaid-cli is no
+  longer used.
+- `obsidian-markdown`'s inline Mermaid rules drop workarounds Pele no longer
+  needs (`1. ` in labels, unquoted CJK labels, `\n` line breaks); READMEs
+  updated to match.
+
 ## [4.2.0] — 2026-11-15 No Python, no Grep/Glob: bundled vault.sh search
 
 ### Changed

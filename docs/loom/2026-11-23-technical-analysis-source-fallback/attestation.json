@@ -1,0 +1,93 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-23-technical-analysis-source-fallback",
+  "content_digest": "44b2ef3f5f279f0a1df7dff8b6b21796901df469",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest docs/loom/2026-11-23-technical-analysis-source-fallback/evidence/probes/test_flat_pattern_break_not_inside_range.py",
+      "artifact": "docs/loom/2026-11-23-technical-analysis-source-fallback/evidence/probes/test_flat_pattern_break_not_inside_range.py",
+      "result": "pass",
+      "command_digest": "975c314e63da32fdd6256750043edbc5b72a6b714690cb2bf590e755f3ee905a"
+    }
+  ],
+  "verdicts": [
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "3bedfc827dbae9cae7637587b4b81dbd8b62c7c2",
+      "reviewer": "closing_code",
+      "lens": "code",
+      "findings": [],
+      "notes": [
+        "Delayed daily-bar evidence can no longer backdate confirmation.",
+        "The completed commentary fixture run preserved computed values and attributed the conflicting view."
+      ]
+    },
+    {
+      "vendor": "codex",
+      "model": "host-default/unverified",
+      "verdict": "PASS",
+      "reviewed_sha": "6bb2411ba3fa9b18040699b6c2912d2af5d68752",
+      "review_target_sha": "3bedfc827dbae9cae7637587b4b81dbd8b62c7c2",
+      "reviewer": "closing_skill",
+      "lens": "skill",
+      "findings": [
+        {
+          "severity": "nit",
+          "dimension": "inconsistency",
+          "anchor": "obsidian-finance/skills/technical-analysis/SKILL.md:174",
+          "text": "nitpick: The live recheck's first search included the public closing price 342.56 alongside the ticker and dates, although the skill limits lookup inputs to the public ticker and dates.",
+          "fix": "Use only the ticker and relevant dates in the next live acceptance query. The existing skill instruction already states that boundary."
+        }
+      ],
+      "notes": [
+        "Verified computed-before-lookup and empty out-of-scope fallback traces. Live provider version omission is recorded in acceptance evidence."
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "severity": "nit",
+      "dimension": "inconsistency",
+      "anchor": "obsidian-finance/skills/technical-analysis/SKILL.md:174",
+      "text": "nitpick: The live recheck's first search included the public closing price 342.56 alongside the ticker and dates, although the skill limits lookup inputs to the public ticker and dates.",
+      "fix": "Use only the ticker and relevant dates in the next live acceptance query. The existing skill instruction already states that boundary."
+    }
+  ],
+  "selection": null,
+  "intent_confirmed_sha": "ff58bf2",
+  "tested_commit": "0f5eb7cb562468750af269aa6f6d099931f731cf",
+  "reviewed_commit": "3bedfc827dbae9cae7637587b4b81dbd8b62c7c2",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    }
+  ]
+}

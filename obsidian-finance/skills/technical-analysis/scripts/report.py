@@ -23,6 +23,42 @@ def _span(start, end):
     return f"{start} to {end}" if start is not None and end is not None else "Unavailable"
 
 
+def _render_patterns(patterns):
+    if patterns["status"] == "no_match":
+        return ["- Daily chart patterns: no supported pattern matched."]
+    if patterns["status"] == "insufficient":
+        return [f"- Daily chart patterns: insufficient data. {_cell(patterns['reason'])}"]
+    lines = ["- Daily chart patterns:"]
+    for match in patterns["matches"]:
+        title = match["kind"].replace("_", " ").capitalize()
+        lines.append(f"  - **{title} — {match['state']}** (earliest evidence at {match['known_at']}).")
+        anchors = "; ".join(
+            f"{anchor['kind']} {anchor['price']:.6g} on {anchor['date']} (known on {anchor['confirmed_on']})"
+            for anchor in match["anchors"]
+        )
+        lines.append(f"    - Anchors: {anchors}.")
+        boundaries = match["boundaries"]
+        lines.append(
+            f"    - Boundaries on {boundaries['date']}: lower {boundaries['lower']:.6g}, "
+            f"upper {boundaries['upper']:.6g}."
+        )
+        lines.append(f"    - Confirmation condition: {match['confirmation_condition']}")
+        lines.append(f"    - Invalidation condition: {match['invalidation_condition']}")
+        for label in ("confirmation", "invalidation"):
+            event = match[label]
+            if event is None:
+                continue
+            volume = "unavailable" if event["volume"] is None else str(event["volume"])
+            level = "" if event["level"] is None else f", threshold {event['level']:.6g}"
+            reason = f", {event['reason']}" if "reason" in event else ""
+            direction = f" ({event['direction']})" if "direction" in event else ""
+            lines.append(
+                f"    - {label.capitalize()}{direction} on {event['date']}: "
+                f"close {event['close']:.6g}{level}, volume {volume}{reason}. Evidence time {event['known_at']}."
+            )
+    return lines
+
+
 def render_report(report, *, chart=None, source=None):
     """Render the same horizon conclusions in conversation and in a note."""
     lines = [
@@ -58,6 +94,8 @@ def render_report(report, *, chart=None, source=None):
             lines.append(f"- What would change the view: {_cell(horizon['invalidation'])}")
         if horizon.get("alternative"):
             lines.append(f"- Alternative scenario: {_cell(horizon['alternative'])}")
+        if "patterns" in horizon:
+            lines.extend(_render_patterns(horizon["patterns"]))
         lines.extend(f"- Limitation: {_cell(item)}" for item in horizon["limitations"])
     lines.extend([
         "", "## Data and method", "",
@@ -72,6 +110,11 @@ def render_report(report, *, chart=None, source=None):
     if report.get("settings"):
         settings = json.dumps(report["settings"], sort_keys=True)
         lines.append(f"- Analysis settings: `{_cell(settings)}`")
+    if any("patterns" in horizon for horizon in report["horizons"]):
+        lines.append(
+            "- Pattern timing uses explicit bar publication times when supplied. Otherwise it reconstructs "
+            "timing from session closes. Snapshot availability is recorded separately above."
+        )
     lines.extend(f"- Excluded: {_cell(item)}" for item in report["exclusions"])
     lines.extend(f"- Fetch exclusion: {_cell(item)}" for item in report.get("fetch_exclusions", []))
     return "\n".join(lines) + "\n"
@@ -205,26 +248,30 @@ def _publish(parent, payloads):
 
 
 def _attachment_links(markdown, chart, source):
-    if markdown.count("({{source}})") != 1 or markdown.count("{{source}}") != 1:
-        raise ValueError("Localized note must include one Markdown link to {{source}}.")
+    if source:
+        if markdown.count("({{source}})") != 1 or markdown.count("{{source}}") != 1:
+            raise ValueError("Localized note must include one Markdown link to {{source}}.")
+        markdown = markdown.replace("({{source}})", f"({quote(source)})")
+    elif "{{source}}" in markdown:
+        raise ValueError("Localized note must omit {{source}} when the snapshot is not retained.")
     chart_links = markdown.count("({{chart}})")
     if chart_links != bool(chart) or markdown.count("{{chart}}") != chart_links:
         raise ValueError("Localized note must link to {{chart}} exactly once when bars are available.")
-    markdown = markdown.replace("({{source}})", f"({quote(source)})")
     if chart:
         markdown = markdown.replace("({{chart}})", f"({quote(chart)})")
     return markdown
 
 
-def save_report(report, snapshot, vault, note, *, note_markdown=None):
+def save_report(report, snapshot, vault, note, *, note_markdown=None, retain_snapshot=True):
     """Publish attachments first and expose a complete, new note last."""
     with _open_destination(vault, note) as (parent, name):
         stem = Path(name).stem
         chart = stem + ".chart.svg" if report["bars"] else None
-        source = stem + ".source.json"
-        payloads = {
-            source: (json.dumps(snapshot, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8"),
-        }
+        source = stem + ".source.json" if retain_snapshot else None
+        payloads = {}
+        if source:
+            serialized = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
+            payloads[source] = (serialized + "\n").encode("utf-8")
         if chart:
             payloads[chart] = _render_chart(report)
         markdown = (
@@ -243,11 +290,14 @@ def main():
     parser.add_argument("--vault", type=Path, help="Absolute vault path")
     parser.add_argument("--note", help="New Markdown path relative to the vault")
     parser.add_argument("--note-markdown", type=Path, help="Prepared UTF-8 Markdown for the saved note")
+    parser.add_argument("--omit-snapshot", action="store_true", help="Save without a snapshot attachment")
     args = parser.parse_args()
     if bool(args.vault) != bool(args.note):
         parser.error("--vault and --note must be used together")
     if args.note_markdown and not args.note:
         parser.error("--note-markdown requires --vault and --note")
+    if args.omit_snapshot and not args.note:
+        parser.error("--omit-snapshot requires --vault and --note")
     from analyze import analyze
     from snapshot import validate_snapshot
 
@@ -258,7 +308,10 @@ def main():
         report = analyze(snapshot)
         if args.vault:
             markdown = args.note_markdown.read_text(encoding="utf-8") if args.note_markdown else None
-            note = save_report(report, payload, args.vault, args.note, note_markdown=markdown)
+            note = save_report(
+                report, payload, args.vault, args.note,
+                note_markdown=markdown, retain_snapshot=not args.omit_snapshot,
+            )
             print(f"Saved {note}", file=sys.stderr)
         print(render_report(report), end="")
     except (OSError, ValueError) as exc:

@@ -11,14 +11,30 @@ status: ${status_yaml}
 
 # ${title}
 
-## Forecast basis and model
+## Research question
+
+${research_question}
+
+## Conclusion
 
 ${forecast_basis}
 
-## Assumptions and scenarios
+## Management guidance
+
+${management_guidance}
+
+## Analyst scenarios and assumptions
 
 ${assumptions_and_scenarios}
 
 ## Prior forecast reconciliation
 
 ${prior_forecast_reconciliation}
+
+## Sources and comparison basis
+
+${source_and_comparison}
+
+## Unresolved checks and impact
+
+${unresolved}
