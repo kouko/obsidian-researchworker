@@ -49,6 +49,13 @@ def test_skill_entry_exposes_the_packaged_workflow():
     assert (PACKAGE / "skills/equity-research-us/SKILL.md").is_file()
 
 
+def test_skill_drops_in_note_dated_revision_record():
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "修訂紀錄" not in skill
+    assert "原值、原始來源及當時判斷" in skill
+    assert "受影響的判斷" in skill
+
+
 def test_report_keeps_monthly_and_filed_figures_with_separate_sources(workflow, acquired):
     result = workflow.assess(acquired, filed_ntd_thousands=1180, filed_scope="consolidated")
 
