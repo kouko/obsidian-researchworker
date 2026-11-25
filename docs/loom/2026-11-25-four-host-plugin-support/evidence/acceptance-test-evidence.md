@@ -2,7 +2,7 @@
 
 Tried on 2026-11-25, in a clean copy of the project at 16b389b.
 
-The first run was at 8780ae8; sections 1–11 record that run. The dated rerun at the end records the corrected local update guide.
+The first run was at 8780ae8; sections 1–4 and F1–F7 record that run. The dated rerun at the end records the corrected local update guide.
 
 ## 1. Consistent release metadata and inventories
 
@@ -25,31 +25,31 @@ The first run was at 8780ae8; sections 1–11 record that run. The dated rerun a
 - How I tried it: followed the documented local install and update routes in a disposable profile and source archive, starting at 9f6aba7 then staging files from 8780ae8. The focused automated tests passed. The full package suite command `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider` is executed by finalization and blocks attestation on failure. Build had 588 passed already on f18667b before the evidence-only update.
 - What came back: all six fresh local installations passed. Local Codex `plugin marketplace upgrade obsidian-researchworker --json` failed with `marketplace ... is not configured as a Git marketplace`; the subsequent `plugin add <id>@obsidian-researchworker --json` succeeded for both plugins at 5.0.0 and 0.2.0. Claude documented marketplace update and per-plugin update both succeeded; AGY reinstall replaced both isolated packages. No vault or global configuration accessed. Remote OpenCode Git update and model-backed skill execution unverified.
 
-## 5. Claude and Codex fresh installs
+## F1. Claude and Codex fresh installs
 
 - Evidence: see #2. Exit 0 for all four fresh installs and exact inventories. The package versions match metadata.
 
-## 6. Antigravity fresh installs
+## F2. Antigravity fresh installs
 
 - Evidence: see #2. Exit 0, both 15/4 skill inventories verified byte-identical.
 
-## 7. OpenCode fresh load
+## F3. OpenCode fresh load
 
 - Evidence: see #2. Orchestrator runtime record rechecked the candidate in an isolated source snapshot, using `skill.list` and `plugin.list`. Both active, 19 total.
 
-## 8. Native mention selection
+## F4. Native mention selection
 
 - Evidence: prior-candidate actual TUI completed both exact namespaced skill IDs with Tab. The native loader remains byte-identical after rebase. No model prompt was submitted.
 
-## 9. Automatic model selection
+## F5. Automatic model selection
 
 - Evidence: native skill registry descriptions and no autoinvoke overrides; no model request was made, following prior approval rejection. No actual model selection observed.
 
-## 10. Slash-command registry
+## F6. Slash-command registry
 
 - Evidence: orchestrator `command.list` in warmed isolated runtime returned four commands, zero under these package IDs. The focused test independently asserted no command API is invoked by either loader.
 
-## 11. Update procedure
+## F7. Update procedure
 
 - How I tried it: installed both prior packages from a local source snapshot of 9f6aba7 in disposable host configurations at `/private/tmp/rw-acceptance-update-vp2qld8w`, then staged the candidate 8780ae8. Used documented commands without remote calls.
 - What came back: Codex local marketplace upgrade exits 1 as described in #4. Re-running `codex plugin add obsidian@obsidian-researchworker --json` and `codex plugin add obsidian-finance@obsidian-researchworker --json` each exits 0 with installedPath ending in 5.0.0 and 0.2.0. Claude `plugin marketplace update obsidian-researchworker` and `plugin update <id>@obsidian-researchworker --scope user --json` each succeeded, update messages show old/new versions. AGY reinstall printed `replaced existing installation` and full 15/4 inventories. OpenCode remote-update route not exercised.
@@ -57,6 +57,6 @@ The first run was at 8780ae8; sections 1–11 record that run. The dated rerun a
 ## Rerun on 2026-11-25 at 16b389b
 
 - Fix range 8780ae8..16b389b modifies only docs/migration.md: local Codex update now repeats plugin add; Git marketplace refresh is documented separately. It also records the successful local upgrade tests.
-- Rows 1, 4 and 11 rerun in fresh disposable profiles under `/private/tmp/rw-acceptance-retest-_5meokvi`. Installed from a local source snapshot of 9f6aba7, staged the candidate 16b389b, then used the corrected documented local commands with no model or remote calls. Codex repeated each plugin add and list: both installed, enabled, at 5.0.0 and 0.2.0. Claude marketplace update + per-plugin update explicitly advanced both prior versions. AGY reinstall printed replaced existing installation. Each of the six updated installations had exact 15/4 inventories and zero missing or changed files under skills and scripts. Focused automated tests rerun: 51 passed in 3.66s.
-- Rows 2, 5 and 6 carried over: initial installation instructions and package contents unchanged. Rows 3, 7, 8, 9 and 10 carried over: OpenCode instructions, loader, metadata and skill content unchanged. Remote Git updates, model execution and global refresh remain unverified as disclosed in the guide.
+- Rows 1, 4 and F7 rerun in fresh disposable profiles under `/private/tmp/rw-acceptance-retest-_5meokvi`. Installed from a local source snapshot of 9f6aba7, staged the candidate 16b389b, then used the corrected documented local commands with no model or remote calls. Codex repeated each plugin add and list: both installed, enabled, at 5.0.0 and 0.2.0. Claude marketplace update + per-plugin update explicitly advanced both prior versions. AGY reinstall printed replaced existing installation. Each of the six updated installations had exact 15/4 inventories and zero missing or changed files under skills and scripts. Focused automated tests rerun: 51 passed in 3.66s.
+- Rows 2, F1 and F2 carried over: initial installation instructions and package contents unchanged. Rows 3, F3, F4, F5 and F6 carried over: OpenCode instructions, loader, metadata and skill content unchanged. Remote Git updates, model execution and global refresh remain unverified as disclosed in the guide.
 - Closing-review orchestrator separately reran the complete package suite at 16b389b, reporting 588 passed in 57.65s. Finalization still executes its own suite check.
