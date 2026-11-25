@@ -52,6 +52,7 @@ def unit(root, directory, name, content, consumed):
     ("shared-report", "bank-fixture"),
     ("normal", "twse-1611"), ("interrupted", "twse-1611"), ("edited", "twse-1611"),
     ("normal", "1611"),
+    ("substituted-capture", "bank-fixture"), ("legacy-capture", "bank-fixture"),
 ])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update, asset):
     two_issuers(tmp_path, asset)
@@ -66,6 +67,29 @@ def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update
     original = old.read_bytes()
     source_review = json.loads(original)
     module = load()
+    if update in {"normal", "legacy-capture"}:
+        base = tmp_path / cycle / "../.."
+        metadata = base / "data/sources/original-2024Q2.json"
+        record = json.loads(metadata.read_text())
+        if update == "legacy-capture":
+            record["raw_ref"] = "data/raw/original.json"
+            put(tmp_path, f"{cycle}/{record['raw_ref']}", record["projection"])
+            author = f"{cycle}/data/sources/issuer-original.md"
+            old_note = module._markdown.render_registration(
+                asset, "source", dict(record, origin_reference=author))
+            old_capture = f"{cycle}/data/sources/{digest(old_note)}.md"
+            (tmp_path / old_capture).parent.mkdir(exist_ok=True)
+            (tmp_path / old_capture).write_text(old_note)
+            assert Path(old_capture).name < Path(author).name
+        else:
+            author = str(metadata.with_suffix(".md").relative_to(tmp_path))
+        props = dict(finance_schema=1, finance_role="source-registration", title="Filed statements",
+                     asset_id=asset, source_id=record["id"], source_version=record["identity"])
+        body = "\n\n## Original and applicability\n\nCompare matching quarters only. [Prior basis](../missing.md)\n"
+        note = "---\n" + module._markdown._dump(props) + "---\n\n# Filed statements\n\n"
+        note += "## Research record\n\n```finance-source-registration\n" + module._markdown._dump(record) + "```"
+        (tmp_path / author).write_text(note + body)
+        metadata.unlink()
 
     def publish(rid, cutoff, title, finding, company, predecessor=None, expected=None):
         review = dict(source_review, id=rid, cutoff=cutoff, research=dict(
@@ -97,7 +121,7 @@ status: partial
                 checks={k: True for k in ("sources", "citations", "calculations", "counterevidence")},
                 unresolved=[]))}
         if update == "shared-report":
-            review["units"]["governance"] = dict(review["units"]["credit"], consumed={})
+            review["units"]["governance"] = dict(review["units"]["credit"])
         return module.publish(tmp_path, asset, review, {"analysis.md": body},
             expected if expected is not None else module.publication_snapshot(tmp_path),
             rid, complete=False, storage="quarterly",
@@ -123,6 +147,58 @@ status: partial
         assert "## 分項研究" in overview.read_text()
         assert "Original conclusion" in note.read_text()
         companion.write_bytes(contents)
+    else:
+        _, stored = module._markdown.record(overview.read_text(), "quarter-overview")
+        assert "fixture_value" not in overview.read_text()
+        bindings = stored["quarter_evidence"]["units"]
+        sid = "filing-2024Q2"
+        ref = bindings["credit"]["sources"][sid]
+        if update in {"normal", "legacy-capture"}:
+            captured = (tmp_path / cycle / ref).read_text()
+            assert "Compare matching quarters only. Prior basis" in captured.split("## Research record")[0]
+            assert "../missing.md" not in captured
+            if update == "legacy-capture":
+                assert (tmp_path / old_capture).read_text() == old_note
+                assert module.verify_quarter(overview.parent, overview.name)["status"] == "verified"
+                return
+        if update == "shared-report":
+            assert bindings["governance"]["sources"][sid] == ref
+        if update == "substituted-capture":
+            quarter_root = tmp_path / cycle
+            capture = quarter_root / ref
+            original_capture = capture.read_text()
+            capture.unlink()
+            with pytest.raises(ValueError, match=sid):
+                module.verify_quarter(quarter_root, overview.name)
+            discovered = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+            assert {"record": f"{asset}/2024Q2/fixed1", "work": "credit"} not in discovered["reusable"]
+            assert any(sid in gap["reason"] and "original-2024Q2" in gap["reason"]
+                       for gap in discovered["gaps"])
+            capture.write_text(original_capture)
+            _, registration = module._markdown.record(original_capture, "source-registration")
+            isolated = tmp_path / "portable-quarter"
+            shutil.copytree(quarter_root, isolated)
+            changed = dict(registration, projection={"fixture_value": 11, "unit": "fixture"})
+            altered_note = module._markdown.render_registration(asset, "source", changed)
+            changed_ref = (isolated / ref).with_name(digest(altered_note) + ".md")
+            changed_ref.write_text(altered_note)
+            isolated_overview = isolated / overview.name
+            isolated_overview.write_text(overview.read_text().replace(ref, changed_ref.relative_to(isolated).as_posix()))
+            with pytest.raises(ValueError, match="source capture mismatch"):
+                module.verify_quarter(isolated, overview.name)
+            registration["identity"] = "substitute"
+            registration["available_at"] = "2024-08-02"
+            replacement = module._markdown.render_registration(asset, "source", registration)
+            substitute = capture.with_name(digest(replacement) + ".md")
+            substitute.write_text(replacement)
+            overview.write_text(overview.read_text().replace(ref, substitute.relative_to(quarter_root).as_posix()))
+            with pytest.raises(ValueError, match=sid):
+                module.verify_quarter(quarter_root, overview.name)
+            discovered = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
+            assert {"record": f"{asset}/2024Q2/fixed1", "work": "credit"} not in discovered["reusable"]
+            assert any(sid in gap["reason"] and "original-2024Q2" in gap["reason"]
+                       for gap in discovered["gaps"])
+            return
     args = ("fixed2", CUTOFF, "Update", "Revised conclusion", "Renamed Bank", "fixed1")
     if update == "duplicate-role":
         duplicate = note.with_name("2024Q2 BANK Duplicate - 01 Financial Analysis.md")
@@ -143,12 +219,18 @@ status: partial
         return
     if update == "edited-before-read":
         note.write_bytes(note.read_bytes() + b"\nAn unchecked manual hypothesis.\n")
+        before = note.read_bytes()
         publish(*args)
         text = note.read_text()
-        assert "Previous editable report (unverified)" in text
-        assert "> An unchecked manual hypothesis." in text
-        assert "Sources: filing-2024Q2" not in text
-        assert f"Previous report as of {first_cutoff}" not in text
+        assert "Revision history" not in text and "Original conclusion" not in text
+        displaced = [
+            manifest.with_name(payload).read_bytes()
+            for manifest in tmp_path.glob(".equity-stage-*/displaced.json")
+            for payload, path in json.loads(manifest.read_text()).items()
+            if path == note.relative_to(tmp_path).as_posix()
+        ]
+        assert before in displaced
+        assert module.verify_quarter(tmp_path / cycle, overview.name)["status"] == "verified"
         return
     if update == "interrupted":
         exchange = module._update._exchange
@@ -194,8 +276,11 @@ status: partial
         second = publish(*args)
         assert first["review"] == second["review"]
     assert first["review"] == f"{cycle}/2024Q2 {ticker} {saved_company} - {overview_label}.md"
-    assert "Original conclusion" in note.read_text() and "Revised conclusion" in note.read_text()
-    assert "filing-2024Q2" in note.read_text() and first_cutoff in note.read_text()
+    assert note.name == f"2024Q2 {ticker} {saved_company} - {financial_label}.md"
+    assert "Revised conclusion" in note.read_text()
+    assert "Original conclusion" not in note.read_text() and "Revision history" not in note.read_text()
+    if not taiwan:
+        assert "Updated credit assessment" in overview.read_text()
     assert quote(note.name) in overview.read_text()
     assert old.read_bytes() == original
     view = module.discover(tmp_path, "latest", CUTOFF, storage="quarterly")
@@ -214,6 +299,18 @@ status: partial
     assert note.read_bytes() == before
     verified = module.verify_quarter(tmp_path / cycle, overview.name)
     assert {"record": f"{asset}/2024Q2/fixed2", "work": "credit"} in verified["reusable"]
+    if update == "normal" and not taiwan:
+        _, compact = module._markdown.record(overview.read_text(), "quarter-overview")
+        assert compact["quarter_evidence"]["units"]["credit"]["sources"][sid] == ref
+        credit = compact["units"]["credit"]
+        credit["output"]["path"] = cycle + "/" + credit["output"]["path"]
+        retained = {key: compact[key] for key in ("version", "fiscal", "cutoff", "research", "units")}
+        retained.update(id="fixed3", predecessor="fixed2")
+        module.publish(tmp_path, asset, retained, {}, module.publication_snapshot(tmp_path),
+                       "fixed3", complete=False, storage="quarterly", company_name="Example Bank", ticker="BANK")
+        assert note.read_bytes() == before
+        verified = module.verify_quarter(tmp_path / cycle, overview.name)
+        assert {"record": f"{asset}/2024Q2/fixed3", "work": "credit"} in verified["reusable"]
 
 
 def two_issuers(root, first_asset="bank-fixture"):
@@ -408,7 +505,10 @@ def test_public_pilot_adjacent_quarters_and_competition_cutoffs(tmp_path, storag
         content = Template(template.read_text()).substitute(
             title_yaml="Apple quarterly financial checkpoint", title="Apple quarterly financial checkpoint",
             asset_id_yaml=asset, fiscal_quarter_yaml=quarter, as_of_yaml=json.dumps(cutoff),
-            review_id_yaml="checkpoint", status_yaml="partial", findings=financial_text,
+            review_id_yaml="checkpoint", status_yaml="partial", research_question="How did earnings change?", findings=financial_text,
+            comparable_metrics="Only the scoped comparison cited below was checked.",
+            earnings_and_cash_reconciliation="Cash flow was outside this checkpoint.",
+            liquidity_and_financing="Financing disclosures were outside this checkpoint.",
             source_and_comparison=pack["source_url"], unresolved="Synthesis is pending.")
         current = saved["units"]["financial"]
         comparator_metadata = f"{base}/data/sources/filing-2024Q2.json"
