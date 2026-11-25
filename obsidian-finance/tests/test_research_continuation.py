@@ -53,6 +53,7 @@ def unit(root, directory, name, content, consumed):
     ("normal", "twse-1611"), ("interrupted", "twse-1611"), ("edited", "twse-1611"),
     ("normal", "1611"),
     ("substituted-capture", "bank-fixture"), ("legacy-capture", "bank-fixture"),
+    ("broken-overview-record", "bank-fixture"),
 ])
 def test_fixed_quarter_updates_and_historical_read(tmp_path, monkeypatch, update, asset):
     two_issuers(tmp_path, asset)
@@ -128,6 +129,14 @@ status: partial
             company_name=company, ticker=ticker)
 
     first_cutoff = "2024-08-12T23:59:59+00:00"
+    if update == "broken-overview-record":
+        render = module._markdown.render_quarter_overview
+        monkeypatch.setattr(module._markdown, "render_quarter_overview", lambda *a, **k:
+                            render(*a, **k).replace("```finance-quarter-overview", "```text"))
+        with pytest.raises(ValueError, match="expected one quarter-overview record"):
+            publish("fixed1", first_cutoff, "初版", "Original conclusion", company)
+        assert not list((tmp_path / cycle).glob("*.md"))
+        return
     first = publish("fixed1", first_cutoff, "初版", "Original conclusion", company)
     note = tmp_path / cycle / f"2024Q2 {ticker} {saved_company} - {financial_label}.md"
     assert note.is_file()

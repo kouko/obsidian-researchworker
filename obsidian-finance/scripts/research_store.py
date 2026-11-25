@@ -1866,7 +1866,10 @@ def _publish_quarterly(root, asset, review, files, expected, run_id, complete,
         evidence[reference] = payload
     overview_text = _markdown.render_quarter_overview(asset, quarter, portable, title, links,
                                                       record_path=reference)
-    _markdown.parse_note(overview_text, "quarter-overview")
+    if reference is None:
+        _markdown.record(overview_text, "quarter-overview")
+    else:
+        _markdown.parse_note(overview_text, "quarter-overview")
     intended[overview] = overview_text.encode("utf-8")
 
     observed = {path: raw for path, raw, _ in notes.values()}
