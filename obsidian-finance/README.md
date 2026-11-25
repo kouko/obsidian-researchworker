@@ -1,6 +1,6 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.1.0 provides `equity-research-us` for agent-led
+Optional `obsidian-finance` 0.2.0 provides `equity-research-us` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
 `tw-equity-research` for Taiwan Stock Exchange-listed companies,
@@ -9,10 +9,14 @@ metadata and financial observation acquisition when required evidence is missing
 It runs independently of the general-note
 `obsidian` plugin and the original Monkey Skills project.
 
-Claude and Codex manifests register this separate package in the repository's
-local marketplace. Isolated Codex installation and fresh-session operation were
-verified. Global plugin refresh and OpenCode support remain unverified, and no
-finance loader is shipped for OpenCode.
+The package contains four skills and its own distribution metadata. Follow the
+[four-host installation and update guide](../docs/migration.md) for Claude Code,
+Codex, Antigravity CLI and OpenCode, including current verification status.
+In OpenCode, select a skill such as `@obsidian-finance:tw-equity-research` or
+describe the task for automatic selection.
+
+Earlier revisions were verified in isolated Codex installations and fresh sessions.
+The evidence below describes those revisions.
 
 The [actual host-session evidence](../docs/loom/2026-11-16-finance-research-continuation/evidence/host-sessions.md)
 records source-invoked Codex CLI tests using public isolated fixtures. The

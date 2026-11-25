@@ -1,10 +1,11 @@
-// OpenCode v2 plugin loader for obsidian
-// Registers skills and slash commands from ../skills/.
+// OpenCode v2 plugin loader.
+// Registers native skills from ../skills/ under the local package's name.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
+const packageName = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name;
 
 // Parse a YAML scalar value (quoted or unquoted) according to YAML 1.2 spec
 function parseYAMLScalar(raw) {
@@ -207,10 +208,10 @@ function extractFrontmatter(raw) {
 }
 
 export default {
-  id: "obsidian",
+  id: packageName,
   async setup(ctx) {
     try {
-      const skillsPath = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills");
+      const skillsPath = join(root, "skills");
 
       // Check if skills directory exists and is a directory
       if (!existsSync(skillsPath) || !statSync(skillsPath).isDirectory()) {
@@ -244,14 +245,14 @@ export default {
           }
 
           skills.push({
-            id: `obsidian:${entry.name}`,
+            id: `${packageName}:${entry.name}`,
             name,
             description,
             path: skillFile,
             content: skillContent
           });
         } catch (err) {
-          console.error(`[obsidian] Failed to load skill ${entry.name}:`, err);
+          console.error(`[${packageName}] Failed to load skill ${entry.name}:`, err);
         }
       }
 
@@ -261,32 +262,12 @@ export default {
           try {
             draft.add(skill);
           } catch (err) {
-            console.error(`[obsidian] Failed to register skill ${skill.id}:`, err);
-          }
-        }
-      });
-      // https://opencode.ai/docs/build/plugins/server#commands
-      await ctx.command.transform((draft) => {
-        for (const skill of skills) {
-          try {
-            draft.add({
-              name: skill.id,
-              description: skill.description,
-              execute: (input) => ctx.session.prompt({
-                ...input.prompt,
-                sessionID: input.sessionID,
-                text: `/${skill.id} ${input.prompt?.text ?? ""}`.trim() +
-                  `\n\nBase directory for this skill: ${dirname(skill.path)}\n\n${skill.content}`,
-                delivery: input.delivery,
-              }),
-            });
-          } catch (err) {
-            console.error(`[obsidian] Failed to register command ${skill.id}:`, err);
+            console.error(`[${packageName}] Failed to register skill ${skill.id}:`, err);
           }
         }
       });
     } catch (err) {
-      console.error(`[obsidian] Loader failed:`, err);
+      console.error(`[${packageName}] Loader failed:`, err);
     }
   }
 };

@@ -1,0 +1,14 @@
+{
+  "name": "obsidian-finance",
+  "version": "0.2.0",
+  "type": "module",
+  "exports": {
+    ".": "./.opencode-plugin/index.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kouko/obsidian-researchworker.git",
+    "directory": "obsidian-finance"
+  }
+}
