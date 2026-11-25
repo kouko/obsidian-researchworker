@@ -241,8 +241,9 @@ entry notes readable and put scope in `investing/research.json` and
 [version-1 metadata fields](#read-only-saved-folder-discovery-metadata-v1).
 Save one stable overview and one note per completed or partial report role
 directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
-reports and links to the current progress record in Taiwan output. The US
-overview uses `00 Research Overview`;
+reports, explains what changed at the saved cutoff, and calls out evidence
+gaps before the current progress record; Taiwan output links to that record
+instead. The US overview uses `00 Research Overview`;
 analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
 The final report uses `99 Investment Synthesis`. The Taiwan skill uses the
 same role numbers with Traditional Chinese report names. For example,
