@@ -1,0 +1,59 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-25-four-host-plugin-support",
+  "content_digest": "6a880f99f5dab05d770c1f4722c9526e809766c6",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "Existing tests cover native-only standalone registration, content and path integrity, exact inventories and per-skill failure isolation; independent actual-frontmatter comparison found no candidate-specific defect."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "four_final_code",
+      "vendor": "OpenAI",
+      "model": "inherited (exact model unobservable)",
+      "lens": "code",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "four_final_spec",
+      "vendor": "OpenAI",
+      "model": "inherited (exact model unobservable)",
+      "lens": "spec",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "6d773ac",
+  "tested_commit": "16b389b",
+  "reviewed_commit": "b76e91bff1fe7c78c06eccb666c6ad8ea658c282",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "partly"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    }
+  ]
+}

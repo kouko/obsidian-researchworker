@@ -1,7 +1,9 @@
 # Obsidian ResearchWorker
 
-Sixteen agent skills for Obsidian notes, research, diagrams, Canvas and daily
-work. Version 4.2.0 provides local vault search from any project through
+Fifteen agent skills in `obsidian` 5.0.0 for notes, research, diagrams, Canvas
+and daily work, plus four optional finance skills in `obsidian-finance` 0.2.0.
+Version 5.0.0 retires File Intel and uses native OpenCode skill selection.
+Version 4.2.0 introduced local vault search from any project through
 `obsidian-knowledge` and its bundled read-only shell script.
 Version 4.1.0 adds personalized shared vault instructions and safe setup
 re-entry. Version 4.0.0 removed the eight wiki skills and daily-news-digest;
@@ -16,18 +18,21 @@ global settings or active sessions, and does not establish fresh host loading.
 
 ## Installation status
 
-The local marketplace is `.claude-plugin/marketplace.json`; its `obsidian` entry
-resolves to `./obsidian`. Claude and Codex manifests live in that directory.
-The OpenCode package and loader ID are `obsidian`; its skills can also be
-invoked as slash commands such as `/obsidian:using-obsidian`.
-These are distribution metadata, not evidence of successful installation.
+The local marketplace is `.claude-plugin/marketplace.json`. Its entries
+resolve to the independently installable `./obsidian` and
+`./obsidian-finance` packages. Each includes Claude Code and Codex manifests
+and an OpenCode package with native skill registration. For Claude Code, Codex,
+Antigravity and OpenCode installation and update instructions, see the
+[transition guide](docs/migration.md).
+In OpenCode, select skills by their namespaced IDs, such as
+`@obsidian:using-obsidian` or `@obsidian-finance:tw-equity-research`.
+The model can also select registered skills through OpenCode's native skill tool.
 The [verification record](docs/verification.md) documents an earlier isolated
 Codex local-source installation. The [November 19 acceptance run](docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)
 checked the installed Codex cache against the tested revision and exercised
 project creation, update and replay in fresh sessions. The
 [November 20 trial](docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md) used the working-tree skill in test vaults.
-Remote installation and other hosts remain unverified for these checks.
-See the [transition guide](docs/migration.md) before changing an installation.
+These records apply to the specific revisions tested.
 
 See the [plugin guide](obsidian/README.md) for installation and dependencies,
 the [skill directory](obsidian/skills/README.md) for task guides,
@@ -47,17 +52,19 @@ former resume skill without migrating them. For a single research note, use
 
 ## Optional finance package
 
-The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 provides
+The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.2.0 provides
 [`equity-research-us`](obsidian-finance/skills/equity-research-us/README.md)
 for agent-led continuation from a designated managed version-1 equities folder,
 with source-linked SEC acquisition when required evidence is missing.
 It also provides [`tw-equity-research`](obsidian-finance/skills/tw-equity-research/SKILL.md)
 for quarterly research on Taiwan-listed companies with public disclosure and
-investor conference evidence.
+investor conference evidence, [`industry-research`](obsidian-finance/skills/industry-research/SKILL.md)
+for quarterly market and industry research, and
+[`technical-analysis`](obsidian-finance/skills/technical-analysis/SKILL.md)
+for standalone U.S. stock price analysis.
 Research discovers required work, reuses valid analysis and saves protected
 checkpoints; horizon judgments remain conditional or insufficient when evidence
-is missing. Select its marketplace entry independently of `obsidian`; the
-existing general-note package is 4.2.0.
+is missing. Select its marketplace entry independently of `obsidian`.
 
 Runtime uses Python 3.11+ and the standard library. For live SEC acquisition,
 `equity-research-us` asks for an operator or organization name and contact email
@@ -65,9 +72,8 @@ when setup is required, then reuses the private local record at
 `~/.config/obsidian-finance/sec-contact.json`. Local research and reuse checks
 need no SEC contact. [Acceptance evidence](docs/loom/2026-11-18-sec-contact-setup/evidence/acceptance-test-evidence.md)
 records isolated Codex installation and contact setup in fresh conversations.
-Global plugin refresh and broader host coverage remain unverified.
-No daemon, trading or global installation is performed, and no finance OpenCode
-loader is shipped.
+That evidence applies to the tested contact setup revision. The finance plugin
+does not run a daemon or place trades.
 
 ## Existing checks
 

@@ -1,35 +1,38 @@
-# concern: one failed command registration prevents unrelated commands loading
-"""A rejected registration must not hide the remaining skill commands."""
+# concern: one failed native registration prevents unrelated skills loading
+"""A rejected registration must not hide the remaining native skills."""
 
 import subprocess
 from pathlib import Path
 
+import pytest
 
-def test_commands_rejected_entry_registers_remaining():
-    """A single rejected command must not prevent later registrations."""
+
+@pytest.mark.parametrize("package_name", ("obsidian", "obsidian-finance"))
+def test_rejected_skill_registers_remaining(package_name):
+    """A single rejected native skill must not prevent later registrations."""
     script = r'''
 import assert from "node:assert/strict";
-import plugin from "./obsidian/.opencode-plugin/index.js";
+const [packageName] = process.argv.slice(1);
+const {default: plugin} = await import(`./${packageName}/.opencode-plugin/index.js`);
 const skills = [];
 const accepted = [];
 let rejected;
 await plugin.setup({
-  skill: {transform: async f => f({add: skill => skills.push(skill.id)})},
-  command: {transform: async f => f({add: command => {
+  skill: {transform: async f => f({add: skill => {
+    skills.push(skill.id);
     if (!rejected) {
-      rejected = command.name;
+      rejected = skill.id;
       throw Error("registration rejected");
     }
-    accepted.push(command.name);
+    accepted.push(skill.id);
   }})},
-  session: {prompt: async () => {}},
 });
 assert.ok(skills.length > 1);
 assert.equal(rejected, skills[0]);
 assert.deepEqual(accepted, skills.slice(1));
 '''
     subprocess.run(
-        ["node", "--input-type=module", "-e", script],
+        ["node", "--input-type=module", "-e", script, package_name],
         cwd=Path(__file__).resolve().parents[2],
         check=True,
     )

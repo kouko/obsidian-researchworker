@@ -2,7 +2,7 @@
 
 [English](README.md) | [日本語](README.ja.md) | **繁體中文**
 
-> Obsidian vault workflow — daily note、markdown、Bases、圖表、Canvas、vault 管理、dashboard 設計，封裝為 Claude Code plugin。
+> Obsidian vault workflow — daily note、markdown、Bases、圖表、Canvas、vault 管理、dashboard 設計，封裝供 Claude Code、Codex、Antigravity CLI、OpenCode 使用。
 
 ## 選擇技能
 
@@ -10,11 +10,13 @@
 
 ## 執行環境驗證
 
-[11 月 19 日的 Codex 驗收](../docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)比對了已安裝快取與受測版本，並在新對話驗證建立、更新及重送相同證據。[11 月 20 日的試驗](../docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md)則使用工作樹的 skill 在測試 vault 執行。上游回報 Cowork 可能限制 Defuddle 擷取 URL。
+5.0.0 的安裝方式及驗證狀況請見[四平台安裝與移轉指南](../docs/migration.md)。
+
+關於較早的版本，[11 月 19 日的 Codex 驗收](../docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)比對了已安裝快取與受測版本，並在新對話驗證建立、更新及重送相同證據。[11 月 20 日的試驗](../docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md)則使用工作樹的 skill 在測試 vault 執行。上游回報 Cowork 可能限制 Defuddle 擷取 URL。
 
 ## Version
 
-4.2.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+5.0.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
 
 初始化會預覽個人化的命名、筆記品質與現行 skill 規範，完整內容放在
 `AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
@@ -22,7 +24,7 @@
 既有 memory 與本機 skill 保持原始位元組；缺少的附屬檔案須列入預覽並確認後
 才建立。個人規範與備份只留本機。初始化依賴 Codex 探索與 Claude 匯入；初始化產生的規範能否在
 新工作階段載入仍未驗證，且不自動變更全域設定或安裝快取。
-獨立版號的 OpenCode package 為 0.2.0。
+OpenCode 套件也使用相同的 5.0.0 版號。此版提供 15 個技能，退役 File Intel 與 OpenCode 自訂斜線指令。
 
 ## 獨立發行
 
@@ -32,7 +34,7 @@
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 4.2.0 將本機搜尋改名為 `obsidian-knowledge`，並改用隨附的唯讀 shell script。
-目前工作樹有 15 個 skill，包含 `obsidian-research-project`。
+5.0.0 提供 15 個 skill，包含 `obsidian-research-project`。
 
 ## 背景
 
@@ -41,7 +43,7 @@ Obsidian 是 local-first 的 markdown 知識庫。日常 vault 工作充滿小�
 Mermaid 圖，以及在 session 結束時
 保存對話摘要。
 
-本 plugin 把這些任務封裝為 skill，讓 Claude Code 依 intent dispatch。
+本 plugin 把這些任務封裝為 skill，由代理依請求內容選擇。
 Original skill 涵蓋 daily workflow、dashboard 設計、vault setup、
 對話摘要。Imported skill 則涵蓋 Obsidian 專屬 markdown、Bases、Obsidian CLI、
 Defuddle 網頁萃取、Canvas 建立、Excalidraw 圖與 Mermaid 圖。
@@ -53,7 +55,7 @@ Defuddle 網頁萃取、Canvas 建立、Excalidraw 圖與 Mermaid 圖。
 `using-obsidian` 是入口 skill，依使用者意圖（daily note、vault setup、
 圖表、清理 vault）將請求 routing 至正確的 skill。
 
-用 `/using-obsidian` 呼叫即可。
+直接描述需求，或透過各平台的技能選取功能呼叫。在 OpenCode 中可用 `@obsidian:using-obsidian` 明確選取。
 
 ### Agent
 
@@ -101,7 +103,7 @@ Upstream：[`axtonliu/axton-obsidian-visual-skills`](https://github.com/axtonliu
 
 ## Install
 
-Codex 的驗證範圍見[執行環境驗證](#執行環境驗證)。遠端安裝與 Claude/Cowork 相容性尚未驗證。切換安裝前請先閱讀[過渡說明](../docs/migration.md)。
+Claude Code、Codex、Antigravity CLI、OpenCode 的安裝及更新請依[四平台安裝與移轉指南](../docs/migration.md)。兩個套件可獨立安裝。驗證範圍見[執行環境驗證](#執行環境驗證)。
 
 `defuddle` skill 需要 Defuddle CLI：
 
@@ -154,7 +156,7 @@ sequence diagram type、套用 Obsidian 1.15（Pele）的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 4.2.0
+│   └── plugin.json              # plugin metadata，version 5.0.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
 ├── hooks/                       # SessionStart vault pointer

@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [5.0.0] — 2026-11-25 Plugin distribution and native OpenCode skills
+
+### Removed
+
+- `obsidian-file-intel` and its external Gemini processor guidance.
+- Plugin-generated OpenCode slash commands; the existing namespaced skill IDs
+  remain available for native OpenCode skill selection.
+
+### Changed
+
+- Release metadata now uses the same version in the marketplace, Claude Code,
+  Codex and OpenCode package manifests.
+
 ## [4.3.1] — 2026-11-24 Mermaid trigger and link fixes
 
 ### Fixed
