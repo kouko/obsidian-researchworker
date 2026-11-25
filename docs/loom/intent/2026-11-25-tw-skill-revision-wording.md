@@ -4,7 +4,7 @@ kind: engineering
 needs-design: no — agent instruction wording only; no user-facing surface or new behaviour
 evidence: [obsidian-finance/skills/tw-equity-research/SKILL.md, obsidian-finance/README.md]
 status: confirmed 2026-11-25
-intent_confirmed_sha: 930896994f636ae27b5c912412c7a39e24196543
+intent_confirmed_sha: 5d81b9d077a642b925830b035e92cc7d2d1e48b2
 publication: automatic — authorized 2026-11-25 by kouko
 
 ## Problem
@@ -19,7 +19,7 @@ PR #40 之後，台股筆記重新發布時只保留最新結論，舊檔另存�
 3. 完整 package 測試 0 failed。
 
 ## Constraints
-- 只改台股說明第 35、48、61、79 行這四處措辭（第 35、79 行於 2026-11-25 經使用者同意加入）；不改程式、測試或其他技能。
+- 只改台股說明第 35、48、61、79 行這四處措辭（第 35、79 行於 2026-11-25 經使用者同意加入）；不改程式或其他技能，僅新增釘住這些措辭的測試。
 
 ## Out of scope
 - 更新正式使用中的 finance plugin（PR 合併後另行決定）。
