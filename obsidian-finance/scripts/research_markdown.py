@@ -1,12 +1,10 @@
 """Obsidian properties and versioned Markdown records for the research pilot."""
 
 from datetime import date, datetime
-from html import escape, unescape
 import json
 from pathlib import Path
 import re
 from string import Template
-from urllib.parse import quote
 
 
 ANALYSIS_ROLES = frozenset({
@@ -163,15 +161,11 @@ def render_draft(properties, body):
 
 def record(text, role, **expected):
     props, body = parse_note(text, role, **expected)
-    matches = re.findall(_record_pattern(role), body)
+    pattern = r"(?m)^## Research record\r?\n\r?\n\x60{3}finance-" + role + r"\r?\n([\s\S]*?)\r?\n\x60{3}\r?$"
+    matches = re.findall(pattern, body)
     if len(matches) != 1:
         raise ValueError("expected one " + role + " record")
     return props, _mapping(matches[0])
-
-
-def _record_pattern(role):
-    return (r"(?m)^## Research record\r?\n\r?\n\x60{3}finance-" + role
-            + r"\r?\n([\s\S]*?)\r?\n\x60{3}\r?$")
 
 
 def _dump(record):
@@ -184,84 +178,12 @@ def _dump(record):
     return yaml.dump(record, sort_keys=False, allow_unicode=True, Dumper=Dumper)
 
 
-def _visible_text(value):
-    text = " ".join(str(value).split())
-    return re.sub(r"([\\`*_{}\[\]()#+!|~])", r"\\\1", escape(text, quote=False))
-
-
-_SOURCE_CONTEXT_HEADING = "## Original research context"
-_CONTEXT_LINK = re.compile(
-    r"""!?\[([^\]\n]*)\]\((?:<([^<>\n]*)>|((?:[^\s()<>\\]|\([^\s()<>\\]*\))*))"""
-    r"""(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?\)"""
-)
-_PUBLIC_CONTEXT_URL = re.compile(r"https?://[^\s/<>()\[\]\\]+[^\s<>\[\]\\]*", re.I)
-
-
-def _context_url(link):
-    url = link[2] if link[2] is not None else link[3]
-    if not link[0].startswith("!") and _PUBLIC_CONTEXT_URL.fullmatch(url):
-        return url
-    return None
-
-
-def _context_destination(url):
-    return f"<{url}>" if "(" in url or ")" in url else url
-
-
-def _render_context_paragraph(paragraph):
-    parts = []
-    offset = 0
-    for link in _CONTEXT_LINK.finditer(paragraph):
-        url = _context_url(link)
-        if url is None:
-            continue
-        before = paragraph[offset:link.start()]
-        parts.append(_visible_text(before))
-        if before.endswith(" "):
-            parts.append(" ")
-        destination = _context_destination(escape(url, quote=False))
-        parts.append(f"[{_visible_text(link[1])}]({destination})")
-        offset = link.end()
-        if paragraph[offset:offset + 1] == " ":
-            parts.append(" ")
-            offset += 1
-    parts.append(_visible_text(paragraph[offset:]))
-    return "".join(parts)
-
-
-def _portable_context_link(link):
-    url = _context_url(link)
-    if url is None:
-        return link[1]
-    return f"[{link[1]}]({_context_destination(unescape(url))})"
-
-
-def registration_context(text, role, *, captured):
-    """Retain author prose and portable public citations."""
-    _, body = parse_note(text, role)
-    prose = re.sub(_record_pattern(role), "", body)
-    if captured:
-        _, marker, context = prose.partition(_SOURCE_CONTEXT_HEADING + "\n\n")
-        if not marker:
-            return ()
-        context = context.partition("\n## ")[0]
-        # Undo our own display escaping. Rendering reapplies it after rebasing.
-        return tuple(unescape(re.sub(r"\\([\\`*_{}\[\]()#+!|~])", r"\1", line[2:]))
-                     for line in context.splitlines() if line.startswith("> "))
-    prose = re.sub(r"(?m)^#{1,6} .*\n", "", prose)
-    prose = _CONTEXT_LINK.sub(_portable_context_link, prose)
-    prose = re.sub(r"!?\[\[([^|\]\n]*)(?:\|([^\]\n]*))?\]\]",
-                   lambda match: match[2] or match[1], prose)
-    return tuple(" ".join(section.split()) for section in re.split(r"\n\s*\n", prose.strip())
-                 if section.strip())
-
-
-def render_registration(asset, role, record, *, narrative=()):
+def render_registration(asset, role, record):
     template = Path(__file__).parents[1] / f"skills/equity-research-us/templates/{role}-registration.md"
     title = f"{record['id']} {record['identity']}"
     # One scalar per placeholder; quoted escapes protect metadata written by agents.
     context = {
-        "title": _visible_text(title),
+        "title": title.replace("\n", " "),
         "title_yaml": json.dumps(title, ensure_ascii=False),
         "asset_id_yaml": json.dumps(asset, ensure_ascii=False),
         f"{role}_id_yaml": json.dumps(record["id"], ensure_ascii=False),
@@ -272,33 +194,12 @@ def render_registration(asset, role, record, *, narrative=()):
         available = record.get("available_at")
         context["available_at_properties"] = "available_at: " + json.dumps(available) + "\n" if available else ""
         origin = record.get("origin_reference", record["raw_ref"])
-        kind = _visible_text(record.get("kind", "source"))
-        availability = _visible_text(available) if available else "not established"
-        context["source_link_and_basis"] = (
-            f"Use this captured {kind} to inspect the evidence as it was saved. "
-            f"Recorded availability: {availability}.\n\n"
-            f"[Local source](../raw/{quote(Path(record['raw_ref']).name)}) · Origin: {_visible_text(origin)}"
-        )
-        fiscal = record.get("fiscal", {})
-        if isinstance(fiscal, dict) and fiscal.get("period_end"):
-            context["source_link_and_basis"] += (
-                f"\n\nReporting period ended {_visible_text(fiscal['period_end'])}."
-            )
+        context["source_link_and_basis"] = f"[Local source](../raw/{Path(record['raw_ref']).name})\n\nOrigin: {origin}"
         if "original_ref" in record:
-            context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{quote(Path(record['original_ref']).name)})"
+            context["source_link_and_basis"] += f"\n\n[Original filing](../raw/{Path(record['original_ref']).name})"
     else:
         origin = record.get("origin_reference", record["content_ref"])
-        context["method_and_limits"] = (
-            f"Use this captured {_visible_text(record.get('kind', 'method'))} to repeat the "
-            "applied procedure or inspect its assumptions.\n\n"
-            f"[Local method](../materials/{quote(Path(record['content_ref']).name)}) · Origin: {_visible_text(origin)}"
-        )
-        if record.get("authored_at"):
-            context["method_and_limits"] += f"\n\nRecorded authorship: {_visible_text(record['authored_at'])}."
-    if narrative:
-        body_key = "source_link_and_basis" if role == "source" else "method_and_limits"
-        quoted = "\n>\n".join(f"> {_render_context_paragraph(paragraph)}" for paragraph in narrative)
-        context[body_key] += f"\n\n{_SOURCE_CONTEXT_HEADING}\n\n{quoted}"
+        context["method_and_limits"] = f"[Local method](../materials/{Path(record['content_ref']).name})\n\nOrigin: {origin}"
     rendered = Template(template.read_text(encoding="utf-8")).substitute(context)
     parse_note(rendered, role + "-registration")
     return rendered
@@ -316,22 +217,42 @@ def render_review(asset, quarter, review):
         title=title, properties=_dump(props), record=_dump(review))
 
 
-def render_quarter_overview(asset, quarter, review, title, report_links):
+def render_quarter_overview(asset, quarter, review, title, report_links, *, record_path=None):
     props = dict(finance_schema=1, finance_role="quarter-overview", title=title,
                  asset_id=asset, fiscal_quarter=quarter, as_of=review["cutoff"],
                  review_id=review["id"],
                  status="complete" if review["publication"]["complete"] else "partial")
-    research = review.get("research", {})
-    changes = _visible_text(research.get("changes") or "No change summary was supplied.")
-    gaps = "\n".join(f"- {_visible_text(gap)}" for gap in research.get("gaps", []))
-    gaps = gaps or "No gaps were recorded."
     links = "\n".join(f"- [{label}]({path})" for label, path in report_links)
-    links = links or "No analysis reports have been saved for this quarter."
-    return ("---\n" + _dump(props) + "---\n\n# " + _visible_text(title)
-            + "\n\nUse this note to review changes at the saved cutoff, open the supporting analyses, "
-            "and identify what needs more evidence."
-            + "\n\n## What changed\n\n" + changes
-            + "\n\n## Analysis reports\n\n" + links
-            + "\n\n## Evidence gaps\n\n" + gaps
+    if record_path is not None:
+        props["research_record"] = record_path
+        research = review["research"]
+        horizons = research.get("horizons", {})
+        conclusions = [
+            f"**{label}**　{judgment}"
+            for key, label in (("short", "短期"), ("medium", "中期"), ("long", "長期"))
+            if isinstance(judgment := horizons.get(key, {}).get("judgment"), str)
+            and judgment not in ("", "insufficient_evidence")
+        ]
+        gaps = []
+        for key in ("gaps", "supplemental_gaps"):
+            items = research.get(key, [])
+            if not isinstance(items, list):
+                items = [] if items is None else [items]
+            for item in items:
+                if isinstance(item, dict):
+                    item = " · ".join(item[field].strip() for field in ("evidence", "reason", "recovery")
+                                      if isinstance(item.get(field), str) and item[field].strip())
+                gaps.append(item if isinstance(item, str) and item.strip()
+                            else "有一項待補證據，詳細內容請見研究紀錄。")
+        def list_items(items, empty):
+            return "\n".join("- " + " ".join(item.split()) for item in items
+                             if isinstance(item, str) and item.strip()) or empty
+        return ("---\n" + _dump(props) + "---\n\n# " + title
+                + "\n\n資料截至 " + review["cutoff"]
+                + "\n\n## 本季判斷\n\n" + list_items(conclusions, "請參閱各分項的研究判斷。")
+                + "\n\n## 分項研究\n\n" + links
+                + "\n\n## 待補證據\n\n" + list_items(gaps, "本次未列出待補證據。")
+                + f"\n\n[研究紀錄]({record_path})\n")
+    return ("---\n" + _dump(props) + "---\n\n# " + title + "\n\n" + links
             + "\n\n## Research record\n\n```finance-quarter-overview\n"
             + _dump(review) + "```\n")

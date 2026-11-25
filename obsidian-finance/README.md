@@ -3,6 +3,7 @@
 Optional `obsidian-finance` 0.1.0 provides `equity-research-us` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
+`tw-equity-research` for Taiwan Stock Exchange-listed companies,
 `industry-research` for quarterly industry and market studies and
 `technical-analysis` for standalone U.S. stock price and volume reports.
 It runs independently of the general-note
@@ -23,7 +24,14 @@ from live SEC access. Partial checkpoints retain unresolved research.
 
 Use [equity-research-us](skills/equity-research-us/README.md) to continue analysis
 in an existing managed research folder. It reuses eligible local evidence and
-opens the bundled acquisition guide when required SEC evidence is missing. Use
+opens the bundled acquisition guide when required SEC evidence is missing.
+Use [tw-equity-research](skills/tw-equity-research/SKILL.md) to start or continue
+Taiwan-listed company research, link published monthly revenue to the prior
+forecast, and track financial statements, disclosures, and conference evidence.
+Taiwan reports use numbered Traditional Chinese filenames, such as
+`2025Q3 1611 中電 - 01 財務分析.md`. The skill includes public acquisition
+scripts and can use a user's existing local transcription tools.
+Use
 [industry-research](skills/industry-research/SKILL.md) to start or continue a
 quarterly market study, review an earlier outlook against released data,
 or cite eligible market findings in issuer research. Given an Obsidian vault,
@@ -37,8 +45,7 @@ Use [technical-analysis](skills/technical-analysis/SKILL.md) to analyze one U.S.
 stock from completed daily bars. It can fetch the latest data or replay a local
 snapshot with evidence for a historical cutoff. Each report shows distinct
 three-week, three-month, and one-year outlooks with actual evidence and outlook
-dates. Saved notes include source details and a chart when daily bars are
-available. Ask to retain the full snapshot when exact replay is needed.
+dates. Optional note output keeps the snapshot and a chart alongside the report.
 Offline technical analysis uses Python 3.11+ and the standard library. The
 skill describes an isolated setup for live stock-price acquisition.
 
@@ -207,6 +214,16 @@ Real fresh-host continuation remains a separate verification requirement.
 
 ## Fixed quarterly notes
 
+The [Taiwan equity skill](skills/tw-equity-research/SKILL.md) writes Traditional
+Chinese research notes using its [role frameworks](skills/tw-equity-research/references/analysis-framework.md).
+New Taiwan overviews show dated findings, gaps and report links. The
+`research_record` property references a quarter-local immutable JSON record
+in `data/reviews/`. Machine source and method registrations can use
+quarter-local JSON under `data/sources/` and `data/analysis/`. Their raw and
+method paths start at the quarter folder. Existing inline Taiwan and US
+overviews remain readable. Copy the quarter folder with its `data/` folder
+to retain portable verification.
+
 The equity skill uses the `research_store` Python API with
 `storage="quarterly"`. Select the fiscal quarter from company evidence and
 assess at the requested cutoff:
@@ -217,13 +234,18 @@ result = research_store.discover(
 )
 ```
 
-Use a marked `investing/index.md` and a marked asset entry to establish scope.
+For US research, use a marked `investing/index.md` and a marked asset entry to
+establish scope. For a new Taiwan-only research folder, keep these Markdown
+entry notes readable and put scope in `investing/research.json` and
+`investing/assets/equities/twse-<ticker>/asset.json` using the
+[version-1 metadata fields](#read-only-saved-folder-discovery-metadata-v1).
 Save one stable overview and one note per completed or partial report role
 directly in the company's `cycles/<YYYYQq>/`. The overview lists the saved
-reports, explains what changed at the saved cutoff, and calls out evidence
-gaps before the current progress record. It uses `00 Research Overview`;
+reports and links to the current progress record in Taiwan output. The US
+overview uses `00 Research Overview`;
 analysis roles use `01 Financial Analysis` through `06 Technical Analysis`.
-The final report uses `99 Investment Synthesis`. For example,
+The final report uses `99 Investment Synthesis`. The Taiwan skill uses the
+same role numbers with Traditional Chinese report names. For example,
 `2024Q3 AAPL Apple - 01 Financial Analysis.md` can have a Chinese heading and
 body. Later language or company display name changes keep the saved path.
 Existing old-format files stay in place.
@@ -243,15 +265,6 @@ reports whose content and dependencies still qualify, copy unchanged units
 from the saved progress record with their existing output references. Use the
 current review ID as the predecessor, when present.
 
-Supply complete consumed projections for new units. In a saved fixed quarterly
-overview, `quarter_evidence.version: 2` records each consumed source version and
-the digest of its exact captured registration separately from its relative path.
-The registration retains its publication date, provenance and full projection.
-The helper restores checked projections
-for assessment and retained-unit publication. A missing or mismatched capture
-invalidates affected work. Older fixed overviews with full projections remain
-readable.
-
 ```python
 saved = research_store.publish(
     root, asset_id, review, files, expected, unique_run_id, complete=False,
@@ -261,15 +274,10 @@ saved = research_store.publish(
 ```
 
 Set `complete=True` only after all required work has been verified. For a
-changed finding, put the reason in `research.changes` for the quarterly overview.
-A same-quarter update writes the current report to its existing path. Read the
-existing note and carry identifiable user-authored passages forward verbatim.
-Label unchecked passages separately from verified claims. If authorship is
-unclear, keep the bounded passage with that uncertainty labeled. Defer the
-affected update and report the ambiguity if you cannot isolate the passage
-without copying the earlier report wholesale.
-Earlier-cutoff assessments use eligible saved evidence and report a gap when
-the retained material is insufficient.
+changed finding, put the reason in `research.changes`. The affected note keeps
+the previous report and its dated source references in its revision history.
+Assess those versions before citing a prior conclusion. An earlier-cutoff
+assessment can report a gap when the retained material is insufficient.
 
 After a pending save is interrupted, use
 `research_store.recover_quarterly(root, asset_id, quarter)` and rediscover.
@@ -689,15 +697,15 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
 - `investing/index.md` with role `research-overview` supplies the tracked assets.
   An ordinary unmarked overview leaves the legacy watchlist in effect.
 - Within the selected `cycles/<YYYYQq>/` directory, register research inputs
-  under `data/sources/` and authored methods under `data/analysis/`. Use the
-  bundled templates with a matching source or method identity and version.
-  Payload paths in quarter registrations are relative to the quarter directory.
-  The fenced YAML record uses the same version-1 field names as the legacy
-  reader. Keep evidence bytes in their original format. Distinct source
-  versions may coexist.
-- Every newly authored Markdown note uses its bundled role template and
-  flat Obsidian frontmatter. For a new method or assumption, put the
-  explanation and limits in the method-registration note. Save the compact
+  under `data/sources/` and authored methods under `data/analysis/`. Use
+  version-1 `.json` for new Taiwan registrations and the bundled
+  fenced-YAML templates for US Markdown registrations. Both require matching
+  source or method identities and version fields. Payload paths start at the
+  quarter directory. Keep evidence bytes in their original format. Distinct
+  source versions may coexist.
+- Research notes use flat Obsidian properties. Explain the method and its
+  limits in the readable analysis, or in the US method-registration note.
+  Save the compact
   applied method payload separately as UTF-8 `data/materials/<name>.txt`.
   Register its quarter-relative `content_ref` and SHA-256 `content_digest`.
   Use the research-root-relative path to the same bytes and the same digest
@@ -732,9 +740,10 @@ upstream [composer](https://github.com/yaml/pyyaml/blob/6.0.2/lib/yaml/composer.
 
 ### Copy and verify a quarter
 
-A portable Markdown review keeps its bound inputs under
-`cycles/{YYYYQn}/data/`. Source registrations and method registrations are
-Markdown. Raw evidence keeps its original format and bytes. A source
+A portable review keeps its bound inputs under
+`cycles/{YYYYQn}/data/`. New Taiwan source and method registrations are JSON.
+US and previously saved Taiwan registrations may be Markdown. Raw evidence
+keeps its original format and bytes. A source
 registration can bind both the reviewed extraction (`raw_ref` and
 `raw_digest`) and the original filing (`original_ref` and
 `original_digest`). Register both when citing an extraction whose original

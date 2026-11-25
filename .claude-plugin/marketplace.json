@@ -10,6 +10,6 @@
     "name": "obsidian-finance",
     "source": "./obsidian-finance",
     "version": "0.1.0",
-    "description": "Optional SEC data acquisition with reusable local contact setup and research continuation for managed equities and quarterly market research."
+    "description": "Quarterly U.S. equity research with SEC data, Taiwan-listed company research with tw-equity-research, quarterly market research, and standalone U.S. stock technical analysis in Obsidian."
   }]
 }

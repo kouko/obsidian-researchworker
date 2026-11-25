@@ -51,6 +51,9 @@ The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.1.0 provide
 [`equity-research-us`](obsidian-finance/skills/equity-research-us/README.md)
 for agent-led continuation from a designated managed version-1 equities folder,
 with source-linked SEC acquisition when required evidence is missing.
+It also provides [`tw-equity-research`](obsidian-finance/skills/tw-equity-research/SKILL.md)
+for quarterly research on Taiwan-listed companies with public disclosure and
+investor conference evidence.
 Research discovers required work, reuses valid analysis and saves protected
 checkpoints; horizon judgments remain conditional or insufficient when evidence
 is missing. Select its marketplace entry independently of `obsidian`; the
