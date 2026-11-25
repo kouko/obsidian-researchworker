@@ -1,0 +1,61 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-25-restore-us-quarterly-after-tw-merge",
+  "content_digest": "5a823d775bec7f4084618209a3a37e40bec72461",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian-finance/tests/test_tw_overview_gaps_shape.py -q -p no:cacheprovider",
+      "artifact": "obsidian-finance/tests/test_tw_overview_gaps_shape.py",
+      "result": "pass",
+      "command_digest": "9169bd7a67fc1060b6d87c9623a39befc067721eca7bb8eb74077ea82cdedcc1"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "code",
+      "verdict": "PASS_WITH_NOTES",
+      "reviewed_sha": "f139638",
+      "review_target_sha": "e396324",
+      "findings": [
+        {
+          "severity": "nit",
+          "anchor": "docs/loom/intent/2026-11-25-four-host-plugin-support.md:1",
+          "text": "Branch carries an unrelated confirmed intent (74b5c0f); disclose in PR body."
+        }
+      ]
+    },
+    {
+      "reviewer": "reviewer-b",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "code",
+      "verdict": "PASS_WITH_NOTES",
+      "reviewed_sha": "f139638",
+      "review_target_sha": "e396324",
+      "findings": [
+        {
+          "severity": "nit",
+          "anchor": "obsidian-finance/skills/tw-equity-research/SKILL.md:61",
+          "text": "Taiwan skill still asks for in-note dated revision record; deferred to PR follow-up."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "2fa14f3",
+  "tested_commit": "e3963247fc08ec3253fa16d56ce944ee5289c65a",
+  "reviewed_commit": "e3963247fc08ec3253fa16d56ce944ee5289c65a",
+  "acceptance_status": []
+}
