@@ -41,6 +41,8 @@ This plugin provides daily workflow skills and vault management for Obsidian.
 | `obsidian-excalidraw-diagram` | Generate Excalidraw diagrams (Obsidian/Standard/Animated) |
 | `dashboard-design` | Design dashboards from requirements to prototyping |
 | `defuddle` | Extract web pages and YouTube transcripts using Defuddle CLI |
+| `obsidian-headless` | Sync and publish vaults without the desktop app (Obsidian Headless) |
+| `knap` | Render Markdown templates from JSON or CSV data |
 
 ## Available Agents
 

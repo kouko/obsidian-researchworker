@@ -10,13 +10,13 @@
 
 ## ホストの検証状況
 
-5.0.0 の導入方法と検証状況は [4 ホストの導入・移行ガイド](../docs/migration.md) を参照してください。
+5.1.0 の導入方法と検証状況は [4 ホストの導入・移行ガイド](../docs/migration.md) を参照してください。
 
 過去のリビジョンについて、[11 月 19 日の Codex 受け入れ試験](../docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)では、導入済みキャッシュを試験対象のリビジョンと照合し、新規セッションでプロジェクトの作成、更新、同じ根拠の再投入を検証しました。[11 月 20 日の試験](../docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md)では、作業ツリーのスキルをテスト用 vault で実行しました。Cowork で Defuddle の URL 取得が制限される場合があると upstream は報告しています。
 
 ## Version
 
-5.0.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
+5.1.0 — [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) を参照。
 
 Vault 初期設定は、個人に合わせた命名・ノート品質・現行 skill の規則を
 `AGENTS.md` にまとめ、`CLAUDE.md` は `@AGENTS.md` と末尾の改行だけにする。
@@ -25,7 +25,7 @@ Vault 初期設定は、個人に合わせた命名・ノート品質・現行 s
 明示的な承認が必要。個人の規則とバックアップはローカルに保持する。
 Vault 初期設定は Codex の探索と Claude の import を利用します。初期設定が生成した規則を
 新規セッションで読み込めるかは未検証です。global 設定や cache は自動変更しない。
-OpenCode package も同じ 5.0.0 です。15 個のスキルを提供し、File Intel と OpenCode 独自の slash command は廃止しました。
+OpenCode package も同じ 5.1.0 です。17 個のスキルを提供し、File Intel と OpenCode 独自の slash command は廃止しました。
 
 ## 独立配布
 
@@ -36,7 +36,7 @@ daily-news-digest を削除する。通常の daily note、単一テーマの研
 wikilink は保持し、既存 vault の出力や設定は変更しない。切り替え前に
 [移行ガイド](../docs/migration.md)を確認してください。
 4.2.0 ではローカル検索を `obsidian-knowledge` に改名し、同梱の読み取り専用シェルスクリプトへ移行しました。
-5.0.0 には `obsidian-research-project` を含め、15 個のスキルがあります。
+5.1.0 には `obsidian-research-project`、`obsidian-headless`、`knap` を含め、17 個のスキルがあります。
 
 ## 背景
 
@@ -92,6 +92,8 @@ Upstream: [`kepano/obsidian-skills`](https://github.com/kepano/obsidian-skills)
 | `obsidian-bases` | `.base` ファイルの作成・編集 — view、filter、formula、summary |
 | `obsidian-cli` | 起動中の Obsidian instance を公式 CLI で操作 — read、create、search、plugin / theme 開発 |
 | `defuddle` | Defuddle CLI で web ページと YouTube の文字起こしを抽出 |
+| `obsidian-headless` | デスクトップアプリなしで vault を同期・公開（Obsidian Headless） |
+| `knap` | JSON / CSV から Markdown テンプレートを生成（knap） |
 
 ### axtonliu（Axton Liu）からの import
 
@@ -158,7 +160,7 @@ note 内に図を描く：
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata、version 5.0.0
+│   └── plugin.json              # plugin metadata、version 5.1.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 保守 agent
 ├── hooks/                       # SessionStart vault pointer
@@ -176,6 +178,8 @@ obsidian/
 │   ├── obsidian-bases/          # kepano から import
 │   ├── obsidian-cli/            # kepano から import
 │   ├── defuddle/                # kepano から import
+│   ├── obsidian-headless/       # kepano から import
+│   ├── knap/                    # kepano から import
 │   ├── obsidian-canvas/ # axtonliu から import
 │   ├── obsidian-excalidraw-diagram/ # axtonliu から import
 │   └── obsidian-mermaid-visualizer/ # axtonliu から import

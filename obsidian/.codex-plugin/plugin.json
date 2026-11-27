@@ -1,7 +1,7 @@
 {
   "name": "obsidian",
-  "version": "5.0.0",
-  "description": "15 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
+  "version": "5.1.0",
+  "description": "17 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
     "url": "https://github.com/kouko"
@@ -22,8 +22,8 @@
   ],
   "interface": {
     "displayName": "obsidian",
-    "shortDescription": "15 Obsidian skills — notes, research, diagrams, Canvas and local vault search",
-    "longDescription": "Manage Obsidian vaults with 15 skills: daily notes, topic research, Flavored Markdown and wikilinks, Bases, Canvas, Mermaid and Excalidraw diagrams, web extraction, vault setup, dashboard design, and local vault search from any project via the obsidian-knowledge skill. using-obsidian routes the skills. Defuddle requires its CLI.",
+    "shortDescription": "17 Obsidian skills — notes, research, diagrams, Canvas and local vault search",
+    "longDescription": "Manage Obsidian vaults with 17 skills: daily notes, topic research, Flavored Markdown and wikilinks, Bases, Canvas, Mermaid and Excalidraw diagrams, web extraction, vault setup, dashboard design, and local vault search from any project via the obsidian-knowledge skill. using-obsidian routes the skills. Defuddle requires its CLI.",
     "developerName": "kouko",
     "category": "Productivity",
     "capabilities": [

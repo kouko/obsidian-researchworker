@@ -8,11 +8,13 @@
 
 - [`dashboard-design`](dashboard-design/README.ja.md)
 - [`defuddle`](defuddle/README.md)
+- [`knap`](knap/README.md)
 - [`obsidian-bases`](obsidian-bases/README.md)
 - [`obsidian-canvas`](obsidian-canvas/README.ja.md)
 - [`obsidian-cli`](obsidian-cli/README.md)
 - [`obsidian-daily`](obsidian-daily/README.md)
 - [`obsidian-excalidraw-diagram`](obsidian-excalidraw-diagram/README.ja.md)
+- [`obsidian-headless`](obsidian-headless/README.md)
 - [`obsidian-knowledge`](obsidian-knowledge/README.md)
 - [`obsidian-markdown`](obsidian-markdown/README.ja.md)
 - [`obsidian-mermaid-visualizer`](obsidian-mermaid-visualizer/README.ja.md)
@@ -29,6 +31,8 @@
 | defuddle | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | MIT (Steph Ango) |
 | obsidian-bases | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | MIT (Steph Ango) |
 | obsidian-cli | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | MIT (Steph Ango) |
+| obsidian-headless | [obsidianmd/obsidian-skills](https://github.com/obsidianmd/obsidian-skills) | MIT (Steph Ango) |
+| knap | [obsidianmd/obsidian-skills](https://github.com/obsidianmd/obsidian-skills) | MIT (Steph Ango) |
 | obsidian-markdown | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | MIT (Steph Ango) |
 | obsidian-canvas | [axtonliu/axton-obsidian-visual-skills](https://github.com/axtonliu/axton-obsidian-visual-skills) + json-canvas（[kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) より） | MIT (Axton Liu + Steph Ango) |
 | obsidian-excalidraw-diagram | [axtonliu/axton-obsidian-visual-skills](https://github.com/axtonliu/axton-obsidian-visual-skills) | MIT (Axton Liu) |

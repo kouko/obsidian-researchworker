@@ -10,13 +10,13 @@
 
 ## 執行環境驗證
 
-5.0.0 的安裝方式及驗證狀況請見[四平台安裝與移轉指南](../docs/migration.md)。
+5.1.0 的安裝方式及驗證狀況請見[四平台安裝與移轉指南](../docs/migration.md)。
 
 關於較早的版本，[11 月 19 日的 Codex 驗收](../docs/loom/2026-11-19-start-and-update-research-topic/evidence/acceptance-test-evidence.md#re-run-on-2026-11-19-at-18136e9531691e5b0fdd439a0bb4bea71d7462ff)比對了已安裝快取與受測版本，並在新對話驗證建立、更新及重送相同證據。[11 月 20 日的試驗](../docs/skill-dogfood/2026-11-20-research-evidence-confidence/report.md)則使用工作樹的 skill 在測試 vault 執行。上游回報 Cowork 可能限制 Defuddle 擷取 URL。
 
 ## Version
 
-5.0.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
+5.1.0 — 參見 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)。
 
 初始化會預覽個人化的命名、筆記品質與現行 skill 規範，完整內容放在
 `AGENTS.md`；`CLAUDE.md` 僅含 `@AGENTS.md` 與結尾換行。
@@ -24,7 +24,7 @@
 既有 memory 與本機 skill 保持原始位元組；缺少的附屬檔案須列入預覽並確認後
 才建立。個人規範與備份只留本機。初始化依賴 Codex 探索與 Claude 匯入；初始化產生的規範能否在
 新工作階段載入仍未驗證，且不自動變更全域設定或安裝快取。
-OpenCode 套件也使用相同的 5.0.0 版號。此版提供 15 個技能，退役 File Intel 與 OpenCode 自訂斜線指令。
+OpenCode 套件也使用相同的 5.1.0 版號。此版提供 17 個技能，退役 File Intel 與 OpenCode 自訂斜線指令。
 
 ## 獨立發行
 
@@ -34,7 +34,7 @@ OpenCode 套件也使用相同的 5.0.0 版號。此版提供 15 個技能，退
 一般每日筆記、單題研究、Defuddle 擷取與雙括號內部連結仍保留；既有 vault
 產出與設定不變。切換安裝前請先閱讀[過渡說明](../docs/migration.md)；
 4.2.0 將本機搜尋改名為 `obsidian-knowledge`，並改用隨附的唯讀 shell script。
-5.0.0 提供 15 個 skill，包含 `obsidian-research-project`。
+5.1.0 提供 17 個 skill，包含 `obsidian-research-project`、`obsidian-headless` 與 `knap`。
 
 ## 背景
 
@@ -89,6 +89,8 @@ Upstream：[`kepano/obsidian-skills`](https://github.com/kepano/obsidian-skills)
 | `obsidian-bases` | 建立與編輯 `.base` 檔，含 view、filter、formula、summary |
 | `obsidian-cli` | 透過官方 CLI 操作運行中的 Obsidian instance —— read / create / search / plugin 與 theme 開發 |
 | `defuddle` | 透過 Defuddle CLI 擷取網頁內容與 YouTube 逐字稿 |
+| `obsidian-headless` | 不需桌面 app 即可同步與發佈 vault（Obsidian Headless） |
+| `knap` | 由 JSON / CSV 資料產生 Markdown 範本（knap） |
 
 ### 引入自 axtonliu（Axton Liu）
 
@@ -156,7 +158,7 @@ sequence diagram type、套用 Obsidian 1.15（Pele）的 quirk，輸出
 ```
 obsidian/
 ├── .claude-plugin/
-│   └── plugin.json              # plugin metadata，version 5.0.0
+│   └── plugin.json              # plugin metadata，version 5.1.0
 ├── agents/
 │   └── obsidian-vault-organizer.md  # vault 維運 agent
 ├── hooks/                       # SessionStart vault pointer
@@ -174,6 +176,8 @@ obsidian/
 │   ├── obsidian-bases/          # 引入自 kepano
 │   ├── obsidian-cli/            # 引入自 kepano
 │   ├── defuddle/                # 引入自 kepano
+│   ├── obsidian-headless/       # 引入自 kepano
+│   ├── knap/                    # 引入自 kepano
 │   ├── obsidian-canvas/ # 引入自 axtonliu
 │   ├── obsidian-excalidraw-diagram/ # 引入自 axtonliu
 │   └── obsidian-mermaid-visualizer/ # 引入自 axtonliu

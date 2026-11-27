@@ -4,8 +4,8 @@
   "plugins": [{
     "name": "obsidian",
     "source": "./obsidian",
-    "version": "5.0.0",
-    "description": "15 Obsidian skills for notes, research, diagrams and local vault search from any project, extracted from Monkey Skills."
+    "version": "5.1.0",
+    "description": "17 Obsidian skills for notes, research, diagrams and local vault search from any project, extracted from Monkey Skills."
   }, {
     "name": "obsidian-finance",
     "source": "./obsidian-finance",
