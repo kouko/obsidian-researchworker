@@ -28,3 +28,19 @@ def test_obsidian_cli_vault_targeting_asks_and_handles_duplicate_names():
     assert "ask which one before changing files" in text
     assert "obsidian vaults verbose" in text
     assert "share a name" in text and "by path" in text
+
+
+UPSTREAM = Path("/private/tmp/claude-501/-Users-kouko--herdr-worktrees-obsidian-researchworker-obsidian-connector/3f2cdbda-bb39-4b95-91e5-4f5af4aaede0/scratchpad/official/plugins/obsidian/skills")
+
+
+def _body(text):
+    return text.split("---\n", 2)[2]
+
+
+def test_obsidian_bases_body_matches_upstream():
+    text = _text("obsidian-bases")
+    assert "kanban" in text and "note." in text
+    assert "exactly ONE key" in text and "groupOrder" in text
+    upstream = UPSTREAM / "obsidian-bases/SKILL.md"
+    if upstream.exists():  # upstream checkout is a local sync aid, not a repo fixture
+        assert _body(text) == _body(upstream.read_text())
