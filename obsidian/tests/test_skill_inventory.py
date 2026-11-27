@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RETAINED = {
     "dashboard-design", "defuddle", "obsidian-bases", "obsidian-canvas",
     "obsidian-cli", "obsidian-daily", "obsidian-excalidraw-diagram",
-    "obsidian-knowledge", "obsidian-markdown", "obsidian-mermaid-visualizer",
+    "obsidian-headless", "knap", "obsidian-knowledge", "obsidian-markdown", "obsidian-mermaid-visualizer",
     "obsidian-research", "obsidian-research-project", "obsidian-tldr", "obsidian-vault-setup", "using-obsidian",
 }
 REMOVED = {

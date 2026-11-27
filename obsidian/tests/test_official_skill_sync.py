@@ -52,3 +52,15 @@ def test_defuddle_adds_upstream_safety_and_keeps_local_extensions():
     assert "Do not claim extraction succeeded if the tool is unavailable or returns an error" in text
     assert "YouTube transcripts" in text and "0.19.0" in text
     assert "WebFetch" in text and "parse '<url>' --md" in text
+
+
+def test_new_upstream_skills_ship_with_license_and_readme():
+    for name in ("obsidian-headless", "knap"):
+        skill = SKILLS / name
+        assert "Steph Ango" in (skill / "LICENSE").read_text()
+        assert "(SKILL.md)" in (skill / "README.md").read_text()
+        text = (skill / "SKILL.md").read_text()
+        assert text.startswith(f"---\nname: {name}\n")
+        upstream = UPSTREAM / name / "SKILL.md"
+        if upstream.exists():
+            assert text == upstream.read_text()
