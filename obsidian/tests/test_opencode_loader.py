@@ -87,6 +87,7 @@ def test_package_identity_keeps_repository_and_other_hosts(package_name):
     assert marketplace["name"] == "obsidian-researchworker"
     marketplace_entry = next(entry for entry in marketplace["plugins"] if entry["name"] == package_name)
     assert marketplace_entry["name"] == codex["name"] == claude["name"] == package_name
+    assert package["version"] == codex["version"] == claude["version"] == marketplace_entry["version"]
 
 
 def test_independent_loaders_have_identical_implementations():
