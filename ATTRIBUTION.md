@@ -15,12 +15,19 @@ Copyright (c) 2026 kouko).
 Upstream: [`kepano/obsidian-skills`](https://github.com/kepano/obsidian-skills)
 License: MIT, Copyright (c) 2026 Steph Ango
 
+Note: the upstream repository now lives at [`obsidianmd/obsidian-skills`](https://github.com/obsidianmd/obsidian-skills)
+(the former `kepano/obsidian-skills` location moved). `obsidian-headless` and `knap`
+were added from `obsidianmd/obsidian-skills`; `obsidian-cli`, `obsidian-bases` and
+`defuddle` were synced with its v1.2.3.
+
 | Component | License file |
 |-----------|-------------|
 | `obsidian/skills/defuddle/` | [LICENSE](obsidian/skills/defuddle/LICENSE) |
 | `obsidian/skills/obsidian-markdown/` | [LICENSE](obsidian/skills/obsidian-markdown/LICENSE) |
 | `obsidian/skills/obsidian-bases/` | [LICENSE](obsidian/skills/obsidian-bases/LICENSE) |
 | `obsidian/skills/obsidian-cli/` | [LICENSE](obsidian/skills/obsidian-cli/LICENSE) |
+| `obsidian/skills/obsidian-headless/` | [LICENSE](obsidian/skills/obsidian-headless/LICENSE) |
+| `obsidian/skills/knap/` | [LICENSE](obsidian/skills/knap/LICENSE) |
 
 ### Obsidian visual skills from Axton Liu (axtonliu)
 

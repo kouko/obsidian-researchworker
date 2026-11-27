@@ -562,7 +562,7 @@ SHIPPED = [p for d in (SKILL.parent, HOOKS_DIR) for p in d.rglob("*") if p.is_fi
 def test_inventory_includes_obsidian_knowledge():
     marketplace = json.loads((REPO_ROOT / ".claude-plugin/marketplace.json").read_text())
     entries = {entry["name"]: entry for entry in marketplace["plugins"]}
-    for name, version, count in (("obsidian", "5.0.0", 15), ("obsidian-finance", "0.2.0", 4)):
+    for name, version, count in (("obsidian", "5.1.0", 17), ("obsidian-finance", "0.2.0", 4)):
         package_dir = REPO_ROOT / name
         skills = {path.parent.name for path in (package_dir / "skills").glob("*/SKILL.md")}
         assert len(skills) == count

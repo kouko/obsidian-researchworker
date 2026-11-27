@@ -1,7 +1,8 @@
 # Obsidian ResearchWorker
 
-Fifteen agent skills in `obsidian` 5.0.0 for notes, research, diagrams, Canvas
+Seventeen agent skills in `obsidian` 5.1.0 for notes, research, diagrams, Canvas
 and daily work, plus four optional finance skills in `obsidian-finance` 0.2.0.
+Version 5.1.0 adds `obsidian-headless` and `knap` and syncs the official Obsidian skills with upstream v1.2.3.
 Version 5.0.0 retires File Intel and uses native OpenCode skill selection.
 Version 4.2.0 introduced local vault search from any project through
 `obsidian-knowledge` and its bundled read-only shell script.

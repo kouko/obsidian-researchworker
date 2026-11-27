@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [5.1.0] — 2026-11-27 Sync with official Obsidian skills v1.2.3
+
+### Added
+
+- `obsidian-headless` for syncing and publishing vaults without the desktop app.
+- `knap` for rendering Markdown templates from JSON or CSV data.
+
+### Changed
+
+- `obsidian-cli`, `obsidian-bases` and `defuddle` synced with upstream
+  obsidianmd/obsidian-skills v1.2.3.
+- `obsidian-cli` lists vaults with `obsidian vaults verbose`.
+
 ## [5.0.0] — 2026-11-25 Plugin distribution and native OpenCode skills
 
 ### Removed

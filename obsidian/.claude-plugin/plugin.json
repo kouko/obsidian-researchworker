@@ -1,7 +1,7 @@
 {
   "name": "obsidian",
-  "version": "5.0.0",
-  "description": "15 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
+  "version": "5.1.0",
+  "description": "17 Obsidian skills for daily notes, research, markdown, diagrams, Canvas and local vault search from any project (Defuddle needs CLI).",
   "author": {
     "name": "kouko",
     "url": "https://github.com/kouko"
