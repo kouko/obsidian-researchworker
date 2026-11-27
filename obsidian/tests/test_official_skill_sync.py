@@ -41,6 +41,7 @@ def test_obsidian_bases_body_matches_upstream():
     text = _text("obsidian-bases")
     assert "kanban" in text and "note." in text
     assert "exactly ONE key" in text and "groupOrder" in text
+    assert "kanban" in text.split("---\n", 2)[1]  # description must trigger on upstream's kanban term
     upstream = UPSTREAM / "obsidian-bases/SKILL.md"
     if upstream.exists():  # upstream checkout is a local sync aid, not a repo fixture
         assert _body(text) == _body(upstream.read_text())
