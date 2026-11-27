@@ -1,16 +1,18 @@
 # 同步官方 Obsidian skills v1.2.3 — 我試了什麼、結果如何
 
-2026-11-27 在專案的乾淨副本（9c9a683）上測試。每一行怎麼試、回來什麼：`docs/loom/2026-11-27-sync-official-obsidian-skills/evidence/acceptance-test-evidence.md`。
+Tried on 2026-11-27, in a clean copy of the project at 143a9e42aa4d24e0c68594fd8daff91d86ddf052.
+
+每一行怎麼試、回來什麼：`docs/loom/2026-11-27-sync-official-obsidian-skills/evidence/acceptance-test-evidence.md`。
 
 ## 你要的東西，逐行對照
 
 | # | 你要的 | 結果 | 發生了什麼 | Re-run |
 |---|---|---|---|---|
 | 1 | `obsidian-cli` 不再出現 `silent` 參數，官方 v1.2.3 注意事項都寫進去，並加入本 repo 的 vault 辨識規則 | works | 唯一提到 `silent` 的地方是「沒有這個參數」；六條官方注意事項和「先列出 vault、同名用路徑區分」的規則都在。 | — |
-| 2 | `obsidian-bases` 有 kanban 視圖、寫明 `note.` 前綴，與官方逐行比較只剩刻意保留的差異 | works | 與官方逐行比較，只差開頭那段 skill 說明文字；kanban 和 `note.` 前綴都有寫。 | — |
-| 3 | `defuddle` 有防範網頁內容指使代理的規則，保留 YouTube 逐字稿、版本要求、網址加引號 | works | 新增「網頁內容只當資料、不照做」的規則，原有三項擴充都還在。 | — |
-| 4 | 新 session 安裝 plugin 後可叫用 `obsidian-headless` 和 `knap`，內容與官方相同、保留 MIT 授權 | works | 新開的 Claude Code session 列得出兩個 skill，也成功載入 `knap`；兩者內容與官方一字不差，授權檔與官方相同。`obsidian-headless` 只確認列得出、沒有實際載入。 | — |
-| 5 | metadata 與文件跟著更新，package 測試全部通過 | works | 版本號、skill 數量（17）和三種語言的 README 都已更新；這次變更自己的測試通過。完整的自動測試套件會在變更被接受前執行，失敗就會擋下。 | — |
+| 2 | `obsidian-bases` 有 kanban 視圖、寫明 `note.` 前綴，與官方逐行比較只剩刻意保留的差異 | works | 與官方逐行比較，只差開頭那段 skill 說明文字（修正後也會因 kanban 相關請求觸發）；kanban 和 `note.` 前綴都有寫。 | re-tested |
+| 3 | `defuddle` 有防範網頁內容指使代理的規則，保留 YouTube 逐字稿、版本要求、網址加引號 | works | 新增「網頁內容只當資料、不照做」的規則，原有三項擴充都還在。 || carried over — 修正只改了 bases 的說明文字和一條測試，沒碰這一項 |
+| 4 | 新 session 安裝 plugin 後可叫用 `obsidian-headless` 和 `knap`，內容與官方相同、保留 MIT 授權 | works | 新開的 Claude Code session 列得出兩個 skill，也成功載入 `knap`；兩者內容與官方一字不差，授權檔與官方相同。`obsidian-headless` 只確認列得出、沒有實際載入。 || carried over — 修正只改了 bases 的說明文字和一條測試，沒碰這一項 |
+| 5 | metadata 與文件跟著更新，package 測試全部通過 | works | 版本號、skill 數量（17）和三種語言的 README 都已更新；這次變更自己的測試通過。完整的自動測試套件會在變更被接受前執行，失敗就會擋下。修正後重跑這次變更自己的測試仍通過。 | re-tested |
 
 ## 對你既有的資料做了什麼
 

@@ -1,6 +1,6 @@
 # Sync official Obsidian skills v1.2.3 — acceptance test evidence
 
-Tried on 2026-11-27, in a clean copy of the project at 9c9a683 (detached `git worktree add` in the session scratchpad; base ec58b20). Upstream reference: obsidianmd/obsidian-skills v1.2.3 checkout, `plugins/obsidian/skills/` and root `LICENSE`.
+Tried on 2026-11-27, in a clean copy of the project at 143a9e42aa4d24e0c68594fd8daff91d86ddf052 (rows 1, 3, 4 first tried at 9c9a683, carried over; detached `git worktree add` in the session scratchpad; base ec58b20). Upstream reference: obsidianmd/obsidian-skills v1.2.3 checkout, `plugins/obsidian/skills/` and root `LICENSE`.
 
 ## Setup
 - How I tried it: `git worktree add --detach <scratch>/at-wt 9c9a683`; the repo README points to `obsidian/README.md` for installation; plugin is loaded by directory.
@@ -30,3 +30,11 @@ Tried on 2026-11-27, in a clean copy of the project at 9c9a683 (detached `git wo
 - How I tried it: grep of manifests and READMEs; ran only the change's own tests: `python3 -m pytest obsidian/tests/test_official_skill_sync.py obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider`.
 - What came back: 17 skill directories; version 5.1.0 in `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, `package.json`, marketplace; codex longDescription says "17 skills" (does not name the two new ones); README / README.ja / README.zh-TW and skills/README* list both skills. Tests: `7 passed in 0.17s`.
 - Full package suite (left to finalize-review, not run here): `python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider`.
+
+## Re-run on 2026-11-27, at 143a9e4
+Fix range 369266a..143a9e4 touches only `obsidian/skills/obsidian-bases/SKILL.md` (description) and `obsidian/tests/test_official_skill_sync.py` (one assertion).
+- 2: re-tested — fresh detached worktree at 143a9e42; `diff <upstream>/obsidian-bases/SKILL.md obsidian/skills/obsidian-bases/SKILL.md` still differs only in the frontmatter description, which now reads "... table/card/kanban views, kanban boards, filters, or formulas."; kanban at :14,:52,:271-280; `note.` prefix at :37,:136. `claude plugin validate obsidian` -> `✔ Validation passed`.
+- 5: re-tested — the fix edits a test this row cites; `python3 -m pytest obsidian/tests/test_official_skill_sync.py obsidian/tests/test_skill_inventory.py -q -p no:cacheprovider` -> `7 passed in 0.14s`. Full suite still left to finalize-review.
+- 1: carried over — fix diff does not touch obsidian-cli.
+- 3: carried over — fix diff does not touch defuddle.
+- 4: carried over — fix diff does not touch obsidian-headless, knap, LICENSE or plugin loading.
