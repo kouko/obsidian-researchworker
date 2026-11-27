@@ -1,0 +1,66 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-27-sync-official-obsidian-skills",
+  "content_digest": "36bfd45f932a925901e09b09b0c7bffa2bc7edc5",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "command": "python3 -m pytest obsidian/tests/test_official_skill_sync.py",
+      "artifact": "obsidian/tests/test_official_skill_sync.py",
+      "result": "pass",
+      "command_digest": "004032f7977de7da17a1c3dad3efcef826e0c4a1e9bad7d5f35de297798de2b2"
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-skill",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "skill",
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "reviewer": "reviewer-docs",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "docs",
+      "verdict": "PASS",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "35bcd4bd554cad30f0aa4dc1eddab615f80932d1",
+  "tested_commit": "143a9e42aa4d24e0c68594fd8daff91d86ddf052",
+  "reviewed_commit": "f570016e1f82e3ec965bc4c00829362f2012de08",
+  "acceptance_status": [
+    {
+      "acceptance": 1,
+      "status": "works"
+    },
+    {
+      "acceptance": 2,
+      "status": "works"
+    },
+    {
+      "acceptance": 3,
+      "status": "works"
+    },
+    {
+      "acceptance": 4,
+      "status": "works"
+    },
+    {
+      "acceptance": 5,
+      "status": "works"
+    }
+  ]
+}
