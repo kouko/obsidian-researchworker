@@ -1,6 +1,6 @@
 # Obsidian Finance
 
-Optional `obsidian-finance` 0.2.0 provides `equity-research-us` for agent-led
+Optional `obsidian-finance` 0.2.1 provides `equity-research-us` for agent-led
 research continuation from a designated folder, with bundled SEC filing
 metadata and financial observation acquisition when required evidence is missing. The package also provides
 `tw-equity-research` for Taiwan Stock Exchange-listed companies,

@@ -1,6 +1,6 @@
 {
   "name": "obsidian-finance",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "4 finance skills for quarterly U.S. equity research with SEC evidence, Taiwan-listed issuer research with tw-equity-research, quarterly market research, and standalone stock technical analysis with source cutoffs and protected checkpoints.",
   "author": {"name": "kouko", "url": "https://github.com/kouko"},
   "homepage": "https://github.com/kouko/obsidian-researchworker",

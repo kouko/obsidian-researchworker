@@ -1,7 +1,7 @@
 # Installation, updates and transition
 
 The `obsidian` 5.0.0 package provides 15 skills. The independently installable
-`obsidian-finance` 0.2.0 package provides four skills, including
+`obsidian-finance` 0.2.1 package provides four skills, including
 `tw-equity-research`. The Obsidian release retires File Intel and the generated
 OpenCode slash commands. All remaining skill definitions and bundled resources
 are available in their respective packages.
