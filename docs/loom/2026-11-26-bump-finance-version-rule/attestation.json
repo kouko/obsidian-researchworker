@@ -1,0 +1,46 @@
+{
+  "schema": "loom-attestation/v2",
+  "change_id": "2026-11-26-bump-finance-version-rule",
+  "content_digest": "ec1406588cdb4b914894ffc7b074da2d4491535d",
+  "executions": [
+    {
+      "kind": "package-tests",
+      "command": "python3 -m pytest obsidian/tests obsidian-finance/tests -q -p no:cacheprovider",
+      "artifact": "",
+      "result": "pass",
+      "command_digest": "529f214eca3f0bb89314fc01e204d79ad84cf23fef5323000a70128d57a496c4"
+    },
+    {
+      "kind": "adversarial",
+      "no_program": "All six attacks held; mutation of plugin metadata versions is already caught by test_package_identity_keeps_repository_and_other_hosts."
+    }
+  ],
+  "verdicts": [
+    {
+      "reviewer": "reviewer-a",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "docs",
+      "verdict": "PASS",
+      "reviewed_sha": "ec58b20",
+      "review_target_sha": "e998c01",
+      "findings": []
+    },
+    {
+      "reviewer": "reviewer-b",
+      "vendor": "anthropic",
+      "model": "claude-opus-5-5",
+      "lens": "code",
+      "verdict": "PASS",
+      "reviewed_sha": "ec58b20",
+      "review_target_sha": "e998c01",
+      "findings": []
+    }
+  ],
+  "findings": [],
+  "selection": null,
+  "intent_confirmed_sha": "e31954c",
+  "tested_commit": "e998c01b94581d6bd04e9476e7040d71cc1aaa03",
+  "reviewed_commit": "e998c01b94581d6bd04e9476e7040d71cc1aaa03",
+  "acceptance_status": []
+}

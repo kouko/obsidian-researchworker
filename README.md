@@ -1,7 +1,7 @@
 # Obsidian ResearchWorker
 
 Fifteen agent skills in `obsidian` 5.0.0 for notes, research, diagrams, Canvas
-and daily work, plus four optional finance skills in `obsidian-finance` 0.2.0.
+and daily work, plus four optional finance skills in `obsidian-finance` 0.2.1.
 Version 5.0.0 retires File Intel and uses native OpenCode skill selection.
 Version 4.2.0 introduced local vault search from any project through
 `obsidian-knowledge` and its bundled read-only shell script.
@@ -52,7 +52,7 @@ former resume skill without migrating them. For a single research note, use
 
 ## Optional finance package
 
-The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.2.0 provides
+The separate [obsidian-finance plugin](obsidian-finance/README.md) 0.2.1 provides
 [`equity-research-us`](obsidian-finance/skills/equity-research-us/README.md)
 for agent-led continuation from a designated managed version-1 equities folder,
 with source-linked SEC acquisition when required evidence is missing.
